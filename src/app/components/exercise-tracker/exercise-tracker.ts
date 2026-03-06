@@ -6,6 +6,7 @@ import { ZardCardComponent } from '../../shared/components/card/card.component';
 import { ZardButtonComponent } from '../../shared/components/button/button.component';
 import { ZardInputDirective } from '../../shared/components/input/input.directive';
 import { LucideAngularModule, Trash2, Plus, GripVertical } from 'lucide-angular';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-exercise-tracker',
@@ -17,13 +18,21 @@ import { LucideAngularModule, Trash2, Plus, GripVertical } from 'lucide-angular'
     ZardButtonComponent,
     ZardInputDirective,
     LucideAngularModule,
+    RouterModule,
   ],
   template: `
     <z-card class="mb-4 overflow-hidden">
       <!-- Header -->
       <div class="mb-4 flex justify-between items-center">
         <div>
-          <h3 class="font-semibold text-lg">{{ trackedExercise().exercise.name }}</h3>
+          <a
+            [routerLink]="['/exercise', trackedExercise().exercise.id]"
+            class="hover:underline transition-all"
+          >
+            <h3 class="font-semibold text-lg text-primary">
+              {{ trackedExercise().exercise.name }}
+            </h3>
+          </a>
           <p class="text-sm text-muted-foreground">{{ trackedExercise().exercise.muscle_group }}</p>
         </div>
         <button

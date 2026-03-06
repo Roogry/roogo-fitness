@@ -55,6 +55,12 @@ export class WorkoutService {
   }
 
   // --- State Mutations ---
+  async getExerciseById(id: number): Promise<Exercise | undefined> {
+    // Simulate network delay
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    return this.mockExercises.find((e) => e.id === id);
+  }
+
   addCustomExercise(name: string): Exercise {
     const newExercise: Exercise = {
       id: Date.now(),
