@@ -41,7 +41,7 @@ import { LucideAngularModule, Dumbbell, Save } from 'lucide-angular';
         }
       </app-header>
 
-      <main class="container mx-auto px-4 py-6 max-w-xl">
+      <main class="container mx-auto px-4 py-6 max-w-2xl">
         <!-- Search -->
         <div class="mb-8">
           <h1 class="text-3xl font-extrabold tracking-tight mb-2">Track Workout</h1>

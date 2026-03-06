@@ -12,9 +12,9 @@ import { ZardButtonComponent } from '../button/button.component';
     <header
       class="sticky top-0 z-40 w-full backdrop-blur-md bg-background/80 border-b border-border"
     >
-      <div class="container mx-auto px-4 h-14 flex items-center justify-center relative">
+      <div class="container max-w-2xl mx-auto px-4 h-14 flex items-center justify-between relative">
         <!-- Left action area -->
-        <div class="absolute left-4 z-10 flex items-center gap-2">
+        <div class="flex items-center gap-2">
           @if (showBackBtn()) {
             @if (backLink()) {
               <a [routerLink]="backLink()" z-button zType="ghost" zSize="icon">
@@ -33,7 +33,7 @@ import { ZardButtonComponent } from '../button/button.component';
 
         <!-- Centered title area -->
         <div
-          class="flex items-center justify-center gap-2 font-bold text-lg tracking-tight px-16 w-full max-w-sm truncate text-center"
+          class="absolute left-1/2 -translate-x-1/2 flex items-center justify-center gap-2 font-bold text-lg tracking-tight w-full max-w-sm truncate text-center"
         >
           <ng-content select="[title-icon]"></ng-content>
           @if (title()) {
@@ -42,7 +42,7 @@ import { ZardButtonComponent } from '../button/button.component';
         </div>
 
         <!-- Right action area -->
-        <div class="absolute right-4 z-10 flex items-center">
+        <div class="flex items-center">
           <ng-content select="[right]"></ng-content>
         </div>
       </div>
