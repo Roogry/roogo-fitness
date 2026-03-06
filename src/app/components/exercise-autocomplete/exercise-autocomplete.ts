@@ -4,12 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { WorkoutService, Exercise } from '../../shared/services/workout';
 import { ZardInputDirective } from '../../shared/components/input/input.directive';
 import { LucideAngularModule, Search, Plus } from 'lucide-angular';
-import { ZardCardComponent } from '../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-exercise-autocomplete',
   standalone: true,
-  imports: [CommonModule, FormsModule, ZardInputDirective, LucideAngularModule, ZardCardComponent],
+  imports: [CommonModule, FormsModule, ZardInputDirective, LucideAngularModule],
   template: `
     <div class="relative w-full">
       <div class="relative">
