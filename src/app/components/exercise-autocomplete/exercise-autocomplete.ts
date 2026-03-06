@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WorkoutService, Exercise } from '../../shared/services/workout';
 import { ZardInputDirective } from '../../shared/components/input/input.directive';
-import { LucideAngularModule, Search } from 'lucide-angular';
+import { LucideAngularModule, Search, Plus } from 'lucide-angular';
 import { ZardCardComponent } from '../../shared/components/card/card.component';
 
 @Component({
@@ -34,24 +34,36 @@ import { ZardCardComponent } from '../../shared/components/card/card.component';
         }
       </div>
 
-      @if (results().length > 0) {
-        <z-card class="absolute z-50 w-full mt-2 overflow-hidden shadow-lg border-muted">
-          <ul class="flex flex-col w-full max-h-[300px] overflow-y-auto">
-            @for (exercise of results(); track exercise.id) {
-              <li
-                class="px-4 py-3 hover:bg-muted cursor-pointer flex justify-between items-center transition-colors border-b border-border last:border-0"
-                (click)="selectExercise(exercise)"
-              >
-                <div class="flex flex-col">
-                  <span class="font-medium text-sm">{{ exercise.name }}</span>
-                  <span class="text-xs text-muted-foreground mt-0.5">{{
-                    exercise.muscle_group
-                  }}</span>
-                </div>
-              </li>
-            }
-          </ul>
-        </z-card>
+      @if (results().length > 0 || (searchQuery().trim() && !isSearching())) {
+        <div
+          class="absolute bg-white rounded-md border border-border z-50 w-full mt-2 overflow-hidden shadow-lg"
+        >
+          @for (exercise of results(); track exercise.id) {
+            <div
+              class="px-4 py-3 hover:bg-muted cursor-pointer flex justify-between items-center transition-colors border-b border-border last:border-0"
+              (click)="selectExercise(exercise)"
+            >
+              <div class="flex flex-col">
+                <span class="font-medium text-sm">{{ exercise.name }}</span>
+                <span class="text-xs text-muted-foreground mt-0.5">{{
+                  exercise.muscle_group
+                }}</span>
+              </div>
+            </div>
+          }
+
+          @if (!hasExactMatch() && searchQuery().trim() && !isSearching()) {
+            <div
+              class="px-4 py-3 hover:bg-primary/5 cursor-pointer flex justify-between items-center transition-colors border-b border-border last:border-0"
+              (click)="createNewExercise(searchQuery().trim())"
+            >
+              <div class="flex items-center gap-2 text-primary">
+                <lucide-icon [img]="Plus" class="h-4 w-4"></lucide-icon>
+                <span class="font-medium text-sm">Add "{{ searchQuery().trim() }}"</span>
+              </div>
+            </div>
+          }
+        </div>
       }
     </div>
   `,
@@ -59,6 +71,7 @@ import { ZardCardComponent } from '../../shared/components/card/card.component';
 })
 export class ExerciseAutocomplete {
   readonly Search = Search;
+  readonly Plus = Plus;
   private workoutService = inject(WorkoutService);
 
   @Output() exerciseSelected = new EventEmitter<Exercise>();
@@ -67,6 +80,11 @@ export class ExerciseAutocomplete {
   results = signal<Exercise[]>([]);
   isSearching = signal<boolean>(false);
   private searchTimeout: any;
+
+  hasExactMatch() {
+    const query = this.searchQuery().trim().toLowerCase();
+    return this.results().some((e) => e.name.toLowerCase() === query);
+  }
 
   onSearchChange(query: string) {
     this.searchQuery.set(query);
@@ -97,5 +115,10 @@ export class ExerciseAutocomplete {
     this.searchQuery.set('');
     this.results.set([]);
     this.exerciseSelected.emit(exercise);
+  }
+
+  createNewExercise(name: string) {
+    const newEx = this.workoutService.addCustomExercise(name);
+    this.selectExercise(newEx);
   }
 }

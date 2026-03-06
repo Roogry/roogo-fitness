@@ -55,6 +55,16 @@ export class WorkoutService {
   }
 
   // --- State Mutations ---
+  addCustomExercise(name: string): Exercise {
+    const newExercise: Exercise = {
+      id: Date.now(),
+      name,
+      muscle_group: 'Custom',
+    };
+    this.mockExercises.push(newExercise);
+    return newExercise;
+  }
+
   addTrackedExercise(exercise: Exercise) {
     this.activeExercises.update((current) => {
       // Prevent duplicates in active list
