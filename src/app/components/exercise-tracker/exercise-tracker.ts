@@ -33,7 +33,7 @@ import { LucideAngularModule, Trash2, Plus, GripVertical } from 'lucide-angular'
           (click)="removeExercise()"
           class="text-destructive hover:bg-destructive/10"
         >
-          <lucide-icon name="trash-2" class="h-4 w-4"></lucide-icon>
+          <lucide-icon [img]="Trash2" class="h-4 w-4"></lucide-icon>
         </button>
       </div>
 
@@ -61,7 +61,7 @@ import { LucideAngularModule, Trash2, Plus, GripVertical } from 'lucide-angular'
                 type="number"
                 [ngModel]="set.weight_lifted"
                 (ngModelChange)="updateSet(set.id, { weight_lifted: $event })"
-                class="h-8 max-w-[80px] text-center"
+                [class]="'h-8 max-w-[80px] text-center'"
               />
             </div>
             <div class="col-span-4 flex justify-center">
@@ -70,7 +70,7 @@ import { LucideAngularModule, Trash2, Plus, GripVertical } from 'lucide-angular'
                 type="number"
                 [ngModel]="set.reps_completed"
                 (ngModelChange)="updateSet(set.id, { reps_completed: $event })"
-                class="h-8 max-w-[80px] text-center"
+                [class]="'h-8 max-w-[80px] text-center'"
               />
             </div>
             <div
@@ -83,7 +83,7 @@ import { LucideAngularModule, Trash2, Plus, GripVertical } from 'lucide-angular'
                 class="h-8 w-8 text-destructive hover:bg-destructive/10"
                 (click)="removeSet(set.id)"
               >
-                <lucide-icon name="trash-2" class="h-4 w-4"></lucide-icon>
+                <lucide-icon [img]="Trash2" class="h-4 w-4"></lucide-icon>
               </button>
             </div>
           </div>
@@ -103,7 +103,7 @@ import { LucideAngularModule, Trash2, Plus, GripVertical } from 'lucide-angular'
                 [(ngModel)]="newWeight"
                 name="newWeight"
                 placeholder="0"
-                class="w-full text-center"
+                [class]="'w-full text-center'"
                 required
                 min="0"
                 step="0.5"
@@ -117,7 +117,7 @@ import { LucideAngularModule, Trash2, Plus, GripVertical } from 'lucide-angular'
                 [(ngModel)]="newReps"
                 name="newReps"
                 placeholder="0"
-                class="w-full text-center"
+                [class]="'w-full text-center'"
                 required
                 min="1"
                 step="1"
@@ -129,7 +129,7 @@ import { LucideAngularModule, Trash2, Plus, GripVertical } from 'lucide-angular'
               [disabled]="!isValid()"
               class="w-full h-10 sm:w-12 flex items-center justify-center shrink-0"
             >
-              <lucide-icon name="plus" class="h-5 w-5 mr-2 sm:mr-0"></lucide-icon>
+              <lucide-icon [img]="Plus" class="h-5 w-5 mr-2 sm:mr-0"></lucide-icon>
               <span class="sm:hidden">Add Set</span>
             </button>
           </form>

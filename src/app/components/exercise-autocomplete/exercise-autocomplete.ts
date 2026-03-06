@@ -14,8 +14,8 @@ import { ZardCardComponent } from '../../shared/components/card/card.component';
     <div class="relative w-full">
       <div class="relative">
         <lucide-icon
-          name="search"
-          class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+          [img]="Search"
+          class="absolute left-1.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
         ></lucide-icon>
         <input
           z-input
@@ -23,7 +23,7 @@ import { ZardCardComponent } from '../../shared/components/card/card.component';
           placeholder="Search exercises (e.g., Bench Press)"
           [ngModel]="searchQuery()"
           (ngModelChange)="onSearchChange($event)"
-          class="w-full pl-9 h-12"
+          [class]="'w-full pl-9 h-12'"
         />
         @if (isSearching()) {
           <div class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">

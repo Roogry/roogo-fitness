@@ -24,7 +24,7 @@ import { LucideAngularModule, Dumbbell, Save } from 'lucide-angular';
       >
         <div class="container mx-auto px-4 h-14 flex items-center justify-between">
           <div class="flex items-center gap-2 font-bold text-lg tracking-tight">
-            <lucide-icon name="dumbbell" class="h-5 w-5 text-primary"></lucide-icon>
+            <lucide-icon [img]="Dumbbell" class="h-5 w-5 text-primary"></lucide-icon>
             <span>Roogo Fitness</span>
           </div>
           @if (workoutService.hasActiveWorkout()) {
@@ -34,7 +34,7 @@ import { LucideAngularModule, Dumbbell, Save } from 'lucide-angular';
               (click)="finishWorkout()"
               class="hidden sm:flex items-center gap-2"
             >
-              <lucide-icon name="save" class="h-4 w-4"></lucide-icon>
+              <lucide-icon [img]="Save" class="h-4 w-4"></lucide-icon>
               Finish Workout
             </button>
           }
@@ -61,7 +61,7 @@ import { LucideAngularModule, Dumbbell, Save } from 'lucide-angular';
             <div
               class="py-12 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl"
             >
-              <lucide-icon name="dumbbell" class="h-12 w-12 mx-auto mb-4 opacity-20"></lucide-icon>
+              <lucide-icon [img]="Dumbbell" class="h-12 w-12 mx-auto mb-4 opacity-20"></lucide-icon>
               <p>No exercises tracked yet.</p>
               <p class="text-sm mt-1">Search above to get started.</p>
             </div>
@@ -77,7 +77,7 @@ import { LucideAngularModule, Dumbbell, Save } from 'lucide-angular';
             class="w-full h-14 shadow-xl text-lg flex items-center justify-center gap-2 rounded-full"
             (click)="finishWorkout()"
           >
-            <lucide-icon name="save" class="h-5 w-5"></lucide-icon>
+            <lucide-icon [img]="Save" class="h-5 w-5"></lucide-icon>
             Finish Workout
           </button>
         </div>
