@@ -49,7 +49,7 @@ import { ZardButtonComponent } from '../button/button.component';
     </header>
   `,
   host: {
-    class: 'block w-full',
+    class: 'block w-full sticky top-0 z-40',
   },
 })
 export class HeaderComponent {
