@@ -1,10 +1,12 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { WorkoutService, Exercise } from '../../shared/services/workout';
 import { ZardCardComponent } from '../../shared/components/card/card.component';
 import { ZardButtonComponent } from '../../shared/components/button/button.component';
-import { LucideAngularModule, ArrowLeft, Dumbbell, Activity, Info } from 'lucide-angular';
+import { ZardInputDirective } from '../../shared/components/input/input.directive';
+import { LucideAngularModule, ArrowLeft, Dumbbell, Activity, Info, Pencil } from 'lucide-angular';
 
 @Component({
   selector: 'app-exercise-detail',
@@ -45,16 +47,59 @@ import { LucideAngularModule, ArrowLeft, Dumbbell, Activity, Info } from 'lucide
             <div
               class="p-6 md:p-8 flex flex-col items-center text-center border-b border-border bg-gradient-to-b from-muted/50 to-transparent"
             >
-              <div
-                class="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center mb-4"
-              >
-                <lucide-icon [img]="Dumbbell" class="h-10 w-10 text-primary"></lucide-icon>
+              @if (exercise()?.media_url) {
+                <div
+                  class="w-full max-w-sm aspect-video bg-muted rounded-xl overflow-hidden mb-6 border border-border flex items-center justify-center"
+                >
+                  <!-- Fallback to dumbbell if image fails to load via CSS, but normally we'd show an img -->
+                  <img
+                    [src]="exercise()!.media_url"
+                    [alt]="exercise()!.name"
+                    class="w-full h-full object-cover"
+                    (error)="imageError = true"
+                    [class.hidden]="imageError"
+                  />
+                  @if (imageError) {
+                    <lucide-icon
+                      [img]="Dumbbell"
+                      class="h-10 w-10 text-muted-foreground"
+                    ></lucide-icon>
+                  }
+                </div>
+              } @else {
+                <div
+                  class="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center mb-4"
+                >
+                  <lucide-icon [img]="Dumbbell" class="h-10 w-10 text-primary"></lucide-icon>
+                </div>
+              }
+
+              <div class="flex items-center gap-3 mb-2">
+                <h2 class="text-3xl font-extrabold tracking-tight">{{ exercise()!.name }}</h2>
+                <a
+                  [routerLink]="['/exercise', exercise()!.id, 'edit']"
+                  z-button
+                  zType="ghost"
+                  zSize="icon"
+                  class="text-muted-foreground hover:bg-muted h-8 w-8 rounded-full flex-shrink-0"
+                  title="Edit Exercise"
+                >
+                  <lucide-icon [img]="Pencil" class="h-4 w-4"></lucide-icon>
+                </a>
               </div>
-              <h2 class="text-3xl font-extrabold tracking-tight mb-2">{{ exercise()!.name }}</h2>
-              <div
-                class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground"
-              >
-                {{ exercise()!.muscle_group }}
+              <div class="flex flex-wrap items-center justify-center gap-2">
+                <div
+                  class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground"
+                >
+                  Primary: {{ exercise()!.muscle_group }}
+                </div>
+                @if (exercise()?.secondary_muscles) {
+                  <div
+                    class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-muted text-muted-foreground"
+                  >
+                    Secondary: {{ exercise()!.secondary_muscles }}
+                  </div>
+                }
               </div>
             </div>
 
@@ -114,12 +159,14 @@ export class ExerciseDetail implements OnInit {
   readonly Dumbbell = Dumbbell;
   readonly Activity = Activity;
   readonly Info = Info;
+  readonly Pencil = Pencil;
 
   private route = inject(ActivatedRoute);
   private workoutService = inject(WorkoutService);
 
   exercise = signal<Exercise | undefined>(undefined);
   isLoading = signal<boolean>(true);
+  imageError = false;
 
   ngOnInit() {
     this.route.paramMap.subscribe(async (params) => {

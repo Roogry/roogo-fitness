@@ -4,6 +4,8 @@ export interface Exercise {
   id: number;
   name: string;
   muscle_group: string;
+  media_url?: string;
+  secondary_muscles?: string;
 }
 
 export interface WorkoutSet {
@@ -69,6 +71,24 @@ export class WorkoutService {
     };
     this.mockExercises.push(newExercise);
     return newExercise;
+  }
+
+  updateExercise(id: number, updates: Partial<Exercise>) {
+    // Update in mock db
+    const mockIdx = this.mockExercises.findIndex((e) => e.id === id);
+    if (mockIdx !== -1) {
+      this.mockExercises[mockIdx] = { ...this.mockExercises[mockIdx], ...updates };
+    }
+
+    // Update in active tracked exercises
+    this.activeExercises.update((current) => {
+      return current.map((te) => {
+        if (te.exercise.id === id) {
+          return { ...te, exercise: { ...te.exercise, ...updates } };
+        }
+        return te;
+      });
+    });
   }
 
   addTrackedExercise(exercise: Exercise) {
