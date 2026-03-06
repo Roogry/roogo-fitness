@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { WorkoutService } from '../shared/services/workout';
 import { ExerciseAutocomplete } from '../components/exercise-autocomplete/exercise-autocomplete';
 import { ExerciseTracker } from '../components/exercise-tracker/exercise-tracker';
+import { HeaderComponent } from '../shared/components/header/header';
 import { ZardButtonComponent } from '../shared/components/button/button.component';
 import { LucideAngularModule, Dumbbell, Save } from 'lucide-angular';
 
@@ -13,33 +14,32 @@ import { LucideAngularModule, Dumbbell, Save } from 'lucide-angular';
     CommonModule,
     ExerciseAutocomplete,
     ExerciseTracker,
+    HeaderComponent,
     ZardButtonComponent,
     LucideAngularModule,
   ],
   template: `
     <div class="min-h-screen bg-background text-foreground pb-20">
       <!-- Header -->
-      <header
-        class="sticky top-0 z-40 w-full backdrop-blur-md bg-background/80 border-b border-border"
-      >
-        <div class="container mx-auto px-4 h-14 flex items-center justify-between">
-          <div class="flex items-center gap-2 font-bold text-lg tracking-tight">
-            <lucide-icon [img]="Dumbbell" class="h-5 w-5 text-primary"></lucide-icon>
-            <span>Roogo Fitness</span>
-          </div>
-          @if (workoutService.hasActiveWorkout()) {
-            <button
-              z-button
-              size="sm"
-              (click)="finishWorkout()"
-              class="hidden sm:flex items-center gap-2"
-            >
-              <lucide-icon [img]="Save" class="h-4 w-4"></lucide-icon>
-              Finish Workout
-            </button>
-          }
-        </div>
-      </header>
+      <app-header title="Roogo Fitness">
+        <lucide-icon
+          title-icon
+          [img]="Dumbbell"
+          class="h-5 w-5 text-primary flex-shrink-0"
+        ></lucide-icon>
+        @if (workoutService.hasActiveWorkout()) {
+          <button
+            right
+            z-button
+            size="sm"
+            (click)="finishWorkout()"
+            class="hidden sm:flex items-center gap-2"
+          >
+            <lucide-icon [img]="Save" class="h-4 w-4"></lucide-icon>
+            Finish
+          </button>
+        }
+      </app-header>
 
       <main class="container mx-auto px-4 py-6 max-w-xl">
         <!-- Search -->

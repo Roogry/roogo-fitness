@@ -6,6 +6,7 @@ import { WorkoutService, Exercise } from '../../shared/services/workout';
 import { ZardCardComponent } from '../../shared/components/card/card.component';
 import { ZardButtonComponent } from '../../shared/components/button/button.component';
 import { ZardInputDirective } from '../../shared/components/input/input.directive';
+import { HeaderComponent } from '../../shared/components/header/header';
 import { LucideAngularModule, ArrowLeft, Dumbbell, Activity, Info, Pencil } from 'lucide-angular';
 
 @Component({
@@ -16,24 +17,14 @@ import { LucideAngularModule, ArrowLeft, Dumbbell, Activity, Info, Pencil } from
     RouterModule,
     ZardCardComponent,
     ZardButtonComponent,
+    HeaderComponent,
     LucideAngularModule,
   ],
   template: `
     <div class="min-h-screen bg-background text-foreground pb-20">
       <!-- Header -->
-      <header
-        class="sticky top-0 z-40 w-full backdrop-blur-md bg-background/80 border-b border-border"
-      >
-        <div class="container mx-auto px-4 h-14 flex items-center gap-4">
-          <a routerLink="/" z-button zType="ghost" zSize="icon">
-            <lucide-icon [img]="ArrowLeft" class="h-5 w-5"></lucide-icon>
-            <span class="sr-only">Back</span>
-          </a>
-          <h1 class="font-bold text-lg tracking-tight truncate flex-1">
-            {{ exercise()?.name || 'Loading...' }}
-          </h1>
-        </div>
-      </header>
+      <app-header [title]="exercise()?.name || 'Loading...'" [showBackBtn]="true" backLink="/">
+      </app-header>
 
       <main class="container mx-auto px-4 py-8 max-w-2xl">
         @if (isLoading()) {
