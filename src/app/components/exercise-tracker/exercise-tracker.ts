@@ -19,9 +19,9 @@ import { LucideAngularModule, Trash2, Plus, GripVertical } from 'lucide-angular'
     LucideAngularModule,
   ],
   template: `
-    <z-card class="mb-4 overflow-hidden border-border bg-card">
+    <z-card class="mb-4 overflow-hidden">
       <!-- Header -->
-      <div class="p-4 bg-muted/30 flex justify-between items-center border-b border-border">
+      <div class="mb-4 flex justify-between items-center">
         <div>
           <h3 class="font-semibold text-lg">{{ trackedExercise().exercise.name }}</h3>
           <p class="text-sm text-muted-foreground">{{ trackedExercise().exercise.muscle_group }}</p>
@@ -38,59 +38,63 @@ import { LucideAngularModule, Trash2, Plus, GripVertical } from 'lucide-angular'
       </div>
 
       <!-- Sets List -->
-      <div class="p-4 flex flex-col gap-3">
+      <div class="flex flex-col">
         @if (trackedExercise().sets.length > 0) {
           <div
-            class="grid grid-cols-12 gap-1 md:gap-2 px-1 md:px-2 text-[10px] md:text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1"
+            class="grid grid-cols-12 gap-1 md:gap-2 text-[10px] md:text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1"
           >
-            <div class="col-span-2 text-center">Set</div>
-            <div class="col-span-4 text-center">KG</div>
-            <div class="col-span-4 text-center">Reps</div>
-            <div class="col-span-2 text-center"></div>
+            <div class="col-span-2 md:col-span-1 text-center">Set</div>
+            <div class="col-span-4 md:col-span-3 text-center">KG</div>
+            <div class="col-span-4 md:col-span-3 text-center">Reps</div>
+            <div class="col-span-2 md:col-span-5 text-end"></div>
           </div>
         }
 
         @for (set of trackedExercise().sets; track set.id) {
           <div
-            class="grid grid-cols-12 gap-1 md:gap-2 items-center bg-muted/20 p-1 md:p-2 rounded-md transition-colors hover:bg-muted/40 group"
+            class="grid grid-cols-12 gap-1 md:gap-2 items-center bg-muted/20 py-1 md:py-2 rounded-md transition-colors hover:bg-muted/40 group"
           >
-            <div class="col-span-2 text-center font-medium">{{ set.set_number }}</div>
-            <div class="col-span-4 flex justify-center">
+            <div class="col-span-2 md:col-span-1 text-center font-medium">{{ set.set_number }}</div>
+            <div class="col-span-4 md:col-span-3 flex justify-center">
               <input
                 z-input
+                zBorderless
                 type="number"
+                placeholder="0"
                 [ngModel]="set.weight_lifted"
                 (ngModelChange)="updateSet(set.id, { weight_lifted: $event })"
-                [class]="'h-8 max-w-[80px] text-center'"
+                [class]="'h-8 w-full text-center'"
               />
             </div>
-            <div class="col-span-4 flex justify-center">
+            <div class="col-span-4 md:col-span-3 flex justify-center">
               <input
                 z-input
+                zBorderless
                 type="number"
+                placeholder="0"
                 [ngModel]="set.reps_completed"
                 (ngModelChange)="updateSet(set.id, { reps_completed: $event })"
-                [class]="'h-8 max-w-[80px] text-center'"
+                [class]="'h-8 w-full text-center'"
               />
             </div>
             <div
-              class="col-span-2 flex justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+              class="col-span-2 md:col-span-5 px-0 md:px-2 flex justify-end opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
             >
               <button
                 z-button
                 zType="ghost"
                 zSize="icon"
-                class="h-8 w-8 text-destructive hover:bg-destructive/10"
+                class="text-destructive hover:bg-destructive/10"
                 (click)="removeSet(set.id)"
               >
-                <lucide-icon [img]="Trash2" class="h-4 w-4"></lucide-icon>
+                <lucide-icon [img]="Trash2"></lucide-icon>
               </button>
             </div>
           </div>
         }
 
         <!-- Add Set Form -->
-        <div class="mt-4 pt-4 border-t border-border">
+        <div class="pt-4 border-t border-gray-100">
           <form
             class="flex flex-col sm:flex-row items-stretch sm:items-end gap-3"
             (submit)="$event.preventDefault(); addSet()"
@@ -125,12 +129,12 @@ import { LucideAngularModule, Trash2, Plus, GripVertical } from 'lucide-angular'
             </div>
             <button
               z-button
+              size="icon"
               type="submit"
               [disabled]="!isValid()"
               class="w-full h-10 sm:w-12 flex items-center justify-center shrink-0"
             >
-              <lucide-icon [img]="Plus" class="h-5 w-5 mr-2 sm:mr-0"></lucide-icon>
-              <span class="sm:hidden">Add Set</span>
+              <lucide-icon [img]="Plus"></lucide-icon>
             </button>
           </form>
         </div>
