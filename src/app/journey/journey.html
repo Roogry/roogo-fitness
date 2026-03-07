@@ -25,7 +25,11 @@
                   <span>{{ session.start_time | date:'MMM d, yyyy' }}</span>
                 </div>
                 <span>•</span>
+                <span>{{ formatDuration(session.total_duration) }}</span>
+              </div>
+              <div class="flex items-center gap-2 mt-2">
                 <span class="font-medium bg-muted text-foreground px-2 py-0.5 rounded-full text-xs">{{ getTotalSets(session) }} sets</span>
+                <span class="font-medium bg-muted text-foreground px-2 py-0.5 rounded-full text-xs">{{ session.total_weight_lifted | number:'1.0-1' }} kg</span>
               </div>
             </div>
             <div class="bg-primary/10 text-primary p-2.5 rounded-2xl">

@@ -71,6 +71,8 @@ export interface LoggedWorkoutSession {
   session_title: string;
   start_time: string;
   end_time?: string;
+  total_duration: number;
+  total_weight_lifted: number;
   notes?: string;
   workouts: LoggedWorkout[]; 
 }
@@ -157,6 +159,8 @@ export class WorkoutService {
       session_title: 'Push Day Heavy',
       start_time: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
       end_time: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 45 * 60 * 1000).toISOString(),
+      total_duration: 45,
+      total_weight_lifted: 3740,
       notes: 'Felt really strong on the bench press today. Knee is feeling better on squats.',
       workouts: [
         {
@@ -191,6 +195,8 @@ export class WorkoutService {
       session_title: 'Quick Upper Body',
       start_time: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(), // 4 days ago
       end_time: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000 + 35 * 60 * 1000).toISOString(),
+      total_duration: 35,
+      total_weight_lifted: 760,
       notes: 'Quick upper body day. Need to eat more before.',
       workouts: [
         {
@@ -213,6 +219,31 @@ export class WorkoutService {
           sets: [
             { id: 9, logged_workout_id: 504, exercise_id: 4, set_number: 1, is_warmup: false, reps_completed: 10, weight_lifted: 40 },
             { id: 10, logged_workout_id: 504, exercise_id: 4, set_number: 2, is_warmup: false, reps_completed: 8, weight_lifted: 45 },
+          ]
+        }
+      ]
+    },
+    {
+      id: 1003,
+      user_id: 'user-1',
+      session_title: 'Leg Day Volume',
+      start_time: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago
+      end_time: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000 + 79 * 60 * 1000).toISOString(),
+      total_duration: 79,
+      total_weight_lifted: 5200,
+      notes: 'Grueling leg session. Need to stretch more.',
+      workouts: [
+        {
+          id: 505,
+          logged_workout_session_id: 1003,
+          exercise_id: 2,
+          exercise: this.mockExercises[1], // Squat
+          workout_title: 'Squat',
+          sets: [
+             { id: 11, logged_workout_id: 505, exercise_id: 2, set_number: 1, is_warmup: false, reps_completed: 12, weight_lifted: 80 },
+             { id: 12, logged_workout_id: 505, exercise_id: 2, set_number: 2, is_warmup: false, reps_completed: 10, weight_lifted: 90 },
+             { id: 13, logged_workout_id: 505, exercise_id: 2, set_number: 3, is_warmup: false, reps_completed: 8, weight_lifted: 100 },
+             { id: 14, logged_workout_id: 505, exercise_id: 2, set_number: 4, is_warmup: false, reps_completed: 8, weight_lifted: 110 },
           ]
         }
       ]

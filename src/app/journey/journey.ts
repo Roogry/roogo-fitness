@@ -44,4 +44,14 @@ export class Journey implements OnInit {
     if (uniqueNames.length <= 2) return uniqueNames.join(', ');
     return `${uniqueNames[0]}, ${uniqueNames[1]} & ${uniqueNames.length - 2} more`;
   }
+
+  formatDuration(minutes: number): string {
+    if (!minutes) return '0 min';
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (hours > 0) {
+      return `${hours}h ${mins > 0 ? mins + 'min' : ''}`.trim();
+    }
+    return `${mins} min`;
+  }
 }
