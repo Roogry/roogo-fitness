@@ -2,12 +2,23 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { WorkoutService, ExerciseMedia } from '../../shared/services/workout';
+import { WorkoutService, ExerciseMedia, Muscle } from '../../shared/services/workout';
 import { ZardCardComponent } from '../../shared/components/card/card.component';
 import { ZardButtonComponent } from '../../shared/components/button/button.component';
 import { ZardInputDirective } from '../../shared/components/input/input.directive';
 import { HeaderComponent } from '../../shared/components/header/header';
-import { LucideAngularModule, ArrowLeft, Save, X, Video, ChevronUp, ChevronDown, Trash2, Plus } from 'lucide-angular';
+import {
+  LucideAngularModule,
+  ArrowLeft,
+  Save,
+  X,
+  Video,
+  ChevronUp,
+  ChevronDown,
+  Trash2,
+  Plus,
+} from 'lucide-angular';
+import { ZardSelectImports } from '@/shared/components/select';
 
 @Component({
   selector: 'app-exercise-edit',
@@ -19,6 +30,7 @@ import { LucideAngularModule, ArrowLeft, Save, X, Video, ChevronUp, ChevronDown,
     ZardCardComponent,
     ZardButtonComponent,
     ZardInputDirective,
+    ZardSelectImports,
     HeaderComponent,
     LucideAngularModule,
   ],
@@ -62,41 +74,52 @@ import { LucideAngularModule, ArrowLeft, Save, X, Video, ChevronUp, ChevronDown,
                 />
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="flex flex-col gap-3">
-                  <label
-                    for="muscle"
-                    class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Primary Muscle Group <span class="text-destructive">*</span>
-                  </label>
-                  <input
-                    id="muscle"
-                    name="muscle"
-                    z-input
-                    [(ngModel)]="muscleGroup"
-                    required
-                    placeholder="e.g. Chest"
-                    class="w-full"
-                  />
-                </div>
+              <div class="flex flex-col gap-3">
+                <label
+                  for="muscle"
+                  class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Primary Muscle Group <span class="text-destructive">*</span>
+                </label>
+                <z-select
+                  id="muscle"
+                  name="muscle"
+                  required
+                  class="w-full"
+                  zPlaceholder="e.g. Chest"
+                  [(zValue)]="primaryGroup"
+                >
+                  <z-select-item zValue="" disabled>Select primary muscle</z-select-item>
+                  @for (muscle of availableMuscles(); track muscle.id) {
+                    <z-select-item [zValue]="muscle.name"
+                      >{{ muscle.name }} ({{ muscle.muscle_group }})</z-select-item
+                    >
+                  }
+                </z-select>
+              </div>
 
-                <div class="flex flex-col gap-3">
-                  <label
-                    for="secondary"
-                    class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Secondary Muscles
-                  </label>
-                  <input
-                    id="secondary"
-                    name="secondary"
-                    z-input
-                    [(ngModel)]="secondaryMuscles"
-                    placeholder="e.g. Triceps, Front Delts"
-                    class="w-full"
-                  />
-                </div>
+              <div class="flex flex-col gap-3">
+                <label
+                  for="secondary"
+                  class="text-sm font-medium leading-none flex justify-between items-center"
+                >
+                  Secondary Muscles
+                </label>
+                <z-select
+                  id="secondary"
+                  name="secondary"
+                  [zMultiple]="true"
+                  [zMaxLabelCount]="2"
+                  [(zValue)]="secondaryMuscles"
+                  zPlaceholder="e.g. Triceps, Front Delts"
+                  class="w-full"
+                >
+                  @for (muscle of availableMuscles(); track muscle.id) {
+                    <z-select-item [zValue]="muscle.name"
+                      >{{ muscle.name }}</z-select-item
+                    >
+                  }
+                </z-select>
               </div>
 
               <div class="flex flex-col gap-3">
@@ -104,44 +127,101 @@ import { LucideAngularModule, ArrowLeft, Save, X, Video, ChevronUp, ChevronDown,
 
                 <div class="flex flex-col gap-3">
                   @for (m of media(); track m.id; let i = $index) {
-                    <div class="flex items-center gap-3 p-3 border border-border rounded-xl bg-muted/30">
-                      <div class="h-12 w-16 bg-muted rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
+                    <div
+                      class="flex items-center gap-3 p-3 border border-border rounded-xl bg-muted/30"
+                    >
+                      <div
+                        class="h-12 w-16 bg-muted rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center"
+                      >
                         @if (m.media_type === 'youtube' || m.media_type === 'video') {
-                          <lucide-icon [img]="Video" class="h-5 w-5 text-muted-foreground"></lucide-icon>
+                          <lucide-icon
+                            [img]="Video"
+                            class="h-5 w-5 text-muted-foreground"
+                          ></lucide-icon>
                         } @else {
-                          <img [src]="m.media_url" class="h-full w-full object-cover text-[8px]" alt="media" />
+                          <img
+                            [src]="m.media_url"
+                            class="h-full w-full object-cover text-[8px]"
+                            alt="media"
+                          />
                         }
                       </div>
                       <div class="flex flex-col flex-1 overflow-hidden">
                         <span class="text-xs font-semibold capitalize">{{ m.media_type }}</span>
-                        <span class="text-xs text-muted-foreground truncate">{{ m.media_url }}</span>
+                        <span class="text-xs text-muted-foreground truncate">{{
+                          m.media_url
+                        }}</span>
                       </div>
                       <div class="flex items-center gap-1">
-                        <button type="button" title="Move Up" z-button zType="ghost" zSize="icon-sm" zShape="circle" [disabled]="i === 0" (click)="moveMediaUp(i)">
+                        <button
+                          type="button"
+                          title="Move Up"
+                          z-button
+                          zType="ghost"
+                          zSize="icon-sm"
+                          zShape="circle"
+                          [disabled]="i === 0"
+                          (click)="moveMediaUp(i)"
+                        >
                           <lucide-icon [img]="ChevronUp" class="h-4 w-4"></lucide-icon>
                         </button>
-                        <button type="button" title="Move Down" z-button zType="ghost" zSize="icon-sm" zShape="circle" [disabled]="i === media().length - 1" (click)="moveMediaDown(i)">
+                        <button
+                          type="button"
+                          title="Move Down"
+                          z-button
+                          zType="ghost"
+                          zSize="icon-sm"
+                          zShape="circle"
+                          [disabled]="i === media().length - 1"
+                          (click)="moveMediaDown(i)"
+                        >
                           <lucide-icon [img]="ChevronDown" class="h-4 w-4"></lucide-icon>
                         </button>
-                        <button type="button" title="Remove" z-button zType="ghost" zSize="icon-sm" zShape="circle" class="text-destructive hover:text-destructive" (click)="removeMedia(i)">
+                        <button
+                          type="button"
+                          title="Remove"
+                          z-button
+                          zType="ghost"
+                          zSize="icon-sm"
+                          zShape="circle"
+                          class="text-destructive hover:text-destructive"
+                          (click)="removeMedia(i)"
+                        >
                           <lucide-icon [img]="Trash2" class="h-4 w-4"></lucide-icon>
                         </button>
                       </div>
                     </div>
                   }
-                  
+
                   @if (media().length === 0) {
-                      <div class="py-6 text-center text-sm text-muted-foreground border border-dashed border-border rounded-xl">
-                          No media added yet.
-                      </div>
+                    <div
+                      class="py-6 text-center text-sm text-muted-foreground border border-dashed border-border rounded-xl"
+                    >
+                      No media added yet.
+                    </div>
                   }
                 </div>
 
                 <div class="flex items-start gap-2 mt-2">
                   <div class="flex-1 flex flex-col gap-2">
-                    <input z-input type="url" [(ngModel)]="newMediaUrl" name="newMediaUrl" placeholder="Add image or YouTube URL..." class="w-full" />
+                    <input
+                      z-input
+                      type="url"
+                      [(ngModel)]="newMediaUrl"
+                      name="newMediaUrl"
+                      placeholder="Add image or YouTube URL..."
+                      class="w-full"
+                    />
                   </div>
-                  <button type="button" z-button zType="secondary" zShape="circle" class="h-12" (click)="addMedia()" [disabled]="!newMediaUrl().trim()">
+                  <button
+                    type="button"
+                    z-button
+                    zType="secondary"
+                    zShape="circle"
+                    class="h-12"
+                    (click)="addMedia()"
+                    [disabled]="!newMediaUrl().trim()"
+                  >
                     <lucide-icon [img]="Plus"></lucide-icon> Add
                   </button>
                 </div>
@@ -199,10 +279,12 @@ export class ExerciseEdit implements OnInit {
 
   // Form Fields
   name = signal('');
-  muscleGroup = signal('');
-  secondaryMuscles = signal('');
+  primaryGroup = signal('');
+  secondaryMuscles = signal<string[]>([]);
   media = signal<ExerciseMedia[]>([]);
   newMediaUrl = signal('');
+
+  availableMuscles = signal<Muscle[]>([]);
 
   ngOnInit() {
     this.route.paramMap.subscribe(async (params) => {
@@ -213,11 +295,23 @@ export class ExerciseEdit implements OnInit {
         this.exerciseId.set(id);
 
         try {
-          const detail = await this.workoutService.getExerciseById(id);
+          // Load muscles in parallel with exercise
+          const [detail, muscles] = await Promise.all([
+            this.workoutService.getExerciseById(id),
+            this.workoutService.getMuscles(),
+          ]);
+
+          this.availableMuscles.set(muscles);
+
           if (detail) {
             this.name.set(detail.name);
-            this.muscleGroup.set(detail.muscle_group);
-            this.secondaryMuscles.set(detail.secondary_muscles || '');
+            this.primaryGroup.set(detail.muscle_group);
+
+            // Convert comma-separated string back to array if needed
+            const sec = detail.secondary_muscles
+              ? detail.secondary_muscles.split(',').map((s) => s.trim())
+              : [];
+            this.secondaryMuscles.set(sec);
             this.media.set([...(detail.media || [])]);
           } else {
             this.exerciseId.set(null);
@@ -301,7 +395,7 @@ export class ExerciseEdit implements OnInit {
 
   save() {
     const id = this.exerciseId();
-    if (!id || !this.name().trim() || !this.muscleGroup().trim()) return;
+    if (!id || !this.name().trim() || !this.primaryGroup().trim()) return;
 
     this.isSaving.set(true);
 
@@ -309,8 +403,10 @@ export class ExerciseEdit implements OnInit {
     setTimeout(() => {
       this.workoutService.updateExercise(id, {
         name: this.name().trim(),
-        muscle_group: this.muscleGroup().trim(),
-        secondary_muscles: this.secondaryMuscles().trim() || undefined,
+        muscle_group: this.primaryGroup().trim(),
+        secondary_muscles: this.secondaryMuscles().length
+          ? this.secondaryMuscles().join(', ')
+          : undefined,
         media: this.media(),
       });
       this.isSaving.set(false);

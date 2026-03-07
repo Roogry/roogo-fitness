@@ -7,6 +7,13 @@ export interface ExerciseMedia {
   display_order: number;
 }
 
+export interface Muscle {
+  id: number;
+  name: string;
+  muscle_group: string;
+  anatomy_image_url?: string;
+}
+
 export interface Exercise {
   id: number;
   name: string;
@@ -39,6 +46,25 @@ export interface TrackedExercise {
 })
 export class WorkoutService {
   // Mock API Data
+  private mockMuscles: Muscle[] = [
+    { id: 1, name: 'Upper Chest', muscle_group: 'Chest' },
+    { id: 2, name: 'Midle Chest', muscle_group: 'Chest' },
+    { id: 3, name: 'Lower Chest', muscle_group: 'Chest' },
+    { id: 4, name: 'Front Delt', muscle_group: 'Shoulders' },
+    { id: 5, name: 'Side Delt', muscle_group: 'Shoulders' },
+    { id: 6, name: 'Back Delt', muscle_group: 'Shoulders' },
+    { id: 7, name: 'Triceps', muscle_group: 'Arms' },
+    { id: 8, name: 'Biceps', muscle_group: 'Arms' },
+    { id: 9, name: 'Lats', muscle_group: 'Back' },
+    { id: 10, name: 'Traps', muscle_group: 'Back' },
+    { id: 11, name: 'Upper Back', muscle_group: 'Back' },
+    { id: 12, name: 'Quadriceps', muscle_group: 'Legs' },
+    { id: 13, name: 'Hamstrings', muscle_group: 'Legs' },
+    { id: 14, name: 'Gluteus', muscle_group: 'Legs' },
+    { id: 15, name: 'Calves', muscle_group: 'Legs' },
+    { id: 16, name: 'Core', muscle_group: 'Core' },
+  ];
+
   private mockExercises: Exercise[] = [
     {
       id: 1,
@@ -109,6 +135,11 @@ export class WorkoutService {
 
     const lowerQuery = query.toLowerCase();
     return this.mockExercises.filter((e) => e.name.toLowerCase().includes(lowerQuery));
+  }
+
+  async getMuscles(): Promise<Muscle[]> {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    return this.mockMuscles;
   }
 
   // --- State Mutations ---
