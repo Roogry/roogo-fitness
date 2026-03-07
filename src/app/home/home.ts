@@ -42,19 +42,11 @@ import { LucideAngularModule, Dumbbell, Save, Plus, X } from 'lucide-angular';
       </app-header>
 
       <main class="container mx-auto px-4 py-6 max-w-2xl">
-        <div class="mb-6 flex justify-between items-end">
+        <div class="mb-6">
           <div>
             <h1 class="text-3xl font-extrabold tracking-tight mb-2">Track Workout</h1>
             <p class="text-muted-foreground">Log your sets for today.</p>
           </div>
-          <button
-            z-button
-            class="hidden sm:flex items-center gap-2"
-            (click)="isAddSheetOpen.set(true)"
-          >
-            <lucide-icon [img]="Plus" class="h-4 w-4"></lucide-icon>
-            Add Exercise
-          </button>
         </div>
 
         <!-- Active Exercises -->
@@ -63,15 +55,17 @@ import { LucideAngularModule, Dumbbell, Save, Plus, X } from 'lucide-angular';
             <app-exercise-tracker [trackedExercise]="tracked"></app-exercise-tracker>
           }
 
+          <button z-button class="w-full py-6" (click)="isAddSheetOpen.set(true)">
+            <lucide-icon [img]="Plus" class="mr-1"></lucide-icon>
+            Add Exercise
+          </button>
+
           @if (workoutService.activeExercises().length === 0) {
             <div
               class="py-16 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl"
             >
               <lucide-icon [img]="Dumbbell" class="h-12 w-12 mx-auto mb-4 opacity-20"></lucide-icon>
               <p>No exercises tracked yet.</p>
-              <button z-button (click)="isAddSheetOpen.set(true)" class="mt-4 sm:hidden">
-                <lucide-icon [img]="Plus" class="mr-2 h-4 w-4"></lucide-icon> Add Exercise
-              </button>
             </div>
           }
         </div>
@@ -81,15 +75,6 @@ import { LucideAngularModule, Dumbbell, Save, Plus, X } from 'lucide-angular';
       <div
         class="fixed bottom-6 right-4 left-4 sm:hidden flex flex-col gap-3 z-30 pointer-events-none"
       >
-        <button
-          z-button
-          class="h-14 shadow-xl text-lg flex items-center justify-center gap-2 rounded-full w-full pointer-events-auto"
-          (click)="isAddSheetOpen.set(true)"
-        >
-          <lucide-icon [img]="Plus" class="h-5 w-5"></lucide-icon>
-          Add Exercise
-        </button>
-
         @if (workoutService.hasActiveWorkout()) {
           <button
             z-button
