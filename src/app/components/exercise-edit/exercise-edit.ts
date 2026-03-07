@@ -27,7 +27,7 @@ import { LucideAngularModule, ArrowLeft, Save, X } from 'lucide-angular';
       <!-- Header -->
       <app-header title="Edit Exercise" [showBackBtn]="true" (backClick)="cancel()"> </app-header>
 
-      <main class="container mx-auto px-4 py-8 max-w-2xl">
+      <main class="container mx-auto px-4 pb-8 max-w-2xl">
         @if (isLoading()) {
           <div class="flex justify-center py-12 text-muted-foreground">
             <div
@@ -42,9 +42,9 @@ import { LucideAngularModule, ArrowLeft, Save, X } from 'lucide-angular';
             <button (click)="cancel()" z-button class="mt-4">Go Back</button>
           </div>
         } @else {
-          <z-card class="overflow-hidden border-border bg-card p-6 md:p-8">
+          <z-card class="overflow-hidden border-border bg-card">
             <form (ngSubmit)="save()" #editForm="ngForm" class="flex flex-col gap-6">
-              <div class="space-y-2">
+              <div class="flex flex-col gap-3">
                 <label
                   for="name"
                   class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -63,7 +63,7 @@ import { LucideAngularModule, ArrowLeft, Save, X } from 'lucide-angular';
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-2">
+                <div class="flex flex-col gap-3">
                   <label
                     for="muscle"
                     class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -81,7 +81,7 @@ import { LucideAngularModule, ArrowLeft, Save, X } from 'lucide-angular';
                   />
                 </div>
 
-                <div class="space-y-2">
+                <div class="flex flex-col gap-3">
                   <label
                     for="secondary"
                     class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -99,7 +99,7 @@ import { LucideAngularModule, ArrowLeft, Save, X } from 'lucide-angular';
                 </div>
               </div>
 
-              <div class="space-y-2 opacity-50">
+              <div class="flex flex-col gap-3 opacity-50">
                 <label
                   for="media"
                   class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -126,8 +126,9 @@ import { LucideAngularModule, ArrowLeft, Save, X } from 'lucide-angular';
                 <button
                   type="button"
                   z-button
-                  zType="ghost"
+                  zType="secondary"
                   zSize="lg"
+                  zShape="circle"
                   (click)="cancel()"
                   class="w-full sm:w-auto"
                 >
@@ -137,6 +138,7 @@ import { LucideAngularModule, ArrowLeft, Save, X } from 'lucide-angular';
                   type="submit"
                   z-button
                   zSize="lg"
+                  zShape="circle"
                   [disabled]="!editForm.form.valid || isSaving()"
                   class="w-full sm:w-auto"
                 >

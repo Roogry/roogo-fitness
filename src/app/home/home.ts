@@ -25,13 +25,15 @@ import { LucideAngularModule, Dumbbell, Save, Plus, X } from 'lucide-angular';
         <lucide-icon
           title-icon
           [img]="Dumbbell"
-          class="h-5 w-5 text-primary flex-shrink-0"
+          class="h-6 w-6 text-primary flex-shrink-0"
         ></lucide-icon>
+
         @if (workoutService.hasActiveWorkout()) {
           <button
             right
             z-button
             size="sm"
+            zShape="circle"
             (click)="finishWorkout()"
             class="hidden sm:flex items-center gap-2"
           >
@@ -64,7 +66,7 @@ import { LucideAngularModule, Dumbbell, Save, Plus, X } from 'lucide-angular';
             <app-exercise-tracker [trackedExercise]="tracked"></app-exercise-tracker>
           }
 
-          <button z-button class="w-full py-6" (click)="isAddSheetOpen.set(true)">
+          <button z-button zShape="circle" class="w-full h-12" (click)="isAddSheetOpen.set(true)">
             <lucide-icon [img]="Plus"></lucide-icon>
             Add Exercise
           </button>
@@ -79,10 +81,11 @@ import { LucideAngularModule, Dumbbell, Save, Plus, X } from 'lucide-angular';
           <button
             z-button
             zType="outline"
-            class="h-14 shadow-xl text-lg flex items-center justify-center gap-2 rounded-full w-full bg-background pointer-events-auto"
+            zShape="circle"
+            class="text-lg flex items-center justify-center gap-2 rounded-full w-full bg-background pointer-events-auto"
             (click)="finishWorkout()"
           >
-            <lucide-icon [img]="Save" class="h-5 w-5"></lucide-icon>
+            <lucide-icon [img]="Save"></lucide-icon>
             Finish Workout
           </button>
         }
@@ -98,29 +101,31 @@ import { LucideAngularModule, Dumbbell, Save, Plus, X } from 'lucide-angular';
 
         <!-- Sheet Container -->
         <div
-          class="fixed z-50 bg-background shadow-2xl transition-transform flex flex-col
+          class="fixed z-50 bg-white shadow-2xl transition-transform flex flex-col
                  bottom-0 left-0 right-0 h-[85vh] rounded-t-2xl
                  md:top-0 md:bottom-0 md:left-auto md:right-0 md:h-full md:w-[450px] md:rounded-none md:border-l md:border-border slide-in"
         >
           <!-- Sheet Header -->
-          <div class="p-4 border-b border-border flex justify-between items-center bg-muted/10">
-            <h2 class="font-semibold text-lg tracking-tight">Add Exercise</h2>
+          <div class="p-4 flex justify-between items-center">
+            <div class="flex flex-col gap-2">
+              <h2 class="font-semibold text-xl tracking-tight">Add Exercise</h2>
+              <p class="text-sm text-muted-foreground">
+                Search or add a custom exercise.
+              </p>
+            </div>
             <button
               z-button
-              zType="ghost"
-              zSize="icon"
+              zType="secondary"
+              zSize="icon-lg"
+              zShape="circle"
               (click)="isAddSheetOpen.set(false)"
-              class="rounded-full"
             >
               <lucide-icon [img]="X"></lucide-icon>
             </button>
           </div>
 
           <!-- Sheet Content -->
-          <div class="p-4 flex-1 overflow-y-auto">
-            <p class="text-sm text-muted-foreground mb-4">
-              Search locally or add a custom exercise to begin tracking.
-            </p>
+          <div class="px-4 flex-1 overflow-y-auto">
             <app-exercise-autocomplete
               (exerciseSelected)="onExerciseSelected($event)"
             ></app-exercise-autocomplete>

@@ -33,14 +33,15 @@ import {
   template: `
     <div class="min-h-screen bg-background text-foreground pb-20">
       <!-- Header -->
-      <app-header [title]="exercise()?.name || 'Loading...'" [showBackBtn]="true" backLink="/">
+      <app-header [title]="exercise() ? '' : 'Loading...'" [showBackBtn]="true" backLink="/">
         @if (exercise()) {
           <a
             right
             [routerLink]="['/exercise', exercise()!.id, 'edit']"
             z-button
-            zType="ghost"
-            zSize="icon"
+            zType="secondary"
+            zSize="icon-lg"
+            zShape="circle"
             title="Edit Exercise"
           >
             <lucide-icon [img]="Pencil"></lucide-icon>
@@ -49,7 +50,7 @@ import {
         }
       </app-header>
 
-      <main class="container mx-auto px-4 py-8 max-w-2xl">
+      <main class="container mx-auto px-4 pb-8 max-w-2xl">
         @if (isLoading()) {
           <div class="flex justify-center py-12 text-muted-foreground">
             <div
@@ -57,90 +58,8 @@ import {
             ></div>
           </div>
         } @else if (exercise()) {
-          <z-card class="overflow-hidden border-border bg-card">
-            <div
-              class="p-6 md:p-8 flex flex-col items-center text-center border-b border-border bg-gradient-to-b from-muted/50 to-transparent"
-            >
-              @if (exercise()?.media && exercise()!.media.length > 0) {
-                <div
-                  class="relative w-full max-w-sm aspect-video bg-muted rounded-xl overflow-hidden mb-6 border border-border flex items-center justify-center group"
-                >
-                  @let activeMedia = exercise()!.media[activeMediaIndex()];
-
-                  @if (activeMedia.media_type === 'youtube') {
-                    <iframe
-                      [src]="getSafeUrl(activeMedia.media_url)"
-                      class="w-full h-full"
-                      frameborder="0"
-                      allowfullscreen
-                    ></iframe>
-                  } @else if (activeMedia.media_type === 'video') {
-                    <video
-                      [src]="activeMedia.media_url"
-                      class="w-full h-full object-cover"
-                      controls
-                      playsinline
-                    ></video>
-                  } @else {
-                    <img
-                      [src]="activeMedia.media_url"
-                      class="w-full h-full object-cover"
-                      (error)="imageError = true"
-                      [class.hidden]="imageError"
-                    />
-                    @if (imageError) {
-                      <lucide-icon
-                        [img]="Dumbbell"
-                        class="h-10 w-10 text-muted-foreground"
-                      ></lucide-icon>
-                    }
-                  }
-
-                  <!-- Carousel Controls -->
-                  @if (exercise()!.media.length > 1) {
-                    <div
-                      class="absolute inset-x-0 flex justify-between items-center px-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <button
-                        z-button
-                        zType="outline"
-                        zSize="icon"
-                        class="h-8 w-8 rounded-full bg-background/80 backdrop-blur"
-                        (click)="prevMedia()"
-                      >
-                        <lucide-icon [img]="ChevronLeft" class="h-4 w-4"></lucide-icon>
-                      </button>
-                      <button
-                        z-button
-                        zType="outline"
-                        zSize="icon"
-                        class="h-8 w-8 rounded-full bg-background/80 backdrop-blur"
-                        (click)="nextMedia()"
-                      >
-                        <lucide-icon [img]="ChevronRight" class="h-4 w-4"></lucide-icon>
-                      </button>
-                    </div>
-
-                    <!-- Dots -->
-                    <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
-                      @for (m of exercise()!.media; track m.id; let i = $index) {
-                        <div
-                          class="h-1.5 w-1.5 rounded-full transition-all"
-                          [class.bg-white]="activeMediaIndex() === i"
-                          [class.bg-white/50]="activeMediaIndex() !== i"
-                        ></div>
-                      }
-                    </div>
-                  }
-                </div>
-              } @else {
-                <div
-                  class="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center mb-4"
-                >
-                  <lucide-icon [img]="Dumbbell" class="h-10 w-10 text-primary"></lucide-icon>
-                </div>
-              }
-
+          <div class="flex flex-col gap-4">
+            <div class="pt-2 pb-6 flex flex-col items-center text-center">
               <div class="flex items-center gap-3 mb-2">
                 <h2 class="text-3xl font-extrabold tracking-tight">{{ exercise()!.name }}</h2>
               </div>
@@ -160,42 +79,114 @@ import {
               </div>
             </div>
 
-            <div class="p-6 md:p-8 space-y-6">
-              <div>
-                <h3 class="flex items-center gap-2 text-lg font-semibold mb-3">
-                  <lucide-icon [img]="Info" class="h-5 w-5 text-muted-foreground"></lucide-icon>
-                  About this exercise
-                </h3>
-                <p class="text-muted-foreground leading-relaxed">
-                  This is a placeholder description for <strong>{{ exercise()!.name }}</strong
-                  >. In a full application, this section would contain detailed instructions, form
-                  cues, common mistakes, and video demonstrations for targeting the
-                  {{ exercise()!.muscle_group }} muscles.
-                </p>
-              </div>
+            @if (exercise()?.media && exercise()!.media.length > 0) {
+              <div
+                class="relative w-full aspect-video bg-muted rounded-4xl overflow-hidden border border-border flex items-center justify-center group"
+              >
+                @let activeMedia = exercise()!.media[activeMediaIndex()];
 
-              <div class="pt-6 border-t border-border">
-                <h3 class="flex items-center gap-2 text-lg font-semibold mb-4">
-                  <lucide-icon [img]="Activity" class="h-5 w-5 text-muted-foreground"></lucide-icon>
-                  Performance Stats
-                </h3>
-                <div class="grid grid-cols-2 gap-4">
-                  <div class="bg-muted/30 p-4 rounded-lg flex flex-col items-center text-center">
-                    <span class="text-3xl font-bold mb-1">-</span>
-                    <span class="text-xs text-muted-foreground uppercase tracking-wider"
-                      >Personal Record</span
+                @if (activeMedia.media_type === 'youtube') {
+                  <iframe
+                    [src]="getSafeUrl(activeMedia.media_url)"
+                    class="w-full h-full"
+                    frameborder="0"
+                    allowfullscreen
+                  ></iframe>
+                } @else if (activeMedia.media_type === 'video') {
+                  <video
+                    [src]="activeMedia.media_url"
+                    class="w-full h-full object-cover"
+                    controls
+                    playsinline
+                  ></video>
+                } @else {
+                  <img
+                    [src]="activeMedia.media_url"
+                    class="w-full h-full object-cover"
+                    (error)="imageError = true"
+                    [class.hidden]="imageError"
+                  />
+                  @if (imageError) {
+                    <lucide-icon
+                      [img]="Dumbbell"
+                      class="h-10 w-10 text-muted-foreground"
+                    ></lucide-icon>
+                  }
+                }
+
+                <!-- Carousel Controls -->
+                @if (exercise()!.media.length > 1) {
+                  <div
+                    class="absolute inset-x-0 flex justify-between items-center px-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <button
+                      z-button
+                      zType="outline"
+                      zSize="icon"
+                      class="h-8 w-8 rounded-full bg-background/80 backdrop-blur"
+                      (click)="prevMedia()"
                     >
-                  </div>
-                  <div class="bg-muted/30 p-4 rounded-lg flex flex-col items-center text-center">
-                    <span class="text-3xl font-bold mb-1">-</span>
-                    <span class="text-xs text-muted-foreground uppercase tracking-wider"
-                      >Times Performed</span
+                      <lucide-icon [img]="ChevronLeft" class="h-4 w-4"></lucide-icon>
+                    </button>
+                    <button
+                      z-button
+                      zType="outline"
+                      zSize="icon"
+                      class="h-8 w-8 rounded-full bg-background/80 backdrop-blur"
+                      (click)="nextMedia()"
                     >
+                      <lucide-icon [img]="ChevronRight" class="h-4 w-4"></lucide-icon>
+                    </button>
                   </div>
-                </div>
+
+                  <!-- Dots -->
+                  <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
+                    @for (m of exercise()!.media; track m.id; let i = $index) {
+                      <div
+                        class="h-1.5 w-1.5 rounded-full transition-all"
+                        [class.bg-white]="activeMediaIndex() === i"
+                        [class.bg-white/50]="activeMediaIndex() !== i"
+                      ></div>
+                    }
+                  </div>
+                }
               </div>
+            } @else {
+              <div
+                class="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center mb-4"
+              >
+                <lucide-icon [img]="Dumbbell" class="h-10 w-10 text-primary"></lucide-icon>
+              </div>
+            }
+
+            <z-card zTitle="About this exercise">
+              <p class="text-muted-foreground leading-relaxed">
+                This is a placeholder description for <strong>{{ exercise()!.name }}</strong
+                >. In a full application, this section would contain detailed instructions, form
+                cues, common mistakes, and video demonstrations for targeting the
+                {{ exercise()!.muscle_group }} muscles.
+              </p>
+            </z-card>
+
+            <div class="grid grid-cols-2 gap-4">
+              <z-card>
+                <div class="flex flex-col items-center text-center">
+                  <span class="text-3xl font-bold mb-1">-</span>
+                  <span class="text-xs text-muted-foreground uppercase tracking-wider">
+                    Personal Record
+                  </span>
+                </div>
+              </z-card>
+              <z-card>
+                <div class="flex flex-col items-center text-center">
+                  <span class="text-3xl font-bold mb-1">-</span>
+                  <span class="text-xs text-muted-foreground uppercase tracking-wider">
+                    Times Performed
+                  </span>
+                </div>
+              </z-card>
             </div>
-          </z-card>
+          </div>
         } @else {
           <div
             class="py-12 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl mt-6"

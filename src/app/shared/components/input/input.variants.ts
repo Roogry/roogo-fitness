@@ -5,10 +5,8 @@ export type zInputIcon = 'email' | 'password' | 'text';
 export const inputVariants = cva('w-full', {
   variants: {
     zType: {
-      default:
-        'flex rounded-md border px-4 font-normal border-input bg-transparent file:border-0 file:text-foreground file:bg-transparent file:font-medium placeholder:text-muted-foreground outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
-      textarea:
-        'flex pb-2 min-h-20 h-auto rounded-md border border-input bg-background px-3 py-2 text-base placeholder:text-muted-foreground outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
+      default: 'flex rounded-xl border px-4 font-normal border-border bg-input file:border-0 file:text-foreground file:bg-input file:font-medium placeholder:text-muted-foreground outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
+      textarea: 'flex pb-2 min-h-20 h-auto rounded-xl border border-border bg-input px-3 py-2 text-base placeholder:text-muted-foreground outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
     },
     zSize: {
       default: 'text-sm',
@@ -29,9 +27,9 @@ export const inputVariants = cva('w-full', {
     zSize: 'default',
   },
   compoundVariants: [
-    { zType: 'default', zSize: 'default', class: 'h-9 py-2 file:max-md:py-0' },
-    { zType: 'default', zSize: 'sm', class: 'h-8 file:md:py-2 file:max-md:py-1.5' },
-    { zType: 'default', zSize: 'lg', class: 'h-10 py-1 file:md:py-3 file:max-md:py-2.5' },
+    { zType: 'default', zSize: 'default', class: 'h-12 py-2 file:max-md:py-0' },
+    { zType: 'default', zSize: 'sm', class: 'h-10 file:md:py-2 file:max-md:py-1.5' },
+    { zType: 'default', zSize: 'lg', class: 'h-14 py-1 file:md:py-3 file:max-md:py-2.5' },
   ],
 });
 

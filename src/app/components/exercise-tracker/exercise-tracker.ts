@@ -24,38 +24,40 @@ import { RouterModule } from '@angular/router';
     <z-card class="mb-4 overflow-hidden">
       <!-- Header -->
       <div class="mb-4 flex justify-between items-center">
-        <div class="flex items-center gap-3">
-          <div
-            class="h-10 w-10 rounded-md overflow-hidden bg-muted flex items-center justify-center flex-shrink-0"
-          >
-            @if (trackedExercise().exercise.media && trackedExercise().exercise.media.length > 0) {
-              <img
-                [src]="trackedExercise().exercise.media[0].media_url"
-                [alt]="trackedExercise().exercise.name"
-                class="h-full w-full object-cover"
-              />
-            } @else {
-              <lucide-icon [img]="Dumbbell" class="h-5 w-5 text-muted-foreground"></lucide-icon>
-            }
-          </div>
-          <div>
-            <a
-              [routerLink]="['/exercise', trackedExercise().exercise.id]"
-              class="hover:underline transition-all"
+        <a [routerLink]="['/exercise', trackedExercise().exercise.id]" class="group">
+          <div class="flex items-center gap-3">
+            <div
+              class="h-10 w-10 rounded-full overflow-hidden bg-muted flex items-center justify-center flex-shrink-0 group-hover:opacity-60 transition-opacity"
             >
-              <h3 class="font-semibold text-lg text-primary leading-tight">
+              @if (
+                trackedExercise().exercise.media && trackedExercise().exercise.media.length > 0
+              ) {
+                <img
+                  [src]="trackedExercise().exercise.media[0].media_url"
+                  [alt]="trackedExercise().exercise.name"
+                  class="h-full w-full object-cover"
+                />
+              } @else {
+                <lucide-icon [img]="Dumbbell" class="h-5 w-5 text-muted-foreground"></lucide-icon>
+              }
+            </div>
+            <div>
+              <h3
+                class="font-semibold text-lg text-primary group-hover:opacity-60 transition-opacity leading-tight"
+              >
                 {{ trackedExercise().exercise.name }}
               </h3>
-            </a>
-            <p class="text-xs text-muted-foreground">
-              {{ trackedExercise().exercise.muscle_group }}
-            </p>
+              <p class="text-xs text-muted-foreground group-hover:opacity-60 transition-opacity">
+                {{ trackedExercise().exercise.muscle_group }}
+              </p>
+            </div>
           </div>
-        </div>
+        </a>
         <button
           z-button
           zType="ghost"
           zSize="icon"
+          zShape="circle"
           (click)="removeExercise()"
           class="text-destructive hover:bg-destructive/10"
         >
@@ -89,7 +91,7 @@ import { RouterModule } from '@angular/router';
                 placeholder="0"
                 [ngModel]="set.weight_lifted"
                 (ngModelChange)="updateSet(set.id, { weight_lifted: $event })"
-                [class]="'h-8 w-full text-center'"
+                [class]="'w-full text-center'"
               />
             </div>
             <div class="col-span-4 md:col-span-3 flex justify-center">
@@ -100,7 +102,7 @@ import { RouterModule } from '@angular/router';
                 placeholder="0"
                 [ngModel]="set.reps_completed"
                 (ngModelChange)="updateSet(set.id, { reps_completed: $event })"
-                [class]="'h-8 w-full text-center'"
+                [class]="'w-full text-center'"
               />
             </div>
             <div
@@ -110,6 +112,7 @@ import { RouterModule } from '@angular/router';
                 z-button
                 zType="ghost"
                 zSize="icon"
+                zShape="circle"
                 class="text-destructive hover:bg-destructive/10"
                 (click)="removeSet(set.id)"
               >
@@ -125,42 +128,47 @@ import { RouterModule } from '@angular/router';
             class="flex flex-col sm:flex-row items-stretch sm:items-end gap-3"
             (submit)="$event.preventDefault(); addSet()"
           >
-            <div class="flex-1">
-              <label class="text-xs text-muted-foreground mb-1 block">Weight (KG)</label>
-              <input
-                z-input
-                type="number"
-                [(ngModel)]="newWeight"
-                name="newWeight"
-                placeholder="0"
-                [class]="'w-full text-center'"
-                required
-                min="0"
-                step="0.5"
-              />
-            </div>
-            <div class="flex-1">
-              <label class="text-xs text-muted-foreground mb-1 block">Reps</label>
-              <input
-                z-input
-                type="number"
-                [(ngModel)]="newReps"
-                name="newReps"
-                placeholder="0"
-                [class]="'w-full text-center'"
-                required
-                min="1"
-                step="1"
-              />
+            <div class="flex gap-3 items-stretch">
+              <div class="flex-1">
+                <label class="text-xs text-muted-foreground mb-1 block">Weight (KG)</label>
+                <input
+                  z-input
+                  type="number"
+                  [(ngModel)]="newWeight"
+                  name="newWeight"
+                  placeholder="0"
+                  [class]="'w-full text-center'"
+                  required
+                  min="0"
+                  step="0.5"
+                />
+              </div>
+              <div class="flex-1">
+                <label class="text-xs text-muted-foreground mb-1 block">Reps</label>
+                <input
+                  z-input
+                  type="number"
+                  [(ngModel)]="newReps"
+                  name="newReps"
+                  placeholder="0"
+                  [class]="'w-full text-center'"
+                  required
+                  min="1"
+                  step="1"
+                />
+              </div>
             </div>
             <button
               z-button
-              size="icon"
+              zType="secondary"
+              zSize="icon"
+              zShape="circle"
               type="submit"
               [disabled]="!isValid()"
-              class="w-full h-10 sm:w-12 flex items-center justify-center shrink-0"
+              class="w-full h-10 sm:w-10 flex items-center justify-center shrink-0"
             >
               <lucide-icon [img]="Plus"></lucide-icon>
+              <span class="ml-2 inline-block sm:hidden">Add Set</span>
             </button>
           </form>
         </div>

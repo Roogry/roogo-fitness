@@ -38,12 +38,12 @@ import { LucideAngularModule, Search, Plus, Dumbbell } from 'lucide-angular';
         <div class="w-full mt-4 flex flex-col gap-3 pb-8">
           @for (exercise of results(); track exercise.id) {
             <div
-              class="bg-card rounded-xl border border-border p-4 hover:border-primary/50 cursor-pointer flex justify-between items-center transition-all shadow-sm"
+              class="p-2 bg-white hover:bg-input border border-border rounded-2xl cursor-pointer flex justify-between items-center transition-all"
               (click)="selectExercise(exercise)"
             >
               <div class="flex items-center gap-3">
                 <div
-                  class="h-10 w-10 rounded-md overflow-hidden bg-muted flex items-center justify-center flex-shrink-0"
+                  class="h-18 w-16 rounded-lg overflow-hidden bg-muted flex items-center justify-center"
                 >
                   @if (exercise.media && exercise.media.length > 0) {
                     <img
@@ -54,20 +54,20 @@ import { LucideAngularModule, Search, Plus, Dumbbell } from 'lucide-angular';
                   } @else {
                     <lucide-icon
                       [img]="Dumbbell"
-                      class="h-5 w-5 text-muted-foreground"
+                      class="h-6 w-6 text-muted-foreground"
                     ></lucide-icon>
                   }
                 </div>
-                <div class="flex flex-col">
+                <div class="flex flex-col gap-1">
                   <span class="font-bold text-base">{{ exercise.name }}</span>
-                  <span class="text-sm text-muted-foreground mt-1">{{
-                    exercise.muscle_group
-                  }}</span>
+                  <span class="text-sm text-muted-foreground">
+                    {{ exercise.muscle_group }}
+                  </span>
                 </div>
               </div>
               <lucide-icon
                 [img]="Plus"
-                class="h-5 w-5 text-muted-foreground opacity-50"
+                class="h-6 w-6 mr-4 text-muted-foreground opacity-80"
               ></lucide-icon>
             </div>
           }

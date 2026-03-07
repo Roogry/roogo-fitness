@@ -9,36 +9,46 @@ import { ZardButtonComponent } from '../button/button.component';
   standalone: true,
   imports: [CommonModule, RouterModule, LucideAngularModule, ZardButtonComponent],
   template: `
-    <header
-      class="sticky top-0 z-40 w-full backdrop-blur-md bg-background/80 border-b border-border"
-    >
-      <div class="container max-w-2xl mx-auto px-4 h-14 flex items-center justify-between relative">
-        <!-- Left action area -->
-        <div class="flex items-center gap-2">
+    <header class="w-full backdrop-blur-md">
+      <div class="container max-w-2xl mx-auto px-4 h-20 flex items-center justify-between relative">
+        <div class="flex items-center gap-4">
+          <!-- Left action area -->
           @if (showBackBtn()) {
             @if (backLink()) {
-              <a [routerLink]="backLink()" z-button zType="ghost" zSize="icon">
+              <a
+                [routerLink]="backLink()"
+                z-button
+                zType="secondary"
+                zSize="icon-lg"
+                zShape="circle"
+              >
                 <lucide-icon [img]="ArrowLeft"></lucide-icon>
                 <span class="sr-only">Back</span>
               </a>
             } @else {
-              <button (click)="backClick.emit()" z-button zType="ghost" zSize="icon">
+              <button
+                (click)="backClick.emit()"
+                z-button
+                zType="secondary"
+                zSize="icon-lg"
+                zShape="circle"
+              >
                 <lucide-icon [img]="ArrowLeft"></lucide-icon>
                 <span class="sr-only">Back</span>
               </button>
             }
           }
           <ng-content select="[left]"></ng-content>
-        </div>
 
-        <!-- Centered title area -->
-        <div
-          class="absolute left-1/2 -translate-x-1/2 flex items-center justify-center gap-2 font-bold text-lg tracking-tight w-full max-w-sm truncate text-center"
-        >
-          <ng-content select="[title-icon]"></ng-content>
-          @if (title()) {
-            <h1 class="truncate">{{ title() }}</h1>
-          }
+          <!-- Centered title area -->
+          <div
+            class="flex items-center justify-center gap-3 font-bold text-2xl tracking-tight w-full max-w-sm truncate text-center"
+          >
+            <ng-content select="[title-icon]"></ng-content>
+            @if (title()) {
+              <h1 class="truncate">{{ title() }}</h1>
+            }
+          </div>
         </div>
 
         <!-- Right action area -->
@@ -49,7 +59,7 @@ import { ZardButtonComponent } from '../button/button.component';
     </header>
   `,
   host: {
-    class: 'block w-full sticky top-0 z-40',
+    class: 'block w-full',
   },
 })
 export class HeaderComponent {
