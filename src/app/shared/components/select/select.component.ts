@@ -77,7 +77,7 @@ const COMPACT_MODE_WIDTH_THRESHOLD = 100;
           <span class="text-muted-foreground truncate">{{ zPlaceholder() }}</span>
         }
       </span>
-      <z-icon zType="chevron-down" zSize="lg" class="opacity-50" />
+      <z-icon zType="chevron-down" zSize="lg" class="opacity-80" />
     </button>
 
     <ng-template #dropdownTemplate>
