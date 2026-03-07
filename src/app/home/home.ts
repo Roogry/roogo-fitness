@@ -54,16 +54,21 @@ import {
             </div>
           </div>
 
-          <div
-            class="bg-secondary/40 rounded-[16px] p-4 flex justify-between items-center group-hover:bg-secondary/60 transition-colors"
-          >
-            <div class="flex flex-col">
-              <span class="text-xs text-muted-foreground mb-1">Up Next</span>
-              <span class="font-semibold text-secondary-foreground text-lg">Push Day Heavy</span>
-            </div>
-            <button z-button zShape="circle" zType="outline" zSize="icon" class="group-hover:bg-primary group-hover:text-white">
-              <lucide-icon [img]="ChevronRight"></lucide-icon>
-            </button>
+          <!-- Horizontal List of Upcoming Sessions -->
+          <div class="flex overflow-x-auto gap-3 pb-2 mt-4 snap-x hide-scrollbar">
+            @for (session of upcomingSessions; track session.id) {
+              <div
+                class="bg-secondary/40 rounded-[16px] p-4 flex justify-between items-center hover:bg-secondary/60 transition-colors min-w-[240px] snap-start border border-transparent hover:border-primary/20"
+              >
+                <div class="flex flex-col mr-4">
+                  <span class="text-xs text-muted-foreground mb-1">{{ session.subtitle }}</span>
+                  <span class="font-semibold text-secondary-foreground text-lg whitespace-nowrap">{{ session.title }}</span>
+                </div>
+                <button z-button zShape="circle" zType="outline" zSize="icon" class="hover:bg-primary hover:text-white flex-shrink-0 transition-colors">
+                  <lucide-icon [img]="ChevronRight"></lucide-icon>
+                </button>
+              </div>
+            }
           </div>
         </z-card>
 
@@ -83,7 +88,15 @@ import {
       </main>
     </div>
   `,
-  styles: [],
+  styles: `
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+    }
+  `,
 })
 export class Home {
   readonly Dumbbell = Dumbbell;
@@ -91,4 +104,10 @@ export class Home {
   readonly Calendar = Calendar;
   readonly ChevronRight = ChevronRight;
   readonly Flame = Flame;
+
+  upcomingSessions = [
+    { id: 1, title: 'Push Day Heavy', subtitle: 'Up Next' },
+    { id: 2, title: 'Pull Day Focus', subtitle: 'Later' },
+    { id: 3, title: 'Leg Day Volume', subtitle: 'Coming Soon' },
+  ];
 }
