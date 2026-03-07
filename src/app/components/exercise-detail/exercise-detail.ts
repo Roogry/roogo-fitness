@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -7,7 +8,16 @@ import { ZardCardComponent } from '../../shared/components/card/card.component';
 import { ZardButtonComponent } from '../../shared/components/button/button.component';
 import { ZardInputDirective } from '../../shared/components/input/input.directive';
 import { HeaderComponent } from '../../shared/components/header/header';
-import { LucideAngularModule, ArrowLeft, Dumbbell, Activity, Info, Pencil } from 'lucide-angular';
+import {
+  LucideAngularModule,
+  ArrowLeft,
+  Dumbbell,
+  Activity,
+  Info,
+  Pencil,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-angular';
 
 @Component({
   selector: 'app-exercise-detail',
@@ -38,23 +48,76 @@ import { LucideAngularModule, ArrowLeft, Dumbbell, Activity, Info, Pencil } from
             <div
               class="p-6 md:p-8 flex flex-col items-center text-center border-b border-border bg-gradient-to-b from-muted/50 to-transparent"
             >
-              @if (exercise()?.media_url) {
+              @if (exercise()?.media && exercise()!.media.length > 0) {
                 <div
-                  class="w-full max-w-sm aspect-video bg-muted rounded-xl overflow-hidden mb-6 border border-border flex items-center justify-center"
+                  class="relative w-full max-w-sm aspect-video bg-muted rounded-xl overflow-hidden mb-6 border border-border flex items-center justify-center group"
                 >
-                  <!-- Fallback to dumbbell if image fails to load via CSS, but normally we'd show an img -->
-                  <img
-                    [src]="exercise()!.media_url"
-                    [alt]="exercise()!.name"
-                    class="w-full h-full object-cover"
-                    (error)="imageError = true"
-                    [class.hidden]="imageError"
-                  />
-                  @if (imageError) {
-                    <lucide-icon
-                      [img]="Dumbbell"
-                      class="h-10 w-10 text-muted-foreground"
-                    ></lucide-icon>
+                  @let activeMedia = exercise()!.media[activeMediaIndex()];
+
+                  @if (activeMedia.media_type === 'youtube') {
+                    <iframe
+                      [src]="getSafeUrl(activeMedia.media_url)"
+                      class="w-full h-full"
+                      frameborder="0"
+                      allowfullscreen
+                    ></iframe>
+                  } @else if (activeMedia.media_type === 'video') {
+                    <video
+                      [src]="activeMedia.media_url"
+                      class="w-full h-full object-cover"
+                      controls
+                      playsinline
+                    ></video>
+                  } @else {
+                    <img
+                      [src]="activeMedia.media_url"
+                      class="w-full h-full object-cover"
+                      (error)="imageError = true"
+                      [class.hidden]="imageError"
+                    />
+                    @if (imageError) {
+                      <lucide-icon
+                        [img]="Dumbbell"
+                        class="h-10 w-10 text-muted-foreground"
+                      ></lucide-icon>
+                    }
+                  }
+
+                  <!-- Carousel Controls -->
+                  @if (exercise()!.media.length > 1) {
+                    <div
+                      class="absolute inset-x-0 flex justify-between items-center px-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <button
+                        z-button
+                        zType="outline"
+                        zSize="icon"
+                        class="h-8 w-8 rounded-full bg-background/80 backdrop-blur"
+                        (click)="prevMedia()"
+                      >
+                        <lucide-icon [img]="ChevronLeft" class="h-4 w-4"></lucide-icon>
+                      </button>
+                      <button
+                        z-button
+                        zType="outline"
+                        zSize="icon"
+                        class="h-8 w-8 rounded-full bg-background/80 backdrop-blur"
+                        (click)="nextMedia()"
+                      >
+                        <lucide-icon [img]="ChevronRight" class="h-4 w-4"></lucide-icon>
+                      </button>
+                    </div>
+
+                    <!-- Dots -->
+                    <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
+                      @for (m of exercise()!.media; track m.id; let i = $index) {
+                        <div
+                          class="h-1.5 w-1.5 rounded-full transition-all"
+                          [class.bg-white]="activeMediaIndex() === i"
+                          [class.bg-white/50]="activeMediaIndex() !== i"
+                        ></div>
+                      }
+                    </div>
                   }
                 </div>
               } @else {
@@ -151,13 +214,31 @@ export class ExerciseDetail implements OnInit {
   readonly Activity = Activity;
   readonly Info = Info;
   readonly Pencil = Pencil;
+  readonly ChevronLeft = ChevronLeft;
+  readonly ChevronRight = ChevronRight;
 
   private route = inject(ActivatedRoute);
   private workoutService = inject(WorkoutService);
+  private sanitizer = inject(DomSanitizer);
 
   exercise = signal<Exercise | undefined>(undefined);
   isLoading = signal<boolean>(true);
   imageError = false;
+  activeMediaIndex = signal(0);
+
+  getSafeUrl(url: string): SafeResourceUrl {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
+
+  nextMedia() {
+    const media = this.exercise()?.media || [];
+    this.activeMediaIndex.update((i) => (i + 1) % media.length);
+  }
+
+  prevMedia() {
+    const media = this.exercise()?.media || [];
+    this.activeMediaIndex.update((i) => (i === 0 ? media.length - 1 : i - 1));
+  }
 
   ngOnInit() {
     this.route.paramMap.subscribe(async (params) => {

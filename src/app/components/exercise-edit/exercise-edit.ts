@@ -99,24 +99,24 @@ import { LucideAngularModule, ArrowLeft, Save, X } from 'lucide-angular';
                 </div>
               </div>
 
-              <div class="space-y-2">
+              <div class="space-y-2 opacity-50">
                 <label
                   for="media"
                   class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  Media URL (Image or Video)
+                  Media URL (Disabled for now)
                 </label>
                 <input
                   id="media"
                   name="media"
                   type="url"
                   z-input
-                  [(ngModel)]="mediaUrl"
+                  disabled
                   placeholder="https://example.com/image.jpg"
                   class="w-full"
                 />
                 <p class="text-[0.8rem] text-muted-foreground">
-                  Provide a direct link to an image to be displayed on the details page.
+                  Media editing is temporarily read-only while we upgrade to the new gallery system.
                 </p>
               </div>
 
@@ -165,7 +165,6 @@ export class ExerciseEdit implements OnInit {
   name = signal('');
   muscleGroup = signal('');
   secondaryMuscles = signal('');
-  mediaUrl = signal('');
 
   ngOnInit() {
     this.route.paramMap.subscribe(async (params) => {
@@ -181,7 +180,6 @@ export class ExerciseEdit implements OnInit {
             this.name.set(detail.name);
             this.muscleGroup.set(detail.muscle_group);
             this.secondaryMuscles.set(detail.secondary_muscles || '');
-            this.mediaUrl.set(detail.media_url || '');
           } else {
             this.exerciseId.set(null);
           }
@@ -218,7 +216,6 @@ export class ExerciseEdit implements OnInit {
         name: this.name().trim(),
         muscle_group: this.muscleGroup().trim(),
         secondary_muscles: this.secondaryMuscles().trim() || undefined,
-        media_url: this.mediaUrl().trim() || undefined,
       });
       this.isSaving.set(false);
       this.router.navigate(['/exercise', id]);

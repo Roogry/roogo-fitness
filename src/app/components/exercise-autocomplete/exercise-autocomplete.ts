@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WorkoutService, Exercise } from '../../shared/services/workout';
 import { ZardInputDirective } from '../../shared/components/input/input.directive';
-import { LucideAngularModule, Search, Plus } from 'lucide-angular';
+import { LucideAngularModule, Search, Plus, Dumbbell } from 'lucide-angular';
 
 @Component({
   selector: 'app-exercise-autocomplete',
@@ -41,9 +41,29 @@ import { LucideAngularModule, Search, Plus } from 'lucide-angular';
               class="bg-card rounded-xl border border-border p-4 hover:border-primary/50 cursor-pointer flex justify-between items-center transition-all shadow-sm"
               (click)="selectExercise(exercise)"
             >
-              <div class="flex flex-col">
-                <span class="font-bold text-base">{{ exercise.name }}</span>
-                <span class="text-sm text-muted-foreground mt-1">{{ exercise.muscle_group }}</span>
+              <div class="flex items-center gap-3">
+                <div
+                  class="h-10 w-10 rounded-md overflow-hidden bg-muted flex items-center justify-center flex-shrink-0"
+                >
+                  @if (exercise.media && exercise.media.length > 0) {
+                    <img
+                      [src]="exercise.media[0].media_url"
+                      [alt]="exercise.name"
+                      class="h-full w-full object-cover"
+                    />
+                  } @else {
+                    <lucide-icon
+                      [img]="Dumbbell"
+                      class="h-5 w-5 text-muted-foreground"
+                    ></lucide-icon>
+                  }
+                </div>
+                <div class="flex flex-col">
+                  <span class="font-bold text-base">{{ exercise.name }}</span>
+                  <span class="text-sm text-muted-foreground mt-1">{{
+                    exercise.muscle_group
+                  }}</span>
+                </div>
               </div>
               <lucide-icon
                 [img]="Plus"
@@ -75,6 +95,7 @@ import { LucideAngularModule, Search, Plus } from 'lucide-angular';
 export class ExerciseAutocomplete implements OnInit {
   readonly Search = Search;
   readonly Plus = Plus;
+  readonly Dumbbell = Dumbbell;
   private workoutService = inject(WorkoutService);
 
   @Output() exerciseSelected = new EventEmitter<Exercise>();

@@ -5,7 +5,7 @@ import { WorkoutService, TrackedExercise, WorkoutSet } from '../../shared/servic
 import { ZardCardComponent } from '../../shared/components/card/card.component';
 import { ZardButtonComponent } from '../../shared/components/button/button.component';
 import { ZardInputDirective } from '../../shared/components/input/input.directive';
-import { LucideAngularModule, Trash2, Plus, GripVertical } from 'lucide-angular';
+import { LucideAngularModule, Trash2, Plus, GripVertical, Dumbbell } from 'lucide-angular';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -24,16 +24,33 @@ import { RouterModule } from '@angular/router';
     <z-card class="mb-4 overflow-hidden">
       <!-- Header -->
       <div class="mb-4 flex justify-between items-center">
-        <div>
-          <a
-            [routerLink]="['/exercise', trackedExercise().exercise.id]"
-            class="hover:underline transition-all"
+        <div class="flex items-center gap-3">
+          <div
+            class="h-10 w-10 rounded-md overflow-hidden bg-muted flex items-center justify-center flex-shrink-0"
           >
-            <h3 class="font-semibold text-lg text-primary">
-              {{ trackedExercise().exercise.name }}
-            </h3>
-          </a>
-          <p class="text-sm text-muted-foreground">{{ trackedExercise().exercise.muscle_group }}</p>
+            @if (trackedExercise().exercise.media && trackedExercise().exercise.media.length > 0) {
+              <img
+                [src]="trackedExercise().exercise.media[0].media_url"
+                [alt]="trackedExercise().exercise.name"
+                class="h-full w-full object-cover"
+              />
+            } @else {
+              <lucide-icon [img]="Dumbbell" class="h-5 w-5 text-muted-foreground"></lucide-icon>
+            }
+          </div>
+          <div>
+            <a
+              [routerLink]="['/exercise', trackedExercise().exercise.id]"
+              class="hover:underline transition-all"
+            >
+              <h3 class="font-semibold text-lg text-primary leading-tight">
+                {{ trackedExercise().exercise.name }}
+              </h3>
+            </a>
+            <p class="text-xs text-muted-foreground">
+              {{ trackedExercise().exercise.muscle_group }}
+            </p>
+          </div>
         </div>
         <button
           z-button
@@ -156,6 +173,7 @@ export class ExerciseTracker {
   readonly Trash2 = Trash2;
   readonly Plus = Plus;
   readonly GripVertical = GripVertical;
+  readonly Dumbbell = Dumbbell;
 
   private workoutService = inject(WorkoutService);
 

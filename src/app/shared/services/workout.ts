@@ -1,10 +1,23 @@
 import { Injectable, computed, signal } from '@angular/core';
 
+export interface ExerciseMedia {
+  id: number;
+  media_type: 'image' | 'video' | 'youtube' | string;
+  media_url: string;
+  display_order: number;
+}
+
 export interface Exercise {
   id: number;
   name: string;
-  muscle_group: string;
-  media_url?: string;
+  short_description?: string;
+  muscle_group: string; // Denormalized for UI convenience
+  primary_muscle_id?: number;
+  recommended_warmup_sets?: number;
+  recommended_working_sets?: number;
+  recommended_rpe?: number;
+  recommended_rest_time_sec?: number;
+  media: ExerciseMedia[];
   secondary_muscles?: string;
 }
 
@@ -27,14 +40,54 @@ export interface TrackedExercise {
 export class WorkoutService {
   // Mock API Data
   private mockExercises: Exercise[] = [
-    { id: 1, name: 'Barbell Bench Press', muscle_group: 'Chest' },
-    { id: 2, name: 'Squat', muscle_group: 'Legs' },
-    { id: 3, name: 'Deadlift', muscle_group: 'Back' },
-    { id: 4, name: 'Overhead Press', muscle_group: 'Shoulders' },
-    { id: 5, name: 'Barbell Row', muscle_group: 'Back' },
-    { id: 6, name: 'Pull Up', muscle_group: 'Back' },
-    { id: 7, name: 'Dumbbell Curl', muscle_group: 'Arms' },
-    { id: 8, name: 'Triceps Extension', muscle_group: 'Arms' },
+    {
+      id: 1,
+      name: 'Barbell Bench Press',
+      muscle_group: 'Chest',
+      short_description:
+        'A compound push exercise that builds chest, shoulders, and triceps size and strength.',
+      primary_muscle_id: 1,
+      recommended_warmup_sets: 2,
+      recommended_working_sets: 3,
+      recommended_rpe: 8,
+      recommended_rest_time_sec: 120,
+      media: [
+        {
+          id: 101,
+          media_type: 'image',
+          media_url:
+            'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&q=80&w=800',
+          display_order: 0,
+        },
+        {
+          id: 102,
+          media_type: 'youtube',
+          media_url: 'https://www.youtube.com/embed/rT7DgCr-3pg',
+          display_order: 1,
+        },
+      ],
+    },
+    {
+      id: 2,
+      name: 'Squat',
+      muscle_group: 'Legs',
+      short_description: 'The king of all leg exercises, building quad and glute strength.',
+      media: [
+        {
+          id: 103,
+          media_type: 'image',
+          media_url:
+            'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=800',
+          display_order: 0,
+        },
+      ],
+    },
+    { id: 3, name: 'Deadlift', muscle_group: 'Back', media: [] },
+    { id: 4, name: 'Overhead Press', muscle_group: 'Shoulders', media: [] },
+    { id: 5, name: 'Barbell Row', muscle_group: 'Back', media: [] },
+    { id: 6, name: 'Pull Up', muscle_group: 'Back', media: [] },
+    { id: 7, name: 'Dumbbell Curl', muscle_group: 'Arms', media: [] },
+    { id: 8, name: 'Triceps Extension', muscle_group: 'Arms', media: [] },
   ];
 
   // State
@@ -70,6 +123,7 @@ export class WorkoutService {
       id: Date.now(),
       name,
       muscle_group: 'Custom',
+      media: [],
     };
     this.mockExercises.push(newExercise);
     return newExercise;
