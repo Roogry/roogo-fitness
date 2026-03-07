@@ -6,7 +6,6 @@ import { ExerciseTracker } from '../components/exercise-tracker/exercise-tracker
 import { HeaderComponent } from '../shared/components/header/header';
 import { ZardButtonComponent } from '../shared/components/button/button.component';
 import { LucideAngularModule, Dumbbell, Save, Plus, X, ArrowLeft } from 'lucide-angular';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-workout-session',
@@ -18,7 +17,6 @@ import { RouterLink } from '@angular/router';
     HeaderComponent,
     ZardButtonComponent,
     LucideAngularModule,
-    RouterLink,
   ],
   template: `
     <div class="min-h-screen bg-background text-foreground pb-20">
