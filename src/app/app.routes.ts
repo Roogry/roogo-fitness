@@ -5,6 +5,7 @@ import { ExerciseEdit } from './components/exercise-edit/exercise-edit';
 import { MainLayout } from './shared/components/main-layout/main-layout';
 import { Journey } from './journey/journey';
 import { Profile } from './profile/profile';
+import { WorkoutSession } from './workout-session/workout-session';
 
 export const routes: Routes = [
   {
@@ -18,4 +19,5 @@ export const routes: Routes = [
   },
   { path: 'exercise/:id', component: ExerciseDetail },
   { path: 'exercise/:id/edit', component: ExerciseEdit },
+  { path: 'workout/session', component: WorkoutSession },
 ];

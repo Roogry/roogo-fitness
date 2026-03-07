@@ -1,185 +1,94 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WorkoutService } from '../shared/services/workout';
-import { ExerciseAutocomplete } from '../components/exercise-autocomplete/exercise-autocomplete';
-import { ExerciseTracker } from '../components/exercise-tracker/exercise-tracker';
-import { HeaderComponent } from '../shared/components/header/header';
 import { ZardButtonComponent } from '../shared/components/button/button.component';
-import { LucideAngularModule, Dumbbell, Save, Plus, X } from 'lucide-angular';
+import { ZardCardComponent } from '@/shared/components/card';
+import {
+  LucideAngularModule,
+  Dumbbell,
+  Play,
+  Calendar,
+  ChevronRight,
+  Flame,
+} from 'lucide-angular';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [
-    CommonModule,
-    ExerciseAutocomplete,
-    ExerciseTracker,
-    HeaderComponent,
-    ZardButtonComponent,
-    LucideAngularModule,
-  ],
+  imports: [CommonModule, ZardButtonComponent, ZardCardComponent, LucideAngularModule],
   template: `
-    <div class="min-h-screen bg-background text-foreground pb-20">
+    <div class="min-h-screen bg-background text-foreground pb-24">
       <!-- Header -->
-      <app-header title="Roogo Fitness">
-        <lucide-icon
-          title-icon
-          [img]="Dumbbell"
-          class="h-6 w-6 text-primary flex-shrink-0"
-        ></lucide-icon>
-
-        @if (workoutService.hasActiveWorkout()) {
-          <button
-            right
-            z-button
-            size="sm"
-            zShape="circle"
-            (click)="finishWorkout()"
-            class="hidden sm:flex items-center gap-2"
-          >
-            <lucide-icon [img]="Save" class="h-4 w-4"></lucide-icon>
-            Finish
-          </button>
-        }
-      </app-header>
-
-      <main class="container mx-auto px-4 py-6 max-w-2xl">
-        <div class="mb-6">
-          <div>
-            <h1 class="text-3xl font-extrabold tracking-tight mb-2">Track Workout</h1>
-            <p class="text-muted-foreground">Log your sets for today.</p>
+      <div class="container max-w-2xl mx-auto px-4 pt-6">
+        <div class="flex items-center gap-4">
+          <div class="size-16 rounded-full bg-secondary flex items-center justify-center">
+            <lucide-icon [img]="Dumbbell" class="size-6"></lucide-icon>
+          </div>
+          <div class="flex flex-col gap-1">
+            <h1 class="text-xl font-bold">Ganbatte, Jodie!</h1>
+            <div class="flex items-center gap-1">
+              <p class="text-sm text-muted-foreground">3 days this week</p>
+              <lucide-icon [img]="Flame" class="h-3 w-3"></lucide-icon>
+            </div>
           </div>
         </div>
-
-        <!-- Active Exercises -->
-        <div class="space-y-6">
-          @if (workoutService.activeExercises().length === 0) {
-            <div
-              class="py-8 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl"
-            >
-              <lucide-icon [img]="Dumbbell" class="h-12 w-12 mx-auto mb-4"></lucide-icon>
-              <p>No exercises tracked yet.</p>
-            </div>
-          }
-
-          @for (tracked of workoutService.activeExercises(); track tracked.exercise.id) {
-            <app-exercise-tracker [trackedExercise]="tracked"></app-exercise-tracker>
-          }
-
-          <button z-button zShape="circle" class="w-full h-12" (click)="isAddSheetOpen.set(true)">
-            <lucide-icon [img]="Plus"></lucide-icon>
-            Add Exercise
-          </button>
-        </div>
-      </main>
-
-      <!-- Mobile FABs -->
-      <div
-        class="fixed bottom-6 right-4 left-4 sm:hidden flex flex-col gap-3 z-30 pointer-events-none"
-      >
-        @if (workoutService.hasActiveWorkout()) {
-          <button
-            z-button
-            zType="outline"
-            zShape="circle"
-            class="text-lg flex items-center justify-center gap-2 rounded-full w-full bg-background pointer-events-auto"
-            (click)="finishWorkout()"
-          >
-            <lucide-icon [img]="Save"></lucide-icon>
-            Finish Workout
-          </button>
-        }
       </div>
 
-      <!-- Add Exercise Sheet -->
-      @if (isAddSheetOpen()) {
-        <!-- Backdrop -->
-        <div
-          class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity"
-          (click)="isAddSheetOpen.set(false)"
-        ></div>
-
-        <!-- Sheet Container -->
-        <div
-          class="fixed z-50 bg-white shadow-2xl transition-transform flex flex-col
-                 bottom-0 left-0 right-0 h-[85vh] rounded-t-2xl
-                 md:top-0 md:bottom-0 md:left-auto md:right-0 md:h-full md:w-[450px] md:rounded-none md:border-l md:border-border slide-in"
-        >
-          <!-- Sheet Header -->
-          <div class="p-4 flex justify-between items-center">
-            <div class="flex flex-col gap-2">
-              <h2 class="font-semibold text-xl tracking-tight">Add Exercise</h2>
-              <p class="text-sm text-muted-foreground">
-                Search or add a custom exercise.
-              </p>
+      <main class="container mx-auto px-4 max-w-2xl mt-8">
+        <!-- Hero Card: Current Plan & Session -->
+        <z-card class="mb-6 block hover:border-primary/50 transition-colors cursor-pointer group">
+          <div class="flex justify-between items-start mb-6">
+            <div class="flex flex-col">
+              <span class="text-sm font-semibold text-primary mb-1 uppercase tracking-wider"
+                >Current Plan</span
+              >
+              <h2 class="text-2xl font-bold">Push Pull Legs (PPL)</h2>
+              <div class="flex items-center text-sm text-muted-foreground mt-2 gap-2">
+                <lucide-icon [img]="Calendar" class="w-4 h-4"></lucide-icon>
+                <span>3 days / week</span>
+              </div>
             </div>
-            <button
-              z-button
-              zType="secondary"
-              zSize="icon-lg"
-              zShape="circle"
-              (click)="isAddSheetOpen.set(false)"
+            <div
+              class="bg-primary/5 text-primary p-3 rounded-2xl"
             >
-              <lucide-icon [img]="X"></lucide-icon>
+              <lucide-icon [img]="Dumbbell" class="w-6 h-6"></lucide-icon>
+            </div>
+          </div>
+
+          <div
+            class="bg-secondary/40 rounded-[16px] p-4 flex justify-between items-center group-hover:bg-secondary/60 transition-colors"
+          >
+            <div class="flex flex-col">
+              <span class="text-xs text-muted-foreground mb-1">Up Next</span>
+              <span class="font-semibold text-secondary-foreground text-lg">Push Day Heavy</span>
+            </div>
+            <button z-button zShape="circle" zType="outline" zSize="icon" class="group-hover:bg-primary group-hover:text-white">
+              <lucide-icon [img]="ChevronRight"></lucide-icon>
             </button>
           </div>
+        </z-card>
 
-          <!-- Sheet Content -->
-          <div class="px-4 flex-1 overflow-y-auto">
-            <app-exercise-autocomplete
-              (exerciseSelected)="onExerciseSelected($event)"
-            ></app-exercise-autocomplete>
+        <!-- Start Empty Workout Action -->
+        <div class="mt-8">
+          <div class="flex items-center justify-between mb-4 px-1">
+            <h3 class="font-semibold text-lg">Quick Actions</h3>
           </div>
+          <a
+            routerLink="/workout/session"
+            class="flex items-center justify-center gap-3 w-full bg-white border-1 border-border py-5 px-6 rounded-xl font-semibold text-lg hover:bg-secondary/60 hover:text-primary/80 cursor-pointer transition-all"
+          >
+            <lucide-icon [img]="Play" class="w-6 h-6"></lucide-icon>
+            Start Empty Workout
+          </a>
         </div>
-      }
+      </main>
     </div>
   `,
-  styles: `
-    .slide-in {
-      animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes slideIn {
-      from {
-        transform: translateY(100%);
-      }
-      to {
-        transform: translateY(0);
-      }
-    }
-
-    @media (min-width: 768px) {
-      .slide-in {
-        animation: slideInMd 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      @keyframes slideInMd {
-        from {
-          transform: translateX(100%);
-        }
-        to {
-          transform: translateX(0);
-        }
-      }
-    }
-  `,
+  styles: [],
 })
 export class Home {
   readonly Dumbbell = Dumbbell;
-  readonly Save = Save;
-  readonly Plus = Plus;
-  readonly X = X;
-
-  workoutService = inject(WorkoutService);
-
-  isAddSheetOpen = signal(false);
-
-  onExerciseSelected(exercise: any) {
-    this.workoutService.addTrackedExercise(exercise);
-    this.isAddSheetOpen.set(false);
-  }
-
-  async finishWorkout() {
-    await this.workoutService.finishWorkout();
-    alert('Workout finished successfully (Check console for mock API logs)');
-  }
+  readonly Play = Play;
+  readonly Calendar = Calendar;
+  readonly ChevronRight = ChevronRight;
+  readonly Flame = Flame;
 }

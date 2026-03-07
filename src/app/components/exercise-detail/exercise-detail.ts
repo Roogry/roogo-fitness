@@ -31,7 +31,7 @@ import {
   template: `
     <div class="min-h-screen bg-background text-foreground pb-20">
       <!-- Header -->
-      <app-header [title]="exercise() ? '' : 'Loading...'" [showBackBtn]="true" backLink="/">
+      <app-header [title]="exercise() ? '' : 'Loading...'" [showBackBtn]="true" backLink="/workout/session">
         @if (exercise()) {
           <a
             right
