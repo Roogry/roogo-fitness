@@ -41,6 +41,40 @@ export interface TrackedExercise {
   sets: WorkoutSet[];
 }
 
+export interface LoggedSet {
+  id: number;
+  logged_workout_id: number;
+  exercise_id: number;
+  set_number: number;
+  is_warmup: boolean;
+  reps_completed: number;
+  weight_lifted: number;
+  rpe_logged?: number;
+  rest_time_taken_sec?: number;
+  completed_at?: string;
+}
+
+export interface LoggedWorkout {
+  id: number;
+  logged_workout_session_id?: number | null;
+  session_exercises_id?: number | null;
+  exercise_id: number;
+  exercise?: Exercise; // Joined for UI convenience
+  workout_title: string;
+  sets: LoggedSet[];
+}
+
+export interface LoggedWorkoutSession {
+  id: number;
+  user_id: string;
+  workout_session_id?: number | null;
+  session_title: string;
+  start_time: string;
+  end_time?: string;
+  notes?: string;
+  workouts: LoggedWorkout[]; 
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -116,6 +150,75 @@ export class WorkoutService {
     { id: 8, name: 'Triceps Extension', muscle_group: 'Arms', media: [] },
   ];
 
+  private mockLoggedWorkoutSessions: LoggedWorkoutSession[] = [
+    {
+      id: 1001,
+      user_id: 'user-1',
+      session_title: 'Push Day Heavy',
+      start_time: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
+      end_time: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 45 * 60 * 1000).toISOString(),
+      notes: 'Felt really strong on the bench press today. Knee is feeling better on squats.',
+      workouts: [
+        {
+          id: 501,
+          logged_workout_session_id: 1001,
+          exercise_id: 1,
+          exercise: this.mockExercises[0],
+          workout_title: 'Barbell Bench Press',
+          sets: [
+            { id: 1, logged_workout_id: 501, exercise_id: 1, set_number: 1, is_warmup: false, reps_completed: 8, weight_lifted: 60 },
+            { id: 2, logged_workout_id: 501, exercise_id: 1, set_number: 2, is_warmup: false, reps_completed: 8, weight_lifted: 65 },
+            { id: 3, logged_workout_id: 501, exercise_id: 1, set_number: 3, is_warmup: false, reps_completed: 6, weight_lifted: 70 },
+          ]
+        },
+        {
+          id: 502,
+          logged_workout_session_id: 1001,
+          exercise_id: 2,
+          exercise: this.mockExercises[1],
+          workout_title: 'Squat',
+          sets: [
+            { id: 4, logged_workout_id: 502, exercise_id: 2, set_number: 1, is_warmup: false, reps_completed: 10, weight_lifted: 80 },
+            { id: 5, logged_workout_id: 502, exercise_id: 2, set_number: 2, is_warmup: false, reps_completed: 8, weight_lifted: 90 },
+            { id: 6, logged_workout_id: 502, exercise_id: 2, set_number: 3, is_warmup: false, reps_completed: 8, weight_lifted: 100 },
+          ]
+        }
+      ]
+    },
+    {
+      id: 1002,
+      user_id: 'user-1',
+      session_title: 'Quick Upper Body',
+      start_time: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(), // 4 days ago
+      end_time: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000 + 35 * 60 * 1000).toISOString(),
+      notes: 'Quick upper body day. Need to eat more before.',
+      workouts: [
+        {
+          id: 503,
+          logged_workout_session_id: 1002,
+          exercise_id: 6,
+          exercise: this.mockExercises[5],
+          workout_title: 'Pull Up',
+          sets: [
+            { id: 7, logged_workout_id: 503, exercise_id: 6, set_number: 1, is_warmup: false, reps_completed: 10, weight_lifted: 0 },
+            { id: 8, logged_workout_id: 503, exercise_id: 6, set_number: 2, is_warmup: false, reps_completed: 8, weight_lifted: 0 },
+          ]
+        },
+        {
+          id: 504,
+          logged_workout_session_id: 1002,
+          exercise_id: 4,
+          exercise: this.mockExercises[3],
+          workout_title: 'Overhead Press',
+          sets: [
+            { id: 9, logged_workout_id: 504, exercise_id: 4, set_number: 1, is_warmup: false, reps_completed: 10, weight_lifted: 40 },
+            { id: 10, logged_workout_id: 504, exercise_id: 4, set_number: 2, is_warmup: false, reps_completed: 8, weight_lifted: 45 },
+          ]
+        }
+      ]
+    }
+  ];
+
   // State
   activeExercises = signal<TrackedExercise[]>([]);
 
@@ -140,6 +243,12 @@ export class WorkoutService {
   async getMuscles(): Promise<Muscle[]> {
     await new Promise((resolve) => setTimeout(resolve, 100));
     return this.mockMuscles;
+  }
+
+  async getLoggedWorkoutSessions(): Promise<LoggedWorkoutSession[]> {
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    // Simulate real fetching by ordering decending by start_time
+    return [...this.mockLoggedWorkoutSessions].sort((a, b) => new Date(b.start_time).getTime() - new Date(a.start_time).getTime());
   }
 
   // --- State Mutations ---
