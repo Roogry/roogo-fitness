@@ -16,24 +16,27 @@
     <div class="flex flex-col gap-4">
       @for (session of history(); track session.id) {
         <z-card>
-          <div class="flex justify-between items-start mb-4">
-            <div class="flex flex-col">
-              <span class="font-bold text-lg mb-1">{{ session.session_title }}</span>
-              <div class="flex items-center text-sm text-muted-foreground gap-2">
-                <div class="flex items-center gap-1.5">
-                  <lucide-icon [img]="Clock" class="w-3.5 h-3.5"></lucide-icon>
-                  <span>{{ session.start_time | date:'MMM d, yyyy' }}</span>
-                </div>
-                <span>•</span>
-                <span>{{ formatDuration(session.total_duration) }}</span>
-              </div>
-              <div class="flex items-center gap-2 mt-2">
-                <span class="font-medium bg-muted text-foreground px-2 py-0.5 rounded-full text-xs">{{ getTotalSets(session) }} sets</span>
-                <span class="font-medium bg-muted text-foreground px-2 py-0.5 rounded-full text-xs">{{ session.total_weight_lifted | number:'1.0-1' }} kg</span>
+          <div class="flex justify-between items-center mb-4">
+            <div class="flex flex-col gap-2">
+              <span class="font-bold text-lg">{{ session.session_title }}</span>
+              <div class="flex items-center gap-2">
+                <span class="font-medium bg-secondary text-secondary-foreground px-2.5 py-1 rounded-full text-xs">
+                  {{ formatDuration(session.total_duration) }}
+                </span>
+                <span class="font-medium bg-primary/10 text-primary px-2.5 py-1 rounded-full text-xs">
+                  {{ session.total_weight_lifted | number:'1.0-1' }} kg
+                </span>
               </div>
             </div>
-            <div class="bg-primary/10 text-primary p-2.5 rounded-2xl">
-              <lucide-icon [img]="Activity" class="w-5 h-5"></lucide-icon>
+
+            <div class="flex gap-2">
+              <div class="flex items-center gap-1.5">
+                <lucide-icon [img]="Clock" class="w-3.5 h-3.5"></lucide-icon>
+                <span>{{ session.start_time | date:'MMM d, yyyy' }}</span>
+              </div>
+              <div class="bg-primary/10 text-primary p-2.5 rounded-2xl">
+                <lucide-icon [img]="Activity" class="w-5 h-5"></lucide-icon>
+              </div>
             </div>
           </div>
           

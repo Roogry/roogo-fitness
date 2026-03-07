@@ -33,10 +33,6 @@ export class Journey implements OnInit {
     }
   }
 
-  getTotalSets(session: LoggedWorkoutSession): number {
-    return session.workouts.reduce((total, w) => total + (w.sets?.length || 0), 0);
-  }
-
   getExerciseSummary(session: LoggedWorkoutSession): string {
     const names = new Set(session.workouts.map(w => w.workout_title).filter(Boolean));
     const uniqueNames = Array.from(names);
