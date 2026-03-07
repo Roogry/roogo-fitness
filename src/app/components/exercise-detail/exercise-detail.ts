@@ -34,6 +34,19 @@ import {
     <div class="min-h-screen bg-background text-foreground pb-20">
       <!-- Header -->
       <app-header [title]="exercise()?.name || 'Loading...'" [showBackBtn]="true" backLink="/">
+        @if (exercise()) {
+          <a
+            right
+            [routerLink]="['/exercise', exercise()!.id, 'edit']"
+            z-button
+            zType="ghost"
+            zSize="icon"
+            title="Edit Exercise"
+          >
+            <lucide-icon [img]="Pencil"></lucide-icon>
+            <span class="sr-only">Edit</span>
+          </a>
+        }
       </app-header>
 
       <main class="container mx-auto px-4 py-8 max-w-2xl">
@@ -130,16 +143,6 @@ import {
 
               <div class="flex items-center gap-3 mb-2">
                 <h2 class="text-3xl font-extrabold tracking-tight">{{ exercise()!.name }}</h2>
-                <a
-                  [routerLink]="['/exercise', exercise()!.id, 'edit']"
-                  z-button
-                  zType="ghost"
-                  zSize="icon"
-                  class="text-muted-foreground hover:bg-muted h-8 w-8 rounded-full flex-shrink-0"
-                  title="Edit Exercise"
-                >
-                  <lucide-icon [img]="Pencil" class="h-4 w-4"></lucide-icon>
-                </a>
               </div>
               <div class="flex flex-wrap items-center justify-center gap-2">
                 <div
