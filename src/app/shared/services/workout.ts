@@ -49,10 +49,12 @@ export class WorkoutService {
 
   // --- Mock API Methods ---
   async searchExercises(query: string): Promise<Exercise[]> {
-    if (!query.trim()) return [];
-    const lowerQuery = query.toLowerCase();
-    // Simulate network delay
+    // Simulate network delay for realism
     await new Promise((resolve) => setTimeout(resolve, 300));
+
+    if (!query.trim()) return this.mockExercises;
+
+    const lowerQuery = query.toLowerCase();
     return this.mockExercises.filter((e) => e.name.toLowerCase().includes(lowerQuery));
   }
 

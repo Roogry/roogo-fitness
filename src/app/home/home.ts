@@ -51,6 +51,15 @@ import { LucideAngularModule, Dumbbell, Save, Plus, X } from 'lucide-angular';
 
         <!-- Active Exercises -->
         <div class="space-y-6">
+          @if (workoutService.activeExercises().length === 0) {
+            <div
+              class="py-8 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl"
+            >
+              <lucide-icon [img]="Dumbbell" class="h-12 w-12 mx-auto mb-4"></lucide-icon>
+              <p>No exercises tracked yet.</p>
+            </div>
+          }
+
           @for (tracked of workoutService.activeExercises(); track tracked.exercise.id) {
             <app-exercise-tracker [trackedExercise]="tracked"></app-exercise-tracker>
           }
@@ -59,15 +68,6 @@ import { LucideAngularModule, Dumbbell, Save, Plus, X } from 'lucide-angular';
             <lucide-icon [img]="Plus" class="mr-1"></lucide-icon>
             Add Exercise
           </button>
-
-          @if (workoutService.activeExercises().length === 0) {
-            <div
-              class="py-16 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl"
-            >
-              <lucide-icon [img]="Dumbbell" class="h-12 w-12 mx-auto mb-4 opacity-20"></lucide-icon>
-              <p>No exercises tracked yet.</p>
-            </div>
-          }
         </div>
       </main>
 

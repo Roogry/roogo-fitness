@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Output, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WorkoutService, Exercise } from '../../shared/services/workout';
@@ -33,33 +33,37 @@ import { LucideAngularModule, Search, Plus } from 'lucide-angular';
         }
       </div>
 
-      @if (results().length > 0 || (searchQuery().trim() && !isSearching())) {
-        <div
-          class="absolute bg-white rounded-md border border-border z-50 w-full mt-2 overflow-hidden shadow-lg"
-        >
+      <!-- Results list always shows if there are results or a query -->
+      @if (results().length > 0 || searchQuery().trim()) {
+        <div class="w-full mt-4 flex flex-col gap-3 pb-8">
           @for (exercise of results(); track exercise.id) {
             <div
-              class="px-4 py-3 hover:bg-muted cursor-pointer flex justify-between items-center transition-colors border-b border-border last:border-0"
+              class="bg-card rounded-xl border border-border p-4 hover:border-primary/50 cursor-pointer flex justify-between items-center transition-all shadow-sm"
               (click)="selectExercise(exercise)"
             >
               <div class="flex flex-col">
-                <span class="font-medium text-sm">{{ exercise.name }}</span>
-                <span class="text-xs text-muted-foreground mt-0.5">{{
-                  exercise.muscle_group
-                }}</span>
+                <span class="font-bold text-base">{{ exercise.name }}</span>
+                <span class="text-sm text-muted-foreground mt-1">{{ exercise.muscle_group }}</span>
               </div>
+              <lucide-icon
+                [img]="Plus"
+                class="h-5 w-5 text-muted-foreground opacity-50"
+              ></lucide-icon>
             </div>
           }
 
           @if (!hasExactMatch() && searchQuery().trim() && !isSearching()) {
             <div
-              class="px-4 py-3 hover:bg-primary/5 cursor-pointer flex justify-between items-center transition-colors border-b border-border last:border-0"
+              class="bg-primary/5 rounded-xl border border-primary/20 p-4 hover:border-primary/50 cursor-pointer flex justify-between items-center transition-all shadow-sm"
               (click)="createNewExercise(searchQuery().trim())"
             >
-              <div class="flex items-center gap-2 text-primary">
-                <lucide-icon [img]="Plus" class="h-4 w-4"></lucide-icon>
-                <span class="font-medium text-sm">Add "{{ searchQuery().trim() }}"</span>
+              <div class="flex flex-col">
+                <span class="font-bold text-base text-primary"
+                  >Add "{{ searchQuery().trim() }}"</span
+                >
+                <span class="text-sm text-primary/70 mt-1">Create a new custom exercise</span>
               </div>
+              <lucide-icon [img]="Plus" class="h-5 w-5 text-primary"></lucide-icon>
             </div>
           }
         </div>
@@ -68,7 +72,7 @@ import { LucideAngularModule, Search, Plus } from 'lucide-angular';
   `,
   styleUrl: './exercise-autocomplete.css',
 })
-export class ExerciseAutocomplete {
+export class ExerciseAutocomplete implements OnInit {
   readonly Search = Search;
   readonly Plus = Plus;
   private workoutService = inject(WorkoutService);
@@ -79,6 +83,10 @@ export class ExerciseAutocomplete {
   results = signal<Exercise[]>([]);
   isSearching = signal<boolean>(false);
   private searchTimeout: any;
+
+  ngOnInit() {
+    this.onSearchChange('');
+  }
 
   hasExactMatch() {
     const query = this.searchQuery().trim().toLowerCase();
@@ -93,9 +101,7 @@ export class ExerciseAutocomplete {
     }
 
     if (!query.trim()) {
-      this.results.set([]);
-      this.isSearching.set(false);
-      return;
+      // Don't return early, let it delay and load the default list
     }
 
     this.isSearching.set(true);
