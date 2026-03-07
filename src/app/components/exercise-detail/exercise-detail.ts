@@ -1,12 +1,10 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { WorkoutService, Exercise } from '../../shared/services/workout';
 import { ZardCardComponent } from '../../shared/components/card/card.component';
 import { ZardButtonComponent } from '../../shared/components/button/button.component';
-import { ZardInputDirective } from '../../shared/components/input/input.directive';
 import { HeaderComponent } from '../../shared/components/header/header';
 import {
   LucideAngularModule,
@@ -87,7 +85,7 @@ import {
 
                 @if (activeMedia.media_type === 'youtube') {
                   <iframe
-                    [src]="getSafeUrl(activeMedia.media_url)"
+                    [src]="activeSafeUrl()"
                     class="w-full h-full"
                     frameborder="0"
                     allowfullscreen
@@ -220,9 +218,27 @@ export class ExerciseDetail implements OnInit {
   imageError = false;
   activeMediaIndex = signal(0);
 
-  getSafeUrl(url: string): SafeResourceUrl {
+  activeSafeUrl = computed(() => {
+    const ex = this.exercise();
+    const idx = this.activeMediaIndex();
+    if (!ex || !ex.media || ex.media.length === 0) return null;
+
+    const media = ex.media[idx];
+    let url = media.media_url;
+
+    // Convert standard YouTube watch URLs to embed URLs format
+    if (media.media_type === 'youtube') {
+      const match = url.match(/[?&]v=([^&]+)/);
+      if (match && match[1]) {
+        url = `https://www.youtube.com/embed/${match[1]}`;
+      } else if (url.includes('youtu.be/')) {
+        const id = url.split('youtu.be/')[1].split('?')[0];
+        url = `https://www.youtube.com/embed/${id}`;
+      }
+    }
+
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
-  }
+  });
 
   nextMedia() {
     const media = this.exercise()?.media || [];
