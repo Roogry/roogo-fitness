@@ -1,0 +1,16 @@
+<nav class="fixed bottom-0 w-full flex items-center justify-around bg-background border-t border-border z-50 h-[80px] pb-[env(safe-area-inset-bottom,0px)]">
+  <a routerLink="/" routerLinkActive="text-primary" [routerLinkActiveOptions]="{exact: true}" class="flex flex-col items-center justify-center gap-1 w-full h-full text-muted-foreground transition-colors hover:text-foreground">
+    <lucide-icon [img]="Home" class="w-6 h-6"></lucide-icon>
+    <span class="text-xs font-medium">Home</span>
+  </a>
+
+  <a routerLink="/journey" routerLinkActive="text-primary" class="flex flex-col items-center justify-center gap-1 w-full h-full text-muted-foreground transition-colors hover:text-foreground">
+    <lucide-icon [img]="Activity" class="w-6 h-6"></lucide-icon>
+    <span class="text-xs font-medium">Journey</span>
+  </a>
+
+  <a routerLink="/profile" routerLinkActive="text-primary" class="flex flex-col items-center justify-center gap-1 w-full h-full text-muted-foreground transition-colors hover:text-foreground">
+    <lucide-icon [img]="User" class="w-6 h-6"></lucide-icon>
+    <span class="text-xs font-medium">Profile</span>
+  </a>
+</nav>
