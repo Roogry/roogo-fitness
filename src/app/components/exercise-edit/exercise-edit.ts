@@ -2,12 +2,12 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { WorkoutService } from '../../shared/services/workout';
+import { WorkoutService, ExerciseMedia } from '../../shared/services/workout';
 import { ZardCardComponent } from '../../shared/components/card/card.component';
 import { ZardButtonComponent } from '../../shared/components/button/button.component';
 import { ZardInputDirective } from '../../shared/components/input/input.directive';
 import { HeaderComponent } from '../../shared/components/header/header';
-import { LucideAngularModule, ArrowLeft, Save, X } from 'lucide-angular';
+import { LucideAngularModule, ArrowLeft, Save, X, Video, ChevronUp, ChevronDown, Trash2, Plus } from 'lucide-angular';
 
 @Component({
   selector: 'app-exercise-edit',
@@ -99,25 +99,52 @@ import { LucideAngularModule, ArrowLeft, Save, X } from 'lucide-angular';
                 </div>
               </div>
 
-              <div class="flex flex-col gap-3 opacity-50">
-                <label
-                  for="media"
-                  class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Media URL (Disabled for now)
-                </label>
-                <input
-                  id="media"
-                  name="media"
-                  type="url"
-                  z-input
-                  disabled
-                  placeholder="https://example.com/image.jpg"
-                  class="w-full"
-                />
-                <p class="text-[0.8rem] text-muted-foreground">
-                  Media editing is temporarily read-only while we upgrade to the new gallery system.
-                </p>
+              <div class="flex flex-col gap-3">
+                <label class="text-sm font-medium leading-none">Media Management</label>
+
+                <div class="flex flex-col gap-3">
+                  @for (m of media(); track m.id; let i = $index) {
+                    <div class="flex items-center gap-3 p-3 border border-border rounded-xl bg-muted/30">
+                      <div class="h-12 w-16 bg-muted rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
+                        @if (m.media_type === 'youtube' || m.media_type === 'video') {
+                          <lucide-icon [img]="Video" class="h-5 w-5 text-muted-foreground"></lucide-icon>
+                        } @else {
+                          <img [src]="m.media_url" class="h-full w-full object-cover text-[8px]" alt="media" />
+                        }
+                      </div>
+                      <div class="flex flex-col flex-1 overflow-hidden">
+                        <span class="text-xs font-semibold capitalize">{{ m.media_type }}</span>
+                        <span class="text-xs text-muted-foreground truncate">{{ m.media_url }}</span>
+                      </div>
+                      <div class="flex items-center gap-1">
+                        <button type="button" title="Move Up" z-button zType="ghost" zSize="icon-sm" zShape="circle" [disabled]="i === 0" (click)="moveMediaUp(i)">
+                          <lucide-icon [img]="ChevronUp" class="h-4 w-4"></lucide-icon>
+                        </button>
+                        <button type="button" title="Move Down" z-button zType="ghost" zSize="icon-sm" zShape="circle" [disabled]="i === media().length - 1" (click)="moveMediaDown(i)">
+                          <lucide-icon [img]="ChevronDown" class="h-4 w-4"></lucide-icon>
+                        </button>
+                        <button type="button" title="Remove" z-button zType="ghost" zSize="icon-sm" zShape="circle" class="text-destructive hover:text-destructive" (click)="removeMedia(i)">
+                          <lucide-icon [img]="Trash2" class="h-4 w-4"></lucide-icon>
+                        </button>
+                      </div>
+                    </div>
+                  }
+                  
+                  @if (media().length === 0) {
+                      <div class="py-6 text-center text-sm text-muted-foreground border border-dashed border-border rounded-xl">
+                          No media added yet.
+                      </div>
+                  }
+                </div>
+
+                <div class="flex items-start gap-2 mt-2">
+                  <div class="flex-1 flex flex-col gap-2">
+                    <input z-input type="url" [(ngModel)]="newMediaUrl" name="newMediaUrl" placeholder="Add image or YouTube URL..." class="w-full" />
+                  </div>
+                  <button type="button" z-button zType="secondary" zShape="circle" class="h-12" (click)="addMedia()" [disabled]="!newMediaUrl().trim()">
+                    <lucide-icon [img]="Plus"></lucide-icon> Add
+                  </button>
+                </div>
               </div>
 
               <div
@@ -126,7 +153,7 @@ import { LucideAngularModule, ArrowLeft, Save, X } from 'lucide-angular';
                 <button
                   type="button"
                   z-button
-                  zType="secondary"
+                  zType="ghost"
                   zSize="lg"
                   zShape="circle"
                   (click)="cancel()"
@@ -156,6 +183,11 @@ export class ExerciseEdit implements OnInit {
   readonly ArrowLeft = ArrowLeft;
   readonly Save = Save;
   readonly X = X;
+  readonly Video = Video;
+  readonly ChevronUp = ChevronUp;
+  readonly ChevronDown = ChevronDown;
+  readonly Trash2 = Trash2;
+  readonly Plus = Plus;
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -169,6 +201,8 @@ export class ExerciseEdit implements OnInit {
   name = signal('');
   muscleGroup = signal('');
   secondaryMuscles = signal('');
+  media = signal<ExerciseMedia[]>([]);
+  newMediaUrl = signal('');
 
   ngOnInit() {
     this.route.paramMap.subscribe(async (params) => {
@@ -184,6 +218,7 @@ export class ExerciseEdit implements OnInit {
             this.name.set(detail.name);
             this.muscleGroup.set(detail.muscle_group);
             this.secondaryMuscles.set(detail.secondary_muscles || '');
+            this.media.set([...(detail.media || [])]);
           } else {
             this.exerciseId.set(null);
           }
@@ -208,6 +243,62 @@ export class ExerciseEdit implements OnInit {
     }
   }
 
+  addMedia() {
+    const url = this.newMediaUrl().trim();
+    if (!url) return;
+
+    let type = 'image';
+    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+      type = 'youtube';
+    } else if (url.endsWith('.mp4') || url.endsWith('.webm') || url.endsWith('.ogg')) {
+      type = 'video';
+    }
+
+    this.media.update((current) => {
+      return [
+        ...current,
+        {
+          id: Date.now(),
+          media_type: type,
+          media_url: url,
+          display_order: current.length,
+        },
+      ];
+    });
+
+    this.newMediaUrl.set('');
+  }
+
+  removeMedia(index: number) {
+    this.media.update((current) => {
+      const updated = [...current];
+      updated.splice(index, 1);
+      return updated.map((m, i) => ({ ...m, display_order: i }));
+    });
+  }
+
+  moveMediaUp(index: number) {
+    if (index === 0) return;
+    this.media.update((current) => {
+      const updated = [...current];
+      const temp = updated[index];
+      updated[index] = updated[index - 1];
+      updated[index - 1] = temp;
+      return updated.map((m, i) => ({ ...m, display_order: i }));
+    });
+  }
+
+  moveMediaDown(index: number) {
+    if (index === this.media().length - 1) return;
+    this.media.update((current) => {
+      const updated = [...current];
+      const temp = updated[index];
+      updated[index] = updated[index + 1];
+      updated[index + 1] = temp;
+      return updated.map((m, i) => ({ ...m, display_order: i }));
+    });
+  }
+
   save() {
     const id = this.exerciseId();
     if (!id || !this.name().trim() || !this.muscleGroup().trim()) return;
@@ -220,6 +311,7 @@ export class ExerciseEdit implements OnInit {
         name: this.name().trim(),
         muscle_group: this.muscleGroup().trim(),
         secondary_muscles: this.secondaryMuscles().trim() || undefined,
+        media: this.media(),
       });
       this.isSaving.set(false);
       this.router.navigate(['/exercise', id]);
