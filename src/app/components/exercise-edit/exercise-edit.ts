@@ -127,18 +127,20 @@ import { LucideAngularModule, ArrowLeft, Save, X } from 'lucide-angular';
                   type="button"
                   z-button
                   zType="ghost"
+                  zSize="lg"
                   (click)="cancel()"
                   class="w-full sm:w-auto"
                 >
-                  <lucide-icon [img]="X" class="mr-2 h-4 w-4"></lucide-icon> Cancel
+                  <lucide-icon [img]="X" class="h-4 w-4"></lucide-icon> Cancel
                 </button>
                 <button
                   type="submit"
                   z-button
+                  zSize="lg"
                   [disabled]="!editForm.form.valid || isSaving()"
                   class="w-full sm:w-auto"
                 >
-                  <lucide-icon [img]="Save" class="mr-2 h-4 w-4"></lucide-icon> Save Changes
+                  <lucide-icon [img]="Save" class="h-4 w-4"></lucide-icon> Save Changes
                 </button>
               </div>
             </form>

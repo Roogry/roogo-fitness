@@ -65,7 +65,7 @@ import { LucideAngularModule, Dumbbell, Save, Plus, X } from 'lucide-angular';
           }
 
           <button z-button class="w-full py-6" (click)="isAddSheetOpen.set(true)">
-            <lucide-icon [img]="Plus" class="mr-1"></lucide-icon>
+            <lucide-icon [img]="Plus"></lucide-icon>
             Add Exercise
           </button>
         </div>
