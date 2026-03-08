@@ -1,1 +1,153 @@
-<p>exercise-tracker works!</p>
+    <z-card class="mb-4 overflow-hidden">
+      <!-- Header -->
+      <div class="mb-4 flex justify-between items-center">
+        <a [routerLink]="['/exercise', trackedExercise().exercise.id]" class="group">
+          <div class="flex items-center gap-3">
+            <div
+              class="h-10 w-10 rounded-full overflow-hidden bg-muted flex items-center justify-center flex-shrink-0 group-hover:opacity-60 transition-opacity"
+            >
+              @if (
+                trackedExercise().exercise.media && trackedExercise().exercise.media.length > 0
+              ) {
+                <img
+                  [src]="trackedExercise().exercise.media[0].media_url"
+                  [alt]="trackedExercise().exercise.name"
+                  class="h-full w-full object-cover"
+                />
+              } @else {
+                <lucide-icon [img]="Dumbbell" class="h-5 w-5 text-muted-foreground"></lucide-icon>
+              }
+            </div>
+            <div>
+              <h3
+                class="font-semibold text-lg text-primary group-hover:opacity-60 transition-opacity leading-tight"
+              >
+                {{ trackedExercise().exercise.name }}
+              </h3>
+              <p class="text-xs text-muted-foreground group-hover:opacity-60 transition-opacity">
+                {{ trackedExercise().exercise.muscle_group }}
+              </p>
+            </div>
+          </div>
+        </a>
+        <button
+          z-button
+          zType="ghost"
+          zSize="icon"
+          zShape="circle"
+          (click)="removeExercise()"
+          class="text-destructive hover:bg-destructive/10"
+        >
+          <lucide-icon [img]="Trash2" class="h-4 w-4"></lucide-icon>
+        </button>
+      </div>
+
+      <!-- Sets List -->
+      <div class="flex flex-col">
+        @if (trackedExercise().sets.length > 0) {
+          <div
+            class="grid grid-cols-12 gap-1 md:gap-2 text-[10px] md:text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1"
+          >
+            <div class="col-span-2 md:col-span-1 text-center">Set</div>
+            <div class="col-span-4 md:col-span-3 text-center">KG</div>
+            <div class="col-span-4 md:col-span-3 text-center">Reps</div>
+            <div class="col-span-2 md:col-span-5 text-end"></div>
+          </div>
+        }
+
+        @for (set of trackedExercise().sets; track set.id) {
+          <div
+            class="grid grid-cols-12 gap-1 md:gap-2 items-center bg-muted/20 py-1 md:py-2 rounded-md transition-colors hover:bg-muted/40 group"
+          >
+            <div class="col-span-2 md:col-span-1 text-center font-medium">{{ set.set_number }}</div>
+            <div class="col-span-4 md:col-span-3 flex justify-center">
+              <input
+                z-input
+                zBorderless
+                type="number"
+                placeholder="0"
+                [ngModel]="set.weight_lifted"
+                (ngModelChange)="updateSet(set.id, { weight_lifted: $event })"
+                [class]="'w-full text-center'"
+              />
+            </div>
+            <div class="col-span-4 md:col-span-3 flex justify-center">
+              <input
+                z-input
+                zBorderless
+                type="number"
+                placeholder="0"
+                [ngModel]="set.reps_completed"
+                (ngModelChange)="updateSet(set.id, { reps_completed: $event })"
+                [class]="'w-full text-center'"
+              />
+            </div>
+            <div
+              class="col-span-2 md:col-span-5 px-0 md:px-2 flex justify-end opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+            >
+              <button
+                z-button
+                zType="ghost"
+                zSize="icon"
+                zShape="circle"
+                class="text-destructive hover:bg-destructive/10"
+                (click)="removeSet(set.id)"
+              >
+                <lucide-icon [img]="Trash2"></lucide-icon>
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- Add Set Form -->
+        <div class="pt-4 border-t border-gray-100">
+          <form
+            class="flex flex-col sm:flex-row items-stretch sm:items-end gap-3"
+            (submit)="$event.preventDefault(); addSet()"
+          >
+            <div class="flex gap-3 items-stretch">
+              <div class="flex-1">
+                <label class="text-xs text-muted-foreground mb-1 block">Weight (KG)</label>
+                <input
+                  z-input
+                  type="number"
+                  [(ngModel)]="newWeight"
+                  name="newWeight"
+                  placeholder="0"
+                  [class]="'w-full text-center'"
+                  required
+                  min="0"
+                  step="0.5"
+                />
+              </div>
+              <div class="flex-1">
+                <label class="text-xs text-muted-foreground mb-1 block">Reps</label>
+                <input
+                  z-input
+                  type="number"
+                  [(ngModel)]="newReps"
+                  name="newReps"
+                  placeholder="0"
+                  [class]="'w-full text-center'"
+                  required
+                  min="1"
+                  step="1"
+                />
+              </div>
+            </div>
+            <button
+              z-button
+              zType="secondary"
+              zSize="icon"
+              zShape="circle"
+              type="submit"
+              [disabled]="!isValid()"
+              class="w-full h-10 sm:w-10 flex items-center justify-center shrink-0"
+            >
+              <lucide-icon [img]="Plus"></lucide-icon>
+              <span class="ml-2 inline-block sm:hidden">Add Set</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </z-card>
