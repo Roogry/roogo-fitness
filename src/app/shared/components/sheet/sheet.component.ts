@@ -17,17 +17,17 @@ import { LucideAngularModule, X } from 'lucide-angular';
 
       <!-- Sheet Container -->
       <div
-        class="fixed z-[100] bg-background transition-transform bottom-0 left-0 right-0 h-[85vh] rounded-t-4xl md:top-0 md:bottom-0 md:left-auto md:right-0 md:h-full md:w-[450px] md:rounded-none md:border-l md:border-border slide-in flex flex-col"
+        class="fixed z-[100] bg-white transition-transform bottom-0 left-0 right-0 h-[85vh] rounded-t-4xl md:top-0 md:bottom-0 md:left-auto md:right-0 md:h-full md:w-[450px] md:rounded-none md:border-l md:border-border slide-in flex flex-col"
       >
-        <div class="pt-4 h-full flex flex-col gap-4">
+        <div class="pt-4 h-full flex flex-col">
           <!-- Sheet Indicator -->
           <div
-            class="w-[50px] h-2 bg-gray-200 mx-auto rounded-full cursor-pointer sm:hidden shrink-0"
+            class="w-[50px] h-2 mb-4 bg-gray-200 mx-auto rounded-full cursor-pointer sm:hidden shrink-0"
             (click)="close()"
           ></div>
 
           <!-- Sheet Header -->
-          <div class="px-4 sm:px-6 flex justify-between items-center shrink-0">
+          <div class="px-4 sm:px-6 mb-6 flex justify-between items-center shrink-0">
             <div class="flex flex-col gap-1">
               <h2 class="font-semibold text-xl tracking-tight">{{ title }}</h2>
               @if (description) {
@@ -36,13 +36,13 @@ import { LucideAngularModule, X } from 'lucide-angular';
             </div>
             <button
               z-button
-              zType="ghost"
+              zType="secondary"
               zSize="icon"
               zShape="circle"
+              class="cursor-pointer"
               (click)="close()"
-              class="text-muted-foreground hover:bg-muted"
             >
-              <lucide-icon [img]="X" class="w-5 h-5"></lucide-icon>
+              <lucide-icon [img]="X"></lucide-icon>
             </button>
           </div>
 

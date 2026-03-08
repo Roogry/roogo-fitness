@@ -10,12 +10,11 @@
       <button
         z-button
         zShape="circle"
-        class="shadow-sm"
         (click)="
           isCreatingPlan = true; newPlan = { title: '', description: '', sessionsPerWeek: 3 }
         "
       >
-        <lucide-icon [img]="Plus" class="w-4 h-4 mr-2"></lucide-icon>
+        <lucide-icon [img]="Plus"></lucide-icon>
         Create
       </button>
     </div>
@@ -69,36 +68,45 @@
       >
         <!-- Sheet Content (Scrollable) -->
         <div class="flex flex-col gap-6">
-          <div class="flex flex-col gap-2">
+          <z-input-group class="flex flex-col gap-3">
             <label
+              for="name"
               class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              Plan Name
+              Plan Name <span class="text-destructive">*</span>
             </label>
             <input
+              id="name"
+              name="name"
               z-input
-              type="text"
               [(ngModel)]="newPlan.title"
-              placeholder="e.g., Summer Shred"
+              required
+              placeholder="e.g. Push Pull Legs"
+              class="w-full"
             />
-          </div>
+          </z-input-group>
 
-          <div class="flex flex-col gap-2">
+
+          <z-input-group class="flex flex-col gap-3">
             <label
+              for="description"
               class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
               Description
             </label>
             <textarea
+              id="description"
+              name="description"
               z-input
               rows="3"
               [(ngModel)]="newPlan.description"
+              required
               placeholder="Optional details about this plan..."
-              class="resize-none"
+              class="w-full"
             ></textarea>
-          </div>
+          </z-input-group>
 
-          <div class="flex flex-col gap-2">
+          <div class="flex flex-col gap-3">
             <label
               class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
