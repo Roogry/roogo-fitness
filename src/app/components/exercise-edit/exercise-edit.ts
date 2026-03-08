@@ -19,7 +19,6 @@ import {
   Plus,
 } from 'lucide-angular';
 import { ZardSelectImports } from '@/shared/components/select';
-import { ZardInputGroupComponent } from '@/shared/components/input-group';
 
 @Component({
   selector: 'app-exercise-edit',
@@ -31,7 +30,6 @@ import { ZardInputGroupComponent } from '@/shared/components/input-group';
     ZardCardComponent,
     ZardButtonComponent,
     ZardInputDirective,
-    ZardInputGroupComponent,
     ZardSelectImports,
     HeaderComponent,
     LucideAngularModule,

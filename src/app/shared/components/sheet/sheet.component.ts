@@ -27,7 +27,7 @@ import { LucideAngularModule, X } from 'lucide-angular';
           ></div>
 
           <!-- Sheet Header -->
-          <div class="px-4 sm:px-6 mb-6 flex justify-between items-center shrink-0">
+          <div class="px-4 sm:px-6 flex justify-between items-center shrink-0">
             <div class="flex flex-col gap-1">
               <h2 class="font-semibold text-xl tracking-tight">{{ title }}</h2>
               @if (description) {
@@ -47,7 +47,7 @@ import { LucideAngularModule, X } from 'lucide-angular';
           </div>
 
           <!-- Sheet Content -->
-          <div class="px-4 sm:px-6 pb-4 flex-1 overflow-y-auto w-full relative">
+          <div class="px-4 sm:px-6 pt-6 pb-4 flex-1 overflow-y-auto w-full relative">
             <ng-content></ng-content>
           </div>
           

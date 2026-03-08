@@ -16,7 +16,6 @@ import {
 } from 'lucide-angular';
 import { FormsModule } from '@angular/forms';
 import { ZardInputDirective } from '@/shared/components/input';
-import { ZardInputGroupComponent } from '@/shared/components/input-group';
 
 @Component({
   selector: 'app-blueprint',
@@ -26,7 +25,6 @@ import { ZardInputGroupComponent } from '@/shared/components/input-group';
     HeaderComponent,
     ZardCardComponent,
     ZardButtonComponent,
-    ZardInputGroupComponent,
     ZardInputDirective,
     ZardSheetComponent,
     LucideAngularModule,

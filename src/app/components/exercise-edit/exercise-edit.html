@@ -19,7 +19,7 @@
         } @else {
           <z-card class="overflow-hidden border-border bg-card">
             <form (ngSubmit)="save()" #editForm="ngForm" class="flex flex-col gap-6">
-              <z-input-group class="flex flex-col gap-3">
+              <div class="flex flex-col gap-3">
                 <label
                   for="name"
                   class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -35,9 +35,9 @@
                   placeholder="e.g. Barbell Bench Press"
                   class="w-full"
                 />
-              </z-input-group>
+              </div>
 
-              <z-input-group class="flex flex-col gap-3">
+              <div class="flex flex-col gap-3">
                 <label
                   for="muscle"
                   class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -59,9 +59,9 @@
                     >
                   }
                 </z-select>
-              </z-input-group>
+              </div>
 
-              <z-input-group class="flex flex-col gap-3">
+              <div class="flex flex-col gap-3">
                 <label
                   for="secondary"
                   class="text-sm font-medium leading-none flex justify-between items-center"
@@ -83,7 +83,7 @@
                     >
                   }
                 </z-select>
-              </z-input-group>
+              </div>
 
               <div class="flex flex-col gap-3">
                 <label class="text-sm font-medium leading-none">Media Management</label>
