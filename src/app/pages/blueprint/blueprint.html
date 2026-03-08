@@ -1,27 +1,21 @@
 <div class="mb-8">
-  <app-header title="Blueprint"></app-header>
+  <app-header title="Blueprint">
+    <button right z-button zShape="circle" (click)="openCreateSheet()">
+      <lucide-icon [img]="Plus"></lucide-icon>
+      Create
+    </button>
+  </app-header>
 
-  <div class="container max-w-2xl mx-auto px-4 mt-6">
-    <div class="flex justify-between items-end mb-6">
-      <div class="flex flex-col gap-1">
-        <h2 class="text-2xl font-bold">Your Plans</h2>
-        <p class="text-sm text-muted-foreground">Build and manage your workout routines.</p>
-      </div>
-      <button z-button zShape="circle" (click)="openCreateSheet()">
-        <lucide-icon [img]="Plus"></lucide-icon>
-        Create
-      </button>
-    </div>
-
+  <div class="container max-w-2xl mx-auto px-4">
     @if (displayedPlans.length === 0) {
       <div
-        class="flex flex-col items-center justify-center text-center p-10 bg-muted/40 rounded-[24px] border border-border shadow-sm"
+        class="flex flex-col items-center justify-center text-center p-10 border border-border rounded-4xl"
       >
-        <div class="p-4 bg-background border border-border rounded-full mb-4 shadow-sm">
+        <div class="p-4 bg-background border border-border rounded-full mb-4">
           <lucide-icon [img]="Dumbbell" class="w-8 h-8 text-muted-foreground"></lucide-icon>
         </div>
         <h3 class="font-semibold text-lg mb-1">No Plans Yet</h3>
-        <p class="text-sm text-muted-foreground max-w-[200px]">
+        <p class="text-sm text-muted-foreground">
           Create your first workout plan to get started.
         </p>
       </div>
