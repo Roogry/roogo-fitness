@@ -1,6 +1,5 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ZardButtonComponent } from '../shared/components/button/button.component';
 import { ZardCardComponent } from '@/shared/components/card';
 import { WorkoutService, LoggedWorkoutSession } from '../shared/services/workout';
 import {
@@ -22,7 +21,7 @@ import { ExplorePlanCardComponent } from '../shared/components/explore-plan-card
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, ZardButtonComponent, ZardCardComponent, LucideAngularModule, RouterLink, LoggedWorkoutCardComponent, UpcomingSessionCardComponent, ExplorePlanCardComponent],
+  imports: [CommonModule, ZardCardComponent, LucideAngularModule, RouterLink, LoggedWorkoutCardComponent, UpcomingSessionCardComponent, ExplorePlanCardComponent],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
