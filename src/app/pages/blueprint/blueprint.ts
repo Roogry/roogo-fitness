@@ -49,7 +49,7 @@ export class BlueprintComponent implements OnInit {
 
   dbService = inject(DbService);
 
-  isCreatingPlan = false;
+  isOpenPlanForm = false;
   editingPlanId: number | null = null;
   expandedPlanId = signal<number | null>(null); // Default to first plan dynamically
 
@@ -111,7 +111,8 @@ export class BlueprintComponent implements OnInit {
   openCreateSheet() {
     this.editingPlanId = null;
     this.newPlan = { title: '', description: '', sessionsPerWeek: 3 };
-    this.isCreatingPlan = true;
+    this.isOpenPlanForm = true;
+    console.log('is sheet open:', this.isOpenPlanForm);
   }
 
   editPlan(plan: WorkoutPlan, event: Event) {
@@ -122,7 +123,7 @@ export class BlueprintComponent implements OnInit {
       description: plan.description || '',
       sessionsPerWeek: plan.days,
     };
-    this.isCreatingPlan = true;
+    this.isOpenPlanForm = true;
   }
 
   async deletePlan(planId: number, event: Event) {
@@ -179,7 +180,7 @@ export class BlueprintComponent implements OnInit {
       this.expandedPlanId.set(newId);
     }
 
-    this.isCreatingPlan = false;
+    this.isOpenPlanForm = false;
     await this.loadPlans();
   }
 }

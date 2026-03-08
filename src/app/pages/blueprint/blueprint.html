@@ -115,10 +115,10 @@
           </z-card>
         }
       </div>
-      <!-- Create Plan Sheet -->
+      
+      <!-- Plan Form Sheet -->
       <roo-sheet
-        [isOpen]="isCreatingPlan"
-        (isOpenChange)="isCreatingPlan = false"
+        [isOpen]="isOpenPlanForm"
         [title]="editingPlanId ? 'Edit Plan' : 'Create Plan'"
         description="Design your new workout routine."
       >

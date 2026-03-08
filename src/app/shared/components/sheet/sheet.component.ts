@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ZardButtonComponent } from '../button/button.component';
 import { LucideAngularModule, X } from 'lucide-angular';
+import { ZardButtonComponent } from '../button';
 
 @Component({
   selector: 'roo-sheet',
@@ -67,10 +67,10 @@ export class RooSheetComponent {
   @Input() description?: string;
   @Input() isOpen = false;
   
-  @Output() isOpenChange = new EventEmitter<boolean>();
+  @Output() onOpenChange = new EventEmitter<boolean>();
 
   close() {
     this.isOpen = false;
-    this.isOpenChange.emit(false);
+    this.onOpenChange.emit(false);
   }
 }
