@@ -1,0 +1,48 @@
+<div class="mb-8">
+  <app-header title="Blueprint"></app-header>
+  
+  <div class="container max-w-2xl mx-auto px-4 mt-6">
+    <div class="flex justify-between items-end mb-6">
+      <div class="flex flex-col gap-1">
+        <h2 class="text-2xl font-bold">Your Plans</h2>
+        <p class="text-sm text-muted-foreground">Build and manage your workout routines.</p>
+      </div>
+      <button z-button zShape="circle" class="shadow-sm">
+        <lucide-icon [img]="Plus" class="w-4 h-4 mr-2"></lucide-icon>
+        Create
+      </button>
+    </div>
+
+    @if (myPlans.length === 0) {
+      <div class="flex flex-col items-center justify-center text-center p-10 bg-muted/40 rounded-[24px] border border-border shadow-sm">
+        <div class="p-4 bg-background border border-border rounded-full mb-4 shadow-sm">
+          <lucide-icon [img]="Dumbbell" class="w-8 h-8 text-muted-foreground"></lucide-icon>
+        </div>
+        <h3 class="font-semibold text-lg mb-1">No Plans Yet</h3>
+        <p class="text-sm text-muted-foreground max-w-[200px]">Create your first workout plan to get started.</p>
+      </div>
+    } @else {
+      <div class="grid gap-4">
+        @for (plan of myPlans; track plan.id) {
+          <z-card class="cursor-pointer hover:border-primary/50 transition-colors group">
+            <div class="flex justify-between items-center">
+              <div class="flex flex-col">
+                <span class="font-semibold text-lg">{{ plan.title }}</span>
+                <div class="flex items-center text-sm text-muted-foreground mt-2 gap-3">
+                  <div class="flex items-center gap-1.5 bg-secondary/50 px-2 py-0.5 rounded-md">
+                    <lucide-icon [img]="Calendar" class="w-3.5 h-3.5"></lucide-icon>
+                    <span class="font-medium text-xs text-secondary-foreground">{{ plan.days }} days/week</span>
+                  </div>
+                  <span class="text-xs font-medium text-muted-foreground">{{ plan.sessions }} sessions</span>
+                </div>
+              </div>
+              <div class="bg-secondary/40 text-secondary-foreground p-2 rounded-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                <lucide-icon [img]="ChevronRight" class="w-5 h-5 flex-shrink-0"></lucide-icon>
+              </div>
+            </div>
+          </z-card>
+        }
+      </div>
+    }
+  </div>
+</div>

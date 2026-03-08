@@ -6,6 +6,7 @@ import { MainLayout } from './shared/components/main-layout/main-layout';
 import { Journey } from './journey/journey';
 import { Profile } from './profile/profile';
 import { WorkoutSession } from './workout-session/workout-session';
+import { BlueprintComponent } from './blueprint/blueprint';
 
 export const routes: Routes = [
   {
@@ -14,6 +15,7 @@ export const routes: Routes = [
     children: [
       { path: '', component: Home },
       { path: 'journey', component: Journey },
+      { path: 'blueprint', component: BlueprintComponent },
       { path: 'profile', component: Profile },
     ]
   },
