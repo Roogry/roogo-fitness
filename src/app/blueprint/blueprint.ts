@@ -42,6 +42,7 @@ export class BlueprintComponent {
   readonly X = X;
 
   isCreatingPlan = false;
+  expandedPlanId: number | null = 1; // Default to first plan
 
   newPlan = {
     title: '',
@@ -50,10 +51,38 @@ export class BlueprintComponent {
   };
 
   // Placeholder mock data for blueprint lists
-  myPlans = [
-    { id: 1, title: 'Push Pull Legs (PPL)', days: 3, sessions: 3 },
-    { id: 2, title: 'Bro Split', days: 5, sessions: 5 },
+  myPlans: any[] = [
+    { 
+      id: 1, 
+      title: 'Push Pull Legs (PPL)', 
+      days: 3, 
+      sessions: [
+        { id: 101, title: 'Push Day', exercises: 6 },
+        { id: 102, title: 'Pull Day', exercises: 5 },
+        { id: 103, title: 'Leg Day', exercises: 6 }
+      ] 
+    },
+    { 
+      id: 2, 
+      title: 'Bro Split', 
+      days: 5, 
+      sessions: [
+        { id: 201, title: 'Chest', exercises: 5 },
+        { id: 202, title: 'Back', exercises: 6 },
+        { id: 203, title: 'Shoulders', exercises: 5 },
+        { id: 204, title: 'Legs', exercises: 6 },
+        { id: 205, title: 'Arms', exercises: 7 }
+      ] 
+    }
   ];
+
+  togglePlan(planId: number) {
+    if (this.expandedPlanId === planId) {
+      this.expandedPlanId = null;
+    } else {
+      this.expandedPlanId = planId;
+    }
+  }
 
   savePlan() {
     if (!this.newPlan.title.trim()) return;
@@ -65,8 +94,10 @@ export class BlueprintComponent {
       id: newId,
       title: this.newPlan.title,
       days: this.newPlan.sessionsPerWeek,
-      sessions: 0,
+      sessions: [],
     });
+
+    this.expandedPlanId = newId;
 
     this.isCreatingPlan = false;
     this.newPlan = { title: '', description: '', sessionsPerWeek: 3 };
