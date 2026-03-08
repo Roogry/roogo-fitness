@@ -1,25 +1,36 @@
 <div class="mb-8">
   <app-header title="Blueprint"></app-header>
-  
+
   <div class="container max-w-2xl mx-auto px-4 mt-6">
     <div class="flex justify-between items-end mb-6">
       <div class="flex flex-col gap-1">
         <h2 class="text-2xl font-bold">Your Plans</h2>
         <p class="text-sm text-muted-foreground">Build and manage your workout routines.</p>
       </div>
-      <button z-button zShape="circle" class="shadow-sm">
+      <button
+        z-button
+        zShape="circle"
+        class="shadow-sm"
+        (click)="
+          isCreatingPlan = true; newPlan = { title: '', description: '', sessionsPerWeek: 3 }
+        "
+      >
         <lucide-icon [img]="Plus" class="w-4 h-4 mr-2"></lucide-icon>
         Create
       </button>
     </div>
 
     @if (myPlans.length === 0) {
-      <div class="flex flex-col items-center justify-center text-center p-10 bg-muted/40 rounded-[24px] border border-border shadow-sm">
+      <div
+        class="flex flex-col items-center justify-center text-center p-10 bg-muted/40 rounded-[24px] border border-border shadow-sm"
+      >
         <div class="p-4 bg-background border border-border rounded-full mb-4 shadow-sm">
           <lucide-icon [img]="Dumbbell" class="w-8 h-8 text-muted-foreground"></lucide-icon>
         </div>
         <h3 class="font-semibold text-lg mb-1">No Plans Yet</h3>
-        <p class="text-sm text-muted-foreground max-w-[200px]">Create your first workout plan to get started.</p>
+        <p class="text-sm text-muted-foreground max-w-[200px]">
+          Create your first workout plan to get started.
+        </p>
       </div>
     } @else {
       <div class="grid gap-4">
@@ -31,18 +42,112 @@
                 <div class="flex items-center text-sm text-muted-foreground mt-2 gap-3">
                   <div class="flex items-center gap-1.5 bg-secondary/50 px-2 py-0.5 rounded-md">
                     <lucide-icon [img]="Calendar" class="w-3.5 h-3.5"></lucide-icon>
-                    <span class="font-medium text-xs text-secondary-foreground">{{ plan.days }} days/week</span>
+                    <span class="font-medium text-xs text-secondary-foreground"
+                      >{{ plan.days }} days/week</span
+                    >
                   </div>
-                  <span class="text-xs font-medium text-muted-foreground">{{ plan.sessions }} sessions</span>
+                  <span class="text-xs font-medium text-muted-foreground"
+                    >{{ plan.sessions }} sessions</span
+                  >
                 </div>
               </div>
-              <div class="bg-secondary/40 text-secondary-foreground p-2 rounded-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+              <div
+                class="bg-secondary/40 text-secondary-foreground p-2 rounded-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+              >
                 <lucide-icon [img]="ChevronRight" class="w-5 h-5 flex-shrink-0"></lucide-icon>
               </div>
             </div>
           </z-card>
         }
       </div>
+      <!-- Create Plan Sheet -->
+      <roo-sheet
+        [isOpen]="isCreatingPlan"
+        (isOpenChange)="isCreatingPlan = false"
+        title="Create Plan"
+        description="Design your new workout routine."
+      >
+        <!-- Sheet Content (Scrollable) -->
+        <div class="flex flex-col gap-6">
+          <div class="flex flex-col gap-2">
+            <label
+              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Plan Name
+            </label>
+            <input
+              z-input
+              type="text"
+              [(ngModel)]="newPlan.title"
+              placeholder="e.g., Summer Shred"
+            />
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label
+              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Description
+            </label>
+            <textarea
+              z-input
+              rows="3"
+              [(ngModel)]="newPlan.description"
+              placeholder="Optional details about this plan..."
+              class="resize-none"
+            ></textarea>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label
+              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Sessions Per Week
+            </label>
+            <div
+              class="flex items-center justify-between p-1 bg-secondary/50 rounded-2xl border border-border"
+            >
+              <button
+                z-button
+                zType="ghost"
+                class="w-10 h-10 rounded-xl flex items-center justify-center bg-background border border-border text-foreground hover:bg-muted disabled:opacity-50"
+                (click)="
+                  newPlan.sessionsPerWeek =
+                    newPlan.sessionsPerWeek > 1 ? newPlan.sessionsPerWeek - 1 : 1
+                "
+                [disabled]="newPlan.sessionsPerWeek <= 1"
+              >
+                <lucide-icon [img]="Minus" class="w-4 h-4"></lucide-icon>
+              </button>
+              <div class="flex flex-col items-center justify-center w-16">
+                <span class="text-xl font-bold">{{ newPlan.sessionsPerWeek }}</span>
+              </div>
+              <button
+                z-button
+                zType="ghost"
+                class="w-10 h-10 rounded-xl flex items-center justify-center bg-background border border-border text-foreground hover:bg-muted disabled:opacity-50"
+                (click)="
+                  newPlan.sessionsPerWeek =
+                    newPlan.sessionsPerWeek < 7 ? newPlan.sessionsPerWeek + 1 : 7
+                "
+                [disabled]="newPlan.sessionsPerWeek >= 7"
+              >
+                <lucide-icon [img]="Plus" class="w-4 h-4"></lucide-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sheet Footer -->
+        <div roo-sheet-footer>
+          <div class="mb-4">
+            <button z-button zShape="circle" class="w-full" [disabled]="!newPlan.title.trim()" (click)="savePlan()">
+              <lucide-icon [img]="Save"></lucide-icon>
+              Save Plan
+            </button>
+          </div>
+        </div>
+      </roo-sheet>
     }
   </div>
 </div>

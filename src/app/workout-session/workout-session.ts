@@ -5,6 +5,7 @@ import { ExerciseAutocomplete } from '../components/exercise-autocomplete/exerci
 import { ExerciseTracker } from '../components/exercise-tracker/exercise-tracker';
 import { HeaderComponent } from '../shared/components/header/header';
 import { ZardButtonComponent } from '../shared/components/button/button.component';
+import { ZardSheetComponent } from '../shared/components/sheet/sheet.component';
 import { LucideAngularModule, Dumbbell, Save, Plus, X, ArrowLeft, Check, Clock, Activity, BarChart2 } from 'lucide-angular';
 
 @Component({
@@ -16,6 +17,7 @@ import { LucideAngularModule, Dumbbell, Save, Plus, X, ArrowLeft, Check, Clock, 
     ExerciseTracker,
     HeaderComponent,
     ZardButtonComponent,
+    ZardSheetComponent,
     LucideAngularModule,
   ],
   templateUrl: './workout-session.html',

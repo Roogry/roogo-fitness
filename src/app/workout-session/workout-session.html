@@ -62,48 +62,14 @@
   </main>
 
   <!-- Add Exercise Sheet -->
-  @if (isAddSheetOpen()) {
-    <!-- Backdrop -->
-    <div
-      class="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm transition-opacity"
-      (click)="isAddSheetOpen.set(false)"
-    ></div>
-
-    <!-- Sheet Container -->
-    <div
-      class="fixed z-50 bg-white transition-transform bottom-0 left-0 right-0 h-[85vh] rounded-t-4xl md:top-0 md:bottom-0 md:left-auto md:right-0 md:h-full md:w-[450px] md:rounded-none md:border-l md:border-border slide-in"
-    >
-      <div class="pt-4 h-full flex flex-col gap-4">
-        <!-- Sheet Indicator -->
-        <div
-          class="w-[50px] h-2 bg-gray-200 mx-auto rounded-full cursor-pointer sm:hidden"
-          (click)="isAddSheetOpen.set(false)"
-        ></div>
-
-        <!-- Sheet Header -->
-        <div class="px-4 flex justify-between items-center">
-          <div class="flex flex-col gap-1">
-            <h2 class="font-semibold text-xl tracking-tight">Add Exercise</h2>
-            <p class="text-sm text-muted-foreground">Search or add a custom exercise.</p>
-          </div>
-          <button
-            z-button
-            zType="secondary"
-            zSize="icon"
-            zShape="circle"
-            (click)="isAddSheetOpen.set(false)"
-          >
-            <lucide-icon [img]="X"></lucide-icon>
-          </button>
-        </div>
-
-        <!-- Sheet Content -->
-        <div class="px-4 flex-1 overflow-y-auto w-full">
-          <app-exercise-autocomplete
-            (exerciseSelected)="onExerciseSelected($event)"
-          ></app-exercise-autocomplete>
-        </div>
-      </div>
-    </div>
-  }
+  <roo-sheet
+    [isOpen]="isAddSheetOpen()"
+    (isOpenChange)="isAddSheetOpen.set($event)"
+    title="Add Exercise"
+    description="Search or add a custom exercise."
+  >
+    <app-exercise-autocomplete
+      (exerciseSelected)="onExerciseSelected($event)"
+    ></app-exercise-autocomplete>
+  </roo-sheet>
 </div>
