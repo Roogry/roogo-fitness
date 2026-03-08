@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HeaderComponent } from '../shared/components/header/header';
+import { HeaderComponent } from '@/shared/components/header/header';
 import { LucideAngularModule, User } from 'lucide-angular';
 
 @Component({
