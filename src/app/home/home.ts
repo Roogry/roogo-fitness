@@ -81,6 +81,36 @@ import {
             </a>
           </div>
         </z-card>
+
+        <!-- Other Plans Section -->
+        <div class="mt-8 mb-2">
+          <div class="flex items-center justify-between mb-4 px-1">
+            <h3 class="font-semibold text-lg hover:text-primary transition-colors cursor-pointer">Explore Plans</h3>
+            <button class="text-primary text-sm font-semibold hover:underline bg-primary/10 px-3 py-1 rounded-full transition-colors hover:bg-primary hover:text-primary-foreground">View All</button>
+          </div>
+          
+          <div class="flex flex-col gap-3">
+            @for (plan of otherPlans; track plan.id) {
+              <z-card class="cursor-pointer hover:border-primary/50 transition-colors block group">
+                <div class="flex justify-between items-center">
+                  <div class="flex flex-col">
+                    <span class="font-semibold text-lg">{{ plan.title }}</span>
+                    <div class="flex items-center text-sm text-muted-foreground mt-1 gap-2">
+                      <div class="flex items-center gap-1.5 bg-secondary/50 px-2 py-0.5 rounded-md">
+                        <lucide-icon [img]="Calendar" class="w-3.5 h-3.5"></lucide-icon>
+                        <span class="font-medium text-xs text-secondary-foreground">{{ plan.sessions_per_week }} days/week</span>
+                      </div>
+                      <span class="text-xs font-medium px-2 py-0.5 rounded-md border border-border">{{ plan.difficulty }}</span>
+                    </div>
+                  </div>
+                  <div class="bg-secondary/40 rounded-full p-2 group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+                    <lucide-icon [img]="ChevronRight" class="w-5 h-5 flex-shrink-0"></lucide-icon>
+                  </div>
+                </div>
+              </z-card>
+            }
+          </div>
+        </div>
       </main>
     </div>
   `,
@@ -105,5 +135,11 @@ export class Home {
     { id: 1, title: 'Push Day Heavy', subtitle: 'Up Next' },
     { id: 2, title: 'Pull Day Focus', subtitle: 'Later' },
     { id: 3, title: 'Leg Day Volume', subtitle: 'Coming Soon' },
+  ];
+
+  otherPlans = [
+    { id: 101, title: 'Bro Split', sessions_per_week: 5, difficulty: 'Intermediate' },
+    { id: 102, title: 'Full Body Fundamentals', sessions_per_week: 3, difficulty: 'Beginner' },
+    { id: 103, title: 'Upper/Lower Power', sessions_per_week: 4, difficulty: 'Advanced' },
   ];
 }
