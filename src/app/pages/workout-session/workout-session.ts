@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, Dumbbell, Save, Plus, X, ArrowLeft, Check, Clock, Activity, BarChart2 } from 'lucide-angular';
-import { WorkoutService } from '@/shared/services/workout';
+import { WorkoutService } from '@/shared/services/workout.service';
 import { ExerciseAutocomplete } from '@/components/exercise-autocomplete/exercise-autocomplete';
 import { ExerciseTracker } from '@/components/exercise-tracker/exercise-tracker';
 import { HeaderComponent } from '@/shared/components/header/header';

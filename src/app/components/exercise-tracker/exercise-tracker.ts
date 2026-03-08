@@ -1,7 +1,7 @@
 import { Component, input, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { WorkoutService, TrackedExercise, WorkoutSet } from '../../shared/services/workout';
+import { WorkoutService, TrackedExercise, WorkoutSet } from '../../shared/services/workout.service';
 import { ZardCardComponent } from '../../shared/components/card/card.component';
 import { ZardButtonComponent } from '../../shared/components/button/button.component';
 import { ZardInputDirective } from '../../shared/components/input/input.directive';

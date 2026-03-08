@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LoggedWorkoutSession } from '../../services/workout';
+import { LoggedWorkoutSession } from '../../services/workout.service';
 import { ZardCardComponent } from '@/shared/components/card';
 import { LucideAngularModule, Activity, Clock, ArrowRight } from 'lucide-angular';
 

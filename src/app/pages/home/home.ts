@@ -2,7 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ZardCardComponent } from '@/shared/components/card';
-import { WorkoutService, LoggedWorkoutSession } from '@/shared/services/workout';
+import { WorkoutService, LoggedWorkoutSession } from '@/shared/services/workout.service';
 import { LoggedWorkoutCardComponent } from '@/shared/components/logged-workout-card/logged-workout-card';
 import { UpcomingSessionCardComponent } from '@/shared/components/upcoming-session-card/upcoming-session-card';
 import { ExplorePlanCardComponent } from '@/shared/components/explore-plan-card/explore-plan-card';

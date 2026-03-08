@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { LucideAngularModule, Activity, Clock, ArrowRight } from 'lucide-angular';
 import { HeaderComponent } from '@/shared/components/header/header';
 import { LoggedWorkoutCardComponent } from '@/shared/components/logged-workout-card/logged-workout-card';
-import { LoggedWorkoutSession, WorkoutService } from '@/shared/services/workout';
+import { LoggedWorkoutSession, WorkoutService } from '@/shared/services/workout.service';
 
 @Component({
   selector: 'app-journey',

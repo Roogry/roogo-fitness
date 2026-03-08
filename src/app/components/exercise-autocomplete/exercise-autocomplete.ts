@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { WorkoutService, Exercise } from '../../shared/services/workout';
+import { WorkoutService, Exercise } from '../../shared/services/workout.service';
 import { ZardInputDirective } from '../../shared/components/input/input.directive';
 import { LucideAngularModule, Search, Plus, Dumbbell } from 'lucide-angular';
 
