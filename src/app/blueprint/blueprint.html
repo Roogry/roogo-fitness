@@ -10,16 +10,14 @@
       <button
         z-button
         zShape="circle"
-        (click)="
-          isCreatingPlan = true; newPlan = { title: '', description: '', sessionsPerWeek: 3 }
-        "
+        (click)="openCreateSheet()"
       >
         <lucide-icon [img]="Plus"></lucide-icon>
         Create
       </button>
     </div>
 
-    @if (myPlans.length === 0) {
+    @if (displayedPlans.length === 0) {
       <div
         class="flex flex-col items-center justify-center text-center p-10 bg-muted/40 rounded-[24px] border border-border shadow-sm"
       >
@@ -33,28 +31,57 @@
       </div>
     } @else {
       <div class="grid gap-4">
-        @for (plan of myPlans; track plan.id) {
+        @for (plan of displayedPlans; track plan.id) {
           <z-card class="cursor-pointer transition-colors group overflow-hidden" [ngClass]="{'border-primary': expandedPlanId === plan.id, 'hover:border-primary/50': expandedPlanId !== plan.id}">
             <div class="flex justify-between items-center p-1" (click)="togglePlan(plan.id)">
               <div class="flex flex-col">
                 <span class="font-semibold text-lg">{{ plan.title }}</span>
                 <div class="flex items-center text-sm text-muted-foreground mt-2 gap-3">
-                  <div class="flex items-center gap-1.5 bg-secondary/50 px-2 py-0.5 rounded-md">
-                    <lucide-icon [img]="Calendar" class="w-3.5 h-3.5"></lucide-icon>
-                    <span class="font-medium text-xs text-secondary-foreground"
-                      >{{ plan.days }} days/week</span
-                    >
-                  </div>
+                  @if (!plan.isDefault) {
+                    <div class="flex items-center gap-1.5 bg-secondary/50 px-2 py-0.5 rounded-md">
+                      <lucide-icon [img]="Calendar" class="w-3.5 h-3.5"></lucide-icon>
+                      <span class="font-medium text-xs text-secondary-foreground"
+                        >{{ plan.days }} days/week</span
+                      >
+                    </div>
+                  }
                   <span class="text-xs font-medium text-muted-foreground"
                     >{{ plan.sessions.length }} sessions</span
                   >
                 </div>
               </div>
-              <div
-                class="bg-secondary/40 text-secondary-foreground p-2 rounded-full transition-all duration-200"
-                [ngClass]="{'rotate-90 bg-primary text-primary-foreground': expandedPlanId === plan.id, 'group-hover:bg-primary group-hover:text-primary-foreground': expandedPlanId !== plan.id}"
-              >
-                <lucide-icon [img]="ChevronRight" class="w-5 h-5 flex-shrink-0"></lucide-icon>
+              <div class="flex items-center gap-2">
+                @if (!plan.isDefault) {
+                  <!-- Edit Button -->
+                  <button 
+                    z-button
+                    zType="ghost"
+                    zSize="icon"
+                    zShape="circle"
+                    class="h-8 w-8 text-muted-foreground hover:bg-muted"
+                    (click)="editPlan(plan, $event)"
+                  >
+                    <lucide-icon [img]="Edit" class="w-4 h-4"></lucide-icon>
+                  </button>
+                  <!-- Delete Button -->
+                  <button 
+                    z-button
+                    zType="ghost"
+                    zSize="icon"
+                    zShape="circle"
+                    class="h-8 w-8 text-destructive hover:bg-destructive/10"
+                    (click)="deletePlan(plan.id, $event)"
+                  >
+                    <lucide-icon [img]="Trash2" class="w-4 h-4"></lucide-icon>
+                  </button>
+                }
+                
+                <div
+                  class="bg-secondary/40 text-secondary-foreground p-2 rounded-full transition-all duration-200"
+                  [ngClass]="{'rotate-90 bg-primary text-primary-foreground': expandedPlanId === plan.id, 'group-hover:bg-primary group-hover:text-primary-foreground': expandedPlanId !== plan.id}"
+                >
+                  <lucide-icon [img]="ChevronRight" class="w-5 h-5 flex-shrink-0"></lucide-icon>
+                </div>
               </div>
             </div>
 
@@ -92,7 +119,7 @@
       <roo-sheet
         [isOpen]="isCreatingPlan"
         (isOpenChange)="isCreatingPlan = false"
-        title="Create Plan"
+        [title]="editingPlanId ? 'Edit Plan' : 'Create Plan'"
         description="Design your new workout routine."
       >
         <!-- Sheet Content (Scrollable) -->
@@ -180,7 +207,7 @@
           <div class="mb-4">
             <button z-button zShape="circle" class="w-full" [disabled]="!newPlan.title.trim()" (click)="savePlan()">
               <lucide-icon [img]="Save"></lucide-icon>
-              Save Plan
+              {{ editingPlanId ? 'Save Changes' : 'Save Plan' }}
             </button>
           </div>
         </div>
