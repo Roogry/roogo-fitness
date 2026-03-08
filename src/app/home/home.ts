@@ -77,7 +77,6 @@ import {
               routerLink="/workout/session"
               class="flex items-center justify-center gap-3 w-full bg-white border-1 border-border border-dashed py-3 rounded-xl font-medium text-md hover:bg-secondary/60 hover:text-primary/80 cursor-pointer transition-all"
             >
-              <lucide-icon [img]="Play" class="w-4 h-4"></lucide-icon>
               Start Empty Workout
             </a>
           </div>
