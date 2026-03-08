@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ZardButtonComponent } from '../shared/components/button/button.component';
 import { ZardCardComponent } from '@/shared/components/card';
+import { WorkoutService, LoggedWorkoutSession } from '../shared/services/workout';
 import {
   LucideAngularModule,
   Dumbbell,
@@ -9,12 +10,15 @@ import {
   Calendar,
   ChevronRight,
   Flame,
+  Clock,
+  Activity
 } from 'lucide-angular';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, ZardButtonComponent, ZardCardComponent, LucideAngularModule],
+  imports: [CommonModule, ZardButtonComponent, ZardCardComponent, LucideAngularModule, RouterLink],
   template: `
     <div class="min-h-screen bg-background text-foreground pb-24">
       <!-- Header -->
@@ -82,35 +86,79 @@ import {
           </div>
         </z-card>
 
-        <!-- Other Plans Section -->
+        <!-- Explore Plans Section (Horizontal) -->
         <div class="mt-8 mb-2">
           <div class="flex items-center justify-between mb-4 px-1">
             <h3 class="font-semibold text-lg hover:text-primary transition-colors cursor-pointer">Explore Plans</h3>
-            <button class="text-primary text-sm font-semibold hover:underline bg-primary/10 px-3 py-1 rounded-full transition-colors hover:bg-primary hover:text-primary-foreground">View All</button>
+            <button class="text-primary text-sm font-semibold bg-primary/10 px-3 py-1 rounded-full transition-colors hover:bg-primary hover:text-primary-foreground cursor-pointer">View All</button>
           </div>
           
-          <div class="flex flex-col gap-3">
+          <div class="flex overflow-x-auto gap-3 pb-2 snap-x hide-scrollbar">
             @for (plan of otherPlans; track plan.id) {
-              <z-card class="cursor-pointer hover:border-primary/50 transition-colors block group">
-                <div class="flex justify-between items-center">
-                  <div class="flex flex-col">
-                    <span class="font-semibold text-lg">{{ plan.title }}</span>
-                    <div class="flex items-center text-sm text-muted-foreground mt-1 gap-2">
-                      <div class="flex items-center gap-1.5 bg-secondary/50 px-2 py-0.5 rounded-md">
-                        <lucide-icon [img]="Calendar" class="w-3.5 h-3.5"></lucide-icon>
-                        <span class="font-medium text-xs text-secondary-foreground">{{ plan.sessions_per_week }} days/week</span>
-                      </div>
-                      <span class="text-xs font-medium px-2 py-0.5 rounded-md border border-border">{{ plan.difficulty }}</span>
+              <z-card class="cursor-pointer hover:border-primary/50 transition-colors block group min-w-[320px] snap-start border border-transparent hover:border-primary/20">
+                <div class="flex flex-col">
+                  <span class="font-semibold text-lg">{{ plan.title }}</span>
+                  <div class="flex items-center text-sm text-muted-foreground mt-1 gap-2">
+                    <div class="flex items-center gap-1.5 bg-secondary/50 px-2 py-0.5 rounded-md">
+                      <lucide-icon [img]="Calendar" class="w-3.5 h-3.5"></lucide-icon>
+                      <span class="font-medium text-xs text-secondary-foreground">{{ plan.sessions_per_week }} days</span>
                     </div>
-                  </div>
-                  <div class="bg-secondary/40 rounded-full p-2 group-hover:bg-primary group-hover:text-primary-foreground transition-all">
-                    <lucide-icon [img]="ChevronRight" class="w-5 h-5 flex-shrink-0"></lucide-icon>
+                    <span class="text-xs font-medium px-2 py-0.5 rounded-md border border-border">{{ plan.difficulty }}</span>
                   </div>
                 </div>
               </z-card>
             }
           </div>
         </div>
+
+        <!-- Recent Activity Section -->
+        @if (recentSessions().length > 0) {
+          <div class="mt-8 mb-4">
+            <div class="flex items-center justify-between mb-4 px-1">
+              <h3 class="font-semibold text-lg hover:text-primary transition-colors cursor-pointer">Recent Activity</h3>
+              <a routerLink="/journey" class="text-primary text-sm font-semibold bg-primary/10 px-3 py-1 rounded-full transition-colors hover:bg-primary hover:text-primary-foreground cursor-pointer">View All</a>
+            </div>
+            
+            <div class="flex flex-col gap-4">
+              @for (session of recentSessions(); track session.id) {
+                <z-card>
+                  <div class="flex justify-between items-center mb-4">
+                    <div class="flex flex-col gap-2">
+                      <span class="font-bold text-lg">{{ session.session_title }}</span>
+                      <div class="flex items-center gap-2">
+                        <span class="font-medium bg-secondary text-secondary-foreground px-2.5 py-1 rounded-full text-xs">
+                          {{ formatDuration(session.total_duration) }}
+                        </span>
+                        <span class="font-medium bg-primary/10 text-primary px-2.5 py-1 rounded-full text-xs">
+                          {{ session.total_weight_lifted | number:'1.0-1' }} kg
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="flex gap-2">
+                      <div class="flex items-center gap-1.5 align-top mt-1">
+                        <lucide-icon [img]="Clock" class="w-3.5 h-3.5 text-muted-foreground"></lucide-icon>
+                        <span class="text-sm text-muted-foreground">{{ session.start_time | date:'MMM d' }}</span>
+                      </div>
+                      <div class="bg-primary/5 text-primary p-2.5 rounded-2xl flex-shrink-0">
+                        <lucide-icon [img]="Activity" class="w-5 h-5"></lucide-icon>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="bg-secondary/50 rounded-[16px] p-3.5 flex justify-between items-center group cursor-pointer hover:bg-secondary/80 transition-colors">
+                    <span class="text-sm font-medium text-secondary-foreground line-clamp-1 truncate mr-4">
+                      {{ getExerciseSummary(session) }}
+                    </span>
+                    <div class="bg-background/50 rounded-full p-1.5 group-hover:bg-background transition-colors">
+                      <lucide-icon [img]="ArrowRight" class="w-4 h-4 text-foreground flex-shrink-0"></lucide-icon>
+                    </div>
+                  </div>
+                </z-card>
+              }
+            </div>
+          </div>
+        }
       </main>
     </div>
   `,
@@ -124,12 +172,46 @@ import {
     }
   `,
 })
-export class Home {
+export class Home implements OnInit {
   readonly Dumbbell = Dumbbell;
   readonly Play = Play;
   readonly Calendar = Calendar;
   readonly ChevronRight = ChevronRight;
   readonly Flame = Flame;
+  readonly Clock = Clock;
+  readonly Activity = Activity;
+  readonly ArrowRight = ChevronRight; // Reuse icon
+
+  workoutService = inject(WorkoutService);
+  recentSessions = signal<LoggedWorkoutSession[]>([]);
+
+  async ngOnInit() {
+    try {
+      const allSessions = await this.workoutService.getLoggedWorkoutSessions();
+      // Only grab the last 2 sessions
+      this.recentSessions.set(allSessions.slice(0, 2));
+    } catch (e) {
+      console.error('Failed to fetch recent sessions', e);
+    }
+  }
+
+  getExerciseSummary(session: LoggedWorkoutSession): string {
+    const names = new Set(session.workouts.map(w => w.workout_title).filter(Boolean));
+    const uniqueNames = Array.from(names);
+    if (uniqueNames.length === 0) return 'No exercises recorded';
+    if (uniqueNames.length <= 2) return uniqueNames.join(', ');
+    return `${uniqueNames[0]}, ${uniqueNames[1]} & ${uniqueNames.length - 2} more`;
+  }
+
+  formatDuration(minutes: number): string {
+    if (!minutes) return '0 min';
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (hours > 0) {
+      return `${hours}h ${mins > 0 ? mins + 'min' : ''}`.trim();
+    }
+    return `${mins} min`;
+  }
 
   upcomingSessions = [
     { id: 1, title: 'Push Day Heavy', subtitle: 'Up Next' },
