@@ -4,7 +4,7 @@
       <!-- Left action area -->
       @if (showBackBtn()) {
         @if (backLink()) {
-          <a [routerLink]="backLink()" z-button zType="secondary" zSize="icon-lg" zShape="circle">
+          <a [routerLink]="backLink()" z-button zType="secondary" zSize="icon" zShape="circle">
             <lucide-icon [img]="ArrowLeft"></lucide-icon>
             <span class="sr-only">Back</span>
           </a>
@@ -13,7 +13,7 @@
             (click)="backClick.emit()"
             z-button
             zType="secondary"
-            zSize="icon-lg"
+            zSize="icon"
             zShape="circle"
           >
             <lucide-icon [img]="ArrowLeft"></lucide-icon>
