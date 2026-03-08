@@ -70,21 +70,18 @@ import {
               </div>
             }
           </div>
-        </z-card>
 
-        <!-- Start Empty Workout Action -->
-        <div class="mt-8">
-          <div class="flex items-center justify-between mb-4 px-1">
-            <h3 class="font-semibold text-lg">Quick Actions</h3>
+          <!-- Start Empty Workout Action -->
+          <div class="mt-4">
+            <a
+              routerLink="/workout/session"
+              class="flex items-center justify-center gap-3 w-full bg-white border-1 border-border border-dashed py-3 rounded-xl font-medium text-md hover:bg-secondary/60 hover:text-primary/80 cursor-pointer transition-all"
+            >
+              <lucide-icon [img]="Play" class="w-4 h-4"></lucide-icon>
+              Start Empty Workout
+            </a>
           </div>
-          <a
-            routerLink="/workout/session"
-            class="flex items-center justify-center gap-3 w-full bg-white border-1 border-border py-5 px-6 rounded-xl font-semibold text-lg hover:bg-secondary/60 hover:text-primary/80 cursor-pointer transition-all"
-          >
-            <lucide-icon [img]="Play" class="w-6 h-6"></lucide-icon>
-            Start Empty Workout
-          </a>
-        </div>
+        </z-card>
       </main>
     </div>
   `,
