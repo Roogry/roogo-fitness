@@ -22,9 +22,11 @@
           >
             {{ trackedExercise().exercise.name }}
           </h3>
-          <p class="text-xs text-muted-foreground group-hover:opacity-60 transition-opacity">
-            {{ trackedExercise().exercise.muscle_group }}
-          </p>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-md font-medium">
+              {{ trackedExercise().exercise.primary_muscle?.name }}
+            </span>
+          </div>
         </div>
       </div>
     </a>

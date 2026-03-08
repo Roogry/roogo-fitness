@@ -34,7 +34,7 @@
                 <div
                   class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground"
                 >
-                  {{ exercise()!.muscle_group }}
+                  {{ exercise()!.primary_muscle?.name }}
                 </div>
                 @if (exercise()?.secondary_muscles) {
                   <div
@@ -127,11 +127,8 @@
             }
 
             <z-card zTitle="About this exercise">
-              <p class="text-muted-foreground leading-relaxed">
-                This is a placeholder description for <strong>{{ exercise()!.name }}</strong
-                >. In a full application, this section would contain detailed instructions, form
-                cues, common mistakes, and video demonstrations for targeting the
-                {{ exercise()!.muscle_group }} muscles.
+              <p class="text-sm text-muted-foreground leading-relaxed">
+                Targets the {{ exercise()!.primary_muscle?.name }} muscles.
               </p>
             </z-card>
 

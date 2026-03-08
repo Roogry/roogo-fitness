@@ -1,32 +1,31 @@
 import { Muscle, Exercise, LoggedWorkoutSession } from '../types/workout.types';
 
 export const mockMuscles: Muscle[] = [
-  { id: 1, name: 'Upper Chest', muscle_group: 'Chest' },
-  { id: 2, name: 'Midle Chest', muscle_group: 'Chest' },
-  { id: 3, name: 'Lower Chest', muscle_group: 'Chest' },
-  { id: 4, name: 'Front Delt', muscle_group: 'Shoulders' },
-  { id: 5, name: 'Side Delt', muscle_group: 'Shoulders' },
-  { id: 6, name: 'Back Delt', muscle_group: 'Shoulders' },
-  { id: 7, name: 'Triceps', muscle_group: 'Arms' },
-  { id: 8, name: 'Biceps', muscle_group: 'Arms' },
-  { id: 9, name: 'Lats', muscle_group: 'Back' },
-  { id: 10, name: 'Traps', muscle_group: 'Back' },
-  { id: 11, name: 'Upper Back', muscle_group: 'Back' },
-  { id: 12, name: 'Quadriceps', muscle_group: 'Legs' },
-  { id: 13, name: 'Hamstrings', muscle_group: 'Legs' },
-  { id: 14, name: 'Gluteus', muscle_group: 'Legs' },
-  { id: 15, name: 'Calves', muscle_group: 'Legs' },
-  { id: 16, name: 'Core', muscle_group: 'Core' },
+  { id: 1, name: 'Upper Chest' },
+  { id: 2, name: 'Midle Chest' },
+  { id: 3, name: 'Lower Chest' },
+  { id: 4, name: 'Front Delt' },
+  { id: 5, name: 'Side Delt' },
+  { id: 6, name: 'Back Delt' },
+  { id: 7, name: 'Triceps' },
+  { id: 8, name: 'Biceps' },
+  { id: 9, name: 'Lats' },
+  { id: 10, name: 'Traps' },
+  { id: 11, name: 'Upper Back' },
+  { id: 12, name: 'Quadriceps' },
+  { id: 13, name: 'Hamstrings' },
+  { id: 14, name: 'Gluteus' },
+  { id: 15, name: 'Calves' },
+  { id: 16, name: 'Core' },
 ];
 
 export const mockExercises: Exercise[] = [
   {
     id: 1,
     name: 'Barbell Bench Press',
-    muscle_group: 'Chest',
     short_description:
       'A compound push exercise that builds chest, shoulders, and triceps size and strength.',
-    primary_muscle_id: 1,
+    primary_muscle: mockMuscles[0],
     recommended_warmup_sets: 2,
     recommended_working_sets: 3,
     recommended_rpe: 8,
@@ -50,8 +49,8 @@ export const mockExercises: Exercise[] = [
   {
     id: 2,
     name: 'Squat',
-    muscle_group: 'Legs',
     short_description: 'The king of all leg exercises, building quad and glute strength.',
+    primary_muscle: mockMuscles[11],
     media: [
       {
         id: 103,
@@ -62,12 +61,12 @@ export const mockExercises: Exercise[] = [
       },
     ],
   },
-  { id: 3, name: 'Deadlift', muscle_group: 'Back', media: [] },
-  { id: 4, name: 'Overhead Press', muscle_group: 'Shoulders', media: [] },
-  { id: 5, name: 'Barbell Row', muscle_group: 'Back', media: [] },
-  { id: 6, name: 'Pull Up', muscle_group: 'Back', media: [] },
-  { id: 7, name: 'Dumbbell Curl', muscle_group: 'Arms', media: [] },
-  { id: 8, name: 'Triceps Extension', muscle_group: 'Arms', media: [] },
+  { id: 3, name: 'Deadlift', primary_muscle: mockMuscles[8], media: [] },
+  { id: 4, name: 'Overhead Press', primary_muscle: mockMuscles[3], media: [] },
+  { id: 5, name: 'Barbell Row', primary_muscle: mockMuscles[10], media: [] },
+  { id: 6, name: 'Pull Up', primary_muscle: mockMuscles[8], media: [] },
+  { id: 7, name: 'Dumbbell Curl', primary_muscle: mockMuscles[7], media: [] },
+  { id: 8, name: 'Triceps Extension', primary_muscle: mockMuscles[6], media: [] },
 ];
 
 export const mockLoggedWorkoutSessions: LoggedWorkoutSession[] = [

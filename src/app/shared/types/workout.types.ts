@@ -8,7 +8,6 @@ export interface ExerciseMedia {
 export interface Muscle {
   id: number;
   name: string;
-  muscle_group: string;
   anatomy_image_url?: string;
 }
 
@@ -16,14 +15,15 @@ export interface Exercise {
   id: number;
   name: string;
   short_description?: string;
-  muscle_group: string; // Denormalized for UI convenience
-  primary_muscle_id?: number;
+  primary_muscle?: Muscle;
   recommended_warmup_sets?: number;
   recommended_working_sets?: number;
   recommended_rpe?: number;
   recommended_rest_time_sec?: number;
+  secondary_muscles?: Muscle[];
   media: ExerciseMedia[];
-  secondary_muscles?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface WorkoutSet {
@@ -72,5 +72,38 @@ export interface LoggedWorkoutSession {
   total_duration: number;
   total_weight_lifted: number;
   notes?: string;
+  createdAt?: string;
+  updatedAt?: string;
   workouts: LoggedWorkout[]; 
+}
+
+export interface WorkoutExercise {
+  exercise_id: number;
+  order: number;
+  target_sets?: number;
+  target_reps?: number;
+  target_rest_time?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface WorkoutPlanSession {
+  id: number; // Timestamp based
+  title: string;
+  session_order: number; // Order to show within the plan
+  createdAt?: string;
+  updatedAt?: string;
+  workout_exercises?: WorkoutExercise[]; 
+}
+
+export interface WorkoutPlan {
+  id: number;
+  title: string;
+  description?: string;
+  days: number; // sessions per week
+  isDefault?: boolean;
+  isActive?: boolean; // Indicates the current active plan for the home page
+  createdAt?: string;
+  updatedAt?: string;
+  sessions: WorkoutPlanSession[]; // Nested array of planned sessions
 }

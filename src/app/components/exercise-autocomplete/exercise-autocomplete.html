@@ -45,8 +45,10 @@
             </div>
             <div class="flex flex-col gap-1">
               <span class="font-bold text-base">{{ exercise.name }}</span>
-              <span class="text-sm text-muted-foreground">
-                {{ exercise.muscle_group }}
+              <span
+                class="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-md font-medium"
+              >
+                {{ exercise.primary_muscle?.name }}
               </span>
             </div>
           </div>

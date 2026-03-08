@@ -2,11 +2,12 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { WorkoutService, ExerciseMedia, Muscle } from '../../shared/services/workout.service';
-import { ZardCardComponent } from '../../shared/components/card/card.component';
-import { ZardButtonComponent } from '../../shared/components/button/button.component';
-import { ZardInputDirective } from '../../shared/components/input/input.directive';
-import { HeaderComponent } from '../../shared/components/header/header';
+import { HeaderComponent } from '@/shared/components/header/header';
+import { WorkoutService, ExerciseMedia, Muscle } from '@/shared/services/workout.service';
+import { ZardCardComponent } from '@/shared/components/card/card.component';
+import { ZardButtonComponent } from '@/shared/components/button/button.component';
+import { ZardInputDirective } from '@/shared/components/input/input.directive';
+import { ZardSelectImports } from '@/shared/components/select';
 import {
   LucideAngularModule,
   ArrowLeft,
@@ -18,7 +19,6 @@ import {
   Trash2,
   Plus,
 } from 'lucide-angular';
-import { ZardSelectImports } from '@/shared/components/select';
 
 @Component({
   selector: 'app-exercise-edit',
@@ -83,12 +83,9 @@ export class ExerciseEdit implements OnInit {
 
           if (detail) {
             this.name.set(detail.name);
-            this.primaryGroup.set(detail.muscle_group);
+            this.primaryGroup.set(detail.primary_muscle?.name || '');
 
-            // Convert comma-separated string back to array if needed
-            const sec = detail.secondary_muscles
-              ? detail.secondary_muscles.split(',').map((s) => s.trim())
-              : [];
+            const sec = detail.secondary_muscles?.map(m => m.name) || [];
             this.secondaryMuscles.set(sec);
             this.media.set([...(detail.media || [])]);
           } else {
@@ -178,17 +175,19 @@ export class ExerciseEdit implements OnInit {
     this.isSaving.set(true);
 
     // Simulate slight delay for realism
-    setTimeout(() => {
-      this.workoutService.updateExercise(id, {
-        name: this.name().trim(),
-        muscle_group: this.primaryGroup().trim(),
-        secondary_muscles: this.secondaryMuscles().length
-          ? this.secondaryMuscles().join(', ')
-          : undefined,
-        media: this.media(),
-      });
-      this.isSaving.set(false);
-      this.router.navigate(['/exercise', id]);
-    }, 400);
+    const primaryName = this.primaryGroup().trim();
+    const primaryMuscle = this.availableMuscles().find(m => m.name === primaryName);
+    const secondaryMuscles = this.secondaryMuscles()
+        .map(name => this.availableMuscles().find(m => m.name === name))
+        .filter((m): m is Muscle => !!m);
+
+    this.workoutService.updateExercise(id, {
+      name: this.name().trim(),
+      primary_muscle: primaryMuscle,
+      secondary_muscles: secondaryMuscles.length ? secondaryMuscles : undefined,
+      media: this.media(),
+    });
+    this.isSaving.set(false);
+    this.router.navigate(['/exercise', id]);
   }
 }

@@ -42,7 +42,7 @@
                   for="muscle"
                   class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  Primary Muscle Group <span class="text-destructive">*</span>
+                  Primary Muscle <span class="text-destructive">*</span>
                 </label>
                 <z-select
                   id="muscle"
@@ -55,7 +55,7 @@
                   <z-select-item zValue="" disabled>Select primary muscle</z-select-item>
                   @for (muscle of availableMuscles(); track muscle.id) {
                     <z-select-item [zValue]="muscle.name"
-                      >{{ muscle.name }} ({{ muscle.muscle_group }})</z-select-item
+                      >{{ muscle.name }}</z-select-item
                     >
                   }
                 </z-select>

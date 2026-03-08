@@ -21,6 +21,7 @@
     "@angular/service-worker": "^21.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "idb": "^8.0.3",
     "lucide-angular": "^0.577.0",
     "rxjs": "~7.8.0",
     "tailwind-merge": "^3.5.0",

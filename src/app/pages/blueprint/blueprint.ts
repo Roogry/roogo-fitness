@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DbService } from '@/shared/services/db.service';
+import { WorkoutPlan } from '@/shared/types/workout.types';
 import { ZardCardComponent } from '@/shared/components/card';
 import { ZardButtonComponent } from '@/shared/components/button/button.component';
 import { RooSheetComponent } from '@/shared/components/sheet/sheet.component';
@@ -34,7 +36,7 @@ import {
   ],
   templateUrl: './blueprint.html',
 })
-export class BlueprintComponent {
+export class BlueprintComponent implements OnInit {
   readonly Plus = Plus;
   readonly Dumbbell = Dumbbell;
   readonly Calendar = Calendar;
@@ -45,9 +47,11 @@ export class BlueprintComponent {
   readonly Edit = Edit;
   readonly Trash2 = Trash2;
 
+  dbService = inject(DbService);
+
   isCreatingPlan = false;
   editingPlanId: number | null = null;
-  expandedPlanId: number | null = 1; // Default to first plan
+  expandedPlanId = signal<number | null>(null); // Default to first plan dynamically
 
   newPlan = {
     title: '',
@@ -55,42 +59,40 @@ export class BlueprintComponent {
     sessionsPerWeek: 3,
   };
 
-  // Placeholder mock data for blueprint lists
-  myPlans: any[] = [
-    {
-      id: 0,
-      title: 'My Session',
-      days: 0,
-      isDefault: true,
-      sessions: [],
-    },
-    {
-      id: 1,
-      title: 'Push Pull Legs (PPL)',
-      days: 3,
-      sessions: [
-        { id: 101, title: 'Push Day', exercises: 6 },
-        { id: 102, title: 'Pull Day', exercises: 5 },
-        { id: 103, title: 'Leg Day', exercises: 6 },
-      ],
-    },
-    {
-      id: 2,
-      title: 'Bro Split',
-      days: 5,
-      sessions: [
-        { id: 201, title: 'Chest', exercises: 5 },
-        { id: 202, title: 'Back', exercises: 6 },
-        { id: 203, title: 'Shoulders', exercises: 5 },
-        { id: 204, title: 'Legs', exercises: 6 },
-        { id: 205, title: 'Arms', exercises: 7 },
-      ],
-    },
-  ];
+  myPlans = signal<WorkoutPlan[]>([]);
+
+  async ngOnInit() {
+    await this.loadPlans();
+    const plans = this.myPlans();
+    if (plans.length > 0 && !this.expandedPlanId()) {
+      const firstRegular = plans.find(p => !p.isDefault);
+      this.expandedPlanId.set(firstRegular ? firstRegular.id : plans[0].id);
+    }
+  }
+
+  async loadPlans() {
+    let plans = await this.dbService.getWorkoutPlans();
+    let defaultPlan = plans.find(p => p.isDefault);
+    
+    if (!defaultPlan) {
+      defaultPlan = {
+        id: Date.now(),
+        title: 'My Session',
+        days: 0,
+        isDefault: true,
+        sessions: [],
+      };
+      await this.dbService.saveWorkoutPlan(defaultPlan);
+      plans.push(defaultPlan);
+    }
+    
+    this.myPlans.set(plans);
+  }
 
   get displayedPlans() {
-    const regularPlans = this.myPlans.filter((p) => !p.isDefault);
-    const defaultPlan = this.myPlans.find((p) => p.isDefault);
+    const plans = this.myPlans();
+    const regularPlans = plans.filter((p) => !p.isDefault);
+    const defaultPlan = plans.find((p) => p.isDefault);
 
     if (defaultPlan && defaultPlan.sessions && defaultPlan.sessions.length > 0) {
       return [...regularPlans, defaultPlan];
@@ -99,10 +101,10 @@ export class BlueprintComponent {
   }
 
   togglePlan(planId: number) {
-    if (this.expandedPlanId === planId) {
-      this.expandedPlanId = null;
+    if (this.expandedPlanId() === planId) {
+      this.expandedPlanId.set(null);
     } else {
-      this.expandedPlanId = planId;
+      this.expandedPlanId.set(planId);
     }
   }
 
@@ -112,7 +114,7 @@ export class BlueprintComponent {
     this.isCreatingPlan = true;
   }
 
-  editPlan(plan: any, event: Event) {
+  editPlan(plan: WorkoutPlan, event: Event) {
     event.stopPropagation();
     this.editingPlanId = plan.id;
     this.newPlan = {
@@ -123,54 +125,61 @@ export class BlueprintComponent {
     this.isCreatingPlan = true;
   }
 
-  deletePlan(planId: number, event: Event) {
+  async deletePlan(planId: number, event: Event) {
     event.stopPropagation();
 
-    const planIndex = this.myPlans.findIndex((p) => p.id === planId);
-    if (planIndex === -1) return;
+    const plans = this.myPlans();
+    const planToDelete = plans.find((p) => p.id === planId);
+    if (!planToDelete || planToDelete.isDefault) return;
 
-    const planToDelete = this.myPlans[planIndex];
-    if (planToDelete.isDefault) return;
-
-    const defaultPlan = this.myPlans.find((p) => p.isDefault);
+    let defaultPlan = plans.find((p) => p.isDefault);
 
     // Move sessions from deleted plan to default plan
     if (defaultPlan && planToDelete.sessions.length > 0) {
+      // Need clone to trigger updates correctly if needed, but save to db is what matters
       defaultPlan.sessions = [...defaultPlan.sessions, ...planToDelete.sessions];
+      await this.dbService.saveWorkoutPlan(defaultPlan);
     }
 
-    // Remove the plan
-    this.myPlans.splice(planIndex, 1);
+    // Remove the plan centrally
+    await this.dbService.deleteWorkoutPlan(planId);
 
-    if (this.expandedPlanId === planId) {
-      this.expandedPlanId = defaultPlan ? defaultPlan.id : null;
+    if (this.expandedPlanId() === planId) {
+      this.expandedPlanId.set(defaultPlan ? defaultPlan.id : null);
     }
+
+    await this.loadPlans();
   }
 
-  savePlan() {
+  async savePlan() {
     if (!this.newPlan.title.trim()) return;
+
+    const plans = this.myPlans();
 
     if (this.editingPlanId !== null) {
       // Update existing
-      const plan = this.myPlans.find((p) => p.id === this.editingPlanId);
+      const plan = plans.find((p) => p.id === this.editingPlanId);
       if (plan) {
         plan.title = this.newPlan.title;
         plan.description = this.newPlan.description;
         plan.days = this.newPlan.sessionsPerWeek;
+        await this.dbService.saveWorkoutPlan(plan);
       }
     } else {
       // Create new
       const newId = Date.now();
-      this.myPlans.push({
+      const newPlan: WorkoutPlan = {
         id: newId,
         title: this.newPlan.title,
         description: this.newPlan.description,
         days: this.newPlan.sessionsPerWeek,
         sessions: [],
-      });
-      this.expandedPlanId = newId;
+      };
+      await this.dbService.saveWorkoutPlan(newPlan);
+      this.expandedPlanId.set(newId);
     }
 
     this.isCreatingPlan = false;
+    await this.loadPlans();
   }
 }

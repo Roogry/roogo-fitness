@@ -1,6 +1,7 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, signal, inject } from '@angular/core';
 import { Exercise, Muscle, TrackedExercise, WorkoutSet, LoggedWorkoutSession } from '../types/workout.types';
 import { mockMuscles, mockExercises, mockLoggedWorkoutSessions } from '../mocks/workout.mock';
+import { DbService } from './db.service';
 
 export * from '../types/workout.types';
 
@@ -8,6 +9,9 @@ export * from '../types/workout.types';
   providedIn: 'root',
 })
 export class WorkoutService {
+  // Services
+  private dbService = inject(DbService);
+
   // Mock API Data
   private mockMuscles = mockMuscles;
   private mockExercises = [...mockExercises];
@@ -34,7 +38,7 @@ export class WorkoutService {
   });
 
   constructor() {
-    this.loadOfflineQueue();
+    // DbService handles init
   }
 
   startSessionTimer() {
@@ -103,7 +107,6 @@ export class WorkoutService {
     const newExercise: Exercise = {
       id: Date.now(),
       name,
-      muscle_group: 'Custom',
       media: [],
     };
     this.mockExercises.push(newExercise);
@@ -208,38 +211,42 @@ export class WorkoutService {
     const workoutData = this.activeExercises();
     if (workoutData.length === 0) return;
 
-    // Format for backend (from api_docs.json execution domain)
-    const payload = {
-      start_time: new Date().toISOString(),
-      end_time: new Date().toISOString(), // Mocking immediate finish
+    const session: LoggedWorkoutSession = {
+      id: Date.now(),
+      user_id: 'local_user', 
+      session_title: 'Unplanned Session', 
+      start_time: new Date(this.sessionStartTime() || Date.now()).toISOString(),
+      end_time: new Date().toISOString(),
+      total_duration: this.sessionDuration(),
+      total_weight_lifted: this.totalVolume(),
       notes: 'Logged via local storage app',
-      logged_sets: workoutData.flatMap((te) =>
-        te.sets.map((s) => ({
-          exercise_id: s.exercise_id,
+      workouts: workoutData.map(te => ({
+        id: Date.now() + Math.floor(Math.random() * 1000), 
+        exercise_id: te.exercise.id,
+        exercise: te.exercise,
+        workout_title: te.exercise.name,
+        sets: te.sets.map(s => ({
+          id: Date.now() + Math.floor(Math.random() * 10000),
+          logged_workout_id: 0, 
+          exercise_id: te.exercise.id,
           set_number: s.set_number,
-          is_warmup: false,
+          is_warmup: false, 
           reps_completed: s.reps_completed,
           weight_lifted: s.weight_lifted,
-          completed_at: new Date().toISOString(),
-        })),
-      ),
+          completed_at: new Date().toISOString()
+        }))
+      }))
     };
 
-    console.group('Syncing Session');
-    console.log('Payload:', payload);
+    console.group('Saving Session to DB');
+    console.log('Session:', session);
 
     try {
-      // Simulate API Call
-      if (!navigator.onLine) {
-        throw new Error('Offline mode detected');
-      }
-      // Fake delay
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      console.log('Sync Successful!');
+      await this.dbService.saveLoggedSession(session);
+      console.log('Session successfully saved to IndexedDB!');
       this.clearSession();
     } catch (error) {
-      console.warn('Sync failed, saving to offline queue', error);
-      this.queueForLater(payload);
+      console.error('Failed to save session to DB', error);
       this.clearSession();
     }
     console.groupEnd();
@@ -250,22 +257,5 @@ export class WorkoutService {
     this.sessionStartTime.set(null);
     this.sessionDuration.set(0);
     this.activeExercises.set([]);
-  }
-
-  private queueForLater(payload: any) {
-    const queue = JSON.parse(localStorage.getItem('workout_offline_queue') || '[]');
-    queue.push(payload);
-    localStorage.setItem('workout_offline_queue', JSON.stringify(queue));
-    alert('You are offline. Workout saved locally and will sync when connection is restored.');
-  }
-
-  private loadOfflineQueue() {
-    const queue = JSON.parse(localStorage.getItem('workout_offline_queue') || '[]');
-    if (queue.length > 0 && navigator.onLine) {
-      console.log(`Found ${queue.length} offline workouts. Attempting to sync...`);
-      // In a real app we would loop and sync these. For now we just log them.
-      console.log('Pending Syncs:', queue);
-      // localStorage.removeItem('workout_offline_queue');
-    }
   }
 }
