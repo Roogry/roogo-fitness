@@ -1,141 +1,183 @@
-    <div class="min-h-screen bg-background text-foreground pb-24">
-      <!-- Header -->
-      <div class="container max-w-2xl mx-auto px-4 pt-6">
-        <div class="flex items-center gap-4">
-          <div class="size-16 rounded-full bg-secondary flex items-center justify-center">
-            <lucide-icon [img]="Dumbbell" class="size-6"></lucide-icon>
+<div class="mb-8">
+  <!-- Header -->
+  <div class="container max-w-2xl mx-auto px-4 pt-6">
+    <div class="flex items-center gap-4">
+      <div class="size-16 rounded-full bg-secondary flex items-center justify-center">
+        <lucide-icon [img]="Dumbbell" class="size-6"></lucide-icon>
+      </div>
+      <div class="flex flex-col gap-1">
+        <h1 class="text-xl font-bold">Ganbatte, Jodie!</h1>
+        <div class="flex items-center gap-1">
+          <p class="text-sm text-muted-foreground">3 days this week</p>
+          <lucide-icon [img]="Flame" class="h-3 w-3"></lucide-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="container mx-auto px-4 max-w-2xl mt-8">
+    <!-- Hero Card: Current Plan & Session -->
+    <z-card class="mb-6 block hover:border-primary/50 transition-colors cursor-pointer group">
+      <div class="flex justify-between items-start mb-6">
+        <div class="flex flex-col">
+          <span class="text-sm font-semibold text-primary mb-1 uppercase tracking-wider"
+            >Current Plan</span
+          >
+          <h2 class="text-2xl font-bold">Push Pull Legs (PPL)</h2>
+          <div class="flex items-center text-sm text-muted-foreground mt-2 gap-2">
+            <lucide-icon [img]="Calendar" class="w-4 h-4"></lucide-icon>
+            <span>3 days / week</span>
           </div>
-          <div class="flex flex-col gap-1">
-            <h1 class="text-xl font-bold">Ganbatte, Jodie!</h1>
-            <div class="flex items-center gap-1">
-              <p class="text-sm text-muted-foreground">3 days this week</p>
-              <lucide-icon [img]="Flame" class="h-3 w-3"></lucide-icon>
-            </div>
-          </div>
+        </div>
+        <div class="p-3 bg-primary/5 text-primary rounded-2xl hidden sm:inline-block">
+          <lucide-icon [img]="Dumbbell" class="w-6 h-6"></lucide-icon>
         </div>
       </div>
 
-      <main class="container mx-auto px-4 max-w-2xl mt-8">
-        <!-- Hero Card: Current Plan & Session -->
-        <z-card class="mb-6 block hover:border-primary/50 transition-colors cursor-pointer group">
-          <div class="flex justify-between items-start mb-6">
-            <div class="flex flex-col">
-              <span class="text-sm font-semibold text-primary mb-1 uppercase tracking-wider"
-                >Current Plan</span
-              >
-              <h2 class="text-2xl font-bold">Push Pull Legs (PPL)</h2>
-              <div class="flex items-center text-sm text-muted-foreground mt-2 gap-2">
-                <lucide-icon [img]="Calendar" class="w-4 h-4"></lucide-icon>
-                <span>3 days / week</span>
-              </div>
+      <!-- Horizontal List of Upcoming Sessions -->
+      <div class="flex overflow-x-auto gap-3 pb-2 mt-4 snap-x hide-scrollbar">
+        @for (session of upcomingSessions; track session.id) {
+          <div
+            class="bg-secondary/40 rounded-[16px] p-4 flex justify-between items-center hover:bg-secondary/60 transition-colors min-w-[240px] snap-start border border-transparent hover:border-primary/20"
+          >
+            <div class="flex flex-col mr-4">
+              <span class="text-xs text-muted-foreground mb-1">{{ session.subtitle }}</span>
+              <span class="font-semibold text-secondary-foreground text-lg whitespace-nowrap">{{
+                session.title
+              }}</span>
             </div>
-            <div
-              class="bg-primary/5 text-primary p-3 rounded-2xl"
+            <button
+              z-button
+              zShape="circle"
+              zType="outline"
+              zSize="icon"
+              class="hover:bg-primary hover:text-white flex-shrink-0 transition-colors"
             >
-              <lucide-icon [img]="Dumbbell" class="w-6 h-6"></lucide-icon>
-            </div>
-          </div>
-
-          <!-- Horizontal List of Upcoming Sessions -->
-          <div class="flex overflow-x-auto gap-3 pb-2 mt-4 snap-x hide-scrollbar">
-            @for (session of upcomingSessions; track session.id) {
-              <div
-                class="bg-secondary/40 rounded-[16px] p-4 flex justify-between items-center hover:bg-secondary/60 transition-colors min-w-[240px] snap-start border border-transparent hover:border-primary/20"
-              >
-                <div class="flex flex-col mr-4">
-                  <span class="text-xs text-muted-foreground mb-1">{{ session.subtitle }}</span>
-                  <span class="font-semibold text-secondary-foreground text-lg whitespace-nowrap">{{ session.title }}</span>
-                </div>
-                <button z-button zShape="circle" zType="outline" zSize="icon" class="hover:bg-primary hover:text-white flex-shrink-0 transition-colors">
-                  <lucide-icon [img]="ChevronRight"></lucide-icon>
-                </button>
-              </div>
-            }
-          </div>
-
-          <!-- Start Empty Workout Action -->
-          <div class="mt-4">
-            <a
-              routerLink="/workout/session"
-              class="flex items-center justify-center gap-3 w-full bg-white border-1 border-border border-dashed py-3 rounded-xl font-medium text-md hover:bg-secondary/60 hover:text-primary/80 cursor-pointer transition-all"
-            >
-              Start Empty Workout
-            </a>
-          </div>
-        </z-card>
-
-        <!-- Explore Plans Section (Horizontal) -->
-        <div class="mt-8 mb-2">
-          <div class="flex items-center justify-between mb-4 px-1">
-            <h3 class="font-semibold text-lg hover:text-primary transition-colors cursor-pointer">Explore Plans</h3>
-            <button class="text-primary text-sm font-semibold bg-primary/10 px-3 py-1 rounded-full transition-colors hover:bg-primary hover:text-primary-foreground cursor-pointer">View All</button>
-          </div>
-          
-          <div class="flex overflow-x-auto gap-3 pb-2 snap-x hide-scrollbar">
-            @for (plan of otherPlans; track plan.id) {
-              <z-card class="cursor-pointer hover:border-primary/50 transition-colors block group min-w-[320px] snap-start border border-transparent hover:border-primary/20">
-                <div class="flex flex-col">
-                  <span class="font-semibold text-lg">{{ plan.title }}</span>
-                  <div class="flex items-center text-sm text-muted-foreground mt-1 gap-2">
-                    <div class="flex items-center gap-1.5 bg-secondary/50 px-2 py-0.5 rounded-md">
-                      <lucide-icon [img]="Calendar" class="w-3.5 h-3.5"></lucide-icon>
-                      <span class="font-medium text-xs text-secondary-foreground">{{ plan.sessions_per_week }} days</span>
-                    </div>
-                    <span class="text-xs font-medium px-2 py-0.5 rounded-md border border-border">{{ plan.difficulty }}</span>
-                  </div>
-                </div>
-              </z-card>
-            }
-          </div>
-        </div>
-
-        <!-- Recent Activity Section -->
-        @if (recentSessions().length > 0) {
-          <div class="mt-8 mb-4">
-            <div class="flex items-center justify-between mb-4 px-1">
-              <h3 class="font-semibold text-lg hover:text-primary transition-colors cursor-pointer">Recent Activity</h3>
-              <a routerLink="/journey" class="text-primary text-sm font-semibold bg-primary/10 px-3 py-1 rounded-full transition-colors hover:bg-primary hover:text-primary-foreground cursor-pointer">View All</a>
-            </div>
-            
-            <div class="flex flex-col gap-4">
-              @for (session of recentSessions(); track session.id) {
-                <z-card>
-                  <div class="flex justify-between items-center mb-4">
-                    <div class="flex flex-col gap-2">
-                      <span class="font-bold text-lg">{{ session.session_title }}</span>
-                      <div class="flex items-center gap-2">
-                        <span class="font-medium bg-secondary text-secondary-foreground px-2.5 py-1 rounded-full text-xs">
-                          {{ formatDuration(session.total_duration) }}
-                        </span>
-                        <span class="font-medium bg-primary/10 text-primary px-2.5 py-1 rounded-full text-xs">
-                          {{ session.total_weight_lifted | number:'1.0-1' }} kg
-                        </span>
-                      </div>
-                    </div>
-
-                    <div class="flex gap-2">
-                      <div class="flex items-center gap-1.5 align-top mt-1">
-                        <lucide-icon [img]="Clock" class="w-3.5 h-3.5 text-muted-foreground"></lucide-icon>
-                        <span class="text-sm text-muted-foreground">{{ session.start_time | date:'MMM d' }}</span>
-                      </div>
-                      <div class="bg-primary/5 text-primary p-2.5 rounded-2xl flex-shrink-0">
-                        <lucide-icon [img]="Activity" class="w-5 h-5"></lucide-icon>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div class="bg-secondary/50 rounded-[16px] p-3.5 flex justify-between items-center group cursor-pointer hover:bg-secondary/80 transition-colors">
-                    <span class="text-sm font-medium text-secondary-foreground line-clamp-1 truncate mr-4">
-                      {{ getExerciseSummary(session) }}
-                    </span>
-                    <div class="bg-background/50 rounded-full p-1.5 group-hover:bg-background transition-colors">
-                      <lucide-icon [img]="ArrowRight" class="w-4 h-4 text-foreground flex-shrink-0"></lucide-icon>
-                    </div>
-                  </div>
-                </z-card>
-              }
-            </div>
+              <lucide-icon [img]="ChevronRight"></lucide-icon>
+            </button>
           </div>
         }
-      </main>
+      </div>
+
+      <!-- Start Empty Workout Action -->
+      <div class="mt-4">
+        <a
+          routerLink="/workout/session"
+          class="py-3 flex items-center justify-center gap-3 w-full bg-white border-1 border-border rounded-xl font-medium text-md hover:bg-secondary/60 hover:text-primary/80 cursor-pointer transition-all"
+        >
+          Start Empty Workout
+        </a>
+      </div>
+    </z-card>
+
+    <!-- Explore Plans Section (Horizontal) -->
+    <div class="mt-8 mb-2">
+      <div class="flex items-center justify-between mb-4 px-1">
+        <h3 class="font-semibold text-lg hover:text-primary transition-colors cursor-pointer">
+          Explore Plans
+        </h3>
+        <button
+          class="text-primary text-sm font-semibold bg-primary/10 px-3 py-1 rounded-full transition-colors hover:bg-primary hover:text-primary-foreground cursor-pointer"
+        >
+          View All
+        </button>
+      </div>
+
+      <div class="flex overflow-x-auto gap-3 pb-2 snap-x hide-scrollbar">
+        @for (plan of otherPlans; track plan.id) {
+          <z-card
+            class="cursor-pointer hover:border-primary/50 transition-colors block group min-w-[320px] snap-start border border-transparent hover:border-primary/20"
+          >
+            <div class="flex flex-col">
+              <span class="font-semibold text-lg">{{ plan.title }}</span>
+              <div class="flex items-center text-sm text-muted-foreground mt-1 gap-2">
+                <div class="flex items-center gap-1.5 bg-secondary/50 px-2 py-0.5 rounded-md">
+                  <lucide-icon [img]="Calendar" class="w-3.5 h-3.5"></lucide-icon>
+                  <span class="font-medium text-xs text-secondary-foreground"
+                    >{{ plan.sessions_per_week }} days</span
+                  >
+                </div>
+                <span class="text-xs font-medium px-2 py-0.5 rounded-md border border-border">{{
+                  plan.difficulty
+                }}</span>
+              </div>
+            </div>
+          </z-card>
+        }
+      </div>
     </div>
+
+    <!-- Recent Activity Section -->
+    @if (recentSessions().length > 0) {
+      <div class="mt-8 mb-4">
+        <div class="flex items-center justify-between mb-4 px-1">
+          <h3 class="font-semibold text-lg hover:text-primary transition-colors cursor-pointer">
+            Recent Activity
+          </h3>
+          <a
+            routerLink="/journey"
+            class="text-primary text-sm font-semibold bg-primary/10 px-3 py-1 rounded-full transition-colors hover:bg-primary hover:text-primary-foreground cursor-pointer"
+            >View All</a
+          >
+        </div>
+
+        <div class="flex flex-col gap-4">
+          @for (session of recentSessions(); track session.id) {
+            <z-card>
+              <div class="flex justify-between items-center mb-4">
+                <div class="flex flex-col gap-2">
+                  <span class="font-bold text-lg">{{ session.session_title }}</span>
+                  <div class="flex items-center gap-2">
+                    <span
+                      class="font-medium bg-secondary text-secondary-foreground px-2.5 py-1 rounded-full text-xs"
+                    >
+                      {{ formatDuration(session.total_duration) }}
+                    </span>
+                    <span
+                      class="font-medium bg-primary/10 text-primary px-2.5 py-1 rounded-full text-xs"
+                    >
+                      {{ session.total_weight_lifted | number: '1.0-1' }} kg
+                    </span>
+                  </div>
+                </div>
+
+                <div class="flex gap-2">
+                  <div class="flex items-center gap-1.5 align-top mt-1">
+                    <lucide-icon
+                      [img]="Clock"
+                      class="w-3.5 h-3.5 text-muted-foreground"
+                    ></lucide-icon>
+                    <span class="text-sm text-muted-foreground">{{
+                      session.start_time | date: 'MMM d'
+                    }}</span>
+                  </div>
+                  <div class="bg-primary/5 text-primary p-2.5 rounded-2xl flex-shrink-0">
+                    <lucide-icon [img]="Activity" class="w-5 h-5"></lucide-icon>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="bg-secondary/50 rounded-[16px] p-3.5 flex justify-between items-center group cursor-pointer hover:bg-secondary/80 transition-colors"
+              >
+                <span
+                  class="text-sm font-medium text-secondary-foreground line-clamp-1 truncate mr-4"
+                >
+                  {{ getExerciseSummary(session) }}
+                </span>
+                <div
+                  class="bg-background/50 rounded-full p-1.5 group-hover:bg-background transition-colors"
+                >
+                  <lucide-icon
+                    [img]="ArrowRight"
+                    class="w-4 h-4 text-foreground flex-shrink-0"
+                  ></lucide-icon>
+                </div>
+              </div>
+            </z-card>
+          }
+        </div>
+      </div>
+    }
+  </main>
+</div>

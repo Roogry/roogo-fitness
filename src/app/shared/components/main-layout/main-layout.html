@@ -1,4 +1,6 @@
-<main class="min-h-screen pb-[env(safe-area-inset-bottom,0px)_translateY(-80px)] md:pb-0 h-full w-full">
-  <router-outlet />
-</main>
-<app-bottom-nav />
+<div class="flex flex-col h-screen overflow-hidden">
+  <div class="flex-1 max-h-[calc(100dvh-80px)] w-full overflow-y-auto overscroll-contain">
+    <router-outlet />
+  </div>
+  <app-bottom-nav />
+</div>

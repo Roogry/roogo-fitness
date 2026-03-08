@@ -1,61 +1,63 @@
-<app-header title="Your Journey"></app-header>
-<div class="px-4 w-full max-w-2xl mx-auto flex flex-col pb-24">
-  @if (isLoading()) {
-    <div class="flex items-center justify-center p-12">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-    </div>
-  } @else if (history().length === 0) {
-    <div class="flex flex-col items-center justify-center text-center p-10 bg-muted/40 rounded-[24px] border border-border shadow-sm">
-      <div class="p-4 bg-background border border-border rounded-full mb-4 shadow-sm">
-        <lucide-icon [img]="Activity" class="w-8 h-8 text-muted-foreground"></lucide-icon>
+<div class="mb-8">
+  <app-header title="Your Journey"></app-header>
+  <div class="px-4 w-full max-w-2xl mx-auto flex flex-col">
+    @if (isLoading()) {
+      <div class="flex items-center justify-center p-12">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
-      <h3 class="font-semibold text-lg mb-1">No Workouts Yet</h3>
-      <p class="text-sm text-muted-foreground max-w-[200px]">Log your first workout to see it here.</p>
-    </div>
-  } @else {
-    <div class="flex flex-col gap-4">
-      @for (session of history(); track session.id) {
-        <z-card>
-          <div class="flex justify-between items-center mb-4">
-            <div class="flex flex-col gap-2">
-              <span class="font-bold text-lg">{{ session.session_title }}</span>
-              <div class="flex items-center gap-2">
-                <span class="font-medium bg-secondary text-secondary-foreground px-2.5 py-1 rounded-full text-xs">
-                  {{ formatDuration(session.total_duration) }}
-                </span>
-                <span class="font-medium bg-primary/10 text-primary px-2.5 py-1 rounded-full text-xs">
-                  {{ session.total_weight_lifted | number:'1.0-1' }} kg
-                </span>
+    } @else if (history().length === 0) {
+      <div class="flex flex-col items-center justify-center text-center p-10 bg-muted/40 rounded-[24px] border border-border shadow-sm">
+        <div class="p-4 bg-background border border-border rounded-full mb-4 shadow-sm">
+          <lucide-icon [img]="Activity" class="w-8 h-8 text-muted-foreground"></lucide-icon>
+        </div>
+        <h3 class="font-semibold text-lg mb-1">No Workouts Yet</h3>
+        <p class="text-sm text-muted-foreground max-w-[200px]">Log your first workout to see it here.</p>
+      </div>
+    } @else {
+      <div class="flex flex-col gap-4">
+        @for (session of history(); track session.id) {
+          <z-card>
+            <div class="flex justify-between items-center mb-4">
+              <div class="flex flex-col gap-2">
+                <span class="font-bold text-lg">{{ session.session_title }}</span>
+                <div class="flex items-center gap-2">
+                  <span class="font-medium bg-secondary text-secondary-foreground px-2.5 py-1 rounded-full text-xs">
+                    {{ formatDuration(session.total_duration) }}
+                  </span>
+                  <span class="font-medium bg-primary/10 text-primary px-2.5 py-1 rounded-full text-xs">
+                    {{ session.total_weight_lifted | number:'1.0-1' }} kg
+                  </span>
+                </div>
               </div>
-            </div>
 
-            <div class="flex gap-2">
-              <div class="flex items-center gap-1.5">
-                <lucide-icon [img]="Clock" class="w-3.5 h-3.5"></lucide-icon>
-                <span>{{ session.start_time | date:'MMM d' }}</span>
-              </div>
-              <div class="bg-primary/10 text-primary p-2.5 rounded-2xl">
-                <lucide-icon [img]="Activity" class="w-5 h-5"></lucide-icon>
+              <div class="flex gap-2">
+                <div class="flex items-center gap-1.5">
+                  <lucide-icon [img]="Clock" class="w-3.5 h-3.5"></lucide-icon>
+                  <span>{{ session.start_time | date:'MMM d' }}</span>
+                </div>
+                <div class="bg-primary/10 text-primary p-2.5 rounded-2xl">
+                  <lucide-icon [img]="Activity" class="w-5 h-5"></lucide-icon>
+                </div>
               </div>
             </div>
-          </div>
-          
-          @if (session.notes) {
-            <div class="bg-muted/30 border border-border/50 rounded-xl p-3 mb-4">
-              <p class="text-sm text-muted-foreground italic">"{{ session.notes }}"</p>
-            </div>
-          }
+            
+            @if (session.notes) {
+              <div class="bg-muted/30 border border-border/50 rounded-xl p-3 mb-4">
+                <p class="text-sm text-muted-foreground italic">"{{ session.notes }}"</p>
+              </div>
+            }
 
-          <div class="bg-secondary/50 rounded-[16px] p-3.5 flex justify-between items-center group cursor-pointer hover:bg-secondary/80 transition-colors">
-            <span class="text-sm font-medium text-secondary-foreground line-clamp-1 truncate mr-4">
-              {{ getExerciseSummary(session) }}
-            </span>
-            <div class="bg-background/50 rounded-full p-1.5 group-hover:bg-background transition-colors">
-              <lucide-icon [img]="ArrowRight" class="w-4 h-4 text-foreground flex-shrink-0"></lucide-icon>
+            <div class="bg-secondary/50 rounded-[16px] p-3.5 flex justify-between items-center group cursor-pointer hover:bg-secondary/80 transition-colors">
+              <span class="text-sm font-medium text-secondary-foreground line-clamp-1 truncate mr-4">
+                {{ getExerciseSummary(session) }}
+              </span>
+              <div class="bg-background/50 rounded-full p-1.5 group-hover:bg-background transition-colors">
+                <lucide-icon [img]="ArrowRight" class="w-4 h-4 text-foreground flex-shrink-0"></lucide-icon>
+              </div>
             </div>
-          </div>
-        </z-card>
-      }
-    </div>
-  }
+          </z-card>
+        }
+      </div>
+    }
+  </div>
 </div>
