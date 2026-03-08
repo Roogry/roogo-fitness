@@ -6,7 +6,7 @@ import { ExerciseAutocomplete } from '@/components/exercise-autocomplete/exercis
 import { ExerciseTracker } from '@/components/exercise-tracker/exercise-tracker';
 import { HeaderComponent } from '@/shared/components/header/header';
 import { ZardButtonComponent } from '@/shared/components/button';
-import { RooSheetComponent } from '@/shared/components/sheet/sheet.component';
+import { RooSheetComponent } from '@/shared/components/sheet/sheet';
 
 @Component({
   selector: 'app-workout-session',

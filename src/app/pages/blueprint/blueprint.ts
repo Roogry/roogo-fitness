@@ -4,10 +4,11 @@ import { DbService } from '@/shared/services/db.service';
 import { WorkoutPlan } from '@/shared/types/workout.types';
 import { ZardCardComponent } from '@/shared/components/card';
 import { ZardButtonComponent } from '@/shared/components/button/button.component';
-import { RooSheetComponent } from '@/shared/components/sheet/sheet.component';
 import { FormsModule } from '@angular/forms';
 import { ZardInputDirective } from '@/shared/components/input';
 import { HeaderComponent } from '@/shared/components/header/header';
+import { RooSheetComponent } from '@/shared/components/sheet/sheet';
+
 import {
   LucideAngularModule,
   Plus,
@@ -26,13 +27,13 @@ import {
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     HeaderComponent,
     ZardCardComponent,
     ZardButtonComponent,
     ZardInputDirective,
     RooSheetComponent,
     LucideAngularModule,
-    FormsModule,
   ],
   templateUrl: './blueprint.html',
 })
@@ -49,8 +50,8 @@ export class BlueprintComponent implements OnInit {
 
   dbService = inject(DbService);
 
-  isOpenPlanForm = false;
-  editingPlanId: number | null = null;
+  isOpenPlanForm = signal(false);
+  editingPlanId = signal<number | null>(null);
   expandedPlanId = signal<number | null>(null); // Default to first plan dynamically
 
   newPlan = {
@@ -109,21 +110,20 @@ export class BlueprintComponent implements OnInit {
   }
 
   openCreateSheet() {
-    this.editingPlanId = null;
+    this.editingPlanId.set(null);
     this.newPlan = { title: '', description: '', sessionsPerWeek: 3 };
-    this.isOpenPlanForm = true;
-    console.log('is sheet open:', this.isOpenPlanForm);
+    this.isOpenPlanForm.set(true);
   }
 
   editPlan(plan: WorkoutPlan, event: Event) {
     event.stopPropagation();
-    this.editingPlanId = plan.id;
+    this.editingPlanId.set(plan.id);
     this.newPlan = {
       title: plan.title,
       description: plan.description || '',
       sessionsPerWeek: plan.days,
     };
-    this.isOpenPlanForm = true;
+    this.isOpenPlanForm.set(true);
   }
 
   async deletePlan(planId: number, event: Event) {
@@ -157,9 +157,9 @@ export class BlueprintComponent implements OnInit {
 
     const plans = this.myPlans();
 
-    if (this.editingPlanId !== null) {
+    if (this.editingPlanId() !== null) {
       // Update existing
-      const plan = plans.find((p) => p.id === this.editingPlanId);
+      const plan = plans.find((p) => p.id === this.editingPlanId());
       if (plan) {
         plan.title = this.newPlan.title;
         plan.description = this.newPlan.description;
@@ -180,7 +180,7 @@ export class BlueprintComponent implements OnInit {
       this.expandedPlanId.set(newId);
     }
 
-    this.isOpenPlanForm = false;
+    this.isOpenPlanForm.set(false);
     await this.loadPlans();
   }
 }

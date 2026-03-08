@@ -62,13 +62,14 @@
   </main>
 
   <!-- Add Exercise Sheet -->
-  <roo-sheet
+  <app-sheet
     [isOpen]="isAddSheetOpen()"
+    (onOpenChange)="isAddSheetOpen.set($event)"
     title="Add Exercise"
     description="Search or add a custom exercise."
   >
     <app-exercise-autocomplete
       (exerciseSelected)="onExerciseSelected($event)"
     ></app-exercise-autocomplete>
-  </roo-sheet>
+  </app-sheet>
 </div>

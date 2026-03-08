@@ -117,9 +117,10 @@
       </div>
       
       <!-- Plan Form Sheet -->
-      <roo-sheet
-        [isOpen]="isOpenPlanForm"
-        [title]="editingPlanId ? 'Edit Plan' : 'Create Plan'"
+      <app-sheet
+        [isOpen]="isOpenPlanForm()"
+        (onOpenChange)="isOpenPlanForm.set($event)"
+        [title]="editingPlanId() ? 'Edit Plan' : 'Create Plan'"
         description="Design your new workout routine."
       >
         <!-- Sheet Content (Scrollable) -->
@@ -203,15 +204,15 @@
         </div>
 
         <!-- Sheet Footer -->
-        <div roo-sheet-footer>
+        <div app-sheet-footer>
           <div class="mb-4">
             <button z-button zShape="circle" class="w-full" [disabled]="!newPlan.title.trim()" (click)="savePlan()">
               <lucide-icon [img]="Save"></lucide-icon>
-              {{ editingPlanId ? 'Save Changes' : 'Save Plan' }}
+              {{ editingPlanId() ? 'Save Changes' : 'Save Plan' }}
             </button>
           </div>
         </div>
-      </roo-sheet>
+      </app-sheet>
     }
   </div>
 </div>
