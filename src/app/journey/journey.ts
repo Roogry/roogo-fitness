@@ -5,9 +5,11 @@ import { LucideAngularModule, Activity, Clock, ArrowRight } from 'lucide-angular
 import { WorkoutService, LoggedWorkoutSession } from '../shared/services/workout';
 import { ZardCardComponent } from '@/shared/components/card';
 
+import { LoggedWorkoutCardComponent } from '../shared/components/logged-workout-card/logged-workout-card';
+
 @Component({
   selector: 'app-journey',
-  imports: [CommonModule, HeaderComponent, LucideAngularModule, ZardCardComponent],
+  imports: [CommonModule, HeaderComponent, LucideAngularModule, LoggedWorkoutCardComponent],
   templateUrl: './journey.html',
   styleUrl: './journey.css',
 })
@@ -33,21 +35,5 @@ export class Journey implements OnInit {
     }
   }
 
-  getExerciseSummary(session: LoggedWorkoutSession): string {
-    const names = new Set(session.workouts.map(w => w.workout_title).filter(Boolean));
-    const uniqueNames = Array.from(names);
-    if (uniqueNames.length === 0) return 'No exercises recorded';
-    if (uniqueNames.length <= 2) return uniqueNames.join(', ');
-    return `${uniqueNames[0]}, ${uniqueNames[1]} & ${uniqueNames.length - 2} more`;
-  }
 
-  formatDuration(minutes: number): string {
-    if (!minutes) return '0 min';
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (hours > 0) {
-      return `${hours}h ${mins > 0 ? mins + 'min' : ''}`.trim();
-    }
-    return `${mins} min`;
-  }
 }

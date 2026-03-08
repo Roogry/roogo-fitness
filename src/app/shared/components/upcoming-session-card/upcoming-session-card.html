@@ -1,0 +1,19 @@
+<div
+  class="bg-secondary/40 rounded-[16px] p-4 flex justify-between items-center hover:bg-secondary/60 transition-colors border border-transparent hover:border-primary/20 h-full w-full"
+>
+  <div class="flex flex-col mr-4">
+    <span class="text-xs text-muted-foreground mb-1">{{ session().subtitle }}</span>
+    <span class="font-semibold text-secondary-foreground text-lg whitespace-nowrap">{{
+      session().title
+    }}</span>
+  </div>
+  <button
+    z-button
+    zShape="circle"
+    zType="outline"
+    zSize="icon"
+    class="hover:bg-primary hover:text-white flex-shrink-0 transition-colors"
+  >
+    <lucide-icon [img]="ChevronRight"></lucide-icon>
+  </button>
+</div>

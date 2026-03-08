@@ -15,10 +15,14 @@ import {
 } from 'lucide-angular';
 import { RouterLink } from '@angular/router';
 
+import { LoggedWorkoutCardComponent } from '../shared/components/logged-workout-card/logged-workout-card';
+import { UpcomingSessionCardComponent } from '../shared/components/upcoming-session-card/upcoming-session-card';
+import { ExplorePlanCardComponent } from '../shared/components/explore-plan-card/explore-plan-card';
+
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, ZardButtonComponent, ZardCardComponent, LucideAngularModule, RouterLink],
+  imports: [CommonModule, ZardButtonComponent, ZardCardComponent, LucideAngularModule, RouterLink, LoggedWorkoutCardComponent, UpcomingSessionCardComponent, ExplorePlanCardComponent],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -45,23 +49,7 @@ export class Home implements OnInit {
     }
   }
 
-  getExerciseSummary(session: LoggedWorkoutSession): string {
-    const names = new Set(session.workouts.map(w => w.workout_title).filter(Boolean));
-    const uniqueNames = Array.from(names);
-    if (uniqueNames.length === 0) return 'No exercises recorded';
-    if (uniqueNames.length <= 2) return uniqueNames.join(', ');
-    return `${uniqueNames[0]}, ${uniqueNames[1]} & ${uniqueNames.length - 2} more`;
-  }
 
-  formatDuration(minutes: number): string {
-    if (!minutes) return '0 min';
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (hours > 0) {
-      return `${hours}h ${mins > 0 ? mins + 'min' : ''}`.trim();
-    }
-    return `${mins} min`;
-  }
 
   upcomingSessions = [
     { id: 1, title: 'Push Day Heavy', subtitle: 'Up Next' },
