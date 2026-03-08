@@ -1,17 +1,15 @@
 <div class="min-h-screen bg-background text-foreground pb-20">
   <!-- Header -->
-  <app-header title="Active Session" [showBackBtn]="true" backLink="/">
+  <app-header title="Active Session" [showBackBtn]="true" backLink="/" class="sticky top-0">
     @if (workoutService.hasActiveWorkout()) {
       <button
         right
         z-button
-        size="sm"
         zShape="circle"
         (click)="finishWorkout()"
-        class="hidden sm:flex items-center gap-2"
       >
-        <lucide-icon [img]="Save" class="h-4 w-4"></lucide-icon>
-        Finish
+        <lucide-icon [img]="Check" class="mr-1 hidden sm:inline-block"></lucide-icon>
+        <span>Finish</span>
       </button>
     }
   </app-header>
@@ -32,22 +30,12 @@
         <app-exercise-tracker [trackedExercise]="tracked"></app-exercise-tracker>
       }
 
-      <button z-button zShape="circle" class="w-full" (click)="isAddSheetOpen.set(true)">
+      <button z-button zType="outline" zShape="circle" class="w-full" (click)="isAddSheetOpen.set(true)">
         <lucide-icon [img]="Plus"></lucide-icon>
         Add Exercise
       </button>
     </div>
   </main>
-
-  <!-- Mobile FABs -->
-  <div class="fixed bottom-6 right-4 left-4 sm:hidden flex flex-col gap-3 z-30 pointer-events-none">
-    @if (workoutService.hasActiveWorkout()) {
-      <button z-button zType="outline" zShape="circle" (click)="finishWorkout()">
-        <lucide-icon [img]="Save"></lucide-icon>
-        Finish Workout
-      </button>
-    }
-  </div>
 
   <!-- Add Exercise Sheet -->
   @if (isAddSheetOpen()) {
