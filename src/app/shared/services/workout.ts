@@ -252,12 +252,59 @@ export class WorkoutService {
 
   // State
   activeExercises = signal<TrackedExercise[]>([]);
+  sessionStartTime = signal<number | null>(null);
+  sessionDuration = signal<number>(0);
+  private durationInterval: any;
 
   // Computed state for UI convenience
   hasActiveWorkout = computed(() => this.activeExercises().length > 0);
+  
+  totalVolume = computed(() => {
+    return this.activeExercises().reduce((acc, tracked) => {
+      const exerciseVolume = tracked.sets.reduce((setAcc, set) => setAcc + (set.weight_lifted * set.reps_completed), 0);
+      return acc + exerciseVolume;
+    }, 0);
+  });
+
+  totalSets = computed(() => {
+    return this.activeExercises().reduce((acc, tracked) => acc + tracked.sets.length, 0);
+  });
 
   constructor() {
     this.loadOfflineQueue();
+  }
+
+  startSessionTimer() {
+    if (this.sessionStartTime()) return;
+    
+    this.sessionStartTime.set(Date.now());
+    this.durationInterval = setInterval(() => {
+      if (this.sessionStartTime()) {
+         // duration in seconds
+        this.sessionDuration.set(Math.floor((Date.now() - this.sessionStartTime()!) / 1000));
+      }
+    }, 1000);
+  }
+
+  stopSessionTimer() {
+    if (this.durationInterval) {
+      clearInterval(this.durationInterval);
+      this.durationInterval = undefined;
+    }
+  }
+
+  formatDuration(seconds: number): string {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    
+    if (hrs > 0) {
+      return `${hrs}h ${mins}min ${secs}s`;
+    }
+    if (mins > 0) {
+      return `${mins}min ${secs}s`;
+    }
+    return `${secs}s`;
   }
 
   // --- Mock API Methods ---
@@ -319,6 +366,7 @@ export class WorkoutService {
   }
 
   addTrackedExercise(exercise: Exercise) {
+    this.startSessionTimer(); // Ensure timer runs if not already
     this.activeExercises.update((current) => {
       // Prevent duplicates in active list
       if (current.find((te) => te.exercise.id === exercise.id)) {
@@ -425,13 +473,20 @@ export class WorkoutService {
       // Fake delay
       await new Promise((resolve) => setTimeout(resolve, 800));
       console.log('Sync Successful!');
-      this.activeExercises.set([]); // Clear session
+      this.clearSession();
     } catch (error) {
       console.warn('Sync failed, saving to offline queue', error);
       this.queueForLater(payload);
-      this.activeExercises.set([]); // Clear session even if offline
+      this.clearSession();
     }
     console.groupEnd();
+  }
+
+  private clearSession() {
+    this.stopSessionTimer();
+    this.sessionStartTime.set(null);
+    this.sessionDuration.set(0);
+    this.activeExercises.set([]);
   }
 
   private queueForLater(payload: any) {

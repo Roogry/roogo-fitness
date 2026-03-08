@@ -5,7 +5,7 @@ import { ExerciseAutocomplete } from '../components/exercise-autocomplete/exerci
 import { ExerciseTracker } from '../components/exercise-tracker/exercise-tracker';
 import { HeaderComponent } from '../shared/components/header/header';
 import { ZardButtonComponent } from '../shared/components/button/button.component';
-import { LucideAngularModule, Dumbbell, Save, Plus, X, ArrowLeft, Check } from 'lucide-angular';
+import { LucideAngularModule, Dumbbell, Save, Plus, X, ArrowLeft, Check, Clock, Activity, BarChart2 } from 'lucide-angular';
 
 @Component({
   selector: 'app-workout-session',
@@ -28,6 +28,9 @@ export class WorkoutSession {
   readonly X = X;
   readonly ArrowLeft = ArrowLeft;
   readonly Check = Check;
+  readonly Clock = Clock;
+  readonly Activity = Activity;
+  readonly BarChart2 = BarChart2;
 
   workoutService = inject(WorkoutService);
 
