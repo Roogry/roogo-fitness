@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
-import { Home } from './home/home';
 import { ExerciseDetail } from './components/exercise-detail/exercise-detail';
 import { ExerciseEdit } from './components/exercise-edit/exercise-edit';
 import { MainLayout } from './shared/components/main-layout/main-layout';
-import { Journey } from './journey/journey';
 import { Profile } from './profile/profile';
-import { WorkoutSession } from './workout-session/workout-session';
-import { BlueprintComponent } from './blueprint/blueprint';
+import { Home } from './pages/home/home';
+import { Journey } from './pages/journey/journey';
+import { BlueprintComponent } from './pages/blueprint/blueprint';
+import { WorkoutSession } from './pages/workout-session/workout-session';
 
 export const routes: Routes = [
   {
@@ -17,7 +17,7 @@ export const routes: Routes = [
       { path: 'journey', component: Journey },
       { path: 'blueprint', component: BlueprintComponent },
       { path: 'profile', component: Profile },
-    ]
+    ],
   },
   { path: 'exercise/:id', component: ExerciseDetail },
   { path: 'exercise/:id/edit', component: ExerciseEdit },

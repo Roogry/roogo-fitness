@@ -60,7 +60,7 @@ import { LucideAngularModule, X } from 'lucide-angular';
     }
   `
 })
-export class ZardSheetComponent {
+export class RooSheetComponent {
   readonly X = X;
 
   @Input() title = '';

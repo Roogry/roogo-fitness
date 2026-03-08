@@ -1,11 +1,9 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from '../shared/components/header/header';
 import { LucideAngularModule, Activity, Clock, ArrowRight } from 'lucide-angular';
-import { WorkoutService, LoggedWorkoutSession } from '../shared/services/workout';
-import { ZardCardComponent } from '@/shared/components/card';
-
-import { LoggedWorkoutCardComponent } from '../shared/components/logged-workout-card/logged-workout-card';
+import { HeaderComponent } from '@/shared/components/header/header';
+import { LoggedWorkoutCardComponent } from '@/shared/components/logged-workout-card/logged-workout-card';
+import { LoggedWorkoutSession, WorkoutService } from '@/shared/services/workout';
 
 @Component({
   selector: 'app-journey',
@@ -34,6 +32,4 @@ export class Journey implements OnInit {
       this.isLoading.set(false);
     }
   }
-
-
 }

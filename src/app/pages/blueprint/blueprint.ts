@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from '../shared/components/header/header';
 import { ZardCardComponent } from '@/shared/components/card';
 import { ZardButtonComponent } from '@/shared/components/button/button.component';
-import { ZardSheetComponent } from '@/shared/components/sheet/sheet.component';
+import { RooSheetComponent } from '@/shared/components/sheet/sheet.component';
+import { FormsModule } from '@angular/forms';
+import { ZardInputDirective } from '@/shared/components/input';
+import { HeaderComponent } from '@/shared/components/header/header';
 import {
   LucideAngularModule,
   Plus,
@@ -14,10 +16,8 @@ import {
   Save,
   Minus,
   Edit,
-  Trash2
+  Trash2,
 } from 'lucide-angular';
-import { FormsModule } from '@angular/forms';
-import { ZardInputDirective } from '@/shared/components/input';
 
 @Component({
   selector: 'app-blueprint',
@@ -28,7 +28,7 @@ import { ZardInputDirective } from '@/shared/components/input';
     ZardCardComponent,
     ZardButtonComponent,
     ZardInputDirective,
-    ZardSheetComponent,
+    RooSheetComponent,
     LucideAngularModule,
     FormsModule,
   ],
@@ -57,41 +57,41 @@ export class BlueprintComponent {
 
   // Placeholder mock data for blueprint lists
   myPlans: any[] = [
-    { 
-      id: 0, 
-      title: 'My Session', 
-      days: 0, 
+    {
+      id: 0,
+      title: 'My Session',
+      days: 0,
       isDefault: true,
-      sessions: [] 
+      sessions: [],
     },
-    { 
-      id: 1, 
-      title: 'Push Pull Legs (PPL)', 
-      days: 3, 
+    {
+      id: 1,
+      title: 'Push Pull Legs (PPL)',
+      days: 3,
       sessions: [
         { id: 101, title: 'Push Day', exercises: 6 },
         { id: 102, title: 'Pull Day', exercises: 5 },
-        { id: 103, title: 'Leg Day', exercises: 6 }
-      ] 
+        { id: 103, title: 'Leg Day', exercises: 6 },
+      ],
     },
-    { 
-      id: 2, 
-      title: 'Bro Split', 
-      days: 5, 
+    {
+      id: 2,
+      title: 'Bro Split',
+      days: 5,
       sessions: [
         { id: 201, title: 'Chest', exercises: 5 },
         { id: 202, title: 'Back', exercises: 6 },
         { id: 203, title: 'Shoulders', exercises: 5 },
         { id: 204, title: 'Legs', exercises: 6 },
-        { id: 205, title: 'Arms', exercises: 7 }
-      ] 
-    }
+        { id: 205, title: 'Arms', exercises: 7 },
+      ],
+    },
   ];
 
   get displayedPlans() {
-    const regularPlans = this.myPlans.filter(p => !p.isDefault);
-    const defaultPlan = this.myPlans.find(p => p.isDefault);
-    
+    const regularPlans = this.myPlans.filter((p) => !p.isDefault);
+    const defaultPlan = this.myPlans.find((p) => p.isDefault);
+
     if (defaultPlan && defaultPlan.sessions && defaultPlan.sessions.length > 0) {
       return [...regularPlans, defaultPlan];
     }
@@ -118,30 +118,30 @@ export class BlueprintComponent {
     this.newPlan = {
       title: plan.title,
       description: plan.description || '',
-      sessionsPerWeek: plan.days
+      sessionsPerWeek: plan.days,
     };
     this.isCreatingPlan = true;
   }
 
   deletePlan(planId: number, event: Event) {
     event.stopPropagation();
-    
-    const planIndex = this.myPlans.findIndex(p => p.id === planId);
+
+    const planIndex = this.myPlans.findIndex((p) => p.id === planId);
     if (planIndex === -1) return;
-    
+
     const planToDelete = this.myPlans[planIndex];
     if (planToDelete.isDefault) return;
-    
-    const defaultPlan = this.myPlans.find(p => p.isDefault);
-    
+
+    const defaultPlan = this.myPlans.find((p) => p.isDefault);
+
     // Move sessions from deleted plan to default plan
     if (defaultPlan && planToDelete.sessions.length > 0) {
       defaultPlan.sessions = [...defaultPlan.sessions, ...planToDelete.sessions];
     }
-    
+
     // Remove the plan
     this.myPlans.splice(planIndex, 1);
-    
+
     if (this.expandedPlanId === planId) {
       this.expandedPlanId = defaultPlan ? defaultPlan.id : null;
     }
@@ -152,7 +152,7 @@ export class BlueprintComponent {
 
     if (this.editingPlanId !== null) {
       // Update existing
-      const plan = this.myPlans.find(p => p.id === this.editingPlanId);
+      const plan = this.myPlans.find((p) => p.id === this.editingPlanId);
       if (plan) {
         plan.title = this.newPlan.title;
         plan.description = this.newPlan.description;

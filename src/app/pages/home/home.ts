@@ -1,7 +1,11 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ZardCardComponent } from '@/shared/components/card';
-import { WorkoutService, LoggedWorkoutSession } from '../shared/services/workout';
+import { WorkoutService, LoggedWorkoutSession } from '@/shared/services/workout';
+import { LoggedWorkoutCardComponent } from '@/shared/components/logged-workout-card/logged-workout-card';
+import { UpcomingSessionCardComponent } from '@/shared/components/upcoming-session-card/upcoming-session-card';
+import { ExplorePlanCardComponent } from '@/shared/components/explore-plan-card/explore-plan-card';
 import {
   LucideAngularModule,
   Dumbbell,
@@ -10,18 +14,21 @@ import {
   ChevronRight,
   Flame,
   Clock,
-  Activity
+  Activity,
 } from 'lucide-angular';
-import { RouterLink } from '@angular/router';
-
-import { LoggedWorkoutCardComponent } from '../shared/components/logged-workout-card/logged-workout-card';
-import { UpcomingSessionCardComponent } from '../shared/components/upcoming-session-card/upcoming-session-card';
-import { ExplorePlanCardComponent } from '../shared/components/explore-plan-card/explore-plan-card';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, ZardCardComponent, LucideAngularModule, RouterLink, LoggedWorkoutCardComponent, UpcomingSessionCardComponent, ExplorePlanCardComponent],
+  imports: [
+    CommonModule,
+    ZardCardComponent,
+    LucideAngularModule,
+    RouterLink,
+    LoggedWorkoutCardComponent,
+    UpcomingSessionCardComponent,
+    ExplorePlanCardComponent,
+  ],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -47,8 +54,6 @@ export class Home implements OnInit {
       console.error('Failed to fetch recent sessions', e);
     }
   }
-
-
 
   upcomingSessions = [
     { id: 1, title: 'Push Day Heavy', subtitle: 'Up Next' },

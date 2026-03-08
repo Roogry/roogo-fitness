@@ -1,12 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WorkoutService } from '../shared/services/workout';
-import { ExerciseAutocomplete } from '../components/exercise-autocomplete/exercise-autocomplete';
-import { ExerciseTracker } from '../components/exercise-tracker/exercise-tracker';
-import { HeaderComponent } from '../shared/components/header/header';
-import { ZardButtonComponent } from '../shared/components/button/button.component';
-import { ZardSheetComponent } from '../shared/components/sheet/sheet.component';
 import { LucideAngularModule, Dumbbell, Save, Plus, X, ArrowLeft, Check, Clock, Activity, BarChart2 } from 'lucide-angular';
+import { WorkoutService } from '@/shared/services/workout';
+import { ExerciseAutocomplete } from '@/components/exercise-autocomplete/exercise-autocomplete';
+import { ExerciseTracker } from '@/components/exercise-tracker/exercise-tracker';
+import { HeaderComponent } from '@/shared/components/header/header';
+import { ZardButtonComponent } from '@/shared/components/button';
+import { RooSheetComponent } from '@/shared/components/sheet/sheet.component';
 
 @Component({
   selector: 'app-workout-session',
@@ -17,7 +17,7 @@ import { LucideAngularModule, Dumbbell, Save, Plus, X, ArrowLeft, Check, Clock, 
     ExerciseTracker,
     HeaderComponent,
     ZardButtonComponent,
-    ZardSheetComponent,
+    RooSheetComponent,
     LucideAngularModule,
   ],
   templateUrl: './workout-session.html',
