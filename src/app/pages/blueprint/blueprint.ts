@@ -119,10 +119,13 @@ export class BlueprintComponent implements OnInit {
     this.isOpenPlanForm.set(true);
   }
 
-  addSessionToPlan(planId: number, event: Event) {
+  openAddSession(planId: number, event: Event) {
     event.stopPropagation();
-    this.workoutService.startPlannedSession('create', planId);
-    this.router.navigate(['/workout/session']);
+
+    this.workoutService.clearSession();
+    this.workoutService.selectedPlanId.set(planId);
+    this.workoutService.sessionTitle.set('New Session');
+    this.router.navigate(['/blueprint/session/create']);
   }
 
   editPlan(plan: WorkoutPlan, event: Event) {

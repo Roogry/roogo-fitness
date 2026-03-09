@@ -1,9 +1,6 @@
-import { Injectable, computed, signal, inject } from '@angular/core';
-import { Exercise, Muscle, TrackedExercise, WorkoutSet, LoggedWorkoutSession, WorkoutPlanSession, SessionMode } from '../types/workout.types';
-import { mockMuscles, mockExercises, mockLoggedWorkoutSessions } from '../mocks/workout.mock';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { DbService } from './db.service';
-
-export * from '../types/workout.types';
+import { Exercise, LoggedSession, LoggedExercise, WorkoutPlanSession, LoggedSet } from '../types/workout.types';
 
 @Injectable({
   providedIn: 'root',
@@ -11,60 +8,123 @@ export * from '../types/workout.types';
 export class WorkoutService {
   // Services
   private dbService = inject(DbService);
-
-  // Mock API Data
-  private mockMuscles = mockMuscles;
-  private mockExercises = [...mockExercises];
-  private mockLoggedWorkoutSessions = mockLoggedWorkoutSessions;
-
-  // State
-  activeExercises = signal<TrackedExercise[]>([]);
+  selectedPlanId = signal<number | null>(null);
+  sessionTitle = signal<string>('');
+  trackedExercises = signal<LoggedExercise[]>([]);
   sessionStartTime = signal<number | null>(null);
   sessionDuration = signal<number>(0);
-  sessionMode = signal<SessionMode>('start');
-  activePlanId = signal<number | null>(null);
-  customSessionTitle = signal<string>('');
   private durationInterval: any;
 
   // Computed state for UI convenience
-  hasActiveWorkout = computed(() => this.activeExercises().length > 0);
+  hasExercise = computed(() => this.trackedExercises().length > 0);
   
   totalVolume = computed(() => {
-    return this.activeExercises().reduce((acc, tracked) => {
-      const exerciseVolume = tracked.sets.reduce((setAcc, set) => setAcc + (set.weight_lifted * set.reps_completed), 0);
+    return this.trackedExercises().reduce((acc, exercise) => {
+      const exerciseVolume = exercise.sets.reduce((setAcc, set) => setAcc + (set.weight_lifted * set.reps_completed), 0);
       return acc + exerciseVolume;
     }, 0);
   });
 
   totalSets = computed(() => {
-    return this.activeExercises().reduce((acc, tracked) => acc + tracked.sets.length, 0);
+    return this.trackedExercises().reduce((acc, exercise) => acc + exercise.sets.length, 0);
   });
 
-  constructor() {
-    // DbService handles init
+  async getExerciseById(id: number) {
+    return this.dbService.getExerciseByKey(id);
+  }
+
+  async createSession() {
+    if (this.trackedExercises().length === 0) return;
+
+    const planSession: WorkoutPlanSession = {
+      id: Date.now(),
+      title: this.sessionTitle() || 'New Template Session',
+      session_order: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      exercises: this.trackedExercises().map((te, index) => ({
+        id: Date.now() + Math.floor(Math.random() * 1000),
+        exercise_order: index,
+        target_sets: te.sets.length,
+        target_reps: te.sets[0]?.reps_completed || 0,
+        exercise: te.exercise,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }))
+    };
+    
+    const plan = await this.dbService.getWorkoutPlan(this.selectedPlanId()!);
+    if (!plan) throw new Error('The plan is not found');
+
+    if (plan) {
+        planSession.session_order = plan.sessions.length;
+        plan.sessions = [...(plan.sessions || []), planSession];
+        await this.dbService.saveWorkoutPlan(plan);
+        console.log('Template session successfully saved to plan!');
+    }
+    this.clearSession();
+  }
+
+  async finishSession() {
+    if (this.trackedExercises().length === 0) return;
+
+    const session: LoggedSession = {
+      id: Date.now(),
+      user_id: Date.now() + Math.floor(Math.random() * 1000), 
+      session_title: this.sessionTitle() || 'Unplanned Session', 
+      start_time: new Date(this.sessionStartTime() || Date.now()).toISOString(),
+      end_time: new Date().toISOString(),
+      total_duration: this.sessionDuration(),
+      total_weight_lifted: this.totalVolume(),
+      notes: '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      workouts: this.trackedExercises().map(te => ({
+        id: Date.now() + Math.floor(Math.random() * 1000), 
+        exercise_id: te.exercise.id,
+        exercise: te.exercise,
+        workout_title: te.exercise.name,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        sets: te.sets.map(ts => ({
+          id: Date.now() + Math.floor(Math.random() * 10000),
+          exercise_id: te.exercise.id,
+          set_number: ts.set_number,
+          reps_completed: ts.reps_completed,
+          weight_lifted: ts.weight_lifted,
+          rest_time_taken_sec: ts.rest_time_taken_sec,
+          is_warmup: ts.is_warmup,
+          completed_at: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }))
+      }))
+    };
+
+    console.group('Saving Session to DB');
+    console.log('Session:', session);
+
+    try {
+      await this.dbService.saveLoggedSession(session);
+      console.log('Session successfully saved to IndexedDB!');
+      this.clearSession();
+    } catch (error) {
+      throw new Error('Failed to save session to DB');
+    } finally {
+      this.clearSession();
+      console.groupEnd();
+    }
   }
 
   startSessionTimer() {
     if (this.sessionStartTime()) return;
     
     this.sessionStartTime.set(Date.now());
-    
-    if (this.sessionMode() === 'start') {
-      this.durationInterval = setInterval(() => {
-        if (this.sessionStartTime()) {
-           // duration in seconds
-          this.sessionDuration.set(Math.floor((Date.now() - this.sessionStartTime()!) / 1000));
-        }
-      }, 1000);
-    }
-  }
-
-  startPlannedSession(mode: SessionMode, planId: number) {
-    this.clearSession();
-    this.sessionMode.set(mode);
-    this.activePlanId.set(planId);
-    this.customSessionTitle.set('New Session');
-    this.startSessionTimer(); // Will set start time but no interval
+    this.durationInterval = setInterval(() => {
+      if (this.sessionStartTime()) {
+        this.sessionDuration.set(Math.floor((Date.now() - this.sessionStartTime()!) / 1000));
+      }
+    }, 1000);
   }
 
   stopSessionTimer() {
@@ -74,94 +134,37 @@ export class WorkoutService {
     }
   }
 
-  formatDuration(seconds: number): string {
-    const hrs = Math.floor(seconds / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    
-    if (hrs > 0) {
-      return `${hrs}h ${mins}min ${secs}s`;
-    }
-    if (mins > 0) {
-      return `${mins}min ${secs}s`;
-    }
-    return `${secs}s`;
-  }
-
-  // --- Mock API Methods ---
-  async searchExercises(query: string): Promise<Exercise[]> {
-    // Simulate network delay for realism
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
-    if (!query.trim()) return this.mockExercises;
-
-    const lowerQuery = query.toLowerCase();
-    return this.mockExercises.filter((e) => e.name.toLowerCase().includes(lowerQuery));
-  }
-
-  async getMuscles(): Promise<Muscle[]> {
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    return this.mockMuscles;
-  }
-
-  async getLoggedWorkoutSessions(): Promise<LoggedWorkoutSession[]> {
-    await new Promise((resolve) => setTimeout(resolve, 200));
+  async getLoggedWorkoutSessions(): Promise<LoggedSession[]> {
     // Simulate real fetching by ordering decending by start_time
-    return [...this.mockLoggedWorkoutSessions].sort((a, b) => new Date(b.start_time).getTime() - new Date(a.start_time).getTime());
-  }
-
-  // --- State Mutations ---
-  async getExerciseById(id: number): Promise<Exercise | undefined> {
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    return this.mockExercises.find((e) => e.id === id);
-  }
-
-  addCustomExercise(name: string): Exercise {
-    const newExercise: Exercise = {
-      id: Date.now(),
-      name,
-      media: [],
-    };
-    this.mockExercises.push(newExercise);
-    return newExercise;
-  }
-
-  updateExercise(id: number, updates: Partial<Exercise>) {
-    // Update in mock db
-    const mockIdx = this.mockExercises.findIndex((e) => e.id === id);
-    if (mockIdx !== -1) {
-      this.mockExercises[mockIdx] = { ...this.mockExercises[mockIdx], ...updates };
-    }
-
-    // Update in active tracked exercises
-    this.activeExercises.update((current) => {
-      return current.map((te) => {
-        if (te.exercise.id === id) {
-          return { ...te, exercise: { ...te.exercise, ...updates } };
-        }
-        return te;
-      });
-    });
+    const loggedSessions = await this.dbService.getLoggedSessions();
+    return loggedSessions.sort((a, b) => new Date(b.start_time).getTime() - new Date(a.start_time).getTime())
   }
 
   addTrackedExercise(exercise: Exercise) {
-    this.startSessionTimer(); // Ensure timer runs if not already
-    this.activeExercises.update((current) => {
+    // Ensure timer runs if not already
+    this.startSessionTimer(); 
+
+    this.trackedExercises.update((current) => {
       // Prevent duplicates in active list
       if (current.find((te) => te.exercise.id === exercise.id)) {
         return current;
       }
-      return [...current, { exercise, sets: [] }];
+
+      const newTrackedExercise: LoggedExercise = {
+        id: Date.now(),
+        exercise: exercise,
+        sets: [],
+      }
+      return [...(current || []), newTrackedExercise];
     });
   }
 
   removeTrackedExercise(exerciseId: number) {
-    this.activeExercises.update((current) => current.filter((te) => te.exercise.id !== exerciseId));
+    this.trackedExercises.update((current) => current.filter((te) => te.exercise.id !== exerciseId));
   }
 
   addSet(exerciseId: number, weight: number, reps: number) {
-    this.activeExercises.update((current) => {
+    this.trackedExercises.update((current) => {
       const index = current.findIndex((te) => te.exercise.id === exerciseId);
       if (index === -1) return current;
 
@@ -172,8 +175,8 @@ export class WorkoutService {
       tracked.sets = [
         ...tracked.sets,
         {
-          id: crypto.randomUUID(),
-          exercise_id: exerciseId,
+          id: Date.now(),
+          logged_exercise_id: exerciseId,
           set_number: newSetNumber,
           weight_lifted: weight,
           reps_completed: reps,
@@ -185,8 +188,8 @@ export class WorkoutService {
     });
   }
 
-  updateSet(exerciseId: number, setId: string, updates: Partial<WorkoutSet>) {
-    this.activeExercises.update((current) => {
+  updateSet(exerciseId: number, setId: number, updates: Partial<LoggedSet>) {
+    this.trackedExercises.update((current) => {
       const index = current.findIndex((te) => te.exercise.id === exerciseId);
       if (index === -1) return current;
 
@@ -200,8 +203,8 @@ export class WorkoutService {
     });
   }
 
-  removeSet(exerciseId: number, setId: string) {
-    this.activeExercises.update((current) => {
+  removeSet(exerciseId: number, setId: number) {
+    this.trackedExercises.update((current) => {
       const index = current.findIndex((te) => te.exercise.id === exerciseId);
       if (index === -1) return current;
 
@@ -220,83 +223,12 @@ export class WorkoutService {
     });
   }
 
-  // --- Syncing & Offline Storage ---
-  async finishWorkout() {
-    const workoutData = this.activeExercises();
-    if (workoutData.length === 0) return;
-
-    if (this.sessionMode() !== 'start' && this.activePlanId()) {
-      const planSession: WorkoutPlanSession = {
-        id: Date.now(),
-        title: this.customSessionTitle() || 'New Template Session',
-        session_order: 0, 
-        workout_exercises: workoutData.map((te, index) => ({
-          exercise_id: te.exercise.id,
-          order: index,
-          target_sets: te.sets.length,
-          target_reps: te.sets[0]?.reps_completed || 0 
-        }))
-      };
-      
-      const plan = await this.dbService.getWorkoutPlan(this.activePlanId()!);
-      if (plan) {
-         planSession.session_order = plan.sessions.length;
-         plan.sessions = [...(plan.sessions || []), planSession];
-         await this.dbService.saveWorkoutPlan(plan);
-         console.log('Template Session successfully saved to Plan!');
-      }
-      this.clearSession();
-      return;
-    }
-
-    const session: LoggedWorkoutSession = {
-      id: Date.now(),
-      user_id: 'local_user', 
-      session_title: 'Unplanned Session', 
-      start_time: new Date(this.sessionStartTime() || Date.now()).toISOString(),
-      end_time: new Date().toISOString(),
-      total_duration: this.sessionDuration(),
-      total_weight_lifted: this.totalVolume(),
-      notes: 'Logged via local storage app',
-      workouts: workoutData.map(te => ({
-        id: Date.now() + Math.floor(Math.random() * 1000), 
-        exercise_id: te.exercise.id,
-        exercise: te.exercise,
-        workout_title: te.exercise.name,
-        sets: te.sets.map(s => ({
-          id: Date.now() + Math.floor(Math.random() * 10000),
-          logged_workout_id: 0, 
-          exercise_id: te.exercise.id,
-          set_number: s.set_number,
-          is_warmup: false, 
-          reps_completed: s.reps_completed,
-          weight_lifted: s.weight_lifted,
-          completed_at: new Date().toISOString()
-        }))
-      }))
-    };
-
-    console.group('Saving Session to DB');
-    console.log('Session:', session);
-
-    try {
-      await this.dbService.saveLoggedSession(session);
-      console.log('Session successfully saved to IndexedDB!');
-      this.clearSession();
-    } catch (error) {
-      console.error('Failed to save session to DB', error);
-      this.clearSession();
-    }
-    console.groupEnd();
-  }
-
-  private clearSession() {
+  clearSession() {
     this.stopSessionTimer();
+    this.selectedPlanId.set(null);
+    this.sessionTitle.set('');
+    this.trackedExercises.set([]);
     this.sessionStartTime.set(null);
     this.sessionDuration.set(0);
-    this.sessionMode.set('start');
-    this.activePlanId.set(null);
-    this.customSessionTitle.set('');
-    this.activeExercises.set([]);
   }
 }

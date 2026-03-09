@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { openDB, IDBPDatabase } from 'idb';
-import { WorkoutPlan, LoggedWorkoutSession, Exercise, Muscle } from '../types/workout.types';
+import { WorkoutPlan, LoggedSession, Exercise, Muscle } from '../types/workout.types';
 import { mockMuscles, mockExercises } from '../mocks/workout.mock';
 
 @Injectable({
@@ -103,14 +103,14 @@ export class DbService {
   }
 
   // --- CRUD for Logged Sessions ---
-  async getLoggedSessions(): Promise<LoggedWorkoutSession[]> {
+  async getLoggedSessions(): Promise<LoggedSession[]> {
     const db = await this.dbPromise;
     // Get all sessions and sort by start time descending
     const sessions = await db.getAllFromIndex('logged_workout_sessions', 'start_time');
     return sessions.reverse();
   }
 
-  async saveLoggedSession(session: LoggedWorkoutSession): Promise<number> {
+  async saveLoggedSession(session: LoggedSession): Promise<number> {
     const db = await this.dbPromise;
     const now = new Date().toISOString();
     if (!session.createdAt) session.createdAt = now;
@@ -122,6 +122,11 @@ export class DbService {
   async getExercises(): Promise<Exercise[]> {
     const db = await this.dbPromise;
     return db.getAll('exercises');
+  }
+
+  async getExerciseByKey(key: any): Promise<Exercise> {
+    const db = await this.dbPromise;
+    return db.getKey('exercises', key);
   }
 
   async saveExercise(exercise: Exercise): Promise<number> {

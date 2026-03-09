@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Output, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { WorkoutService, Exercise } from '../../shared/services/workout.service';
 import { ZardInputDirective } from '../../shared/components/input/input.directive';
 import { LucideAngularModule, Search, Plus, Dumbbell } from 'lucide-angular';
+import { ExerciseService } from '@/shared/services/exercise.service';
+import { Exercise } from '@/shared/types/workout.types';
 
 @Component({
   selector: 'app-exercise-autocomplete',
@@ -16,7 +17,8 @@ export class ExerciseAutocomplete implements OnInit {
   readonly Search = Search;
   readonly Plus = Plus;
   readonly Dumbbell = Dumbbell;
-  private workoutService = inject(WorkoutService);
+  
+  private exerciseService = inject(ExerciseService);
 
   @Output() exerciseSelected = new EventEmitter<Exercise>();
 
@@ -49,7 +51,7 @@ export class ExerciseAutocomplete implements OnInit {
     // Debounce search
     this.searchTimeout = setTimeout(async () => {
       try {
-        const matches = await this.workoutService.searchExercises(query);
+        const matches = await this.exerciseService.searchExercises(query);
         this.results.set(matches);
       } finally {
         this.isSearching.set(false);
@@ -64,7 +66,7 @@ export class ExerciseAutocomplete implements OnInit {
   }
 
   createNewExercise(name: string) {
-    const newEx = this.workoutService.addCustomExercise(name);
+    const newEx = this.exerciseService.addCustomExercise(name);
     this.selectExercise(newEx);
   }
 }

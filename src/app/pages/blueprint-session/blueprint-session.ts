@@ -19,11 +19,11 @@ import { ExerciseTracker } from '@/components/exercise-tracker/exercise-tracker'
 import { HeaderComponent } from '@/shared/components/header/header';
 import { ZardButtonComponent } from '@/shared/components/button';
 import { RooSheetComponent } from '@/shared/components/sheet/sheet';
-import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 import { ZardInputDirective } from '@/shared/components/input';
+import { WorkoutPlanSession } from '@/shared/types/workout.types';
 
 @Component({
-  selector: 'app-workout-session',
+  selector: 'app-blueprint-session',
   standalone: true,
   imports: [
     CommonModule,
@@ -35,12 +35,11 @@ import { ZardInputDirective } from '@/shared/components/input';
     ZardInputDirective,
     RooSheetComponent,
     LucideAngularModule,
-    DurationFormatPipe,
   ],
-  templateUrl: './workout-session.html',
-  styleUrl: './workout-session.css',
+  templateUrl: './blueprint-session.html',
+  styleUrl: './blueprint-session.css',
 })
-export class WorkoutSession implements OnInit {
+export class BlueprintSession implements OnInit {
   readonly Dumbbell = Dumbbell;
   readonly Save = Save;
   readonly Plus = Plus;
@@ -56,16 +55,13 @@ export class WorkoutSession implements OnInit {
 
   // State
   isAddSheetOpen = signal(false);
+  selectedSession = signal<WorkoutPlanSession | null>(null);
 
   ngOnInit() {
     this.route.paramMap.subscribe(async (params) => {
       const idParam = params.get('id');
 
-      if (idParam === 'create') {
-        this.workoutService.sessionTitle.set('Workout Session');
-      } else {
-        //TODO: handle get template session
-      }
+      //TODO: handle edit
     });
   }
 
@@ -74,9 +70,9 @@ export class WorkoutSession implements OnInit {
     this.isAddSheetOpen.set(false);
   }
 
-  async finishSession() {
-    await this.workoutService.finishSession();
-    alert('Workout finished successfully');
-    this.router.navigate(['/journey']);
+  async createSession() {
+    await this.workoutService.createSession();
+    alert('Workout template successfully saved to plan!');
+    this.router.navigate(['/blueprint']);
   }
 }

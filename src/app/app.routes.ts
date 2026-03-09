@@ -7,6 +7,7 @@ import { Home } from './pages/home/home';
 import { Journey } from './pages/journey/journey';
 import { BlueprintComponent } from './pages/blueprint/blueprint';
 import { WorkoutSession } from './pages/workout-session/workout-session';
+import { BlueprintSession } from './pages/blueprint-session/blueprint-session';
 
 export const routes: Routes = [
   {
@@ -21,5 +22,6 @@ export const routes: Routes = [
   },
   { path: 'exercise/:id', component: ExerciseDetail },
   { path: 'exercise/:id/edit', component: ExerciseEdit },
-  { path: 'workout/session', component: WorkoutSession },
+  { path: 'session/:id', component: WorkoutSession },
+  { path: 'blueprint/session/:id', component: BlueprintSession },
 ];

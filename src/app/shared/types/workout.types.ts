@@ -1,12 +1,5 @@
 export type SessionMode = 'create' | 'update' | 'start';
 
-export interface ExerciseMedia {
-  id: number;
-  media_type: 'image' | 'video' | 'youtube' | string;
-  media_url: string;
-  display_order: number;
-}
-
 export interface Muscle {
   id: number;
   name: string;
@@ -28,78 +21,18 @@ export interface Exercise {
   updatedAt?: string;
 }
 
-export interface WorkoutSet {
-  id: string; // unique id for local editing
-  exercise_id: number;
-  set_number: number;
-  weight_lifted: number;
-  reps_completed: number;
-}
-
-export interface TrackedExercise {
-  exercise: Exercise;
-  sets: WorkoutSet[];
-}
-
-export interface LoggedSet {
+export interface ExerciseMedia {
   id: number;
-  logged_workout_id: number;
-  exercise_id: number;
-  set_number: number;
-  is_warmup: boolean;
-  reps_completed: number;
-  weight_lifted: number;
-  rpe_logged?: number;
-  rest_time_taken_sec?: number;
-  completed_at?: string;
+  media_type: 'image' | 'video' | 'youtube' | string;
+  media_url: string;
+  display_order: number;
 }
 
-export interface LoggedWorkout {
-  id: number;
-  logged_workout_session_id?: number | null;
-  session_exercises_id?: number | null;
-  exercise_id: number;
-  exercise?: Exercise; // Joined for UI convenience
-  workout_title: string;
-  sets: LoggedSet[];
-}
 
-export interface LoggedWorkoutSession {
-  id: number;
-  user_id: string;
-  workout_session_id?: number | null;
-  session_title: string;
-  start_time: string;
-  end_time?: string;
-  total_duration: number;
-  total_weight_lifted: number;
-  notes?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  workouts: LoggedWorkout[]; 
-}
-
-export interface WorkoutExercise {
-  exercise_id: number;
-  order: number;
-  target_sets?: number;
-  target_reps?: number;
-  target_rest_time?: number;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface WorkoutPlanSession {
-  id: number; // Timestamp based
-  title: string;
-  session_order: number; // Order to show within the plan
-  createdAt?: string;
-  updatedAt?: string;
-  workout_exercises?: WorkoutExercise[]; 
-}
-
+// Workout Plan
 export interface WorkoutPlan {
   id: number;
+  user_id?: number;
   title: string;
   description?: string;
   days: number; // sessions per week
@@ -108,4 +41,62 @@ export interface WorkoutPlan {
   createdAt?: string;
   updatedAt?: string;
   sessions: WorkoutPlanSession[]; // Nested array of planned sessions
+}
+
+export interface WorkoutPlanSession {
+  id: number; // Timestamp based
+  title: string;
+  session_order: number; // Order to show within the plan
+  createdAt?: string;
+  updatedAt?: string;
+  exercises?: WorkoutPlanExercise[]; 
+}
+
+export interface WorkoutPlanExercise {
+  id: number;
+  exercise_order: number; // Order to show within the plan session
+  target_sets?: number;
+  target_reps?: number;
+  target_rest_time?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  exercise: Exercise
+}
+
+// Logged Workout Sessions
+export interface LoggedSession {
+  id: number;
+  user_id?: number;
+  workout_plan_session_id?: number | null;
+  session_title: string;
+  start_time: string;
+  end_time?: string;
+  total_duration: number;
+  total_weight_lifted: number;
+  notes?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  workouts: LoggedExercise[]; 
+}
+
+export interface LoggedExercise {
+  id: number;
+  logged_session_id?: number | null;
+  exercise: Exercise;
+  createdAt?: string;
+  updatedAt?: string;
+  sets: LoggedSet[];
+}
+
+export interface LoggedSet {
+  id: number;
+  logged_exercise_id?: number;
+  set_number: number;
+  reps_completed: number;
+  weight_lifted: number;
+  rest_time_taken_sec?: number;
+  is_warmup?: boolean;
+  completed_at?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

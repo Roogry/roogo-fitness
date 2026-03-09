@@ -96,7 +96,7 @@
                   >
                   <button
                     class="text-xs font-medium text-primary hover:text-primary/80 flex items-center gap-1"
-                    (click)="addSessionToPlan(plan.id, $event)"
+                    (click)="openAddSession(plan.id, $event)"
                   >
                     <lucide-icon [img]="Plus" class="w-3 h-3"></lucide-icon>
                     Add
@@ -116,7 +116,7 @@
                       <div class="flex flex-col">
                         <span class="font-medium text-sm">{{ session.title }}</span>
                         <span class="text-xs text-muted-foreground"
-                          >{{ session.workout_exercises?.length || 0 }} exercises</span
+                          >{{ session.exercises?.length || 0 }} exercises</span
                         >
                       </div>
                     </div>

@@ -2,7 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ZardCardComponent } from '@/shared/components/card';
-import { WorkoutService, LoggedWorkoutSession } from '@/shared/services/workout.service';
+import { WorkoutService } from '@/shared/services/workout.service';
 import { LoggedWorkoutCardComponent } from '@/shared/components/logged-workout-card/logged-workout-card';
 import { UpcomingSessionCardComponent } from '@/shared/components/upcoming-session-card/upcoming-session-card';
 import { ExplorePlanCardComponent } from '@/shared/components/explore-plan-card/explore-plan-card';
@@ -16,6 +16,7 @@ import {
   Clock,
   Activity,
 } from 'lucide-angular';
+import { LoggedSession } from '@/shared/types/workout.types';
 
 @Component({
   selector: 'app-home',
@@ -43,7 +44,7 @@ export class Home implements OnInit {
   readonly ArrowRight = ChevronRight; // Reuse icon
 
   workoutService = inject(WorkoutService);
-  recentSessions = signal<LoggedWorkoutSession[]>([]);
+  recentSessions = signal<LoggedSession[]>([]);
 
   async ngOnInit() {
     try {

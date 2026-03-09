@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { HeaderComponent } from '@/shared/components/header/header';
-import { WorkoutService, ExerciseMedia, Muscle } from '@/shared/services/workout.service';
 import { ZardCardComponent } from '@/shared/components/card/card.component';
 import { ZardButtonComponent } from '@/shared/components/button/button.component';
 import { ZardInputDirective } from '@/shared/components/input/input.directive';
@@ -19,6 +18,9 @@ import {
   Trash2,
   Plus,
 } from 'lucide-angular';
+import { MuscleService } from '@/shared/services/muscle.service';
+import { ExerciseService } from '@/shared/services/exercise.service';
+import { Exercise, ExerciseMedia, Muscle } from '@/shared/types/workout.types';
 
 @Component({
   selector: 'app-exercise-edit',
@@ -49,11 +51,12 @@ export class ExerciseEdit implements OnInit {
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private workoutService = inject(WorkoutService);
+  private exerciseService = inject(ExerciseService);
+  private muscleService = inject(MuscleService);
 
   isLoading = signal(true);
   isSaving = signal(false);
-  exerciseId = signal<number | null>(null);
+  selectedExercise = signal<Exercise | null>(null);
 
   // Form Fields
   name = signal('');
@@ -67,49 +70,47 @@ export class ExerciseEdit implements OnInit {
   ngOnInit() {
     this.route.paramMap.subscribe(async (params) => {
       const idParam = params.get('id');
-      if (idParam) {
+
+      try {
         this.isLoading.set(true);
+
+        if (!idParam) throw new Error('Failed to load exercise');
+
+        // Load muscles in parallel with exercise
         const id = parseInt(idParam, 10);
-        this.exerciseId.set(id);
+        const [exercise, muscles] = await Promise.all([
+          this.exerciseService.getExerciseById(id),
+          this.muscleService.getMuscles(),
+        ]);
 
-        try {
-          // Load muscles in parallel with exercise
-          const [detail, muscles] = await Promise.all([
-            this.workoutService.getExerciseById(id),
-            this.workoutService.getMuscles(),
-          ]);
+        if (!exercise) throw new Error('Failed to load exercise');
 
-          this.availableMuscles.set(muscles);
+        this.availableMuscles.set(muscles);
 
-          if (detail) {
-            this.name.set(detail.name);
-            this.primaryGroup.set(detail.primary_muscle?.name || '');
+        this.name.set(exercise.name);
+        this.primaryGroup.set(exercise.primary_muscle?.name || '');
 
-            const sec = detail.secondary_muscles?.map(m => m.name) || [];
-            this.secondaryMuscles.set(sec);
-            this.media.set([...(detail.media || [])]);
-          } else {
-            this.exerciseId.set(null);
-          }
-        } catch (error) {
-          console.error('Failed to load exercise', error);
-          this.exerciseId.set(null);
-        } finally {
-          this.isLoading.set(false);
-        }
-      } else {
+        const secondaryMuscles = exercise.secondary_muscles?.map((m) => m.name) || [];
+        this.secondaryMuscles.set(secondaryMuscles);
+        this.media.set([...(exercise.media || [])]);
+
+        this.selectedExercise.set(exercise);
+      } catch (error) {
+        console.error('Failed to load exercise', error);
+        this.selectedExercise.set(null);
+      } finally {
         this.isLoading.set(false);
       }
     });
   }
 
   cancel() {
-    const id = this.exerciseId();
-    if (id) {
-      this.router.navigate(['/exercise', id]);
-    } else {
-      this.router.navigate(['/']);
+    if (this.selectedExercise()?.id) {
+      this.router.navigate(['/exercise', this.selectedExercise()?.id]);
+      return;
     }
+
+    this.router.navigate(['/']);
   }
 
   addMedia() {
@@ -169,25 +170,24 @@ export class ExerciseEdit implements OnInit {
   }
 
   save() {
-    const id = this.exerciseId();
-    if (!id || !this.name().trim() || !this.primaryGroup().trim()) return;
+    if (!this.selectedExercise() || !this.name().trim() || !this.primaryGroup().trim()) return;
 
     this.isSaving.set(true);
 
     // Simulate slight delay for realism
     const primaryName = this.primaryGroup().trim();
-    const primaryMuscle = this.availableMuscles().find(m => m.name === primaryName);
+    const primaryMuscle = this.availableMuscles().find((m) => m.name === primaryName);
     const secondaryMuscles = this.secondaryMuscles()
-        .map(name => this.availableMuscles().find(m => m.name === name))
-        .filter((m): m is Muscle => !!m);
+      .map((name) => this.availableMuscles().find((m) => m.name === name))
+      .filter((m): m is Muscle => !!m);
 
-    this.workoutService.updateExercise(id, {
+    this.exerciseService.updateExercise(this.selectedExercise()!, {
       name: this.name().trim(),
       primary_muscle: primaryMuscle,
       secondary_muscles: secondaryMuscles.length ? secondaryMuscles : undefined,
       media: this.media(),
     });
     this.isSaving.set(false);
-    this.router.navigate(['/exercise', id]);
+    this.router.navigate(['/exercise', this.selectedExercise()?.id]);
   }
 }

@@ -1,12 +1,13 @@
 import { Component, input, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { WorkoutService, TrackedExercise, WorkoutSet } from '../../shared/services/workout.service';
+import { WorkoutService } from '../../shared/services/workout.service';
 import { ZardCardComponent } from '../../shared/components/card/card.component';
 import { ZardButtonComponent } from '../../shared/components/button/button.component';
 import { ZardInputDirective } from '../../shared/components/input/input.directive';
 import { LucideAngularModule, Trash2, Plus, GripVertical, Dumbbell } from 'lucide-angular';
 import { RouterModule } from '@angular/router';
+import { LoggedExercise, LoggedSet } from '@/shared/types/workout.types';
 
 @Component({
   selector: 'app-exercise-tracker',
@@ -32,7 +33,7 @@ export class ExerciseTracker {
   private workoutService = inject(WorkoutService);
 
   // The exercise data passed from the parent
-  trackedExercise = input.required<TrackedExercise>();
+  trackedExercise = input.required<LoggedExercise>();
 
   // Local state for the "Add Set" form
   newWeight = signal<number | null>(null);
@@ -55,11 +56,11 @@ export class ExerciseTracker {
     this.newReps.set(null);
   }
 
-  updateSet(setId: string, updates: Partial<WorkoutSet>) {
+  updateSet(setId: number, updates: Partial<LoggedSet>) {
     this.workoutService.updateSet(this.trackedExercise().exercise.id, setId, updates);
   }
 
-  removeSet(setId: string) {
+  removeSet(setId: number) {
     this.workoutService.removeSet(this.trackedExercise().exercise.id, setId);
   }
 

@@ -1,8 +1,8 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LoggedWorkoutSession } from '../../services/workout.service';
 import { ZardCardComponent } from '@/shared/components/card';
 import { LucideAngularModule, Activity, Clock, ArrowRight } from 'lucide-angular';
+import { LoggedSession } from '@/shared/types/workout.types';
 
 @Component({
   selector: 'app-logged-workout-card',
@@ -15,10 +15,10 @@ export class LoggedWorkoutCardComponent {
   readonly Clock = Clock;
   readonly ArrowRight = ArrowRight;
 
-  session = input.required<LoggedWorkoutSession>();
+  session = input.required<LoggedSession>();
 
-  getExerciseSummary(session: LoggedWorkoutSession): string {
-    const names = new Set(session.workouts.map((w) => w.workout_title).filter(Boolean));
+  getExerciseSummary(session: LoggedSession): string {
+    const names = new Set(session.workouts.map((w) => w.exercise.name).filter(Boolean));
     const uniqueNames = Array.from(names);
     if (uniqueNames.length === 0) return 'No exercises recorded';
     if (uniqueNames.length <= 2) return uniqueNames.join(', ');
