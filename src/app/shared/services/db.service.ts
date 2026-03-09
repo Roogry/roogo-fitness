@@ -117,7 +117,7 @@ export class DbService {
   async getLoggedSessions(): Promise<LoggedSession[]> {
     const db = await this.dbPromise;
     // Get all sessions and sort by start time descending
-    const sessions = await db.getAllFromIndex('logged_workout_sessions', 'start_time');
+    const sessions = await db.getAllFromIndex('logged_sessions', 'start_time');
     return sessions.reverse();
   }
 
@@ -126,7 +126,7 @@ export class DbService {
     const now = new Date().toISOString();
     if (!session.createdAt) session.createdAt = now;
     session.updatedAt = now;
-    return db.put('logged_workout_sessions', session);
+    return db.put('logged_sessions', session);
   }
 
   // --- CRUD for Exercises ---
