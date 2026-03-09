@@ -69,7 +69,7 @@ export const mockExercises: Exercise[] = [
   { id: 8, name: 'Triceps Extension', primary_muscle: mockMuscles[6], media: [] },
 ];
 
-export const mockLoggedWorkoutSessions: LoggedSession[] = [
+export const mockLoggedSessions: LoggedSession[] = [
   {
     id: 1001,
     user_id: Date.now(),

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { openDB, IDBPDatabase } from 'idb';
 import { WorkoutPlan, LoggedSession, Exercise, Muscle } from '../types/workout.types';
-import { mockMuscles, mockExercises } from '../mocks/workout.mock';
+import { mockMuscles, mockExercises, mockLoggedSessions } from '../mocks/workout.mock';
 
 @Injectable({
   providedIn: 'root'
@@ -31,8 +31,8 @@ export class DbService {
         }
 
         // Logged Sessions
-        if (!db.objectStoreNames.contains('logged_workout_sessions')) {
-          const sessionsStore = db.createObjectStore('logged_workout_sessions', { keyPath: 'id' });
+        if (!db.objectStoreNames.contains('logged_sessions')) {
+          const sessionsStore = db.createObjectStore('logged_sessions', { keyPath: 'id' });
           sessionsStore.createIndex('start_time', 'start_time');
         }
 
@@ -55,6 +55,17 @@ export class DbService {
   }
 
   private async populateInitialData(db: IDBPDatabase<any>) {
+    // Logged Sessions
+    const loggedSessionCount = await db.count('logged_sessions');
+    if (loggedSessionCount === 0) {
+      console.log('Populating initial logged sessions data...');
+      const tx = db.transaction('logged_sessions', 'readwrite');
+      for (const loggedSession of mockLoggedSessions) {
+        tx.store.put(loggedSession);
+      }
+      await tx.done;
+    }
+
     // Populate Muscles
     const muscleCount = await db.count('muscles');
     if (muscleCount === 0) {
