@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { openDB, IDBPDatabase } from 'idb';
 import { WorkoutPlan, LoggedSession, Exercise, Muscle } from '../types/workout.types';
-import { mockMuscles, mockExercises, mockLoggedSessions } from '../mocks/workout.mock';
+import { mockMuscles, mockExercises, mockLoggedSessions, mockWorkoutPlans } from '../mocks/workout.mock';
 
 @Injectable({
   providedIn: 'root'
@@ -84,6 +84,17 @@ export class DbService {
       const tx = db.transaction('exercises', 'readwrite');
       for (const exercise of mockExercises) {
         tx.store.put(exercise);
+      }
+      await tx.done;
+    }
+
+    // Populate Workout Plans
+    const plansCount = await db.count('workout_plans');
+    if (plansCount === 0) {
+      console.log('Populating initial workout plans...');
+      const tx = db.transaction('workout_plans', 'readwrite');
+      for (const plan of mockWorkoutPlans) {
+        tx.store.put(plan);
       }
       await tx.done;
     }
