@@ -1,6 +1,8 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { DbService } from '@/shared/services/db.service';
+import { WorkoutService } from '@/shared/services/workout.service';
 import { WorkoutPlan } from '@/shared/types/workout.types';
 import { ZardCardComponent } from '@/shared/components/card';
 import { ZardButtonComponent } from '@/shared/components/button/button.component';
@@ -49,6 +51,8 @@ export class BlueprintComponent implements OnInit {
   readonly Trash2 = Trash2;
 
   dbService = inject(DbService);
+  workoutService = inject(WorkoutService);
+  router = inject(Router);
 
   isOpenPlanForm = signal(false);
   editingPlanId = signal<number | null>(null);
@@ -113,6 +117,12 @@ export class BlueprintComponent implements OnInit {
     this.editingPlanId.set(null);
     this.newPlan = { title: '', description: '', sessionsPerWeek: 3 };
     this.isOpenPlanForm.set(true);
+  }
+
+  addSessionToPlan(planId: number, event: Event) {
+    event.stopPropagation();
+    this.workoutService.startPlannedSession('create', planId);
+    this.router.navigate(['/workout/session']);
   }
 
   editPlan(plan: WorkoutPlan, event: Event) {

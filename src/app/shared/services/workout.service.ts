@@ -1,5 +1,5 @@
 import { Injectable, computed, signal, inject } from '@angular/core';
-import { Exercise, Muscle, TrackedExercise, WorkoutSet, LoggedWorkoutSession } from '../types/workout.types';
+import { Exercise, Muscle, TrackedExercise, WorkoutSet, LoggedWorkoutSession, WorkoutPlanSession, SessionMode } from '../types/workout.types';
 import { mockMuscles, mockExercises, mockLoggedWorkoutSessions } from '../mocks/workout.mock';
 import { DbService } from './db.service';
 
@@ -21,6 +21,9 @@ export class WorkoutService {
   activeExercises = signal<TrackedExercise[]>([]);
   sessionStartTime = signal<number | null>(null);
   sessionDuration = signal<number>(0);
+  sessionMode = signal<SessionMode>('start');
+  activePlanId = signal<number | null>(null);
+  customSessionTitle = signal<string>('');
   private durationInterval: any;
 
   // Computed state for UI convenience
@@ -45,12 +48,23 @@ export class WorkoutService {
     if (this.sessionStartTime()) return;
     
     this.sessionStartTime.set(Date.now());
-    this.durationInterval = setInterval(() => {
-      if (this.sessionStartTime()) {
-         // duration in seconds
-        this.sessionDuration.set(Math.floor((Date.now() - this.sessionStartTime()!) / 1000));
-      }
-    }, 1000);
+    
+    if (this.sessionMode() === 'start') {
+      this.durationInterval = setInterval(() => {
+        if (this.sessionStartTime()) {
+           // duration in seconds
+          this.sessionDuration.set(Math.floor((Date.now() - this.sessionStartTime()!) / 1000));
+        }
+      }, 1000);
+    }
+  }
+
+  startPlannedSession(mode: SessionMode, planId: number) {
+    this.clearSession();
+    this.sessionMode.set(mode);
+    this.activePlanId.set(planId);
+    this.customSessionTitle.set('New Session');
+    this.startSessionTimer(); // Will set start time but no interval
   }
 
   stopSessionTimer() {
@@ -211,6 +225,30 @@ export class WorkoutService {
     const workoutData = this.activeExercises();
     if (workoutData.length === 0) return;
 
+    if (this.sessionMode() !== 'start' && this.activePlanId()) {
+      const planSession: WorkoutPlanSession = {
+        id: Date.now(),
+        title: this.customSessionTitle() || 'New Template Session',
+        session_order: 0, 
+        workout_exercises: workoutData.map((te, index) => ({
+          exercise_id: te.exercise.id,
+          order: index,
+          target_sets: te.sets.length,
+          target_reps: te.sets[0]?.reps_completed || 0 
+        }))
+      };
+      
+      const plan = await this.dbService.getWorkoutPlan(this.activePlanId()!);
+      if (plan) {
+         planSession.session_order = plan.sessions.length;
+         plan.sessions = [...(plan.sessions || []), planSession];
+         await this.dbService.saveWorkoutPlan(plan);
+         console.log('Template Session successfully saved to Plan!');
+      }
+      this.clearSession();
+      return;
+    }
+
     const session: LoggedWorkoutSession = {
       id: Date.now(),
       user_id: 'local_user', 
@@ -256,6 +294,9 @@ export class WorkoutService {
     this.stopSessionTimer();
     this.sessionStartTime.set(null);
     this.sessionDuration.set(0);
+    this.sessionMode.set('start');
+    this.activePlanId.set(null);
+    this.customSessionTitle.set('');
     this.activeExercises.set([]);
   }
 }

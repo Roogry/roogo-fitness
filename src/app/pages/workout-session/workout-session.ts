@@ -1,5 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { LucideAngularModule, Dumbbell, Save, Plus, X, ArrowLeft, Check, Clock, Activity, BarChart2 } from 'lucide-angular';
 import { WorkoutService } from '@/shared/services/workout.service';
 import { ExerciseAutocomplete } from '@/components/exercise-autocomplete/exercise-autocomplete';
@@ -13,6 +15,7 @@ import { RooSheetComponent } from '@/shared/components/sheet/sheet';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     ExerciseAutocomplete,
     ExerciseTracker,
     HeaderComponent,
@@ -35,6 +38,7 @@ export class WorkoutSession {
   readonly BarChart2 = BarChart2;
 
   workoutService = inject(WorkoutService);
+  router = inject(Router);
 
   isAddSheetOpen = signal(false);
 
@@ -44,7 +48,14 @@ export class WorkoutSession {
   }
 
   async finishWorkout() {
+    const isPlanRecord = this.workoutService.sessionMode() === 'create';
     await this.workoutService.finishWorkout();
-    alert('Workout finished successfully (Check console for mock API logs)');
+    
+    if (isPlanRecord) {
+      alert('Workout template successfully saved to plan!');
+      this.router.navigate(['/blueprint']);
+    } else {
+      alert('Workout finished successfully (Check console for mock API logs)');
+    }
   }
 }

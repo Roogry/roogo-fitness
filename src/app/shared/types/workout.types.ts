@@ -1,3 +1,5 @@
+export type SessionMode = 'create' | 'update' | 'start';
+
 export interface ExerciseMedia {
   id: number;
   media_type: 'image' | 'video' | 'youtube' | string;

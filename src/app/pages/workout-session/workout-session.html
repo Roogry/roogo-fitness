@@ -1,7 +1,12 @@
 <div class="min-h-screen bg-background text-foreground pb-20">
   <!-- Header -->
-  <app-header title="Active Session" [showBackBtn]="true" backLink="/" class="sticky top-0">
-    @if (workoutService.hasActiveWorkout()) {
+  <app-header 
+    title="{{ workoutService.sessionMode() === 'create' && workoutService.customSessionTitle() ? workoutService.customSessionTitle() : 'Active Session' }}" 
+    [showBackBtn]="true" 
+    backLink="/" 
+    class="sticky top-0"
+  >
+    @if (workoutService.hasActiveWorkout() || workoutService.sessionMode() === 'create') {
       <button
         right
         z-button
@@ -9,14 +14,14 @@
         (click)="finishWorkout()"
       >
         <lucide-icon [img]="Check" class="mr-1 hidden sm:inline-block"></lucide-icon>
-        <span>Finish</span>
+        <span>{{ workoutService.sessionMode() === 'create' ? 'Create' : 'Finish' }}</span>
       </button>
     }
   </app-header>
 
   <main class="container mx-auto px-4 pb-6 max-w-2xl mt-4">
-    <!-- Session Stats Panel -->
-    @if (workoutService.hasActiveWorkout()) {
+    <!-- Session Stats Panel / Planned Session Title -->
+    @if (workoutService.sessionMode() !== 'create' && workoutService.hasActiveWorkout()) {
       <div class="mb-6 p-4 flex items-center justify-between rounded-4xl bg-secondary/60 border-1 border-border">
         <div class="px-4 flex flex-col items-center justify-center text-center">
           <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Volume</span>
@@ -35,6 +40,20 @@
         <div class="px-4 flex flex-col items-center justify-center text-center">
           <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Sets</span>
           <span class="font-medium">{{ workoutService.totalSets() }} <span class="text-sm font-medium text-foreground">set</span></span>
+        </div>
+      </div>
+    } @else if (workoutService.sessionMode() === 'create') {
+      <div class="mb-6">
+        <label for="sessionTitle" class="text-xs font-semibold text-muted-foreground uppercase tracking-wider ml-1 mb-1 block">Session Title</label>
+        <div class="relative">
+          <input 
+            type="text" 
+            id="sessionTitle"
+            class="w-full bg-secondary/30 border border-border rounded-xl px-4 py-3 font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+            [ngModel]="workoutService.customSessionTitle()"
+            (ngModelChange)="workoutService.customSessionTitle.set($event)"
+            placeholder="Name your session..." 
+          />
         </div>
       </div>
     }
