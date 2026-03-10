@@ -1,70 +1,99 @@
 <div class="min-h-screen bg-background text-foreground pb-20">
   <!-- Header -->
-  <app-header 
-    title="Log Exercise" 
-    [showBackBtn]="true" 
-    backLink="/" 
-    class="sticky top-0"
-  >
-    @if (workoutService.hasExercise()) {
+  <app-header [title]="headerTitle()" [showBackBtn]="true" backLink="/" class="sticky top-0">
+    @if (workoutService.sessionStartTime()) {
+      <button right z-button zShape="circle" (click)="finishSession()">
+        <lucide-icon [img]="Check" class="mr-1 hidden sm:inline-block"></lucide-icon>
+        <span>Finish</span>
+      </button>
+    }
+
+    @if (sessionAction() === 'detail') {
       <button
         right
         z-button
+        zType="secondary"
+        zSize="icon"
         zShape="circle"
-        (click)="finishSession()"
+        (click)="openSessionMenu()"
       >
-        <lucide-icon [img]="Check" class="mr-1 hidden sm:inline-block"></lucide-icon>
-        <span>Finish</span>
+        <lucide-icon [img]="Ellipsis"></lucide-icon>
+        <span class="sr-only">More</span>
       </button>
     }
   </app-header>
 
   <main class="container mx-auto px-4 pb-6 max-w-2xl mt-4">
-    <!-- Session Stats Panel / Planned Session Title -->
-    @if (workoutService.hasExercise()) {
-      <div class="mb-6 p-4 flex items-center justify-between rounded-4xl bg-secondary/60 border-1 border-border">
-        <div class="px-4 flex flex-col items-center justify-center text-center">
-          <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Volume</span>
-          <span class="font-medium">{{ workoutService.totalVolume() }} <span class="text-sm font-medium text-foreground">kg</span></span>
+    <div class="flex flex-col gap-4">
+      <!-- Session Stats Panel / Planned Session Title -->
+      @if (workoutService.sessionStartTime() && workoutService.hasExercise()) {
+        <div
+          class="mb-6 p-4 flex items-center justify-between rounded-4xl bg-secondary/60 border-1 border-border"
+        >
+          <div class="px-4 flex flex-col items-center justify-center text-center">
+            <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Volume</span>
+            <span class="font-medium"
+              >{{ workoutService.totalVolume() }}
+              <span class="text-sm font-medium text-foreground">kg</span></span
+            >
+          </div>
+
+          <div class="h-6 w-[1px] bg-border"></div>
+
+          <div class="min-w-[150px] px-4 flex flex-col items-center justify-center text-center">
+            <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider"
+              >Duration</span
+            >
+            <span class="font-medium">{{ workoutService.sessionDuration() | durationFormat }}</span>
+          </div>
+
+          <div class="h-6 w-[1px] bg-border"></div>
+
+          <div class="px-4 flex flex-col items-center justify-center text-center">
+            <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Sets</span>
+            <span class="font-medium"
+              >{{ workoutService.totalSets() }}
+              <span class="text-sm font-medium text-foreground">set</span></span
+            >
+          </div>
         </div>
+      }
 
-        <div class="h-6 w-[1px] bg-border"></div>
-
-        <div class="min-w-[150px] px-4 flex flex-col items-center justify-center text-center">
-          <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Duration</span>
-          <span class="font-medium">{{ workoutService.sessionDuration() | durationFormat }}</span>
+      @if (sessionAction() === 'detail') {
+        <h1 class="text-2xl font-bold">{{ workoutService.sessionTitle() }}</h1>
+      } @else {
+        <div class="flex flex-col gap-3">
+          <label
+            for="title"
+            class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            Session Title
+          </label>
+          <input
+            id="title"
+            name="title"
+            z-input
+            [ngModel]="workoutService.sessionTitle()"
+            (ngModelChange)="workoutService.sessionTitle.set($event)"
+            placeholder="Name your session..."
+            class="w-full"
+            required
+          />
         </div>
-        
-        <div class="h-6 w-[1px] bg-border"></div>
+      }
 
-        <div class="px-4 flex flex-col items-center justify-center text-center">
-          <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Sets</span>
-          <span class="font-medium">{{ workoutService.totalSets() }} <span class="text-sm font-medium text-foreground">set</span></span>
-        </div>
-      </div>
-    } 
+      @if (workoutService.sessionStartTime() == null) {
+        <button
+          z-button
+          zShape="circle"
+          class="w-full mb-4"
+          (click)="workoutService.startSessionTimer()"
+        >
+          Start Session
+        </button>
+      }
 
-    <div class="mb-6 flex flex-col gap-3">
-      <label
-        for="title"
-        class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-      >
-        Session Title
-      </label>
-      <input
-        id="title"
-        name="title"
-        z-input
-        [ngModel]="workoutService.sessionTitle()"
-        (ngModelChange)="workoutService.sessionTitle.set($event)"
-        required
-        placeholder="Name your session..."
-        class="w-full"
-      />
-    </div>
-
-    <!-- Active Exercises -->
-    <div class="space-y-6">
+      <!-- Active Exercises -->
       @if (workoutService.trackedExercises().length === 0) {
         <div
           class="py-8 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl"
@@ -75,13 +104,15 @@
       }
 
       @for (tracked of workoutService.trackedExercises(); track tracked.exercise.id) {
-        <app-exercise-tracker [trackedExercise]="tracked"></app-exercise-tracker>
+        <app-exercise-tracker [trackedExercise]="tracked" [editable]="sessionAction() !== 'detail'"></app-exercise-tracker>
       }
 
-      <button z-button zShape="circle" class="w-full" (click)="isAddSheetOpen.set(true)">
-        <lucide-icon [img]="Plus"></lucide-icon>
-        Add Exercise
-      </button>
+      @if (sessionAction() !== 'detail') {
+        <button z-button zShape="circle" class="w-full" (click)="isAddSheetOpen.set(true)">
+          <lucide-icon [img]="Plus"></lucide-icon>
+          Add Exercise
+        </button>
+      }
     </div>
   </main>
 

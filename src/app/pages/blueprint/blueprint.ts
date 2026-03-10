@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DbService } from '@/shared/services/db.service';
 import { WorkoutService } from '@/shared/services/workout.service';
-import { WorkoutPlan } from '@/shared/types/workout.types';
+import { WorkoutPlan, WorkoutPlanSession } from '@/shared/types/workout.types';
 import { ZardCardComponent } from '@/shared/components/card';
 import { ZardButtonComponent } from '@/shared/components/button/button.component';
 import { FormsModule } from '@angular/forms';
@@ -128,9 +128,21 @@ export class BlueprintComponent implements OnInit {
     this.router.navigate(['/blueprint/session/create']);
   }
 
+  detailSession(planId: number, sessionId: number, event: Event) {
+    event.stopPropagation();
+    this.router.navigate(['/session/detail'], { queryParams: { planId, sessionId } });
+  }
+
   startSession(planId: number, sessionId: number, event: Event) {
     event.stopPropagation();
     this.router.navigate(['/session/start'], { queryParams: { planId, sessionId } });
+  }
+
+  getExerciseNames(session: WorkoutPlanSession): string {
+    if (!session.exercises || session.exercises.length === 0) {
+      return 'No exercises added yet.';
+    }
+    return session.exercises.map(pe => pe.exercise.name).join(', ');
   }
 
   editPlan(plan: WorkoutPlan, event: Event) {

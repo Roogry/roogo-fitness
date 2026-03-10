@@ -20,7 +20,7 @@ export class WorkoutService {
   
   totalVolume = computed(() => {
     return this.trackedExercises().reduce((acc, exercise) => {
-      const exerciseVolume = exercise.sets.reduce((setAcc, set) => setAcc + (set.weight_lifted * set.reps_completed), 0);
+      const exerciseVolume = exercise.sets.reduce((setAcc, set) => setAcc + ((set.weight_lifted?? 0) * (set.reps_completed?? 0)), 0);
       return acc + exerciseVolume;
     }, 0);
   });
@@ -65,9 +65,7 @@ export class WorkoutService {
     this.clearSession();
   }
 
-  async startSessionFromBlueprint(planId: number, sessionId: number) {
-    this.clearSession();
-    
+  async setSessionFromBlueprint(planId: number, sessionId: number) {
     const plan = await this.dbService.getWorkoutPlan(planId);
     if (!plan) throw new Error('Plan not found');
 
@@ -82,8 +80,8 @@ export class WorkoutService {
         const sets: LoggedSet[] = Array.from({ length: pe.target_sets || 0 }).map((_, i) => ({
           id: Date.now() + Math.floor(Math.random() * 10000) + i,
           set_number: i + 1,
-          reps_completed: 0,
-          weight_lifted: 0,
+          reps_completed: pe.target_reps,
+          weight_lifted: pe.target_weight,
         }));
 
         return {
@@ -94,8 +92,6 @@ export class WorkoutService {
       });
       this.trackedExercises.set(activeExercises);
     }
-    
-    this.startSessionTimer();
   }
 
   async finishSession() {

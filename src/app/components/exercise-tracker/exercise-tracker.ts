@@ -8,6 +8,7 @@ import { ZardInputDirective } from '../../shared/components/input/input.directiv
 import { LucideAngularModule, Trash2, Plus, GripVertical, Dumbbell } from 'lucide-angular';
 import { RouterModule } from '@angular/router';
 import { LoggedExercise, LoggedSet } from '@/shared/types/workout.types';
+import { ZardBadgeComponent } from "@/shared/components/badge";
 
 @Component({
   selector: 'app-exercise-tracker',
@@ -20,7 +21,8 @@ import { LoggedExercise, LoggedSet } from '@/shared/types/workout.types';
     ZardInputDirective,
     LucideAngularModule,
     RouterModule,
-  ],
+    ZardBadgeComponent
+],
   templateUrl: './exercise-tracker.html',
   styleUrl: './exercise-tracker.css',
 })
@@ -34,6 +36,7 @@ export class ExerciseTracker {
 
   // The exercise data passed from the parent
   trackedExercise = input.required<LoggedExercise>();
+  editable = input<boolean>(false);
 
   // Local state for the "Add Set" form
   newWeight = signal<number | null>(null);

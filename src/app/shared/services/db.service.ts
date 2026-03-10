@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { openDB, IDBPDatabase } from 'idb';
-import { WorkoutPlan, LoggedSession, Exercise, Muscle } from '../types/workout.types';
+import { WorkoutPlan, LoggedSession, Exercise, Muscle, WorkoutPlanSession } from '../types/workout.types';
 import { mockMuscles, mockExercises, mockLoggedSessions, mockWorkoutPlans } from '../mocks/workout.mock';
 
 @Injectable({

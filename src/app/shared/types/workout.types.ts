@@ -1,4 +1,4 @@
-export type SessionMode = 'create' | 'update' | 'start';
+export type SessionAction = 'create' | 'edit' | 'detail' | 'start' | 'empty';
 
 export interface Muscle {
   id: number;
@@ -56,6 +56,7 @@ export interface WorkoutPlanExercise {
   id: number;
   exercise_order: number; // Order to show within the plan session
   target_sets?: number;
+  target_weight?: number;
   target_reps?: number;
   target_rest_time?: number;
   createdAt?: string;
@@ -92,8 +93,8 @@ export interface LoggedSet {
   id: number;
   logged_exercise_id?: number;
   set_number: number;
-  reps_completed: number;
-  weight_lifted: number;
+  reps_completed?: number;
+  weight_lifted?: number;
   rest_time_taken_sec?: number;
   is_warmup?: boolean;
   completed_at?: string;

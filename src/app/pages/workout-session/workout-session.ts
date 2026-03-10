@@ -12,6 +12,7 @@ import {
   Check,
   Clock,
   Activity,
+  Ellipsis
 } from 'lucide-angular';
 import { WorkoutService } from '@/shared/services/workout.service';
 import { ExerciseAutocomplete } from '@/components/exercise-autocomplete/exercise-autocomplete';
@@ -21,6 +22,7 @@ import { ZardButtonComponent } from '@/shared/components/button';
 import { RooSheetComponent } from '@/shared/components/sheet/sheet';
 import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 import { ZardInputDirective } from '@/shared/components/input';
+import { SessionAction } from '@/shared/types/workout.types';
 
 @Component({
   selector: 'app-workout-session',
@@ -49,6 +51,7 @@ export class WorkoutSession implements OnInit {
   readonly Check = Check;
   readonly Clock = Clock;
   readonly Activity = Activity;
+  readonly Ellipsis = Ellipsis;
 
   workoutService = inject(WorkoutService);
   router = inject(Router);
@@ -56,26 +59,39 @@ export class WorkoutSession implements OnInit {
 
   // State
   isAddSheetOpen = signal(false);
+  sessionAction = signal<SessionAction>('empty');
+  headerTitle = signal<string>('Log Session');
 
   ngOnInit() {
-    this.route.paramMap.subscribe(async (params) => {
-      const action = params.get('action');
-
-      if (action === 'create') {
-        this.workoutService.sessionTitle.set('Workout Session');
-      } else if (action === 'start') {
-        this.route.queryParamMap.subscribe(async (queryParams) => {
-          const planId = queryParams.get('planId');
-          const sessionId = queryParams.get('sessionId');
-          
-          if (planId && sessionId) {
-            await this.workoutService.startSessionFromBlueprint(Number(planId), Number(sessionId));
-          }
-        });
-      } else {
-        //TODO: handle get template session
+    this.route.queryParamMap.subscribe(async (queryParams) => {
+      const planId = queryParams.get('planId');
+      const sessionId = queryParams.get('sessionId');
+      
+      if (planId && sessionId) {
+        await this.workoutService.setSessionFromBlueprint(Number(planId), Number(sessionId));
       }
     });
+
+    this.route.paramMap.subscribe(async (params) => {
+      this.sessionAction.set(params.get('action') as SessionAction);
+
+      if (this.sessionAction() === 'detail') {
+        this.headerTitle.set('Workout Session');
+      }
+
+      if (this.sessionAction() === 'empty') {
+        this.workoutService.sessionTitle.set('Workout Session');
+      } 
+
+      if (this.sessionAction() === 'start' || this.sessionAction() === 'empty') {
+        this.workoutService.clearSession();
+        this.workoutService.startSessionTimer();
+      } 
+    });
+  }
+
+  openSessionMenu() {
+    //TODO: open bottom sheet with these button Edit Session, Delete Session 
   }
 
   onExerciseSelected(exercise: any) {
