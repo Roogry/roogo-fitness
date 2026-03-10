@@ -40,6 +40,13 @@
           @for (session of mappedSessions(); track session.id) {
             <app-upcoming-session-card [session]="session" />
           }
+
+          <!-- See More Outline Card -->
+          <a routerLink="/blueprint" class="block min-w-[180px] snap-start">
+            <div class="bg-secondary/40 hover:border-primary/20 rounded-2xl p-4 flex flex-col justify-center items-center h-full w-full cursor-pointer border-2 border-dashed border-border hover:border-primary/50 hover:bg-secondary/20 transition-colors group">
+              <span class="text-sm font-medium transition-colors">View All</span>
+            </div>
+          </a>
         </div>
 
         <!-- Start Empty Workout Action -->

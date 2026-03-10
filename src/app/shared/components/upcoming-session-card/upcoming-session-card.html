@@ -1,5 +1,5 @@
 <div
-  class="bg-secondary/40 rounded-[16px] p-4 flex justify-between items-center hover:bg-secondary/60 transition-colors border border-transparent hover:border-primary/20 h-full w-full cursor-pointer"
+  class="group/session bg-secondary/40 rounded-2xl p-4 flex justify-between items-center hover:bg-secondary/60 transition-colors border border-transparent hover:border-primary/20 h-full w-full cursor-pointer"
   (click)="goToSession()"
 >
   <div class="flex flex-col mr-4">
@@ -8,13 +8,9 @@
       session().title
     }}</span>
   </div>
-  <button
-    z-button
-    zShape="circle"
-    zType="outline"
-    zSize="icon"
-    class="hover:bg-primary hover:text-white flex-shrink-0 transition-colors"
+  <div
+    class="h-10 w-10 rounded-full group-hover/session:bg-primary group-hover/session:text-white flex-shrink-0 flex items-center justify-center ransition-colors"
   >
     <lucide-icon [img]="ChevronRight"></lucide-icon>
-  </button>
+  </div>
 </div>

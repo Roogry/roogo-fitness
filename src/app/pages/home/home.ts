@@ -54,7 +54,7 @@ export class Home implements OnInit {
     const plan = this.activePlan();
     if (!plan) return [];
 
-    return plan.sessions.map((session, index) => ({
+    return plan.sessions.slice(0, 3).map((session, index) => ({
       id: session.id,
       planId: plan.id,
       sessionId: session.id,
