@@ -17,40 +17,42 @@
 
   <main class="container mx-auto px-4 max-w-2xl mt-8">
     <!-- Hero Card: Current Plan & Session -->
-    <z-card class="mb-6 block hover:border-primary/50 transition-colors cursor-pointer group">
-      <div class="flex justify-between items-start mb-6">
-        <div class="flex flex-col">
-          <span class="text-sm font-semibold text-primary mb-1 uppercase tracking-wider"
-            >Current Plan</span
-          >
-          <h2 class="text-2xl font-bold">Push Pull Legs (PPL)</h2>
-          <div class="flex items-center text-sm text-muted-foreground mt-2 gap-2">
-            <lucide-icon [img]="Calendar" class="w-4 h-4"></lucide-icon>
-            <span>3 days / week</span>
+    @if (activePlan()) {
+      <z-card class="mb-6 block hover:border-primary/50 transition-colors cursor-pointer group">
+        <div class="flex justify-between items-start mb-6">
+          <div class="flex flex-col">
+            <span class="text-sm font-semibold text-primary mb-1 uppercase tracking-wider"
+              >Current Plan</span
+            >
+            <h2 class="text-2xl font-bold">{{ activePlan()!.title }}</h2>
+            <div class="flex items-center text-sm text-muted-foreground mt-2 gap-2">
+              <lucide-icon [img]="Calendar" class="w-4 h-4"></lucide-icon>
+              <span>{{ activePlan()!.days }} days / week</span>
+            </div>
+          </div>
+          <div class="p-3 bg-primary/5 text-primary rounded-2xl hidden sm:inline-block">
+            <lucide-icon [img]="Dumbbell" class="w-6 h-6"></lucide-icon>
           </div>
         </div>
-        <div class="p-3 bg-primary/5 text-primary rounded-2xl hidden sm:inline-block">
-          <lucide-icon [img]="Dumbbell" class="w-6 h-6"></lucide-icon>
+
+        <!-- Horizontal List of Upcoming Sessions -->
+        <div class="flex overflow-x-auto gap-3 pb-2 mt-4 snap-x hide-scrollbar">
+          @for (session of mappedSessions(); track session.id) {
+            <app-upcoming-session-card [session]="session" />
+          }
         </div>
-      </div>
 
-      <!-- Horizontal List of Upcoming Sessions -->
-      <div class="flex overflow-x-auto gap-3 pb-2 mt-4 snap-x hide-scrollbar">
-        @for (session of upcomingSessions; track session.id) {
-          <app-upcoming-session-card [session]="session" />
-        }
-      </div>
-
-      <!-- Start Empty Workout Action -->
-      <div class="mt-4">
-        <a
-          routerLink="/session/create"
-          class="py-3 flex items-center justify-center gap-3 w-full bg-white border-1 border-border rounded-xl font-medium text-md hover:bg-secondary/60 hover:text-primary/80 cursor-pointer transition-all"
-        >
-          Start Empty Workout
-        </a>
-      </div>
-    </z-card>
+        <!-- Start Empty Workout Action -->
+        <div class="mt-4">
+          <a
+            routerLink="/session/create"
+            class="py-3 flex items-center justify-center gap-3 w-full bg-white border-1 border-border rounded-xl font-medium text-md hover:bg-secondary/60 hover:text-primary/80 cursor-pointer transition-all"
+          >
+            Start Empty Workout
+          </a>
+        </div>
+      </z-card>
+    }
 
     <!-- Explore Plans Section (Horizontal) -->
     <div class="mt-8 mb-2">
