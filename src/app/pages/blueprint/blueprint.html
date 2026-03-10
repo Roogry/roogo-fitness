@@ -120,10 +120,18 @@
                         >
                       </div>
                     </div>
-                    <lucide-icon
-                      [img]="ChevronRight"
-                      class="w-4 h-4 text-muted-foreground/50"
-                    ></lucide-icon>
+                    <div class="flex items-center gap-2">
+                      <button
+                        class="text-xs font-medium text-primary hover:text-primary/80 flex items-center gap-1 px-2 py-1 rounded-md bg-primary/10 hover:bg-primary/20 transition-colors"
+                        (click)="startSession(plan.id, session.id, $event)"
+                      >
+                        Start
+                      </button>
+                      <lucide-icon
+                        [img]="ChevronRight"
+                        class="w-4 h-4 text-muted-foreground/50"
+                      ></lucide-icon>
+                    </div>
                   </div>
                 }
               </div>

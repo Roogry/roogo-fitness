@@ -65,6 +65,39 @@ export class WorkoutService {
     this.clearSession();
   }
 
+  async startSessionFromBlueprint(planId: number, sessionId: number) {
+    this.clearSession();
+    
+    const plan = await this.dbService.getWorkoutPlan(planId);
+    if (!plan) throw new Error('Plan not found');
+
+    const session = plan.sessions.find(s => s.id === sessionId);
+    if (!session) throw new Error('Session not found in plan');
+
+    this.sessionTitle.set(session.title);
+    this.selectedPlanId.set(plan.id);
+
+    if (session.exercises) {
+      const activeExercises: LoggedExercise[] = session.exercises.map(pe => {
+        const sets: LoggedSet[] = Array.from({ length: pe.target_sets || 0 }).map((_, i) => ({
+          id: Date.now() + Math.floor(Math.random() * 10000) + i,
+          set_number: i + 1,
+          reps_completed: 0,
+          weight_lifted: 0,
+        }));
+
+        return {
+          id: Date.now() + Math.floor(Math.random() * 1000) + pe.id,
+          exercise: pe.exercise,
+          sets: sets
+        };
+      });
+      this.trackedExercises.set(activeExercises);
+    }
+    
+    this.startSessionTimer();
+  }
+
   async finishSession() {
     if (this.trackedExercises().length === 0) return;
 

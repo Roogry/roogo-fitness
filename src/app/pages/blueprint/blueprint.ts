@@ -128,6 +128,11 @@ export class BlueprintComponent implements OnInit {
     this.router.navigate(['/blueprint/session/create']);
   }
 
+  startSession(planId: number, sessionId: number, event: Event) {
+    event.stopPropagation();
+    this.router.navigate(['/session/start'], { queryParams: { planId, sessionId } });
+  }
+
   editPlan(plan: WorkoutPlan, event: Event) {
     event.stopPropagation();
     this.editingPlanId.set(plan.id);

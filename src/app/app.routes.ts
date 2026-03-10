@@ -22,6 +22,6 @@ export const routes: Routes = [
   },
   { path: 'exercise/:id', component: ExerciseDetail },
   { path: 'exercise/:id/edit', component: ExerciseEdit },
-  { path: 'session/:id', component: WorkoutSession },
-  { path: 'blueprint/session/:id', component: BlueprintSession },
+  { path: 'session/:action', component: WorkoutSession },
+  { path: 'blueprint/session/:action', component: BlueprintSession },
 ];

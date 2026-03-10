@@ -59,10 +59,19 @@ export class WorkoutSession implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe(async (params) => {
-      const idParam = params.get('id');
+      const action = params.get('action');
 
-      if (idParam === 'create') {
+      if (action === 'create') {
         this.workoutService.sessionTitle.set('Workout Session');
+      } else if (action === 'start') {
+        this.route.queryParamMap.subscribe(async (queryParams) => {
+          const planId = queryParams.get('planId');
+          const sessionId = queryParams.get('sessionId');
+          
+          if (planId && sessionId) {
+            await this.workoutService.startSessionFromBlueprint(Number(planId), Number(sessionId));
+          }
+        });
       } else {
         //TODO: handle get template session
       }
