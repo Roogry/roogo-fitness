@@ -29,7 +29,7 @@
               'hover:border-primary/50': expandedPlanId() !== plan.id,
             }"
           >
-            <div class="flex justify-between items-center p-1" (click)="togglePlan(plan.id)">
+            <div class="flex justify-between items-center" (click)="togglePlan(plan.id)">
               <span class="font-semibold text-lg">{{ plan.title }}</span>
               <div class="flex items-center gap-2">
                 @if (!plan.isDefault) {

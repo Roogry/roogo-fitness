@@ -2,7 +2,6 @@ import { Component, input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { LucideAngularModule, ChevronRight } from 'lucide-angular';
-import { ZardButtonComponent } from '@/shared/components/button/button.component';
 
 export interface UpcomingSession {
   id: number;
@@ -15,7 +14,7 @@ export interface UpcomingSession {
 @Component({
   selector: 'app-upcoming-session-card',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, ZardButtonComponent],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './upcoming-session-card.html',
   host: {
     class: 'block min-w-[240px] snap-start'
