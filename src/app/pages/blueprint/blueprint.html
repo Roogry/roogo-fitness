@@ -24,12 +24,13 @@
         @for (plan of displayedPlans; track plan.id) {
           <z-card
             class="cursor-pointer transition-colors group overflow-hidden"
+            (click)="togglePlan(plan.id)"
             [ngClass]="{
               'border-primary': expandedPlanId() === plan.id,
               'hover:border-primary/50': expandedPlanId() !== plan.id,
             }"
           >
-            <div class="flex justify-between items-center" (click)="togglePlan(plan.id)">
+            <div class="flex justify-between items-center">
               <span class="font-semibold text-lg">{{ plan.title }}</span>
               <div class="flex items-center gap-2">
                 @if (!plan.isDefault) {
