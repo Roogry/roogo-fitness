@@ -43,13 +43,11 @@
                 <lucide-icon [img]="Dumbbell" class="h-6 w-6 text-muted-foreground"></lucide-icon>
               }
             </div>
-            <div class="flex flex-col gap-1">
-              <span class="font-bold text-base">{{ exercise.name }}</span>
-              <span
-                class="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-md font-medium"
-              >
+            <div class="flex flex-col gap-2">
+              <p class="font-medium text-sm">{{ exercise.name }}</p>
+              <z-badge zType="secondary">
                 {{ exercise.primary_muscle?.name }}
-              </span>
+              </z-badge>
             </div>
           </div>
           <lucide-icon
@@ -61,11 +59,11 @@
 
       @if (!hasExactMatch() && searchQuery().trim() && !isSearching()) {
         <div
-          class="bg-primary/5 rounded-xl border border-primary/20 p-4 hover:border-primary/50 cursor-pointer flex justify-between items-center transition-all shadow-sm"
+          class="bg-primary/5 rounded-xl border border-primary/20 p-4 hover:border-primary/50 cursor-pointer flex justify-between items-center transition-all"
           (click)="createNewExercise(searchQuery().trim())"
         >
           <div class="flex flex-col">
-            <span class="font-bold text-base text-primary">Add "{{ searchQuery().trim() }}"</span>
+            <span class="font-medium text-sm text-primary">Add "{{ searchQuery().trim() }}"</span>
             <span class="text-sm text-primary/70 mt-1">Create a new custom exercise</span>
           </div>
           <lucide-icon [img]="Plus" class="h-5 w-5 text-primary"></lucide-icon>

@@ -1,15 +1,16 @@
 import { Component, EventEmitter, Output, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ZardInputDirective } from '../../shared/components/input/input.directive';
-import { LucideAngularModule, Search, Plus, Dumbbell } from 'lucide-angular';
+import { ZardBadgeComponent } from '@/shared/components/badge';
+import { ZardInputDirective } from '@/shared/components/input';
 import { ExerciseService } from '@/shared/services/exercise.service';
 import { Exercise } from '@/shared/types/workout.types';
+import { LucideAngularModule, Search, Plus, Dumbbell } from 'lucide-angular';
 
 @Component({
   selector: 'app-exercise-autocomplete',
   standalone: true,
-  imports: [CommonModule, FormsModule, ZardInputDirective, LucideAngularModule],
+  imports: [CommonModule, FormsModule, ZardBadgeComponent, ZardInputDirective, LucideAngularModule],
   templateUrl: './exercise-autocomplete.html',
   styleUrl: './exercise-autocomplete.css',
 })
@@ -60,8 +61,6 @@ export class ExerciseAutocomplete implements OnInit {
   }
 
   selectExercise(exercise: Exercise) {
-    this.searchQuery.set('');
-    this.results.set([]);
     this.exerciseSelected.emit(exercise);
   }
 

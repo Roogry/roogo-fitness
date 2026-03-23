@@ -100,7 +100,7 @@
         </div>
       }
 
-      @if (workoutService.sessionStartTime() == null) {
+      @if (!workoutService.sessionStartTime()) {
         <button
           z-button
           zShape="circle"
