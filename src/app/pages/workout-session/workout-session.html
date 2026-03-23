@@ -8,7 +8,7 @@
       </button>
     }
 
-    @if (sessionAction() === 'detail') {
+    @if (sessionAction() === 'detail' && !workoutService.sessionStartTime()) {
       <div right>
         <button
           z-button
@@ -122,10 +122,10 @@
       }
 
       @for (tracked of workoutService.trackedExercises(); track tracked.exercise.id) {
-        <app-exercise-tracker [trackedExercise]="tracked" [editable]="sessionAction() !== 'detail'"></app-exercise-tracker>
+        <app-exercise-tracker [trackedExercise]="tracked" [editable]="workoutService.sessionStartTime() !== null"></app-exercise-tracker>
       }
 
-      @if (sessionAction() !== 'detail') {
+      @if (workoutService.sessionStartTime()) {
         <button z-button zShape="circle" class="w-full" (click)="isAddSheetOpen.set(true)">
           <lucide-icon [img]="Plus"></lucide-icon>
           Add Exercise

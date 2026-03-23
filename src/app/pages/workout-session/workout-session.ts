@@ -107,7 +107,6 @@ export class WorkoutSession implements OnInit {
 
   async finishSession() {
     await this.workoutService.finishSession();
-    alert('Workout finished successfully');
     this.router.navigate(['/journey']);
   }
 }

@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ZardCardComponent } from '@/shared/components/card';
 import { LucideAngularModule, Activity, Clock, ArrowRight } from 'lucide-angular';
 import { LoggedSession } from '@/shared/types/workout.types';
+import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 
 @Component({
   selector: 'app-logged-workout-card',
   standalone: true,
-  imports: [CommonModule, ZardCardComponent, LucideAngularModule],
+  imports: [CommonModule, ZardCardComponent, LucideAngularModule, DurationFormatPipe],
   templateUrl: './logged-workout-card.html',
 })
 export class LoggedWorkoutCardComponent {
