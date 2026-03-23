@@ -1,8 +1,8 @@
 <div class="mb-8">
   <app-header title="Blueprint">
-    <button right z-button zShape="circle" (click)="openCreateSheet()">
-      <lucide-icon [img]="Plus"></lucide-icon>
-      Create
+    <button right z-button zShape="circle" (click)="openCreatePlanSheet()">
+      <lucide-icon [img]="FolderPlus"></lucide-icon>
+      Plan
     </button>
   </app-header>
 
@@ -31,44 +31,55 @@
             }"
           >
             <div class="flex justify-between items-center">
-              <span class="font-semibold text-lg">{{ plan.title }}</span>
-              <div class="flex items-center gap-2">
-                @if (!plan.isDefault) {
-                  <!-- Edit Button -->
-                  <button
-                    z-button
-                    zType="ghost"
-                    zSize="icon"
-                    zShape="circle"
-                    class="h-8 w-8 text-muted-foreground hover:bg-muted"
-                    (click)="editPlan(plan, $event)"
-                  >
-                    <lucide-icon [img]="Edit" class="w-4 h-4"></lucide-icon>
-                  </button>
-                  <!-- Delete Button -->
-                  <button
-                    z-button
-                    zType="ghost"
-                    zSize="icon"
-                    zShape="circle"
-                    class="h-8 w-8 text-destructive hover:bg-destructive/10"
-                    (click)="deletePlan(plan.id, $event)"
-                  >
-                    <lucide-icon [img]="Trash2" class="w-4 h-4"></lucide-icon>
-                  </button>
-                }
+              <span class="font-semibold flex-1 text-lg">{{ plan.title }}</span>
 
-                <div
-                  class="bg-secondary/40 text-secondary-foreground p-2 rounded-full transition-all duration-200"
-                  [ngClass]="{
-                    'rotate-90 bg-primary text-primary-foreground': expandedPlanId() === plan.id,
-                    'group-hover:bg-primary group-hover:text-primary-foreground':
-                      expandedPlanId() !== plan.id,
-                  }"
-                >
-                  <lucide-icon [img]="ChevronRight" class="w-5 h-5 flex-shrink-0"></lucide-icon>
-                </div>
-              </div>
+              <button
+                z-button
+                zPopover
+                zType="ghost"
+                zSize="icon"
+                zShape="circle"
+                zPlacement="bottomLeft"
+                [zContent]="moreActions"
+                [zVisible]="isOpenPlanActions()"
+                (zVisibleChange)="isOpenPlanActions.set($event)"
+                (click)="openPlanActionsSheet($event, plan.id)"
+              >
+                <lucide-icon [img]="EllipsisVertical"></lucide-icon>
+                <span class="sr-only">More</span>
+              </button>
+
+              <button
+                z-button
+                zType="ghost"
+                zSize="icon"
+                zShape="circle"
+                class="text-secondary-foreground"
+                [ngClass]="{
+                  'rotate-90 bg-primary/5 text-primary-foreground': expandedPlanId() === plan.id,
+                }"
+              >
+                <lucide-icon [img]="ChevronRight"></lucide-icon>
+              </button>
+
+              <ng-template #moreActions>
+                <z-popover>
+                  <div class="flex flex-col items-start">
+                    <button z-button zType="ghost" zShape="circle" class="w-full justify-start" (click)="editPlan($event, plan)">
+                      <lucide-icon [img]="Pencil" class="size-4"></lucide-icon>
+                      <span>Edit <span class="hidden sm:inline-block">Plan</span></span>
+                    </button>
+                    <button z-button zType="ghost" zShape="circle" class="w-full justify-start" (click)="openAddSession($event, plan.id)">
+                      <lucide-icon [img]="Plus" class="size-4"></lucide-icon>
+                      <span>Add New Session</span>
+                    </button>
+                    <button z-button zType="ghost" zShape="circle" class="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10" (click)="deletePlan($event, plan.id)">
+                      <lucide-icon [img]="Trash2" class="size-4"></lucide-icon>
+                      <span>Delete <span class="hidden sm:inline-block">Plan</span></span>
+                    </button>
+                  </div>
+                </z-popover>
+              </ng-template>
             </div>
 
             <!-- Accordion Content (Sessions) -->
@@ -114,7 +125,7 @@
     <app-sheet
       [isOpen]="isOpenPlanForm()"
       (onOpenChange)="isOpenPlanForm.set($event)"
-      [title]="editingPlanId() ? 'Edit Plan' : 'Create Plan'"
+      [title]="workoutService.selectedPlanId() ? 'Edit Plan' : 'Create Plan'"
       description="Design your new workout routine."
     >
       <!-- Sheet Content (Scrollable) -->
@@ -207,7 +218,7 @@
             (click)="savePlan()"
           >
             <lucide-icon [img]="Save"></lucide-icon>
-            {{ editingPlanId() ? 'Save Changes' : 'Save Plan' }}
+            {{ workoutService.selectedPlanId() ? 'Save Changes' : 'Save Plan' }}
           </button>
         </div>
       </div>

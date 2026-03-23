@@ -6,6 +6,7 @@ import { WorkoutService } from '@/shared/services/workout.service';
 import { WorkoutPlan, WorkoutPlanSession } from '@/shared/types/workout.types';
 import { ZardCardComponent } from '@/shared/components/card';
 import { ZardButtonComponent } from '@/shared/components/button/button.component';
+import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/popover';
 import { FormsModule } from '@angular/forms';
 import { ZardInputDirective } from '@/shared/components/input';
 import { HeaderComponent } from '@/shared/components/header/header';
@@ -15,12 +16,15 @@ import {
   LucideAngularModule,
   Plus,
   Dumbbell,
+  Ellipsis,
+  EllipsisVertical,
   Calendar,
   ChevronRight,
   X,
   Save,
   Minus,
-  Edit,
+  Pencil,
+  FolderPlus,
   Trash2,
 } from 'lucide-angular';
 
@@ -34,6 +38,8 @@ import {
     ZardCardComponent,
     ZardButtonComponent,
     ZardInputDirective,
+    ZardPopoverComponent, 
+    ZardPopoverDirective,
     RooSheetComponent,
     LucideAngularModule,
   ],
@@ -42,12 +48,15 @@ import {
 export class BlueprintComponent implements OnInit {
   readonly Plus = Plus;
   readonly Dumbbell = Dumbbell;
+  readonly Ellipsis = Ellipsis;
+  readonly EllipsisVertical = EllipsisVertical;
   readonly Calendar = Calendar;
   readonly ChevronRight = ChevronRight;
   readonly Save = Save;
   readonly Minus = Minus;
   readonly X = X;
-  readonly Edit = Edit;
+  readonly Pencil = Pencil;
+  readonly FolderPlus = FolderPlus;
   readonly Trash2 = Trash2;
 
   dbService = inject(DbService);
@@ -55,8 +64,8 @@ export class BlueprintComponent implements OnInit {
   router = inject(Router);
 
   isOpenPlanForm = signal(false);
-  editingPlanId = signal<number | null>(null);
-  expandedPlanId = signal<number | null>(null); // Default to first plan dynamically
+  isOpenPlanActions = signal(false);
+  expandedPlanId = signal<number | null>(null);
 
   newPlan = {
     title: '',
@@ -113,13 +122,18 @@ export class BlueprintComponent implements OnInit {
     }
   }
 
-  openCreateSheet() {
-    this.editingPlanId.set(null);
+  openCreatePlanSheet() {
     this.newPlan = { title: '', description: '', sessionsPerWeek: 3 };
+    this.workoutService.selectedPlanId.set(null);
     this.isOpenPlanForm.set(true);
   }
 
-  openAddSession(planId: number, event: Event) {
+  openPlanActionsSheet(event: Event, planId: number) {
+    event.stopPropagation();
+    this.workoutService.selectedPlanId.set(planId);
+  }
+
+  openAddSession(event: Event, planId: number) {
     event.stopPropagation();
 
     this.workoutService.clearSession();
@@ -145,19 +159,22 @@ export class BlueprintComponent implements OnInit {
     return session.exercises.map(pe => pe.exercise.name).join(', ');
   }
 
-  editPlan(plan: WorkoutPlan, event: Event) {
+  editPlan(event: Event, plan: WorkoutPlan) {
     event.stopPropagation();
-    this.editingPlanId.set(plan.id);
+    this.isOpenPlanActions.set(false);
+
     this.newPlan = {
       title: plan.title,
       description: plan.description || '',
       sessionsPerWeek: plan.days,
     };
+    this.workoutService.selectedPlanId.set(plan.id);
     this.isOpenPlanForm.set(true);
   }
 
-  async deletePlan(planId: number, event: Event) {
+  async deletePlan(event: Event, planId: number) {
     event.stopPropagation();
+    this.isOpenPlanActions.set(false);
 
     const plans = this.myPlans();
     const planToDelete = plans.find((p) => p.id === planId);
@@ -187,9 +204,9 @@ export class BlueprintComponent implements OnInit {
 
     const plans = this.myPlans();
 
-    if (this.editingPlanId() !== null) {
+    if (this.workoutService.selectedPlanId() !== null) {
       // Update existing
-      const plan = plans.find((p) => p.id === this.editingPlanId());
+      const plan = plans.find((p) => p.id === this.workoutService.selectedPlanId());
       if (plan) {
         plan.title = this.newPlan.title;
         plan.description = this.newPlan.description;
