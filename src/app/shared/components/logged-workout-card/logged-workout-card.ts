@@ -1,14 +1,17 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ZardBadgeComponent } from '@/shared/components/badge';
 import { ZardCardComponent } from '@/shared/components/card';
-import { LucideAngularModule, Activity, Clock, ArrowRight } from 'lucide-angular';
+import { ZardTooltipImports } from '@/shared/components/tooltip';
 import { LoggedSession } from '@/shared/types/workout.types';
 import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
+import { TimeAgoPipe } from '@/shared/pipes/time-ago-pipe';
+import { LucideAngularModule, Activity, Clock, ArrowRight } from 'lucide-angular';
 
 @Component({
   selector: 'app-logged-workout-card',
   standalone: true,
-  imports: [CommonModule, ZardCardComponent, LucideAngularModule, DurationFormatPipe],
+  imports: [CommonModule, ZardBadgeComponent, ZardCardComponent, ZardTooltipImports, LucideAngularModule, DurationFormatPipe, TimeAgoPipe, ZardBadgeComponent],
   templateUrl: './logged-workout-card.html',
 })
 export class LoggedWorkoutCardComponent {
@@ -24,15 +27,5 @@ export class LoggedWorkoutCardComponent {
     if (uniqueNames.length === 0) return 'No exercises recorded';
     if (uniqueNames.length <= 2) return uniqueNames.join(', ');
     return `${uniqueNames[0]}, ${uniqueNames[1]} & ${uniqueNames.length - 2} more`;
-  }
-
-  formatDuration(minutes: number): string {
-    if (!minutes) return '0 min';
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (hours > 0) {
-      return `${hours}h ${mins > 0 ? mins + 'min' : ''}`.trim();
-    }
-    return `${mins} min`;
   }
 }

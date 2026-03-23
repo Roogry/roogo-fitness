@@ -3,31 +3,29 @@
     <div class="flex flex-col gap-2">
       <span class="font-bold text-base sm:text-lg">{{ session().session_title }}</span>
       <div class="flex items-center gap-2">
-        <span
-          class="font-medium bg-secondary text-secondary-foreground px-2.5 py-1 rounded-full text-xs"
+        <z-badge
+          zType="secondary"
+          [zTooltip]="(session().start_time | date: 'medium') + ' until ' + (session().end_time | date: 'medium')"
         >
           {{ session().total_duration | durationFormat }}
-        </span>
-        <span
-          class="font-medium bg-primary/10 text-primary px-2.5 py-1 rounded-full text-xs"
+        </z-badge>
+        <z-badge
+          zType="secondary"
         >
           {{ session().total_weight_lifted | number: '1.0-1' }} kg
-        </span>
+        </z-badge>
       </div>
     </div>
 
-    <div class="flex gap-2">
-      <div class="flex items-center gap-1.5 align-top mt-1">
-        <lucide-icon
-          [img]="Clock"
-          class="w-3.5 h-3.5 text-muted-foreground"
-        ></lucide-icon>
-        <span class="text-sm text-muted-foreground">{{
-          session().start_time | date: 'MMM d'
-        }}</span>
-      </div>
-      <div class="bg-primary/5 text-primary p-2.5 rounded-2xl flex-shrink-0">
-        <lucide-icon [img]="Activity" class="w-5 h-5"></lucide-icon>
+    <div class="flex items-center gap-2">
+      <span 
+        class="text-sm text-muted-foreground"
+        [zTooltip]="session().createdAt ? (session().createdAt | date: 'medium') : 'unknown'"
+      >
+        {{ session().createdAt | timeAgo }}
+      </span>
+      <div class="bg-primary/5 text-primary p-2 rounded-full flex-shrink-0">
+        <lucide-icon [img]="Activity" class="size-4"></lucide-icon>
       </div>
     </div>
   </div>
