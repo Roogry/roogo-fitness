@@ -132,6 +132,11 @@ export class DbService {
     return sessions.reverse();
   }
 
+  async getLoggedSession(id: number): Promise<LoggedSession | undefined> {
+    const db = await this.dbPromise;
+    return db.get('logged_sessions', id);
+  }
+
   async saveLoggedSession(session: LoggedSession): Promise<number> {
     const db = await this.dbPromise;
     const now = new Date().toISOString();

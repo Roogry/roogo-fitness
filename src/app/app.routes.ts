@@ -8,6 +8,7 @@ import { Journey } from './pages/journey/journey';
 import { BlueprintComponent } from './pages/blueprint/blueprint';
 import { WorkoutSession } from './pages/workout-session/workout-session';
 import { BlueprintSession } from './pages/blueprint-session/blueprint-session';
+import { JourneyDetail } from './pages/journey-detail/journey-detail';
 
 export const routes: Routes = [
   {
@@ -23,5 +24,6 @@ export const routes: Routes = [
   { path: 'exercise/:id', component: ExerciseDetail },
   { path: 'exercise/:id/edit', component: ExerciseEdit },
   { path: 'session/:action', component: WorkoutSession },
+  { path: 'journey/:id', component: JourneyDetail },
   { path: 'blueprint/session/:action', component: BlueprintSession },
 ];

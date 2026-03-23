@@ -17,7 +17,7 @@ export class Journey implements OnInit {
   readonly Clock = Clock;
   readonly ArrowRight = ArrowRight;
 
-  protected readonly history = signal<LoggedSession[]>([]);
+  protected readonly journey = signal<LoggedSession[]>([]);
   protected readonly isLoading = signal<boolean>(true);
 
   constructor(private workoutService: WorkoutService) {}
@@ -26,7 +26,7 @@ export class Journey implements OnInit {
     try {
       this.isLoading.set(true);
       const sessions = await this.workoutService.getLoggedWorkoutSessions();
-      this.history.set(sessions);
+      this.journey.set(sessions);
     } catch (e) {
       console.error(e);
     } finally {

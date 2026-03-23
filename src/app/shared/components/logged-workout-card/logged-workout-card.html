@@ -25,14 +25,14 @@
       </div>
     </div>
 
-    <div class="flex items-center gap-2 hidden sm:inline-block">
+    <div class="items-center gap-2 hidden sm:flex">
       <span 
         class="text-sm text-muted-foreground"
         [zTooltip]="session().createdAt ? (session().createdAt | date: 'medium') : 'unknown'"
       >
         {{ session().createdAt | timeAgo }}
       </span>
-      <div class="bg-primary/5 text-primary p-2 rounded-full flex-shrink-0">
+      <div class="bg-primary/5 text-primary p-2 rounded-full">
         <lucide-icon [img]="Activity" class="size-4"></lucide-icon>
       </div>
     </div>
@@ -44,7 +44,8 @@
     </div>
   }
 
-  <div
+  <a
+    [routerLink]="['/journey', session().id]"
     class="bg-secondary/50 rounded-[16px] p-3.5 flex justify-between items-center group cursor-pointer hover:bg-secondary/80 transition-colors"
   >
     <span
@@ -60,5 +61,5 @@
         class="w-4 h-4 text-foreground flex-shrink-0"
       ></lucide-icon>
     </div>
-  </div>
+  </a>
 </z-card>

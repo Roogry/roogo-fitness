@@ -5,7 +5,7 @@
       <div class="flex items-center justify-center p-12">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
-    } @else if (history().length === 0) {
+    } @else if (journey().length === 0) {
       <div class="flex flex-col items-center justify-center text-center p-10 rounded-4xl border border-border">
         <div class="p-4 border border-border rounded-full mb-4">
           <lucide-icon [img]="Activity" class="w-8 h-8 text-muted-foreground"></lucide-icon>
@@ -15,7 +15,7 @@
       </div>
     } @else {
       <div class="flex flex-col gap-4">
-        @for (session of history(); track session.id) {
+        @for (session of journey(); track session.id) {
           <app-logged-workout-card [session]="session" />
         }
       </div>

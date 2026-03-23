@@ -1,0 +1,74 @@
+<div class="min-h-screen bg-background text-foreground pb-8">
+  <app-header [title]="pageTitle()" [showBackBtn]="true" class="sticky top-0">
+
+    <div right>
+      <button
+        z-button
+        zPopover
+        zType="secondary"
+        zSize="icon"
+        zShape="circle"
+        [zContent]="moreActions"
+        zPlacement="bottomLeft"
+      >
+        <lucide-icon [img]="Ellipsis"></lucide-icon>
+        <span class="sr-only">More</span>
+      </button>
+
+      <ng-template #moreActions>
+        <z-popover>
+          <div class="flex flex-col items-start">
+            <button z-button zType="ghost" zShape="circle" class="w-full justify-start">
+              <lucide-icon [img]="Pencil" class="size-4"></lucide-icon>
+              <span>Edit <span class="hidden sm:inline">Session</span></span>
+            </button>
+            <button z-button zType="ghost" zShape="circle" class="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10">
+              <lucide-icon [img]="Trash2" class="size-4"></lucide-icon>
+              <span>Delete <span class="hidden sm:inline">Session</span></span>
+            </button>
+          </div>
+        </z-popover>
+      </ng-template>
+    </div>
+  </app-header>
+
+  <main class="container mx-auto px-4 pb-6 max-w-2xl mt-4">
+    <div class="flex flex-col gap-4">
+
+      <!-- Stats Row -->
+      <div class="flex items-center justify-start gap-8">
+        <div class="flex flex-col gap-1">
+          <span class="text-sm text-muted-foreground">Duration</span>
+          <span>{{ loggedSession()?.total_duration?? 0 | durationFormat }}</span>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-sm text-muted-foreground">Volume</span>
+          <span>{{ loggedSession()?.total_weight_lifted | number:'1.0-0' }} kg</span>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-sm text-muted-foreground">Exercises</span>
+          <span>{{ loggedSession()?.workouts?.length }}</span>
+        </div>
+      </div>
+
+      <!-- Exercises List -->
+      <div class="flex flex-col gap-4 mt-8">
+        <h2 class="font-semibold text-lg">
+          Exercises
+        </h2>
+        
+        @for (workout of loggedSession()?.workouts; track workout.id) {
+          <app-exercise-tracker [trackedExercise]="workout" [editable]="false"></app-exercise-tracker>
+        }
+        
+        @if (loggedSession()?.workouts?.length === 0) {
+          <div class="text-center py-12 text-neutral-500 bg-neutral-900/50 rounded-xl border border-dashed border-neutral-800">
+            No exercises were logged in this session.
+          </div>
+        }
+      </div>
+    </div>
+  </main>
+</div>

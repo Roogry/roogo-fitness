@@ -1,5 +1,6 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { ZardBadgeComponent } from '@/shared/components/badge';
 import { ZardCardComponent } from '@/shared/components/card';
 import { ZardTooltipImports } from '@/shared/components/tooltip';
@@ -11,7 +12,17 @@ import { LucideAngularModule, Activity, Clock, ArrowRight } from 'lucide-angular
 @Component({
   selector: 'app-logged-workout-card',
   standalone: true,
-  imports: [CommonModule, ZardBadgeComponent, ZardCardComponent, ZardTooltipImports, LucideAngularModule, DurationFormatPipe, TimeAgoPipe, ZardBadgeComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    ZardBadgeComponent,
+    ZardCardComponent,
+    ZardTooltipImports,
+    LucideAngularModule,
+    DurationFormatPipe,
+    TimeAgoPipe,
+    ZardBadgeComponent,
+  ],
   templateUrl: './logged-workout-card.html',
 })
 export class LoggedWorkoutCardComponent {

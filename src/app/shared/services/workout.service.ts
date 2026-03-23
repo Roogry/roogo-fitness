@@ -169,6 +169,10 @@ export class WorkoutService {
     return loggedSessions.sort((a, b) => new Date(b.start_time).getTime() - new Date(a.start_time).getTime())
   }
 
+  async getLoggedSession(id: number): Promise<LoggedSession | undefined> {
+    return this.dbService.getLoggedSession(id);
+  }
+
   addTrackedExercise(exercise: Exercise) {
     // Ensure timer runs if not already
     this.startSessionTimer(); 
