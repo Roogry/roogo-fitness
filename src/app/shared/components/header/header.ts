@@ -1,6 +1,6 @@
-import { Component, input, output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Component, inject, input, output } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 import { LucideAngularModule, ArrowLeft } from 'lucide-angular';
 import { ZardButtonComponent } from '../button/button.component';
 
@@ -17,6 +17,21 @@ export class HeaderComponent {
   readonly ArrowLeft = ArrowLeft;
   title = input<string>('');
   showBackBtn = input<boolean>(false);
-  backLink = input<string | any[] | null>(null);
+  backLink = input<any[] | null>(null);
   backClick = output<void>();
+
+  private router = inject(Router)
+  private location = inject(Location)
+
+  goBack() {
+    console.log(this.backLink());
+    
+    if (this.backLink()) {
+      this.router.navigate(this.backLink()!);
+    } else {
+      this.location.back();
+    }
+
+    this.backClick.emit();
+  }
 }

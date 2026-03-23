@@ -3,7 +3,6 @@
   <app-header 
     [title]="selectedSession()?.id ? 'Edit Session' : 'New Session'" 
     [showBackBtn]="true" 
-    backLink="/" 
     class="sticky top-0"
   >
     @if (workoutService.hasExercise()) {

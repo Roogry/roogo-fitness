@@ -3,23 +3,10 @@
     <div class="flex items-center gap-4">
       <!-- Left action area -->
       @if (showBackBtn()) {
-        @if (backLink()) {
-          <a [routerLink]="backLink()" z-button zType="secondary" zSize="icon" zShape="circle">
-            <lucide-icon [img]="ArrowLeft"></lucide-icon>
-            <span class="sr-only">Back</span>
-          </a>
-        } @else {
-          <button
-            (click)="backClick.emit()"
-            z-button
-            zType="secondary"
-            zSize="icon"
-            zShape="circle"
-          >
-            <lucide-icon [img]="ArrowLeft"></lucide-icon>
-            <span class="sr-only">Back</span>
-          </button>
-        }
+        <button z-button zType="secondary" zSize="icon" zShape="circle" (click)="goBack()">
+          <lucide-icon [img]="ArrowLeft"></lucide-icon>
+          <span class="sr-only">Back</span>
+        </button>
       }
       <ng-content select="[left]"></ng-content>
 

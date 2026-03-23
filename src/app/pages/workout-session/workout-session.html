@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-background text-foreground pb-20">
   <!-- Header -->
-  <app-header [title]="headerTitle()" [showBackBtn]="true" backLink="/" class="sticky top-0">
+  <app-header [title]="headerTitle()" [showBackBtn]="true" class="sticky top-0">
     @if (workoutService.sessionStartTime()) {
       <button right z-button zShape="circle" (click)="finishSession()">
         <lucide-icon [img]="Check" class="mr-1 hidden sm:inline-block"></lucide-icon>
