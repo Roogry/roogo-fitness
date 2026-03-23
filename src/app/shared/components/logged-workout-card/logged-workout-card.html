@@ -3,6 +3,14 @@
     <div class="flex flex-col gap-2">
       <span class="font-bold text-base sm:text-lg">{{ session().session_title }}</span>
       <div class="flex items-center gap-2">
+        @if (session().createdAt) {
+          <z-badge
+            zType="secondary"
+            [zTooltip]="session().createdAt ? (session().createdAt | date: 'medium') : 'unknown'"
+          >
+            {{ session().createdAt | timeAgo }}
+          </z-badge>
+        }
         <z-badge
           zType="secondary"
           [zTooltip]="(session().start_time | date: 'medium') + ' until ' + (session().end_time | date: 'medium')"
@@ -17,7 +25,7 @@
       </div>
     </div>
 
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 hidden sm:inline-block">
       <span 
         class="text-sm text-muted-foreground"
         [zTooltip]="session().createdAt ? (session().createdAt | date: 'medium') : 'unknown'"
