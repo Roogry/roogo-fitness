@@ -5,7 +5,7 @@ import { ZardCardComponent } from '@/shared/components/card';
 import { WorkoutService } from '@/shared/services/workout.service';
 import { DbService } from '@/shared/services/db.service';
 import { LoggedWorkoutCardComponent } from '@/shared/components/logged-workout-card/logged-workout-card';
-import { UpcomingSessionCardComponent, UpcomingSession } from '@/shared/components/upcoming-session-card/upcoming-session-card';
+import { UpcomingSessionCardComponent } from '@/shared/components/upcoming-session-card/upcoming-session-card';
 import { ExplorePlanCardComponent } from '@/shared/components/explore-plan-card/explore-plan-card';
 import {
   LucideAngularModule,
@@ -50,17 +50,11 @@ export class Home implements OnInit {
   recentSessions = signal<LoggedSession[]>([]);
   activePlan = signal<WorkoutPlan | null>(null);
 
-  mappedSessions = computed<UpcomingSession[]>(() => {
+  mappedSessions = computed(() => {
     const plan = this.activePlan();
     if (!plan) return [];
 
-    return plan.sessions.slice(0, 3).map((session, index) => ({
-      id: session.id,
-      planId: plan.id,
-      sessionId: session.id,
-      title: session.title,
-      subtitle: index === 0 ? 'Up Next' : 'Later'
-    }));
+    return plan.sessions.slice(0, 3);
   });
 
   async ngOnInit() {

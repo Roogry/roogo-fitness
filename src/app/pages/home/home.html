@@ -18,7 +18,7 @@
   <main class="container mx-auto px-4 max-w-2xl mt-8">
     <!-- Hero Card: Current Plan & Session -->
     @if (activePlan()) {
-      <z-card class="mb-6 block hover:border-primary/50 transition-colors cursor-pointer group">
+      <z-card class="mb-6 group">
         <div class="flex justify-between items-start mb-6">
           <div class="flex flex-col">
             <span class="text-sm font-semibold text-primary mb-1 uppercase tracking-wider"
@@ -38,7 +38,12 @@
         <!-- Horizontal List of Upcoming Sessions -->
         <div class="flex overflow-x-auto gap-3 pb-2 mt-4 snap-x hide-scrollbar">
           @for (session of mappedSessions(); track session.id) {
-            <app-upcoming-session-card [session]="session" />
+            <app-upcoming-session-card 
+              [planId]="activePlan()!.id" 
+              [sessionId]="session.id" 
+              [title]="session.title" 
+              [isUpNext]="$first" 
+            />
           }
 
           <!-- See More Outline Card -->

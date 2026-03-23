@@ -3,10 +3,10 @@
   (click)="goToSession()"
 >
   <div class="flex flex-col mr-4">
-    <span class="text-xs text-muted-foreground mb-1">{{ session().subtitle }}</span>
-    <span class="font-semibold text-secondary-foreground text-lg whitespace-nowrap">{{
-      session().title
-    }}</span>
+    @if (isUpNext) {
+      <span class="text-xs text-muted-foreground mb-1">Up Next</span>
+    }
+    <span class="font-semibold text-secondary-foreground text-sm whitespace-nowrap line-clamp-1">{{ title }}</span>
   </div>
   <div
     class="h-10 w-10 rounded-full group-hover/session:bg-primary group-hover/session:text-white flex-shrink-0 flex items-center justify-center ransition-colors"
