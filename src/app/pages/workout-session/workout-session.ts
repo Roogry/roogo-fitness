@@ -86,20 +86,23 @@ export class WorkoutSession implements OnInit {
         this.headerTitle.set('Workout Session');
       }
 
-      if (this.sessionAction() === 'empty') {
-        this.workoutService.sessionTitle.set('Workout Session');
-      } 
-
       if (this.sessionAction() === 'start' || this.sessionAction() === 'empty') {
         this.workoutService.clearSession();
-        this.workoutService.startSessionTimer();
-      } 
+      }
+
+      if (this.sessionAction() === 'empty') {
+        this.workoutService.sessionTitle.set('Workout Session');
+      }
     });
   }
 
   onExerciseSelected(exercise: any) {
     this.workoutService.addTrackedExercise(exercise);
     this.isAddSheetOpen.set(false);
+    
+    if (!this.workoutService.sessionStartTime()) {
+      this.workoutService.startSessionTimer();
+    }
   }
 
   async finishSession() {
