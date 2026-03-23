@@ -1,0 +1,95 @@
+<z-card
+  class="cursor-pointer transition-colors group overflow-hidden"
+  (click)="handleToggle()"
+  [ngClass]="{
+    'border-primary': isExpanded,
+    'hover:border-primary/50': !isExpanded
+  }"
+>
+  <div class="flex justify-between items-center">
+    <span class="font-semibold flex-1 text-lg">{{ plan.title }}</span>
+
+    <button
+      z-button
+      zPopover
+      zType="ghost"
+      zSize="icon"
+      zShape="circle"
+      zPlacement="bottomLeft"
+      [zContent]="moreActions"
+      [zVisible]="isOpenPlanActions()"
+      (zVisibleChange)="isOpenPlanActions.set($event)"
+      (click)="openPlanActionsSheet($event)"
+    >
+      <lucide-icon [img]="EllipsisVertical"></lucide-icon>
+      <span class="sr-only">More</span>
+    </button>
+
+    <button
+      z-button
+      zType="ghost"
+      zSize="icon"
+      zShape="circle"
+      class="text-secondary-foreground"
+      [ngClass]="{
+        'rotate-90 bg-primary/5 text-primary-foreground': isExpanded
+      }"
+    >
+      <lucide-icon [img]="ChevronRight"></lucide-icon>
+    </button>
+
+    <ng-template #moreActions>
+      <z-popover>
+        <div class="flex flex-col items-start">
+          <button z-button zType="ghost" zShape="circle" class="w-full justify-start" (click)="editPlan($event)">
+            <lucide-icon [img]="Pencil" class="size-4"></lucide-icon>
+            <span>Edit <span class="hidden sm:inline-block">Plan</span></span>
+          </button>
+          <button z-button zType="ghost" zShape="circle" class="w-full justify-start" (click)="openAddSession($event)">
+            <lucide-icon [img]="Plus" class="size-4"></lucide-icon>
+            <span>Add New Session</span>
+          </button>
+          <button z-button zType="ghost" zShape="circle" class="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10" (click)="deletePlan($event)">
+            <lucide-icon [img]="Trash2" class="size-4"></lucide-icon>
+            <span>Delete <span class="hidden sm:inline-block">Plan</span></span>
+          </button>
+        </div>
+      </z-popover>
+    </ng-template>
+  </div>
+
+  <!-- Accordion Content (Sessions) -->
+  @if (isExpanded) {
+    <div
+      class="pt-4 flex flex-col gap-2 animate-in slide-in-from-top-2 fade-in duration-200"
+    >
+      @for (session of plan.sessions; track session.id) {
+        <div class="p-3 rounded-xl bg-secondary/30 hover:bg-secondary/60 transition-colors cursor-pointer border border-transparent hover:border-border" (click)="detailSession(session.id, $event)">
+          <div class="flex flex-col w-full">
+            <div class="flex items-center gap-2 w-full">
+              <div class="rounded-full p-1 bg-gray-200 flex items-center justify-center flex-shrink-0 text-muted-foreground">
+                <lucide-icon [img]="Dumbbell" class="w-3 h-3"></lucide-icon>
+              </div>
+              <span class="flex-1 font-medium text-sm sm:text-base">{{ session.title }}</span>
+            </div>
+            
+            <!-- Exercise List -->
+            <p class="text-xs text-muted-foreground line-clamp-2 mt-1 pr-4">
+              {{ getExerciseNames(session) }}
+            </p>
+
+            <button
+              z-button
+              zShape="circle"
+              zSize="xs"
+              class="w-full mt-2"
+              (click)="startSession(session.id, $event)"
+            >
+              Start Session
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</z-card>

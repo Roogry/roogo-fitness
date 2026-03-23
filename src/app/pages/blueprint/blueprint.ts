@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { ZardInputDirective } from '@/shared/components/input';
 import { HeaderComponent } from '@/shared/components/header/header';
 import { RooSheetComponent } from '@/shared/components/sheet/sheet';
+import { PlanCardComponent } from './components/plan-card/plan-card.component';
 
 import {
   LucideAngularModule,
@@ -42,6 +43,7 @@ import {
     ZardPopoverDirective,
     RooSheetComponent,
     LucideAngularModule,
+    PlanCardComponent,
   ],
   templateUrl: './blueprint.html',
 })
@@ -64,7 +66,6 @@ export class BlueprintComponent implements OnInit {
   router = inject(Router);
 
   isOpenPlanForm = signal(false);
-  isOpenPlanActions = signal(false);
   expandedPlanId = signal<number | null>(null);
 
   newPlan = {
@@ -128,40 +129,8 @@ export class BlueprintComponent implements OnInit {
     this.isOpenPlanForm.set(true);
   }
 
-  openPlanActionsSheet(event: Event, planId: number) {
-    event.stopPropagation();
-    this.workoutService.selectedPlanId.set(planId);
-  }
-
-  openAddSession(event: Event, planId: number) {
-    event.stopPropagation();
-
-    this.workoutService.clearSession();
-    this.workoutService.selectedPlanId.set(planId);
-    this.workoutService.sessionTitle.set('New Session');
-    this.router.navigate(['/blueprint/session/create']);
-  }
-
-  detailSession(planId: number, sessionId: number, event: Event) {
-    event.stopPropagation();
-    this.router.navigate(['/session/detail'], { queryParams: { planId, sessionId } });
-  }
-
-  startSession(planId: number, sessionId: number, event: Event) {
-    event.stopPropagation();
-    this.router.navigate(['/session/start'], { queryParams: { planId, sessionId } });
-  }
-
-  getExerciseNames(session: WorkoutPlanSession): string {
-    if (!session.exercises || session.exercises.length === 0) {
-      return 'No exercises added yet.';
-    }
-    return session.exercises.map(pe => pe.exercise.name).join(', ');
-  }
-
   editPlan(event: Event, plan: WorkoutPlan) {
     event.stopPropagation();
-    this.isOpenPlanActions.set(false);
 
     this.newPlan = {
       title: plan.title,
@@ -174,7 +143,6 @@ export class BlueprintComponent implements OnInit {
 
   async deletePlan(event: Event, planId: number) {
     event.stopPropagation();
-    this.isOpenPlanActions.set(false);
 
     const plans = this.myPlans();
     const planToDelete = plans.find((p) => p.id === planId);
