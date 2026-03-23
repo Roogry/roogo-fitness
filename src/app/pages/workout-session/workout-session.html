@@ -9,17 +9,35 @@
     }
 
     @if (sessionAction() === 'detail') {
-      <button
-        right
-        z-button
-        zType="secondary"
-        zSize="icon"
-        zShape="circle"
-        (click)="openSessionMenu()"
-      >
-        <lucide-icon [img]="Ellipsis"></lucide-icon>
-        <span class="sr-only">More</span>
-      </button>
+      <div right>
+        <button
+          z-button
+          zPopover
+          zType="secondary"
+          zSize="icon"
+          zShape="circle"
+          [zContent]="moreActions"
+          zPlacement="bottomLeft"
+        >
+          <lucide-icon [img]="Ellipsis"></lucide-icon>
+          <span class="sr-only">More</span>
+        </button>
+
+        <ng-template #moreActions>
+          <z-popover>
+            <div class="flex flex-col items-start">
+              <button z-button zType="ghost" zShape="circle" class="w-full justify-start">
+                <lucide-icon [img]="Pencil" class="size-4"></lucide-icon>
+                <span>Edit</span>
+              </button>
+              <button z-button zType="ghost" zShape="circle" class="w-full justify-start text-destructive hover:text-destructive">
+                <lucide-icon [img]="Trash2" class="size-4"></lucide-icon>
+                <span>Delete</span>
+              </button>
+            </div>
+          </z-popover>
+        </ng-template>
+      </div>
     }
   </app-header>
 

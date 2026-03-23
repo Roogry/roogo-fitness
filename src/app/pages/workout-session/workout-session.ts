@@ -12,7 +12,9 @@ import {
   Check,
   Clock,
   Activity,
-  Ellipsis
+  Ellipsis,
+  Trash2,
+  Pencil
 } from 'lucide-angular';
 import { WorkoutService } from '@/shared/services/workout.service';
 import { ExerciseAutocomplete } from '@/components/exercise-autocomplete/exercise-autocomplete';
@@ -23,6 +25,7 @@ import { RooSheetComponent } from '@/shared/components/sheet/sheet';
 import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 import { ZardInputDirective } from '@/shared/components/input';
 import { SessionAction } from '@/shared/types/workout.types';
+import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/popover';
 
 @Component({
   selector: 'app-workout-session',
@@ -35,6 +38,8 @@ import { SessionAction } from '@/shared/types/workout.types';
     HeaderComponent,
     ZardButtonComponent,
     ZardInputDirective,
+    ZardPopoverComponent, 
+    ZardPopoverDirective,
     RooSheetComponent,
     LucideAngularModule,
     DurationFormatPipe,
@@ -52,6 +57,8 @@ export class WorkoutSession implements OnInit {
   readonly Clock = Clock;
   readonly Activity = Activity;
   readonly Ellipsis = Ellipsis;
+  readonly Trash2 = Trash2;
+  readonly Pencil = Pencil;
 
   workoutService = inject(WorkoutService);
   router = inject(Router);
@@ -88,10 +95,6 @@ export class WorkoutSession implements OnInit {
         this.workoutService.startSessionTimer();
       } 
     });
-  }
-
-  openSessionMenu() {
-    //TODO: open bottom sheet with these button Edit Session, Delete Session 
   }
 
   onExerciseSelected(exercise: any) {
