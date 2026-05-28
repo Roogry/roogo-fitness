@@ -1,8 +1,8 @@
 <div class="min-h-screen bg-background text-foreground pb-20">
   <!-- Header -->
-  <app-header 
-    [title]="selectedSession()?.id ? 'Edit Session' : 'New Session'" 
-    [showBackBtn]="true" 
+  <app-header
+    [title]="selectedSession()?.id ? 'Edit Session' : 'New Session'"
+    [showBackBtn]="true"
     class="sticky top-0"
   >
     @if (workoutService.hasExercise()) {
@@ -12,7 +12,7 @@
         zShape="circle"
         (click)="createSession()"
       >
-        <lucide-icon [img]="Check" class="mr-1 hidden sm:inline-block"></lucide-icon>
+        <ng-icon name="lucideCheck" class="mr-1 hidden sm:inline-block"></ng-icon>
         <span>Create</span>
       </button>
     }
@@ -44,7 +44,7 @@
         <div
           class="py-8 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl"
         >
-          <lucide-icon [img]="Dumbbell" class="h-12 w-12 mx-auto mb-4"></lucide-icon>
+          <ng-icon name="lucideDumbbell" class="h-12 w-12 mx-auto mb-4"></ng-icon>
           <p>Choose exercises to put in.</p>
         </div>
       }
@@ -54,7 +54,7 @@
       }
 
       <button z-button zShape="circle" class="w-full" (click)="isAddSheetOpen.set(true)">
-        <lucide-icon [img]="Plus"></lucide-icon>
+        <ng-icon name="lucidePlus"></ng-icon>
         Add Exercise
       </button>
     </div>

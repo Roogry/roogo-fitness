@@ -2,20 +2,15 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
-  LucideAngularModule,
-  Dumbbell,
-  Save,
-  Plus,
-  X,
-  ArrowLeft,
-  Check,
-  Clock,
-  Activity,
-  Ellipsis,
-  Trash2,
-  Pencil
-} from 'lucide-angular';
+  lucideDumbbell,
+  lucidePlus,
+  lucideCheck,
+  lucideEllipsis,
+  lucideTrash2,
+  lucidePencil,
+} from '@ng-icons/lucide';
 import { WorkoutService } from '@/shared/services/workout.service';
 import { ExerciseAutocomplete } from '@/components/exercise-autocomplete/exercise-autocomplete';
 import { ExerciseTracker } from '@/components/exercise-tracker/exercise-tracker';
@@ -38,28 +33,26 @@ import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/
     HeaderComponent,
     ZardButtonComponent,
     ZardInputDirective,
-    ZardPopoverComponent, 
+    ZardPopoverComponent,
     ZardPopoverDirective,
     RooSheetComponent,
-    LucideAngularModule,
     DurationFormatPipe,
+    NgIcon,
+  ],
+  providers: [
+    provideIcons({
+      lucideDumbbell,
+      lucidePlus,
+      lucideCheck,
+      lucideEllipsis,
+      lucideTrash2,
+      lucidePencil,
+    }),
   ],
   templateUrl: './workout-session.html',
   styleUrl: './workout-session.css',
 })
 export class WorkoutSession implements OnInit {
-  readonly Dumbbell = Dumbbell;
-  readonly Save = Save;
-  readonly Plus = Plus;
-  readonly X = X;
-  readonly ArrowLeft = ArrowLeft;
-  readonly Check = Check;
-  readonly Clock = Clock;
-  readonly Activity = Activity;
-  readonly Ellipsis = Ellipsis;
-  readonly Trash2 = Trash2;
-  readonly Pencil = Pencil;
-
   workoutService = inject(WorkoutService);
   router = inject(Router);
   route = inject(ActivatedRoute);
@@ -73,7 +66,7 @@ export class WorkoutSession implements OnInit {
     this.route.queryParamMap.subscribe(async (queryParams) => {
       const planId = queryParams.get('planId');
       const sessionId = queryParams.get('sessionId');
-      
+
       if (planId && sessionId) {
         await this.workoutService.setSessionFromBlueprint(Number(planId), Number(sessionId));
       }
@@ -99,7 +92,7 @@ export class WorkoutSession implements OnInit {
   onExerciseSelected(exercise: any) {
     this.workoutService.addTrackedExercise(exercise);
     this.isAddSheetOpen.set(false);
-    
+
     if (!this.workoutService.sessionStartTime()) {
       this.workoutService.startSessionTimer();
     }

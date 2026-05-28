@@ -1,31 +1,32 @@
 import { Component, inject, input, output } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { LucideAngularModule, ArrowLeft } from 'lucide-angular';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideArrowLeft } from '@ng-icons/lucide';
 import { ZardButtonComponent } from '../button/button.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, LucideAngularModule, ZardButtonComponent],
+  imports: [CommonModule, RouterModule, ZardButtonComponent, NgIcon],
+  providers: [provideIcons({ lucideArrowLeft })],
   templateUrl: './header.html',
   host: {
     class: 'block w-full',
   },
 })
 export class HeaderComponent {
-  readonly ArrowLeft = ArrowLeft;
   title = input<string>('');
   showBackBtn = input<boolean>(false);
   backLink = input<any[] | null>(null);
   backClick = output<void>();
 
-  private router = inject(Router)
-  private location = inject(Location)
+  private router = inject(Router);
+  private location = inject(Location);
 
   goBack() {
     console.log(this.backLink());
-    
+
     if (this.backLink()) {
       this.router.navigate(this.backLink()!);
     } else {

@@ -1,6 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Activity, Clock, ArrowRight } from 'lucide-angular';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideActivity } from '@ng-icons/lucide';
 import { HeaderComponent } from '@/shared/components/header/header';
 import { LoggedWorkoutCardComponent } from '@/shared/components/logged-workout-card/logged-workout-card';
 import { WorkoutService } from '@/shared/services/workout.service';
@@ -8,15 +9,12 @@ import { LoggedSession } from '@/shared/types/workout.types';
 
 @Component({
   selector: 'app-journey',
-  imports: [CommonModule, HeaderComponent, LucideAngularModule, LoggedWorkoutCardComponent],
+  imports: [CommonModule, HeaderComponent, LoggedWorkoutCardComponent, NgIcon],
+  providers: [provideIcons({ lucideActivity })],
   templateUrl: './journey.html',
   styleUrl: './journey.css',
 })
 export class Journey implements OnInit {
-  readonly Activity = Activity;
-  readonly Clock = Clock;
-  readonly ArrowRight = ArrowRight;
-
   protected readonly journey = signal<LoggedSession[]>([]);
   protected readonly isLoading = signal<boolean>(true);
 

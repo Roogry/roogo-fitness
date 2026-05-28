@@ -5,20 +5,24 @@ import { ZardBadgeComponent } from '@/shared/components/badge';
 import { ZardInputDirective } from '@/shared/components/input';
 import { ExerciseService } from '@/shared/services/exercise.service';
 import { Exercise } from '@/shared/types/workout.types';
-import { LucideAngularModule, Search, Plus, Dumbbell } from 'lucide-angular';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideSearch, lucidePlus, lucideDumbbell } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-exercise-autocomplete',
   standalone: true,
-  imports: [CommonModule, FormsModule, ZardBadgeComponent, ZardInputDirective, LucideAngularModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ZardBadgeComponent,
+    ZardInputDirective,
+    NgIcon,
+  ],
+  providers: [provideIcons({ lucideSearch, lucidePlus, lucideDumbbell })],
   templateUrl: './exercise-autocomplete.html',
   styleUrl: './exercise-autocomplete.css',
 })
 export class ExerciseAutocomplete implements OnInit {
-  readonly Search = Search;
-  readonly Plus = Plus;
-  readonly Dumbbell = Dumbbell;
-  
   private exerciseService = inject(ExerciseService);
 
   @Output() exerciseSelected = new EventEmitter<Exercise>();

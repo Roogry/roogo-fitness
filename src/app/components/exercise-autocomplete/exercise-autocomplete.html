@@ -1,9 +1,8 @@
 <div class="relative w-full">
   <div class="relative">
-    <lucide-icon
-      [img]="Search"
+    <ng-icon name="lucideSearch"
       class="absolute left-1.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-    ></lucide-icon>
+    ></ng-icon>
     <input
       z-input
       type="text"
@@ -40,7 +39,7 @@
                   class="h-full w-full object-cover"
                 />
               } @else {
-                <lucide-icon [img]="Dumbbell" class="h-6 w-6 text-muted-foreground"></lucide-icon>
+                <ng-icon name="lucideDumbbell" class="h-6 w-6 text-muted-foreground"></ng-icon>
               }
             </div>
             <div class="flex flex-col gap-2">
@@ -50,10 +49,10 @@
               </z-badge>
             </div>
           </div>
-          <lucide-icon
-            [img]="Plus"
+          <ng-icon
+            name="lucidePlus"
             class="h-6 w-6 mr-4 text-muted-foreground opacity-80"
-          ></lucide-icon>
+          ></ng-icon>
         </div>
       }
 
@@ -66,7 +65,7 @@
             <span class="font-medium text-sm text-primary">Add "{{ searchQuery().trim() }}"</span>
             <span class="text-sm text-primary/70 mt-1">Create a new custom exercise</span>
           </div>
-          <lucide-icon [img]="Plus" class="h-5 w-5 text-primary"></lucide-icon>
+          <ng-icon name="lucidePlus" class="h-5 w-5 text-primary"></ng-icon>
         </div>
       }
     </div>

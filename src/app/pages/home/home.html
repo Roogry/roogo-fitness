@@ -3,13 +3,13 @@
   <div class="container max-w-2xl mx-auto px-4 pt-6">
     <div class="flex items-center gap-4">
       <div class="size-16 rounded-full bg-secondary flex items-center justify-center">
-        <lucide-icon [img]="Dumbbell" class="size-6"></lucide-icon>
+        <ng-icon name="lucideDumbbell" class="size-6"></ng-icon>
       </div>
       <div class="flex flex-col gap-1">
         <h1 class="text-xl font-bold">Ganbatte, Jodie!</h1>
         <div class="flex items-center gap-1">
           <p class="text-sm text-muted-foreground">3 days this week</p>
-          <lucide-icon [img]="Flame" class="h-3 w-3"></lucide-icon>
+          <ng-icon name="lucideFlame" class="h-3 w-3"></ng-icon>
         </div>
       </div>
     </div>
@@ -26,23 +26,23 @@
             >
             <h2 class="text-2xl font-bold">{{ activePlan()!.title }}</h2>
             <div class="flex items-center text-sm text-muted-foreground mt-2 gap-2">
-              <lucide-icon [img]="Calendar" class="w-4 h-4"></lucide-icon>
+               <ng-icon name="lucideCalendar" class="w-4 h-4"></ng-icon>
               <span>{{ activePlan()!.days }} days / week</span>
             </div>
           </div>
           <div class="p-3 bg-primary/5 text-primary rounded-2xl hidden sm:inline-block">
-            <lucide-icon [img]="Dumbbell" class="w-6 h-6"></lucide-icon>
+            <ng-icon name="lucideDumbbell" class="w-6 h-6"></ng-icon>
           </div>
         </div>
 
         <!-- Horizontal List of Upcoming Sessions -->
         <div class="flex overflow-x-auto gap-3 pb-2 mt-4 snap-x hide-scrollbar">
           @for (session of mappedSessions(); track session.id) {
-            <app-upcoming-session-card 
-              [planId]="activePlan()!.id" 
-              [sessionId]="session.id" 
-              [title]="session.title" 
-              [isUpNext]="$first" 
+            <app-upcoming-session-card
+              [planId]="activePlan()!.id"
+              [sessionId]="session.id"
+              [title]="session.title"
+              [isUpNext]="$first"
             />
           }
 

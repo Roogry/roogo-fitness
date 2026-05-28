@@ -94,13 +94,13 @@
                       class="flex items-center gap-3 p-3 border border-border rounded-xl bg-muted/30"
                     >
                       <div
-                        class="h-12 w-16 bg-muted rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center"
+                        class="h-12 w-16 bg-muted rounded-lg overflow-hidden shrink-0 flex items-center justify-center"
                       >
                         @if (m.media_type === 'youtube' || m.media_type === 'video') {
-                          <lucide-icon
-                            [img]="Video"
+                          <ng-icon
+                            name="lucideVideo"
                             class="h-5 w-5 text-muted-foreground"
-                          ></lucide-icon>
+                          ></ng-icon>
                         } @else {
                           <img
                             [src]="m.media_url"
@@ -126,7 +126,7 @@
                           [disabled]="i === 0"
                           (click)="moveMediaUp(i)"
                         >
-                          <lucide-icon [img]="ChevronUp" class="h-4 w-4"></lucide-icon>
+                          <ng-icon name="lucideChevronUp" class="h-4 w-4"></ng-icon>
                         </button>
                         <button
                           type="button"
@@ -138,7 +138,7 @@
                           [disabled]="i === media().length - 1"
                           (click)="moveMediaDown(i)"
                         >
-                          <lucide-icon [img]="ChevronDown" class="h-4 w-4"></lucide-icon>
+                          <ng-icon name="lucideChevronDown" class="h-4 w-4"></ng-icon>
                         </button>
                         <button
                           type="button"
@@ -150,7 +150,7 @@
                           class="text-destructive hover:text-destructive"
                           (click)="removeMedia(i)"
                         >
-                          <lucide-icon [img]="Trash2" class="h-4 w-4"></lucide-icon>
+                          <ng-icon name="lucideTrash2" class="h-4 w-4"></ng-icon>
                         </button>
                       </div>
                     </div>
@@ -185,7 +185,7 @@
                     (click)="addMedia()"
                     [disabled]="!newMediaUrl().trim()"
                   >
-                    <lucide-icon [img]="Plus"></lucide-icon> Add
+                    <ng-icon name="lucidePlus"></ng-icon> Add
                   </button>
                 </div>
               </div>
@@ -202,7 +202,7 @@
                   (click)="cancel()"
                   class="w-full sm:w-auto"
                 >
-                  <lucide-icon [img]="X" class="h-4 w-4"></lucide-icon> Cancel
+                  <ng-icon name="lucideX" class="h-4 w-4"></ng-icon> Cancel
                 </button>
                 <button
                   type="submit"
@@ -212,7 +212,7 @@
                   [disabled]="!editForm.form.valid || isSaving()"
                   class="w-full sm:w-auto"
                 >
-                  <lucide-icon [img]="Save" class="h-4 w-4"></lucide-icon> Save Changes
+                  <ng-icon name="lucideSave" class="h-4 w-4"></ng-icon> Save Changes
                 </button>
               </div>
             </form>

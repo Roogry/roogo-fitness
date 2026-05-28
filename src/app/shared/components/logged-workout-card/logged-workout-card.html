@@ -26,14 +26,14 @@
     </div>
 
     <div class="items-center gap-2 hidden sm:flex">
-      <span 
+      <span
         class="text-sm text-muted-foreground"
         [zTooltip]="session().createdAt ? (session().createdAt | date: 'medium') : 'unknown'"
       >
         {{ session().createdAt | timeAgo }}
       </span>
       <div class="bg-primary/5 text-primary p-2 rounded-full">
-        <lucide-icon [img]="Activity" class="size-4"></lucide-icon>
+        <ng-icon name="lucideActivity" class="size-4"></ng-icon>
       </div>
     </div>
   </div>
@@ -56,10 +56,10 @@
     <div
       class="bg-background/50 rounded-full p-1.5 group-hover:bg-background transition-colors"
     >
-      <lucide-icon
-        [img]="ArrowRight"
+      <ng-icon
+        name="lucideArrowRight"
         class="w-4 h-4 text-foreground flex-shrink-0"
-      ></lucide-icon>
+      ></ng-icon>
     </div>
   </a>
 </z-card>

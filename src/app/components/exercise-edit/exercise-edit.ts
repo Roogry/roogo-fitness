@@ -7,18 +7,19 @@ import { ZardCardComponent } from '@/shared/components/card/card.component';
 import { ZardButtonComponent } from '@/shared/components/button/button.component';
 import { ZardInputDirective } from '@/shared/components/input/input.directive';
 import { ZardSelectImports } from '@/shared/components/select';
-import {
-  LucideAngularModule,
-  ArrowLeft,
-  Save,
-  X,
-  Video,
-  ChevronUp,
-  ChevronDown,
-  Trash2,
-  Plus,
-} from 'lucide-angular';
+import { ZardSelectComponent, ZardSelectItemComponent } from '@/shared/components/select';
 import { MuscleService } from '@/shared/services/muscle.service';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideArrowLeft,
+  lucideSave,
+  lucideX,
+  lucideVideo,
+  lucideChevronUp,
+  lucideChevronDown,
+  lucideTrash2,
+  lucidePlus,
+} from '@ng-icons/lucide';
 import { ExerciseService } from '@/shared/services/exercise.service';
 import { Exercise, ExerciseMedia, Muscle } from '@/shared/types/workout.types';
 
@@ -28,27 +29,30 @@ import { Exercise, ExerciseMedia, Muscle } from '@/shared/types/workout.types';
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule,
+    HeaderComponent,
     ZardCardComponent,
     ZardButtonComponent,
     ZardInputDirective,
-    ZardSelectImports,
-    HeaderComponent,
-    LucideAngularModule,
+    ZardSelectComponent,
+    ZardSelectItemComponent,
+    NgIcon,
+  ],
+  providers: [
+    provideIcons({
+      lucideArrowLeft,
+      lucideSave,
+      lucideX,
+      lucideVideo,
+      lucideChevronUp,
+      lucideChevronDown,
+      lucideTrash2,
+      lucidePlus,
+    }),
   ],
   templateUrl: './exercise-edit.html',
   styleUrl: './exercise-edit.css',
 })
 export class ExerciseEdit implements OnInit {
-  readonly ArrowLeft = ArrowLeft;
-  readonly Save = Save;
-  readonly X = X;
-  readonly Video = Video;
-  readonly ChevronUp = ChevronUp;
-  readonly ChevronDown = ChevronDown;
-  readonly Trash2 = Trash2;
-  readonly Plus = Plus;
-
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private exerciseService = inject(ExerciseService);

@@ -1,18 +1,18 @@
 @if (isOpen) {
   <!-- Backdrop -->
   <div
-    class="fixed inset-0 z-[100] bg-black/20 backdrop-blur-sm transition-opacity"
+    class="fixed inset-0 z-100 bg-black/20 backdrop-blur-sm transition-opacity"
     (click)="close()"
   ></div>
 
   <!-- Sheet Container -->
   <div
-    class="fixed z-[100] bg-white transition-transform bottom-0 left-0 right-0 h-[85vh] rounded-t-4xl md:top-0 md:bottom-0 md:left-auto md:right-0 md:h-full md:w-[450px] md:rounded-none md:border-l md:border-border slide-in flex flex-col"
+    class="fixed z-100 bg-white transition-transform bottom-0 left-0 right-0 h-[85vh] rounded-t-4xl md:top-0 md:bottom-0 md:left-auto md:right-0 md:h-full md:w-[450px] md:rounded-none md:border-l md:border-border slide-in flex flex-col"
   >
     <div class="pt-4 h-full flex flex-col">
       <!-- Sheet Indicator -->
       <div
-        class="w-[50px] h-2 mb-4 bg-gray-200 mx-auto rounded-full cursor-pointer sm:hidden shrink-0"
+        class="w-12.5 h-2 mb-4 bg-gray-200 mx-auto rounded-full cursor-pointer sm:hidden shrink-0"
         (click)="close()"
       ></div>
 
@@ -31,7 +31,7 @@
           zShape="circle"
           (click)="close()"
         >
-          <lucide-icon [img]="X"></lucide-icon>
+          <ng-icon name="lucideX"></ng-icon>
         </button>
       </div>
 

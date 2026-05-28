@@ -1,21 +1,18 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterLink, RouterModule } from '@angular/router';
 import { WorkoutService } from '../../shared/services/workout.service';
 import { ZardCardComponent } from '../../shared/components/card/card.component';
 import { ZardButtonComponent } from '../../shared/components/button/button.component';
 import { HeaderComponent } from '../../shared/components/header/header';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
-  LucideAngularModule,
-  ArrowLeft,
-  Dumbbell,
-  Activity,
-  Info,
-  Pencil,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-angular';
+  lucideDumbbell,
+  lucidePencil,
+  lucideChevronLeft,
+  lucideChevronRight,
+} from '@ng-icons/lucide';
 import { Exercise } from '@/shared/types/workout.types';
 
 @Component({
@@ -24,23 +21,24 @@ import { Exercise } from '@/shared/types/workout.types';
   imports: [
     CommonModule,
     RouterModule,
+    RouterLink,
     ZardCardComponent,
     ZardButtonComponent,
     HeaderComponent,
-    LucideAngularModule,
+    NgIcon,
+  ],
+  providers: [
+    provideIcons({
+      lucideDumbbell,
+      lucidePencil,
+      lucideChevronLeft,
+      lucideChevronRight,
+    }),
   ],
   templateUrl: './exercise-detail.html',
   styleUrl: './exercise-detail.css',
 })
 export class ExerciseDetail implements OnInit {
-  readonly ArrowLeft = ArrowLeft;
-  readonly Dumbbell = Dumbbell;
-  readonly Activity = Activity;
-  readonly Info = Info;
-  readonly Pencil = Pencil;
-  readonly ChevronLeft = ChevronLeft;
-  readonly ChevronRight = ChevronRight;
-
   private route = inject(ActivatedRoute);
   private workoutService = inject(WorkoutService);
   private sanitizer = inject(DomSanitizer);

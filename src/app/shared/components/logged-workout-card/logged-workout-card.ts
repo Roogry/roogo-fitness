@@ -7,7 +7,8 @@ import { ZardTooltipImports } from '@/shared/components/tooltip';
 import { LoggedSession } from '@/shared/types/workout.types';
 import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 import { TimeAgoPipe } from '@/shared/pipes/time-ago-pipe';
-import { LucideAngularModule, Activity, Clock, ArrowRight } from 'lucide-angular';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideActivity, lucideArrowRight } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-logged-workout-card',
@@ -18,18 +19,15 @@ import { LucideAngularModule, Activity, Clock, ArrowRight } from 'lucide-angular
     ZardBadgeComponent,
     ZardCardComponent,
     ZardTooltipImports,
-    LucideAngularModule,
     DurationFormatPipe,
     TimeAgoPipe,
     ZardBadgeComponent,
+    NgIcon,
   ],
+  providers: [provideIcons({ lucideActivity, lucideArrowRight })],
   templateUrl: './logged-workout-card.html',
 })
 export class LoggedWorkoutCardComponent {
-  readonly Activity = Activity;
-  readonly Clock = Clock;
-  readonly ArrowRight = ArrowRight;
-
   session = input.required<LoggedSession>();
 
   getExerciseSummary(session: LoggedSession): string {

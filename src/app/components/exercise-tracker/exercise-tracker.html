@@ -13,7 +13,7 @@
               class="h-full w-full object-cover"
             />
           } @else {
-            <lucide-icon [img]="Dumbbell" class="h-6 w-6 text-muted-foreground"></lucide-icon>
+            <ng-icon name="lucideDumbbell" class="h-6 w-6 text-muted-foreground"></ng-icon>
           }
         </div>
         <div>
@@ -40,7 +40,7 @@
         (click)="removeExercise()"
         class="text-destructive hover:bg-destructive/10"
       >
-        <lucide-icon [img]="Trash2" class="h-4 w-4"></lucide-icon>
+        <ng-icon name="lucideTrash2" class="h-4 w-4"></ng-icon>
       </button>
     }
   </div>
@@ -106,7 +106,7 @@
               class="text-destructive hover:bg-destructive/10"
               (click)="removeSet(set.id)"
             >
-              <lucide-icon [img]="Trash2"></lucide-icon>
+              <ng-icon name="lucideTrash2"></ng-icon>
             </button>
           }
         </div>
@@ -159,7 +159,7 @@
             [disabled]="!isValid()"
             class="w-full sm:w-fit"
           >
-            <lucide-icon [img]="Plus"></lucide-icon>
+            <ng-icon name="lucidePlus"></ng-icon>
             <span class="ml-2 inline-block sm:hidden">Add Set</span>
           </button>
         </form>

@@ -2,17 +2,12 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
-  LucideAngularModule,
-  Dumbbell,
-  Save,
-  Plus,
-  X,
-  ArrowLeft,
-  Check,
-  Clock,
-  Activity,
-} from 'lucide-angular';
+  lucideDumbbell,
+  lucidePlus,
+  lucideCheck,
+} from '@ng-icons/lucide';
 import { WorkoutService } from '@/shared/services/workout.service';
 import { ExerciseAutocomplete } from '@/components/exercise-autocomplete/exercise-autocomplete';
 import { ExerciseTracker } from '@/components/exercise-tracker/exercise-tracker';
@@ -34,21 +29,13 @@ import { WorkoutPlanSession } from '@/shared/types/workout.types';
     ZardButtonComponent,
     ZardInputDirective,
     RooSheetComponent,
-    LucideAngularModule,
+    NgIcon,
   ],
+  providers: [provideIcons({ lucideDumbbell, lucidePlus, lucideCheck })],
   templateUrl: './blueprint-session.html',
   styleUrl: './blueprint-session.css',
 })
 export class BlueprintSession implements OnInit {
-  readonly Dumbbell = Dumbbell;
-  readonly Save = Save;
-  readonly Plus = Plus;
-  readonly X = X;
-  readonly ArrowLeft = ArrowLeft;
-  readonly Check = Check;
-  readonly Clock = Clock;
-  readonly Activity = Activity;
-
   workoutService = inject(WorkoutService);
   router = inject(Router);
   route = inject(ActivatedRoute);

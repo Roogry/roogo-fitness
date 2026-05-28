@@ -1,21 +1,19 @@
 import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation } from '@angular/core';
-
 import type { ClassValue } from 'clsx';
-import { LucideAngularModule } from 'lucide-angular';
-
+import { NgIcon, provideIcons } from '@ng-icons/core';
 import { mergeClasses } from '@/shared/utils/merge-classes';
-
 import { iconVariants, type ZardIconSizeVariants } from './icon.variants';
-import { ZARD_ICONS, type ZardIcon } from './icons';
+import { ZARD_ICONS, ZARD_ICON_IMPORTS, type ZardIcon } from './icons';
 
 @Component({
   selector: 'z-icon, [z-icon]',
-  imports: [LucideAngularModule],
+  standalone: true,
+  imports: [NgIcon],
+  providers: [provideIcons(ZARD_ICON_IMPORTS)],
   template: `
-    <lucide-angular
-      [img]="icon()"
+    <ng-icon
+      [name]="iconName()"
       [strokeWidth]="zStrokeWidth()"
-      [absoluteStrokeWidth]="zAbsoluteStrokeWidth()"
       [class]="classes()"
     />
   `,
@@ -33,12 +31,8 @@ export class ZardIconComponent {
     mergeClasses(iconVariants({ zSize: this.zSize() }), this.class(), this.zStrokeWidth() === 0 ? 'stroke-none' : ''),
   );
 
-  protected readonly icon = computed(() => {
+  protected readonly iconName = computed(() => {
     const type = this.zType();
-    if (typeof type === 'string') {
-      return ZARD_ICONS[type];
-    }
-
-    return type;
+    return ZARD_ICONS[type];
   });
 }

@@ -5,7 +5,8 @@ import { WorkoutService } from '../../shared/services/workout.service';
 import { ZardCardComponent } from '../../shared/components/card/card.component';
 import { ZardButtonComponent } from '../../shared/components/button/button.component';
 import { ZardInputDirective } from '../../shared/components/input/input.directive';
-import { LucideAngularModule, Trash2, Plus, GripVertical, Dumbbell } from 'lucide-angular';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideTrash2, lucidePlus, lucideDumbbell } from '@ng-icons/lucide';
 import { RouterModule } from '@angular/router';
 import { LoggedExercise, LoggedSet } from '@/shared/types/workout.types';
 import { ZardBadgeComponent } from "@/shared/components/badge";
@@ -19,19 +20,15 @@ import { ZardBadgeComponent } from "@/shared/components/badge";
     ZardCardComponent,
     ZardButtonComponent,
     ZardInputDirective,
-    LucideAngularModule,
     RouterModule,
-    ZardBadgeComponent
-],
+    ZardBadgeComponent,
+    NgIcon,
+  ],
+  providers: [provideIcons({ lucideTrash2, lucidePlus, lucideDumbbell })],
   templateUrl: './exercise-tracker.html',
   styleUrl: './exercise-tracker.css',
 })
 export class ExerciseTracker {
-  readonly Trash2 = Trash2;
-  readonly Plus = Plus;
-  readonly GripVertical = GripVertical;
-  readonly Dumbbell = Dumbbell;
-
   private workoutService = inject(WorkoutService);
 
   // The exercise data passed from the parent

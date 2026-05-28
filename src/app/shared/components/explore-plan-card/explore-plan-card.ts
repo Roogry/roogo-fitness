@@ -1,7 +1,8 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ZardCardComponent } from '@/shared/components/card';
-import { LucideAngularModule, Calendar } from 'lucide-angular';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCalendar } from '@ng-icons/lucide';
 
 export interface ExplorePlan {
   id: number;
@@ -13,14 +14,13 @@ export interface ExplorePlan {
 @Component({
   selector: 'app-explore-plan-card',
   standalone: true,
-  imports: [CommonModule, ZardCardComponent, LucideAngularModule],
+  imports: [CommonModule, ZardCardComponent, NgIcon],
+  providers: [provideIcons({ lucideCalendar })],
   templateUrl: './explore-plan-card.html',
   host: {
-    class: 'block min-w-[320px] snap-start'
-  }
+    class: 'block min-w-[320px] snap-start',
+  },
 })
 export class ExplorePlanCardComponent {
-  readonly Calendar = Calendar;
-
   plan = input.required<ExplorePlan>();
 }

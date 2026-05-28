@@ -1,33 +1,23 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideFolderPlus,
+  lucideDumbbell,
+  lucideMinus,
+  lucidePlus,
+  lucideSave,
+} from '@ng-icons/lucide';
 import { DbService } from '@/shared/services/db.service';
 import { WorkoutService } from '@/shared/services/workout.service';
-import { WorkoutPlan, WorkoutPlanSession } from '@/shared/types/workout.types';
-import { ZardCardComponent } from '@/shared/components/card';
+import { WorkoutPlan } from '@/shared/types/workout.types';
 import { ZardButtonComponent } from '@/shared/components/button/button.component';
-import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/popover';
 import { FormsModule } from '@angular/forms';
 import { ZardInputDirective } from '@/shared/components/input';
 import { HeaderComponent } from '@/shared/components/header/header';
 import { RooSheetComponent } from '@/shared/components/sheet/sheet';
 import { PlanCardComponent } from './components/plan-card/plan-card.component';
-
-import {
-  LucideAngularModule,
-  Plus,
-  Dumbbell,
-  Ellipsis,
-  EllipsisVertical,
-  Calendar,
-  ChevronRight,
-  X,
-  Save,
-  Minus,
-  Pencil,
-  FolderPlus,
-  Trash2,
-} from 'lucide-angular';
 
 @Component({
   selector: 'app-blueprint',
@@ -36,31 +26,24 @@ import {
     CommonModule,
     FormsModule,
     HeaderComponent,
-    ZardCardComponent,
     ZardButtonComponent,
     ZardInputDirective,
-    ZardPopoverComponent, 
-    ZardPopoverDirective,
     RooSheetComponent,
-    LucideAngularModule,
     PlanCardComponent,
+    NgIcon,
+  ],
+  providers: [
+    provideIcons({
+      lucideFolderPlus,
+      lucideDumbbell,
+      lucideMinus,
+      lucidePlus,
+      lucideSave,
+    }),
   ],
   templateUrl: './blueprint.html',
 })
 export class BlueprintComponent implements OnInit {
-  readonly Plus = Plus;
-  readonly Dumbbell = Dumbbell;
-  readonly Ellipsis = Ellipsis;
-  readonly EllipsisVertical = EllipsisVertical;
-  readonly Calendar = Calendar;
-  readonly ChevronRight = ChevronRight;
-  readonly Save = Save;
-  readonly Minus = Minus;
-  readonly X = X;
-  readonly Pencil = Pencil;
-  readonly FolderPlus = FolderPlus;
-  readonly Trash2 = Trash2;
-
   dbService = inject(DbService);
   workoutService = inject(WorkoutService);
   router = inject(Router);
@@ -80,15 +63,15 @@ export class BlueprintComponent implements OnInit {
     await this.loadPlans();
     const plans = this.myPlans();
     if (plans.length > 0 && !this.expandedPlanId()) {
-      const firstRegular = plans.find(p => !p.isDefault);
+      const firstRegular = plans.find((p) => !p.isDefault);
       this.expandedPlanId.set(firstRegular ? firstRegular.id : plans[0].id);
     }
   }
 
   async loadPlans() {
     let plans = await this.dbService.getWorkoutPlans();
-    let defaultPlan = plans.find(p => p.isDefault);
-    
+    let defaultPlan = plans.find((p) => p.isDefault);
+
     if (!defaultPlan) {
       defaultPlan = {
         id: Date.now(),
@@ -100,7 +83,7 @@ export class BlueprintComponent implements OnInit {
       await this.dbService.saveWorkoutPlan(defaultPlan);
       plans.push(defaultPlan);
     }
-    
+
     this.myPlans.set(plans);
   }
 

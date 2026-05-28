@@ -1,7 +1,7 @@
 <div class="mb-8">
   <app-header title="Blueprint">
     <button right z-button zShape="circle" (click)="openCreatePlanSheet()">
-      <lucide-icon [img]="FolderPlus"></lucide-icon>
+      <ng-icon name="lucideFolderPlus"></ng-icon>
       Plan
     </button>
   </app-header>
@@ -13,7 +13,7 @@
           class="flex flex-col items-center justify-center text-center p-10 border border-border rounded-4xl"
         >
           <div class="p-4 bg-background border border-border rounded-full mb-4">
-            <lucide-icon [img]="Dumbbell" class="w-8 h-8 text-muted-foreground"></lucide-icon>
+            <ng-icon name="lucideDumbbell" class="w-8 h-8 text-muted-foreground"></ng-icon>
           </div>
           <h3 class="font-semibold text-lg mb-1">No Plans Yet</h3>
           <p class="text-sm text-muted-foreground">
@@ -98,7 +98,7 @@
               "
               [disabled]="newPlan.sessionsPerWeek <= 1"
             >
-              <lucide-icon [img]="Minus" class="w-4 h-4"></lucide-icon>
+              <ng-icon name="lucideMinus" class="w-4 h-4"></ng-icon>
             </button>
             <div class="flex flex-col items-center justify-center w-16">
               <span class="text-xl font-bold">{{ newPlan.sessionsPerWeek }}</span>
@@ -113,7 +113,7 @@
               "
               [disabled]="newPlan.sessionsPerWeek >= 7"
             >
-              <lucide-icon [img]="Plus" class="w-4 h-4"></lucide-icon>
+              <ng-icon name="lucidePlus" class="w-4 h-4"></ng-icon>
             </button>
           </div>
         </div>
@@ -129,7 +129,7 @@
             [disabled]="!newPlan.title.trim()"
             (click)="savePlan()"
           >
-            <lucide-icon [img]="Save"></lucide-icon>
+            <ng-icon name="lucideSave"></ng-icon>
             {{ workoutService.selectedPlanId() ? 'Save Changes' : 'Save Plan' }}
           </button>
         </div>

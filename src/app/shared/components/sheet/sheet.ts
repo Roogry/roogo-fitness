@@ -1,21 +1,21 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, X } from 'lucide-angular';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideX } from '@ng-icons/lucide';
 import { ZardButtonComponent } from '../button';
 
 @Component({
   selector: 'app-sheet',
   standalone: true,
-  imports: [CommonModule, ZardButtonComponent, LucideAngularModule],
+  imports: [CommonModule, ZardButtonComponent, NgIcon],
+  providers: [provideIcons({ lucideX })],
   templateUrl: './sheet.html',
 })
 export class RooSheetComponent {
-  readonly X = X;
-
   @Input() title = '';
   @Input() description?: string;
   @Input() isOpen = false;
-  
+
   @Output() onOpenChange = new EventEmitter<boolean>();
 
   close() {
