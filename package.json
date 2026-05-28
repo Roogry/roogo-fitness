@@ -9,7 +9,7 @@
     "test": "ng test"
   },
   "private": true,
-  "packageManager": "npm@11.11.0",
+  "packageManager": "pnpm@11.4.0+sha512.f0febc7e37552ab485494a914241b338e0b3580b93d54ce31f00933015880863129038a1b4ae4e414a0ee63ac35bf21197e990172c4a68256450b5636310968f",
   "dependencies": {
     "@angular/cdk": "^21.2.1",
     "@angular/common": "^21.2.1",
@@ -33,11 +33,11 @@
     "@angular/cli": "^21.2.1",
     "@angular/compiler-cli": "^21.2.1",
     "@tailwindcss/postcss": "^4.1.12",
-    "jsdom": "^28.0.0",
+    "jsdom": "^29.1.1",
     "postcss": "^8.5.3",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.1.12",
-    "typescript": "~5.9.2",
+    "typescript": "~6.0.3",
     "vitest": "^4.0.8"
   }
 }

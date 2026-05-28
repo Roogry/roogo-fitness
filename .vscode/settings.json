@@ -1,0 +1,8 @@
+{
+  "cSpell.words": [
+    "Zard"
+  ],
+  "js/ts.preferences.autoImportFileExcludePatterns": [
+    "@lucide/angular"
+  ]
+}
