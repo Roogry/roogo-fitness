@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideActivity } from '@ng-icons/lucide';
 import { HeaderComponent } from '@/shared/components/header/header';
-import { LoggedWorkoutCardComponent } from '@/shared/components/logged-workout-card/logged-workout-card';
+import { LoggedWorkoutCardComponent } from '@/features/journey/pages/components/logged-workout-card/logged-workout-card';
 import { WorkoutService } from '@/core/services/workout.service';
 import { LoggedSession } from '@/shared/models/workout.model';
 
