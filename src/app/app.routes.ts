@@ -6,7 +6,8 @@ import { Profile } from './features/profile/profile';
 import { Home } from './features/home/home';
 import { JourneyList } from './features/journey/pages/journey-list/journey-list';
 import { BlueprintList } from './features/blueprint/pages/blueprint-list/blueprint-list';
-import { WorkoutSession } from './features/workout-session/workout-session';
+import { SessionActive } from './features/workout-session/pages/session-active/session-active';
+import { SessionDetail } from './features/workout-session/pages/session-detail/session-detail';
 import { BlueprintSession } from './features/blueprint/pages/blueprint-session/blueprint-session';
 import { JourneyDetail } from './features/journey/pages/journey-detail/journey-detail';
 
@@ -23,7 +24,8 @@ export const routes: Routes = [
   },
   { path: 'exercise/:id', component: ExerciseDetail },
   { path: 'exercise/:id/edit', component: ExerciseEdit },
-  { path: 'session/:action', component: WorkoutSession },
+  { path: 'session/active', component: SessionActive },
+  { path: 'session/detail', component: SessionDetail },
   { path: 'journey/:id', component: JourneyDetail },
   { path: 'blueprint/session/:action', component: BlueprintSession },
 ];

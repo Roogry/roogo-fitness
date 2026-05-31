@@ -3,14 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import {
-  lucideDumbbell,
-  lucidePlus,
-  lucideCheck,
-  lucideEllipsis,
-  lucideTrash2,
-  lucidePencil,
-} from '@ng-icons/lucide';
+import { lucideDumbbell, lucidePlus, lucideCheck } from '@ng-icons/lucide';
 import { WorkoutService } from '@/core/services/workout.service';
 import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-autocomplete/exercise-autocomplete';
 import { ExerciseTracker } from '@/features/exercise/components/exercise-tracker/exercise-tracker';
@@ -19,11 +12,9 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { RooSheetComponent } from '@/shared/components/sheet/sheet';
 import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 import { ZardInputDirective } from '@/shared/components/zard/input';
-import { SessionAction } from '@/shared/models/workout.model';
-import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/zard/popover';
 
 @Component({
-  selector: 'app-workout-session',
+  selector: 'app-session-active',
   standalone: true,
   imports: [
     CommonModule,
@@ -33,8 +24,6 @@ import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/
     HeaderComponent,
     ZardButtonComponent,
     ZardInputDirective,
-    ZardPopoverComponent,
-    ZardPopoverDirective,
     RooSheetComponent,
     DurationFormatPipe,
     NgIcon,
@@ -44,23 +33,18 @@ import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/
       lucideDumbbell,
       lucidePlus,
       lucideCheck,
-      lucideEllipsis,
-      lucideTrash2,
-      lucidePencil,
     }),
   ],
-  templateUrl: './workout-session.html',
-  styleUrl: './workout-session.css',
+  templateUrl: './session-active.html',
+  styleUrl: './session-active.css',
 })
-export class WorkoutSession implements OnInit {
+export class SessionActive implements OnInit {
   workoutService = inject(WorkoutService);
   router = inject(Router);
   route = inject(ActivatedRoute);
 
   // State
   isAddSheetOpen = signal(false);
-  sessionAction = signal<SessionAction>('empty');
-  headerTitle = signal<string>('Log Session');
 
   ngOnInit() {
     this.route.queryParamMap.subscribe(async (queryParams) => {
@@ -69,21 +53,8 @@ export class WorkoutSession implements OnInit {
 
       if (planId && sessionId) {
         await this.workoutService.setSessionFromBlueprint(Number(planId), Number(sessionId));
-      }
-    });
-
-    this.route.paramMap.subscribe(async (params) => {
-      this.sessionAction.set(params.get('action') as SessionAction);
-
-      if (this.sessionAction() === 'detail') {
-        this.headerTitle.set('Workout Session');
-      }
-
-      if (this.sessionAction() === 'start' || this.sessionAction() === 'empty') {
+      } else {
         this.workoutService.clearSession();
-      }
-
-      if (this.sessionAction() === 'empty') {
         this.workoutService.sessionTitle.set('Workout Session');
       }
     });
