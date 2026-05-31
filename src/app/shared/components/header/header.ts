@@ -3,7 +3,7 @@ import { CommonModule, Location } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideArrowLeft } from '@ng-icons/lucide';
-import { ZardButtonComponent } from '../button/button.component';
+import { ZardButtonComponent } from '../zard/button/button.component';
 
 @Component({
   selector: 'app-header',

@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideX } from '@ng-icons/lucide';
-import { ZardButtonComponent } from '../button';
+import { ZardButtonComponent } from '@/shared/components/zard/button';
 
 @Component({
   selector: 'app-sheet',

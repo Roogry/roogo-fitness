@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ZardCardComponent } from '@/shared/components/card';
+import { ZardCardComponent } from '@/shared/components/zard/card';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCalendar } from '@ng-icons/lucide';
 

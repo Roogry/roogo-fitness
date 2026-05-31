@@ -1,10 +1,10 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ZardBadgeComponent } from '@/shared/components/badge';
-import { ZardCardComponent } from '@/shared/components/card';
-import { ZardTooltipImports } from '@/shared/components/tooltip';
-import { LoggedSession } from '@/shared/types/workout.types';
+import { ZardBadgeComponent } from '@/shared/components/zard/badge';
+import { ZardCardComponent } from '@/shared/components/zard/card';
+import { ZardTooltipImports } from '@/shared/components/zard/tooltip';
+import { LoggedSession } from '@/shared/models/workout.model';
 import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 import { TimeAgoPipe } from '@/shared/pipes/time-ago-pipe';
 import { NgIcon, provideIcons } from '@ng-icons/core';

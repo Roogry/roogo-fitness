@@ -2,7 +2,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners, isDevMode } from
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { provideZard } from '@/shared/core/provider/providezard';
+import { provideZard } from '@/core/provider/providezard';
 import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
