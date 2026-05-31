@@ -1,49 +1,17 @@
 <div class="min-h-screen bg-background text-foreground pb-8">
   <!-- Header -->
-  <app-header [title]="headerTitle()" [showBackBtn]="true" class="sticky top-0">
+  <app-header title="Log Session" [showBackBtn]="true" class="sticky top-0">
     @if (workoutService.sessionStartTime()) {
       <button right z-button zShape="circle" (click)="finishSession()">
         <ng-icon name="lucideCheck" class="mr-1 hidden sm:inline-block"></ng-icon>
         <span>Finish</span>
       </button>
     }
-
-    @if (sessionAction() === 'detail' && !workoutService.sessionStartTime()) {
-      <div right>
-        <button
-          z-button
-          zPopover
-          zType="secondary"
-          zSize="icon"
-          zShape="circle"
-          [zContent]="moreActions"
-          zPlacement="bottomLeft"
-        >
-          <ng-icon name="lucideEllipsis"></ng-icon>
-          <span class="sr-only">More</span>
-        </button>
-
-        <ng-template #moreActions>
-          <z-popover>
-            <div class="flex flex-col items-start">
-              <button z-button zType="ghost" zShape="circle" class="w-full justify-start">
-                <ng-icon name="lucidePencil" class="size-4"></ng-icon>
-                <span>Edit <span class="hidden sm:inline">Session</span></span>
-              </button>
-              <button z-button zType="ghost" zShape="circle" class="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10">
-                <ng-icon name="lucideTrash2" class="size-4"></ng-icon>
-                <span>Delete <span class="hidden sm:inline">Session</span></span>
-              </button>
-            </div>
-          </z-popover>
-        </ng-template>
-      </div>
-    }
   </app-header>
 
   <main class="container mx-auto px-4 pb-6 max-w-2xl mt-4">
     <div class="flex flex-col gap-4">
-      <!-- Session Stats Panel / Planned Session Title -->
+      <!-- Session Stats Panel -->
       @if (workoutService.sessionStartTime()) {
         <div
           class="mb-6 p-4 flex items-center justify-between rounded-4xl bg-secondary/60 border-1 border-border"
@@ -77,28 +45,24 @@
         </div>
       }
 
-      @if (sessionAction() === 'detail') {
-        <h1 class="text-2xl font-bold">{{ workoutService.sessionTitle() }}</h1>
-      } @else {
-        <div class="flex flex-col gap-3">
-          <label
-            for="title"
-            class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            Session Title
-          </label>
-          <input
-            id="title"
-            name="title"
-            z-input
-            [ngModel]="workoutService.sessionTitle()"
-            (ngModelChange)="workoutService.sessionTitle.set($event)"
-            placeholder="Name your session..."
-            class="w-full"
-            required
-          />
-        </div>
-      }
+      <div class="flex flex-col gap-3">
+        <label
+          for="title"
+          class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          Session Title
+        </label>
+        <input
+          id="title"
+          name="title"
+          z-input
+          [ngModel]="workoutService.sessionTitle()"
+          (ngModelChange)="workoutService.sessionTitle.set($event)"
+          placeholder="Name your session..."
+          class="w-full"
+          required
+        />
+      </div>
 
       @if (!workoutService.sessionStartTime()) {
         <button

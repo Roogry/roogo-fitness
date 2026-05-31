@@ -95,6 +95,6 @@ export class PlanCardComponent {
 
   startSession(sessionId: number, event: Event) {
     event.stopPropagation();
-    this.router.navigate(['/session/start'], { queryParams: { planId: this.plan.id, sessionId } });
+    this.router.navigate(['/session/active'], { queryParams: { planId: this.plan.id, sessionId } });
   }
 }
