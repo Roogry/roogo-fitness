@@ -16,6 +16,7 @@ import {
 } from '@ng-icons/lucide';
 import { WorkoutService } from '@/core/services/workout.service';
 import { Router } from '@angular/router';
+import { ZardDialogService } from '@/shared/components/zard/dialog';
 
 @Component({
   selector: 'app-plan-card',
@@ -50,6 +51,7 @@ export class PlanCardComponent {
 
   router = inject(Router);
   workoutService = inject(WorkoutService);
+  dialogService = inject(ZardDialogService);
   isOpenPlanActions = signal(false);
 
   getExerciseNames(session: WorkoutPlanSession): string {
@@ -95,6 +97,21 @@ export class PlanCardComponent {
 
   startSession(sessionId: number, event: Event) {
     event.stopPropagation();
-    this.router.navigate(['/session/active'], { queryParams: { planId: this.plan.id, sessionId } });
+    if (this.workoutService.sessionStartTime()) {
+      this.dialogService.create({
+        zTitle: 'Active Workout Session',
+        zDescription: 'You already have an active workout session running.',
+        zContent: 'Are you sure you want to start a new workout? This will permanently delete your current active session data.',
+        zOkText: 'Start New',
+        zOkDestructive: true,
+        zCancelText: 'Cancel',
+        zOnOk: () => {
+          this.workoutService.clearSession();
+          this.router.navigate(['/session/active'], { queryParams: { planId: this.plan.id, sessionId } });
+        }
+      });
+    } else {
+      this.router.navigate(['/session/active'], { queryParams: { planId: this.plan.id, sessionId } });
+    }
   }
 }
