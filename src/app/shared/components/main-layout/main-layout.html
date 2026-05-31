@@ -5,9 +5,9 @@
 
   <!-- Floating Widget (Hanya muncul jika session berjalan) -->
   @if (workoutService.sessionStartTime() !== null) {
-    <div class="absolute bottom-[80px] left-0 right-0 px-4 pb-2 z-50">
-      <app-active-session-widget />
-    </div>
+  <div class="absolute bottom-[100px] left-0 right-0 px-4 pb-2 z-50">
+    <app-active-session-widget />
+  </div>
   }
 
   <app-bottom-nav class="z-40" />

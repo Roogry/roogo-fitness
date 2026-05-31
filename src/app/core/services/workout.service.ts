@@ -36,7 +36,7 @@ export class WorkoutService {
   completedSets = computed(() => {
     return this.trackedExercises().reduce((acc, exercise) => {
       const finished = exercise.sets.filter(
-        (set) => (set.reps_completed ?? 0) > 0 || (set.weight_lifted ?? 0) > 0
+        (set) => (set.reps_completed ?? 0) > 0 && (set.weight_lifted ?? 0) > 0
       ).length;
       return acc + finished;
     }, 0);
@@ -46,7 +46,7 @@ export class WorkoutService {
     return this.trackedExercises().filter((exercise) => {
       if (exercise.sets.length === 0) return false;
       return exercise.sets.every(
-        (set) => (set.reps_completed ?? 0) > 0 || (set.weight_lifted ?? 0) > 0
+        (set) => (set.reps_completed ?? 0) > 0 && (set.weight_lifted ?? 0) > 0
       );
     }).length;
   });

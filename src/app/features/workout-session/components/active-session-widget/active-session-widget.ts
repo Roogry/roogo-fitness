@@ -4,13 +4,13 @@ import { Router } from '@angular/router';
 import { WorkoutService } from '@/core/services/workout.service';
 import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideDumbbell, lucideActivity } from '@ng-icons/lucide';
+import { lucideDumbbell, lucideFlame } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-active-session-widget',
   standalone: true,
   imports: [CommonModule, DurationFormatPipe, NgIcon],
-  providers: [provideIcons({ lucideDumbbell, lucideActivity })],
+  providers: [provideIcons({ lucideDumbbell, lucideFlame })],
   templateUrl: './active-session-widget.html',
   styleUrl: './active-session-widget.css',
 })

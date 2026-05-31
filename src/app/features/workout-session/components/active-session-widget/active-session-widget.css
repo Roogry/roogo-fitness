@@ -1,12 +1,3 @@
-.active-session-widget {
-  box-shadow: 0 4px 20px -2px rgba(var(--primary), 0.12), 0 2px 8px -1px rgba(var(--primary), 0.08);
-}
-
-.active-session-widget:hover {
-  background-color: var(--secondary-hover, rgba(0, 0, 0, 0.02));
-  border-color: rgba(var(--primary), 0.2);
-}
-
 .animate-pulse-slow {
   animation: pulseSlow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
@@ -16,10 +7,13 @@
 }
 
 @keyframes pulseSlow {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.6;
     transform: scale(0.95);
@@ -30,6 +24,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

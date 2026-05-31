@@ -52,8 +52,19 @@ export class SessionActive implements OnInit {
       const sessionId = queryParams.get('sessionId');
 
       if (planId && sessionId) {
+        // Jika sesi dengan planId ini sudah berjalan, jangan timpa datanya agar input pengguna tidak hilang
+        if (
+          this.workoutService.sessionStartTime() &&
+          this.workoutService.selectedPlanId() === Number(planId)
+        ) {
+          return;
+        }
         await this.workoutService.setSessionFromBlueprint(Number(planId), Number(sessionId));
       } else {
+        // Jika sesi aktif sedang berjalan (baik empty session maupun dari plan), jangan hapus/reset
+        if (this.workoutService.sessionStartTime()) {
+          return;
+        }
         this.workoutService.clearSession();
         this.workoutService.sessionTitle.set('Workout Session');
       }
