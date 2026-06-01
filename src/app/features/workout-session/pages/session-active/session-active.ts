@@ -103,9 +103,9 @@ export class SessionActive implements OnInit {
   }
 
   confirmDiscard() {
-    this.workoutService.stopSession();
-    this.setupSessionData();
+    this.workoutService.clearSession();
     this.closeDiscard();
+    this.router.navigate(['/']);
   }
 
   closeDiscard() {
