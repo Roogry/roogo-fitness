@@ -278,12 +278,16 @@ export class WorkoutService {
     });
   }
 
-  clearSession() {
+  stopSession() {
     this.stopSessionTimer();
-    this.selectedPlanId.set(null);
-    this.sessionTitle.set('');
     this.trackedExercises.set([]);
     this.sessionStartTime.set(null);
     this.sessionDuration.set(0);
+  }
+
+  clearSession() {
+    this.stopSession()
+    this.selectedPlanId.set(null);
+    this.sessionTitle.set('');
   }
 }
