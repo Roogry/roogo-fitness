@@ -29,6 +29,28 @@ export class WorkoutService {
     return this.trackedExercises().reduce((acc, exercise) => acc + exercise.sets.length, 0);
   });
 
+  totalExercises = computed(() => {
+    return this.trackedExercises().length;
+  });
+
+  completedSets = computed(() => {
+    return this.trackedExercises().reduce((acc, exercise) => {
+      const finished = exercise.sets.filter(
+        (set) => (set.reps_completed ?? 0) > 0 && (set.weight_lifted ?? 0) > 0
+      ).length;
+      return acc + finished;
+    }, 0);
+  });
+
+  completedExercises = computed(() => {
+    return this.trackedExercises().filter((exercise) => {
+      if (exercise.sets.length === 0) return false;
+      return exercise.sets.every(
+        (set) => (set.reps_completed ?? 0) > 0 && (set.weight_lifted ?? 0) > 0
+      );
+    }).length;
+  });
+
   async getExerciseById(id: number) {
     return this.dbService.getExerciseByKey(id);
   }
@@ -256,12 +278,16 @@ export class WorkoutService {
     });
   }
 
-  clearSession() {
+  stopSession() {
     this.stopSessionTimer();
-    this.selectedPlanId.set(null);
-    this.sessionTitle.set('');
     this.trackedExercises.set([]);
     this.sessionStartTime.set(null);
     this.sessionDuration.set(0);
+  }
+
+  clearSession() {
+    this.stopSession()
+    this.selectedPlanId.set(null);
+    this.sessionTitle.set('');
   }
 }
