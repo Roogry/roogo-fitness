@@ -153,7 +153,7 @@ export class DbService {
 
   async getExerciseByKey(key: any): Promise<Exercise> {
     const db = await this.dbPromise;
-    return db.getKey('exercises', key);
+    return db.get('exercises', key);
   }
 
   async saveExercise(exercise: Exercise): Promise<number> {
