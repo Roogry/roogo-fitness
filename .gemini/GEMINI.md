@@ -28,7 +28,7 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Use `computed()` for derived state
 - Set `changeDetection: ChangeDetectionStrategy.OnPush` in `@Component` decorator
 - Prefer inline templates for small components
-- Prefer Reactive forms instead of Template-driven ones
+- Prefer Signal Forms (@angular/forms/signals) instead of Template-driven or legacy Reactive forms
 - Do NOT use `ngClass`, use `class` bindings instead
 - Do NOT use `ngStyle`, use `style` bindings instead
 - When using external templates/styles, use paths relative to the component TS file.
@@ -52,3 +52,13 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Design services around a single responsibility
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
+
+## Forms & UI (Zard UI + Signal Forms)
+
+- **Strictly use `@angular/forms/signals`** (Signal Forms API) for any form-related implementations. Do NOT use `FormsModule` (`ngModel`) or `ReactiveFormsModule` (`FormBuilder`, `FormGroup`).
+- Use the `form()` function to define a model-driven form and the `[formField]` directive to bind it to the template.
+- **NEVER use `null` or `undefined`** as initial values in the form state (use `''` for text/numeric inputs, `0` only if strictly required and supported by the UI component, or `[]` for arrays).
+- **Zard UI Integration**:
+  - Always wrap form inputs with the Zard UI Form wrapper structure: `<z-form-field>`, `<label z-form-label>`, `<z-form-control>`, and `<z-form-message>`.
+  - Pass error messages from the Signal Form directly to the Zard UI control: `<z-form-control [errorMessage]="form.myField().errors()[0]?.message ?? ''">`.
+  - For numeric inputs using `<input z-input type="number">`, Zard UI's `[formField]` directive integration expects a `string` binding type. Define the form state field as a string (e.g., `weight: ''`), validate it using `parseFloat()`/`parseInt()`, and cast the value when submitting: `submit(form, async (f) => { parseFloat(f.weight().value()) })`.
