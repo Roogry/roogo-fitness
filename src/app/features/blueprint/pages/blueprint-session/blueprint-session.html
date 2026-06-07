@@ -21,20 +21,23 @@
 
   <main class="container mx-auto px-4 pb-6 max-w-2xl mt-4">
     <z-form-field class="mb-6 flex flex-col gap-3">
-      <label
-        z-form-label
-        for="title"
-        class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+      <label z-form-label for="title"> Session Title </label>
+      <z-form-control
+        [errorMessage]="
+          titleForm.title().touched() && titleForm.title().invalid()
+            ? (titleForm.title().errors()[0]?.message ?? '')
+            : ''
+        "
       >
-        Session Title
-      </label>
-      <z-form-control [errorMessage]="titleForm.title().errors()[0]?.message ?? ''">
         <input
           id="title"
           z-input
-          [formField]="titleForm.title"
           placeholder="Name your session..."
           class="w-full"
+          [formField]="titleForm.title"
+          [zStatus]="
+            titleForm.title().invalid() && titleForm.title().touched() ? 'error' : undefined
+          "
         />
       </z-form-control>
     </z-form-field>
@@ -51,7 +54,7 @@
       }
 
       @for (tracked of workoutService.trackedExercises(); track tracked.exercise.id) {
-        <app-exercise-tracker [trackedExercise]="tracked"></app-exercise-tracker>
+        <app-exercise-tracker [trackedExercise]="tracked" [editable]="true"></app-exercise-tracker>
       }
 
       <button z-button zShape="circle" class="w-full" (click)="isAddSheetOpen.set(true)">

@@ -82,7 +82,7 @@ export class PlanCardComponent {
     this.workoutService.clearSession();
     this.workoutService.selectedPlanId.set(this.plan.id);
     this.workoutService.sessionTitle.set('New Session');
-    this.router.navigate(['/blueprint/session/create']);
+    this.router.navigate([`blueprint/${this.plan.id}/session/create`]);
   }
 
   deletePlan(event: Event) {
@@ -101,17 +101,22 @@ export class PlanCardComponent {
       this.dialogService.create({
         zTitle: 'Active Workout Session',
         zDescription: 'You already have an active workout session running.',
-        zContent: 'Are you sure you want to start a new workout? This will permanently delete your current active session data.',
+        zContent:
+          'Are you sure you want to start a new workout? This will permanently delete your current active session data.',
         zOkText: 'Start New',
         zOkDestructive: true,
         zCancelText: 'Cancel',
         zOnOk: () => {
           this.workoutService.clearSession();
-          this.router.navigate(['/session/active'], { queryParams: { planId: this.plan.id, sessionId } });
-        }
+          this.router.navigate(['/session/active'], {
+            queryParams: { planId: this.plan.id, sessionId },
+          });
+        },
       });
     } else {
-      this.router.navigate(['/session/active'], { queryParams: { planId: this.plan.id, sessionId } });
+      this.router.navigate(['/session/active'], {
+        queryParams: { planId: this.plan.id, sessionId },
+      });
     }
   }
 }

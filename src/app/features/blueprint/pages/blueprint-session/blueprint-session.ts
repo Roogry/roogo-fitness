@@ -2,11 +2,7 @@ import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import {
-  lucideDumbbell,
-  lucidePlus,
-  lucideCheck,
-} from '@ng-icons/lucide';
+import { lucideDumbbell, lucidePlus, lucideCheck } from '@ng-icons/lucide';
 import { WorkoutService } from '@/core/services/workout.service';
 import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-autocomplete/exercise-autocomplete';
 import { ExerciseTracker } from '@/features/exercise/components/exercise-tracker/exercise-tracker';
@@ -56,14 +52,6 @@ export class BlueprintSession implements OnInit {
 
   constructor() {
     effect(() => {
-      const extTitle = this.workoutService.sessionTitle();
-      if (extTitle !== this.titleModel().title) {
-        this.titleModel.set({ title: extTitle });
-        this.titleForm().reset();
-      }
-    });
-
-    effect(() => {
       const isInvalid = this.titleForm().invalid();
       const currentTitle = this.titleModel().title;
       if (!isInvalid && this.workoutService.sessionTitle() !== currentTitle) {
@@ -73,10 +61,14 @@ export class BlueprintSession implements OnInit {
   }
 
   ngOnInit() {
+    const extTitle = this.workoutService.sessionTitle();
+    if (extTitle !== this.titleModel().title) {
+      this.titleModel.set({ title: extTitle });
+    }
+
     this.route.paramMap.subscribe(async (params) => {
       const idParam = params.get('id');
-
-      //TODO: handle edit
+      this.workoutService.selectedPlanId.set(parseInt(idParam ?? ''));
     });
   }
 
