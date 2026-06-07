@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideEllipsis, lucideTrash2, lucidePencil } from '@ng-icons/lucide';
 import { WorkoutService } from '@/core/services/workout.service';
@@ -21,6 +21,7 @@ import { ZardDialogService } from '@/shared/components/zard/dialog';
     ZardPopoverComponent,
     ZardPopoverDirective,
     NgIcon,
+    RouterLink,
   ],
   providers: [
     provideIcons({

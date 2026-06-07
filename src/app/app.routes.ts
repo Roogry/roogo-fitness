@@ -27,5 +27,6 @@ export const routes: Routes = [
   { path: 'session/active', component: SessionActive },
   { path: 'session/detail', component: SessionDetail },
   { path: 'journey/:id', component: JourneyDetail },
+  { path: 'blueprint/:id/session/:sessionId/edit', component: BlueprintSession },
   { path: 'blueprint/:id/session/:action', component: BlueprintSession },
 ];

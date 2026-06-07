@@ -97,6 +97,33 @@ export class WorkoutService {
     this.clearSession();
   }
 
+  async updateSession(sessionId: number) {
+    const plan = await this.dbService.getWorkoutPlan(this.selectedPlanId()!);
+    if (!plan) throw new Error('The plan is not found');
+
+    const sessionIndex = plan.sessions.findIndex((s) => s.id === sessionId);
+    if (sessionIndex === -1) throw new Error('Session not found in plan');
+
+    plan.sessions[sessionIndex] = {
+      ...plan.sessions[sessionIndex],
+      title: this.sessionTitle() || plan.sessions[sessionIndex].title || 'Updated Template Session',
+      updatedAt: new Date().toISOString(),
+      exercises: this.trackedExercises().map((te, index) => ({
+        id: Date.now() + Math.floor(Math.random() * 1000),
+        exercise_order: index,
+        target_sets: te.sets.length,
+        target_reps: te.sets[0]?.reps_completed || 0,
+        target_weight: te.sets[0]?.weight_lifted || 0,
+        exercise: te.exercise,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      })),
+    };
+
+    await this.dbService.saveWorkoutPlan(plan);
+    this.clearSession();
+  }
+
   async deleteSessionFromBlueprint(planId: number, sessionId: number): Promise<void> {
     const plan = await this.dbService.getWorkoutPlan(planId);
     if (!plan) throw new Error('Plan not found');
