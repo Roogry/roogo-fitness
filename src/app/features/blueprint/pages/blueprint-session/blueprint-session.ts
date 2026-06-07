@@ -13,6 +13,7 @@ import { ZardInputDirective } from '@/shared/components/zard/input';
 import { WorkoutPlanSession } from '@/shared/models/workout.model';
 import { form, FormField, required } from '@angular/forms/signals';
 import { ZardFormImports } from '@/shared/components/zard/form';
+import { ZardDialogService } from '@/shared/components/zard/dialog';
 
 @Component({
   selector: 'app-blueprint-session',
@@ -37,6 +38,7 @@ export class BlueprintSession implements OnInit {
   workoutService = inject(WorkoutService);
   router = inject(Router);
   route = inject(ActivatedRoute);
+  dialogService = inject(ZardDialogService);
 
   // State
   isAddSheetOpen = signal(false);
@@ -79,7 +81,13 @@ export class BlueprintSession implements OnInit {
 
   async createSession() {
     await this.workoutService.createSession();
-    alert('Workout template successfully saved to plan!');
-    this.router.navigate(['/blueprint']);
+    this.dialogService.create({
+      zTitle: 'Success',
+      zDescription: 'Workout template successfully saved to plan!',
+      zOkText: 'OK',
+      zOnOk: () => {
+        this.router.navigate(['/blueprint']);
+      },
+    });
   }
 }
