@@ -1,6 +1,12 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { DbService } from './db.service';
-import { Exercise, LoggedSession, LoggedExercise, WorkoutPlanSession, LoggedSet } from '@/shared/models/workout.model';
+import {
+  Exercise,
+  LoggedSession,
+  LoggedExercise,
+  WorkoutPlanSession,
+  LoggedSet,
+} from '@/shared/models/workout.model';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +26,10 @@ export class WorkoutService {
 
   totalVolume = computed(() => {
     return this.trackedExercises().reduce((acc, exercise) => {
-      const exerciseVolume = exercise.sets.reduce((setAcc, set) => setAcc + ((set.weight_lifted ?? 0) * (set.reps_completed ?? 0)), 0);
+      const exerciseVolume = exercise.sets.reduce(
+        (setAcc, set) => setAcc + (set.weight_lifted ?? 0) * (set.reps_completed ?? 0),
+        0,
+      );
       return acc + exerciseVolume;
     }, 0);
   });
@@ -36,7 +45,7 @@ export class WorkoutService {
   completedSets = computed(() => {
     return this.trackedExercises().reduce((acc, exercise) => {
       const finished = exercise.sets.filter(
-        (set) => (set.reps_completed ?? 0) > 0 && (set.weight_lifted ?? 0) > 0
+        (set) => (set.reps_completed ?? 0) > 0 && (set.weight_lifted ?? 0) > 0,
       ).length;
       return acc + finished;
     }, 0);
@@ -46,7 +55,7 @@ export class WorkoutService {
     return this.trackedExercises().filter((exercise) => {
       if (exercise.sets.length === 0) return false;
       return exercise.sets.every(
-        (set) => (set.reps_completed ?? 0) > 0 && (set.weight_lifted ?? 0) > 0
+        (set) => (set.reps_completed ?? 0) > 0 && (set.weight_lifted ?? 0) > 0,
       );
     }).length;
   });
@@ -69,10 +78,11 @@ export class WorkoutService {
         exercise_order: index,
         target_sets: te.sets.length,
         target_reps: te.sets[0]?.reps_completed || 0,
+        target_weight: te.sets[0]?.weight_lifted || 0,
         exercise: te.exercise,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      }))
+      })),
     };
 
     const plan = await this.dbService.getWorkoutPlan(this.selectedPlanId()!);
@@ -91,14 +101,14 @@ export class WorkoutService {
     const plan = await this.dbService.getWorkoutPlan(planId);
     if (!plan) throw new Error('Plan not found');
 
-    const session = plan.sessions.find(s => s.id === sessionId);
+    const session = plan.sessions.find((s) => s.id === sessionId);
     if (!session) throw new Error('Session not found in plan');
 
     this.sessionTitle.set(session.title);
     this.selectedPlanId.set(plan.id);
 
     if (session.exercises) {
-      const activeExercises: LoggedExercise[] = session.exercises.map(pe => {
+      const activeExercises: LoggedExercise[] = session.exercises.map((pe) => {
         const sets: LoggedSet[] = Array.from({ length: pe.target_sets || 0 }).map((_, i) => ({
           id: Date.now() + Math.floor(Math.random() * 10000) + i,
           set_number: i + 1,
@@ -109,7 +119,7 @@ export class WorkoutService {
         return {
           id: Date.now() + Math.floor(Math.random() * 1000) + pe.id,
           exercise: pe.exercise,
-          sets: sets
+          sets: sets,
         };
       });
       this.trackedExercises.set(activeExercises);
@@ -130,14 +140,14 @@ export class WorkoutService {
       notes: '',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      workouts: this.trackedExercises().map(te => ({
+      workouts: this.trackedExercises().map((te) => ({
         id: Date.now() + Math.floor(Math.random() * 1000),
         exercise_id: te.exercise.id,
         exercise: te.exercise,
         workout_title: te.exercise.name,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        sets: te.sets.map(ts => ({
+        sets: te.sets.map((ts) => ({
           id: Date.now() + Math.floor(Math.random() * 10000),
           exercise_id: te.exercise.id,
           set_number: ts.set_number,
@@ -148,8 +158,8 @@ export class WorkoutService {
           completed_at: new Date().toISOString(),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-        }))
-      }))
+        })),
+      })),
     };
 
     console.group('Saving Session to DB');
@@ -188,7 +198,9 @@ export class WorkoutService {
   async getLoggedWorkoutSessions(): Promise<LoggedSession[]> {
     // Simulate real fetching by ordering decending by start_time
     const loggedSessions = await this.dbService.getLoggedSessions();
-    return loggedSessions.sort((a, b) => new Date(b.start_time).getTime() - new Date(a.start_time).getTime())
+    return loggedSessions.sort(
+      (a, b) => new Date(b.start_time).getTime() - new Date(a.start_time).getTime(),
+    );
   }
 
   async getLoggedSession(id: number): Promise<LoggedSession | undefined> {
@@ -209,13 +221,15 @@ export class WorkoutService {
         id: Date.now(),
         exercise: exercise,
         sets: [],
-      }
+      };
       return [...(current || []), newTrackedExercise];
     });
   }
 
   removeTrackedExercise(exerciseId: number) {
-    this.trackedExercises.update((current) => current.filter((te) => te.exercise.id !== exerciseId));
+    this.trackedExercises.update((current) =>
+      current.filter((te) => te.exercise.id !== exerciseId),
+    );
   }
 
   addSet(exerciseId: number, weight: number, reps: number) {
@@ -286,7 +300,7 @@ export class WorkoutService {
   }
 
   clearSession() {
-    this.stopSession()
+    this.stopSession();
     this.selectedPlanId.set(null);
     this.sessionTitle.set('');
   }

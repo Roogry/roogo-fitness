@@ -43,13 +43,7 @@
       <!-- Sheet Content (Scrollable) -->
       <div class="flex flex-col gap-6">
         <z-form-field class="flex flex-col gap-3">
-          <label
-            z-form-label
-            for="name"
-            class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            Plan Name <span class="text-destructive">*</span>
-          </label>
+          <label z-form-label for="name"> Plan Name <span class="text-destructive">*</span> </label>
           <z-form-control [errorMessage]="planForm.title().errors()[0]?.message ?? ''">
             <input
               id="name"
@@ -62,13 +56,7 @@
         </z-form-field>
 
         <z-form-field class="flex flex-col gap-3">
-          <label
-            z-form-label
-            for="description"
-            class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            Description
-          </label>
+          <label z-form-label for="description"> Description </label>
           <z-form-control [errorMessage]="planForm.description().errors()[0]?.message ?? ''">
             <textarea
               id="description"

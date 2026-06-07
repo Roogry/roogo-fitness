@@ -19,4 +19,6 @@ export const cardActionVariants = cva(
 
 export const cardBodyVariants = cva('px-4 sm:px-7');
 
-export const cardFooterVariants = cva('flex flex-col gap-2 items-center px-4 sm:px-7 [.border-t]:pt-4 sm:[.border-t]:pt-7');
+export const cardFooterVariants = cva(
+  'flex flex-col gap-2 items-center px-4 sm:px-7 [.border-t]:pt-4 sm:[.border-t]:pt-7',
+);
