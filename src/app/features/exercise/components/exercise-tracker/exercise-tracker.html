@@ -122,7 +122,10 @@
         >
           <div class="flex gap-3 items-stretch">
             <z-form-field class="flex-1">
-              <label [attr.for]="'weight-' + trackedExercise().exercise.id" z-form-label class="text-sm text-muted-foreground"
+              <label
+                [attr.for]="'weight-' + trackedExercise().exercise.id"
+                z-form-label
+                class="text-sm text-muted-foreground"
                 >Weight (KG)</label
               >
               <z-form-control>
@@ -144,7 +147,12 @@
             </z-form-field>
 
             <z-form-field class="flex-1">
-              <label [attr.for]="'reps-' + trackedExercise().exercise.id" z-form-label class="text-sm text-muted-foreground">Reps</label>
+              <label
+                [attr.for]="'reps-' + trackedExercise().exercise.id"
+                z-form-label
+                class="text-sm text-muted-foreground"
+                >Reps</label
+              >
               <z-form-control>
                 <input
                   z-input
