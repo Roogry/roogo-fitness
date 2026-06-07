@@ -28,7 +28,6 @@ export interface ExerciseMedia {
   display_order: number;
 }
 
-
 // Workout Plan
 export interface WorkoutPlan {
   id: number;
@@ -49,7 +48,7 @@ export interface WorkoutPlanSession {
   session_order: number; // Order to show within the plan
   createdAt?: string;
   updatedAt?: string;
-  exercises?: WorkoutPlanExercise[]; 
+  exercises?: WorkoutPlanExercise[];
 }
 
 export interface WorkoutPlanExercise {
@@ -61,7 +60,7 @@ export interface WorkoutPlanExercise {
   target_rest_time?: number;
   createdAt?: string;
   updatedAt?: string;
-  exercise: Exercise
+  exercise: Exercise;
 }
 
 // Logged Workout Sessions
@@ -77,7 +76,7 @@ export interface LoggedSession {
   notes?: string;
   createdAt?: string;
   updatedAt?: string;
-  workouts: LoggedExercise[]; 
+  workouts: LoggedExercise[];
 }
 
 export interface LoggedExercise {

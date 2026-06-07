@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, effect } from '@angular/core';
+import { Component, inject, OnInit, signal, effect, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -43,6 +43,8 @@ export class BlueprintSession implements OnInit {
   // State
   isAddSheetOpen = signal(false);
   selectedSession = signal<WorkoutPlanSession | null>(null);
+  editSessionId = signal<number | null>(null);
+  isEditMode = computed(() => this.editSessionId() !== null);
 
   titleModel = signal({
     title: '',
@@ -70,7 +72,18 @@ export class BlueprintSession implements OnInit {
 
     this.route.paramMap.subscribe(async (params) => {
       const idParam = params.get('id');
-      this.workoutService.selectedPlanId.set(parseInt(idParam ?? ''));
+      const planId = parseInt(idParam ?? '');
+      this.workoutService.selectedPlanId.set(planId);
+
+      const sessionIdParam = params.get('sessionId');
+      if (sessionIdParam) {
+        const sessionId = Number(sessionIdParam);
+        this.editSessionId.set(sessionId);
+        await this.workoutService.setSessionFromBlueprint(planId, sessionId);
+        this.titleModel.set({ title: this.workoutService.sessionTitle() });
+      } else {
+        this.editSessionId.set(null);
+      }
     });
   }
 
@@ -79,15 +92,29 @@ export class BlueprintSession implements OnInit {
     this.isAddSheetOpen.set(false);
   }
 
-  async createSession() {
-    await this.workoutService.createSession();
-    this.dialogService.create({
-      zTitle: 'Success',
-      zDescription: 'Workout template successfully saved to plan!',
-      zOkText: 'OK',
-      zOnOk: () => {
-        this.router.navigate(['/blueprint']);
-      },
-    });
+  async onSaveSessionClick() {
+    if (this.isEditMode()) {
+      await this.workoutService.updateSession(this.editSessionId()!);
+      this.dialogService.create({
+        zWidth: '400px',
+        zTitle: 'Success',
+        zDescription: 'Workout template successfully updated!',
+        zOkText: 'OK',
+        zOnOk: () => {
+          this.router.navigate(['/blueprint']);
+        },
+      });
+    } else {
+      await this.workoutService.createSession();
+      this.dialogService.create({
+        zWidth: '400px',
+        zTitle: 'Success',
+        zDescription: 'Workout template successfully saved to plan!',
+        zOkText: 'OK',
+        zOnOk: () => {
+          this.router.navigate(['/blueprint']);
+        },
+      });
+    }
   }
 }

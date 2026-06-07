@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-background text-foreground pb-20">
   <!-- Header -->
   <app-header
-    [title]="selectedSession()?.id ? 'Edit Session' : 'New Session'"
+    [title]="isEditMode() ? 'Edit Session' : 'New Session'"
     [showBackBtn]="true"
     class="sticky top-0"
   >
@@ -11,10 +11,10 @@
         z-button
         zShape="circle"
         [disabled]="titleForm().invalid()"
-        (click)="createSession()"
+        (click)="onSaveSessionClick()"
       >
         <ng-icon name="lucideCheck" class="mr-1 hidden sm:inline-block"></ng-icon>
-        <span>Create</span>
+        <span>{{ isEditMode() ? 'Update' : 'Create' }} <span class="hidden sm:inline">Session</span></span>
       </button>
     }
   </app-header>
