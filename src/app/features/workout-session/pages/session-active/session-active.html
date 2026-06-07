@@ -2,7 +2,7 @@
   <!-- Header -->
   <app-header title="Log Session" [showBackBtn]="true" class="sticky top-0">
     @if (workoutService.sessionStartTime()) {
-    <button right z-button zShape="circle" (click)="finishSession()">
+    <button right z-button zShape="circle" (click)="finishSession()" [disabled]="titleForm().invalid()">
       <ng-icon name="lucideCheck" class="mr-1 hidden sm:inline-block"></ng-icon>
       <span>Finish</span>
     </button>
@@ -37,18 +37,18 @@
       </div>
       }
 
-      <div class="flex flex-col gap-3">
-        <label for="title"
+      <z-form-field class="flex flex-col gap-3">
+        <label z-form-label for="title"
           class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
           Session Title
         </label>
-        <input id="title" name="title" z-input [ngModel]="workoutService.sessionTitle()"
-          (ngModelChange)="workoutService.sessionTitle.set($event)" placeholder="Name your session..." class="w-full"
-          required />
-      </div>
+        <z-form-control [errorMessage]="titleForm.title().errors()[0]?.message ?? ''">
+          <input id="title" z-input [formField]="titleForm.title" placeholder="Name your session..." class="w-full" />
+        </z-form-control>
+      </z-form-field>
 
       @if (!workoutService.sessionStartTime()) {
-      <button z-button zShape="circle" class="w-full mb-4" (click)="workoutService.startSessionTimer()">
+      <button z-button zShape="circle" class="w-full mb-4" [disabled]="titleForm().invalid()" (click)="workoutService.startSessionTimer()">
         Start Session
       </button>
       }

@@ -1,6 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { HeaderComponent } from '@/shared/components/header/header';
 import { ZardCardComponent } from '@/shared/components/zard/card/card.component';
@@ -9,6 +8,8 @@ import { ZardInputDirective } from '@/shared/components/zard/input/input.directi
 import { ZardSelectComponent, ZardSelectItemComponent } from '@/shared/components/zard/select';
 import { MuscleService } from '@/core/services/muscle.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
+import { form, FormField, required, submit } from '@angular/forms/signals';
+import { ZardFormImports } from '@/shared/components/zard/form';
 import {
   lucideArrowLeft,
   lucideSave,
@@ -27,7 +28,6 @@ import { Exercise, ExerciseMedia, Muscle } from '@/shared/models/workout.model';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
     HeaderComponent,
     ZardCardComponent,
     ZardButtonComponent,
@@ -35,6 +35,8 @@ import { Exercise, ExerciseMedia, Muscle } from '@/shared/models/workout.model';
     ZardSelectComponent,
     ZardSelectItemComponent,
     NgIcon,
+    FormField,
+    ZardFormImports,
   ],
   providers: [
     provideIcons({
@@ -62,8 +64,16 @@ export class ExerciseEdit implements OnInit {
   selectedExercise = signal<Exercise | null>(null);
 
   // Form Fields
-  name = signal('');
-  primaryGroup = signal('');
+  exerciseModel = signal({
+    name: '',
+    primaryGroup: '',
+  });
+
+  exerciseForm = form(this.exerciseModel, (f) => {
+    required(f.name, { message: 'Nama wajib diisi' });
+    required(f.primaryGroup, { message: 'Primary muscle wajib dipilih' });
+  });
+
   secondaryMuscles = signal<string[]>([]);
   media = signal<ExerciseMedia[]>([]);
   newMediaUrl = signal('');
@@ -90,8 +100,11 @@ export class ExerciseEdit implements OnInit {
 
         this.availableMuscles.set(muscles);
 
-        this.name.set(exercise.name);
-        this.primaryGroup.set(exercise.primary_muscle?.name || '');
+        this.exerciseModel.set({
+          name: exercise.name,
+          primaryGroup: exercise.primary_muscle?.name || '',
+        });
+        this.exerciseForm().reset();
 
         const secondaryMuscles = exercise.secondary_muscles?.map((m) => m.name) || [];
         this.secondaryMuscles.set(secondaryMuscles);
@@ -173,24 +186,26 @@ export class ExerciseEdit implements OnInit {
   }
 
   save() {
-    if (!this.selectedExercise() || !this.name().trim() || !this.primaryGroup().trim()) return;
+    submit(this.exerciseForm, async (f) => {
+      if (!this.selectedExercise()) return;
 
-    this.isSaving.set(true);
+      this.isSaving.set(true);
 
-    // Simulate slight delay for realism
-    const primaryName = this.primaryGroup().trim();
-    const primaryMuscle = this.availableMuscles().find((m) => m.name === primaryName);
-    const secondaryMuscles = this.secondaryMuscles()
-      .map((name) => this.availableMuscles().find((m) => m.name === name))
-      .filter((m): m is Muscle => !!m);
+      const name = f.name().value().trim();
+      const primaryName = f.primaryGroup().value().trim();
+      const primaryMuscle = this.availableMuscles().find((m) => m.name === primaryName);
+      const secondaryMuscles = this.secondaryMuscles()
+        .map((name) => this.availableMuscles().find((m) => m.name === name))
+        .filter((m): m is Muscle => !!m);
 
-    this.exerciseService.updateExercise(this.selectedExercise()!, {
-      name: this.name().trim(),
-      primary_muscle: primaryMuscle,
-      secondary_muscles: secondaryMuscles.length ? secondaryMuscles : undefined,
-      media: this.media(),
+      this.exerciseService.updateExercise(this.selectedExercise()!, {
+        name: name,
+        primary_muscle: primaryMuscle,
+        secondary_muscles: secondaryMuscles.length ? secondaryMuscles : undefined,
+        media: this.media(),
+      });
+      this.isSaving.set(false);
+      this.router.navigate(['/exercise', this.selectedExercise()?.id]);
     });
-    this.isSaving.set(false);
-    this.router.navigate(['/exercise', this.selectedExercise()?.id]);
   }
 }

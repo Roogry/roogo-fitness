@@ -1,6 +1,5 @@
-import { Component, inject, OnInit, signal, ViewChild, TemplateRef } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild, TemplateRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideDumbbell, lucidePlus, lucideCheck } from '@ng-icons/lucide';
@@ -13,13 +12,14 @@ import { RooSheetComponent } from '@/shared/components/sheet/sheet';
 import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 import { ZardInputDirective } from '@/shared/components/zard/input';
 import { ZardDialogService, ZardDialogRef } from '@/shared/components/zard/dialog';
+import { form, FormField, required } from '@angular/forms/signals';
+import { ZardFormImports } from '@/shared/components/zard/form';
 
 @Component({
   selector: 'app-session-active',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
     ExerciseAutocomplete,
     ExerciseTracker,
     HeaderComponent,
@@ -28,6 +28,8 @@ import { ZardDialogService, ZardDialogRef } from '@/shared/components/zard/dialo
     RooSheetComponent,
     DurationFormatPipe,
     NgIcon,
+    FormField,
+    ZardFormImports,
   ],
   providers: [
     provideIcons({
@@ -48,8 +50,34 @@ export class SessionActive implements OnInit {
   @ViewChild('discardDialog') discardDialogTemplate!: TemplateRef<any>;
   private dialogRef?: ZardDialogRef<any>;
 
+  titleModel = signal({
+    title: '',
+  });
+
+  titleForm = form(this.titleModel, (f) => {
+    required(f.title, { message: 'Session title is required' });
+  });
+
   // State
   isAddSheetOpen = signal(false);
+
+  constructor() {
+    effect(() => {
+      const extTitle = this.workoutService.sessionTitle();
+      if (extTitle !== this.titleModel().title) {
+        this.titleModel.set({ title: extTitle });
+        this.titleForm().reset();
+      }
+    });
+
+    effect(() => {
+      const isInvalid = this.titleForm().invalid();
+      const currentTitle = this.titleModel().title;
+      if (!isInvalid && this.workoutService.sessionTitle() !== currentTitle) {
+        this.workoutService.sessionTitle.set(currentTitle);
+      }
+    });
+  }
 
   ngOnInit() {
     this.setupSessionData();

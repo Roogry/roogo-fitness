@@ -61,7 +61,7 @@
     @for (set of trackedExercise().sets; track set.id) {
       <div
         class="grid grid-cols-12 gap-1 md:gap-2 items-center bg-muted/20 py-1 md:py-2 rounded-md"
-        [class]="editable()? 'transition-colors hover:bg-muted/40 group' : ''"
+        [class]="editable() ? 'transition-colors hover:bg-muted/40 group' : ''"
       >
         <div class="col-span-2 md:col-span-1 text-center font-medium">{{ set.set_number }}</div>
         <div class="col-span-4 md:col-span-3 flex justify-center">
@@ -71,12 +71,12 @@
               zBorderless
               type="number"
               placeholder="0"
-              [ngModel]="set.weight_lifted"
-              (ngModelChange)="updateSet(set.id, { weight_lifted: $event })"
+              [value]="set.weight_lifted?.toString() ?? ''"
+              (valueChange)="updateSet(set.id, { weight_lifted: $event ? +$event : undefined })"
               [class]="'w-full text-center'"
             />
           } @else {
-            <span class="text-center text-muted-foreground">{{ set.weight_lifted?? '-' }}</span>
+            <span class="text-center text-muted-foreground">{{ set.weight_lifted ?? '-' }}</span>
           }
         </div>
         <div class="col-span-4 md:col-span-3 flex justify-center">
@@ -86,12 +86,12 @@
               zBorderless
               type="number"
               placeholder="0"
-              [ngModel]="set.reps_completed"
-              (ngModelChange)="updateSet(set.id, { reps_completed: $event })"
+              [value]="set.reps_completed?.toString() ?? ''"
+              (valueChange)="updateSet(set.id, { reps_completed: $event ? +$event : undefined })"
               [class]="'w-full text-center'"
             />
           } @else {
-            <span class="text-center text-muted-foreground">{{ set.reps_completed?? '-' }}</span>
+            <span class="text-center text-muted-foreground">{{ set.reps_completed ?? '-' }}</span>
           }
         </div>
         <div
@@ -118,37 +118,36 @@
       <div class="pt-4 border-t border-gray-100">
         <form
           class="flex flex-col sm:flex-row items-stretch sm:items-end gap-3"
-          (submit)="$event.preventDefault(); addSet()"
+          (submit)="$event.preventDefault(); onAddWorkoutSetClick()"
         >
           <div class="flex gap-3 items-stretch">
-            <div class="flex-1">
-              <label class="text-xs text-muted-foreground mb-1 block">Weight (KG)</label>
-              <input
-                z-input
-                type="number"
-                [(ngModel)]="newWeight"
-                [class]="'w-full text-center'"
-                name="newWeight"
-                placeholder="0"
-                min="0"
-                step="0.5"
-                required
-              />
-            </div>
-            <div class="flex-1">
-              <label class="text-xs text-muted-foreground mb-1 block">Reps</label>
-              <input
-                z-input
-                type="number"
-                [(ngModel)]="newReps"
-                [class]="'w-full text-center'"
-                name="newReps"
-                placeholder="0"
-                min="1"
-                step="1"
-                required
-              />
-            </div>
+            <z-form-field class="flex-1">
+              <label z-form-label class="text-xs text-muted-foreground block">Weight (KG)</label>
+              <z-form-control [errorMessage]="workoutSetForm.weight().errors()[0]?.message ?? ''">
+                <input
+                  z-input
+                  type="number"
+                  [formField]="workoutSetForm.weight"
+                  class="w-full text-center"
+                  placeholder="0"
+                  step="0.5"
+                />
+              </z-form-control>
+            </z-form-field>
+
+            <z-form-field class="flex-1">
+              <label z-form-label class="text-xs text-muted-foreground block">Reps</label>
+              <z-form-control [errorMessage]="workoutSetForm.reps().errors()[0]?.message ?? ''">
+                <input
+                  z-input
+                  type="number"
+                  [formField]="workoutSetForm.reps"
+                  class="w-full text-center"
+                  placeholder="0"
+                  step="1"
+                />
+              </z-form-control>
+            </z-form-field>
           </div>
           <button
             z-button
@@ -156,7 +155,7 @@
             zSize="icon-sm"
             zShape="circle"
             type="submit"
-            [disabled]="!isValid()"
+            [disabled]="workoutSetForm().invalid()"
             class="w-full sm:w-fit"
           >
             <ng-icon name="lucidePlus"></ng-icon>

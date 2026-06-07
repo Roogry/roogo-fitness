@@ -3,7 +3,7 @@
     <ng-icon name="lucideSearch"
       class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"></ng-icon>
     <input z-input type="text" class="w-full pl-9" placeholder="Search exercises (e.g., Bench Press)"
-      [ngModel]="searchQuery()" (ngModelChange)="onSearchChange($event)" />
+      [value]="searchQuery()" (valueChange)="onSearchChange($event)" />
     @if (isSearching()) {
     <div class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
       <div class="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>

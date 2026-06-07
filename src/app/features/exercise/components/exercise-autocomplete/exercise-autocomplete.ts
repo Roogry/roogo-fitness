@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Output, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { ZardBadgeComponent } from '@/shared/components/zard/badge';
 import { ZardInputDirective } from '@/shared/components/zard/input';
 import { ExerciseService } from '@/core/services/exercise.service';
@@ -13,7 +12,6 @@ import { lucideSearch, lucidePlus, lucideDumbbell } from '@ng-icons/lucide';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
     ZardBadgeComponent,
     ZardInputDirective,
     NgIcon,

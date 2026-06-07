@@ -2,6 +2,8 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
+import { form, FormField, required, submit } from '@angular/forms/signals';
+import { ZardFormImports } from '@/shared/components/zard/form';
 import {
   lucideFolderPlus,
   lucideDumbbell,
@@ -13,7 +15,6 @@ import { DbService } from '@/core/services/db.service';
 import { WorkoutService } from '@/core/services/workout.service';
 import { WorkoutPlan } from '@/shared/models/workout.model';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
-import { FormsModule } from '@angular/forms';
 import { ZardInputDirective } from '@/shared/components/zard/input';
 import { HeaderComponent } from '@/shared/components/header';
 import { RooSheetComponent } from '@/shared/components/sheet';
@@ -24,13 +25,14 @@ import { PlanCardComponent } from '../../components/plan-card/plan-card.componen
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
     HeaderComponent,
     ZardButtonComponent,
     ZardInputDirective,
     RooSheetComponent,
     PlanCardComponent,
     NgIcon,
+    FormField,
+    ZardFormImports,
   ],
   providers: [
     provideIcons({
@@ -51,11 +53,15 @@ export class BlueprintList implements OnInit {
   isOpenPlanForm = signal(false);
   expandedPlanId = signal<number | null>(null);
 
-  newPlan = {
+  planModel = signal({
     title: '',
     description: '',
     sessionsPerWeek: 3,
-  };
+  });
+
+  planForm = form(this.planModel, (f) => {
+    required(f.title, { message: 'Plan name is required' });
+  });
 
   myPlans = signal<WorkoutPlan[]>([]);
 
@@ -107,7 +113,8 @@ export class BlueprintList implements OnInit {
   }
 
   openCreatePlanSheet() {
-    this.newPlan = { title: '', description: '', sessionsPerWeek: 3 };
+    this.planModel.set({ title: '', description: '', sessionsPerWeek: 3 });
+    this.planForm().reset();
     this.workoutService.selectedPlanId.set(null);
     this.isOpenPlanForm.set(true);
   }
@@ -115,13 +122,28 @@ export class BlueprintList implements OnInit {
   editPlan(event: Event, plan: WorkoutPlan) {
     event.stopPropagation();
 
-    this.newPlan = {
+    this.planModel.set({
       title: plan.title,
       description: plan.description || '',
       sessionsPerWeek: plan.days,
-    };
+    });
+    this.planForm().reset();
     this.workoutService.selectedPlanId.set(plan.id);
     this.isOpenPlanForm.set(true);
+  }
+
+  decrementSessions() {
+    this.planModel.update(m => ({
+      ...m,
+      sessionsPerWeek: m.sessionsPerWeek > 1 ? m.sessionsPerWeek - 1 : 1
+    }));
+  }
+
+  incrementSessions() {
+    this.planModel.update(m => ({
+      ...m,
+      sessionsPerWeek: m.sessionsPerWeek < 7 ? m.sessionsPerWeek + 1 : 7
+    }));
   }
 
   async deletePlan(event: Event, planId: number) {
@@ -151,34 +173,37 @@ export class BlueprintList implements OnInit {
   }
 
   async savePlan() {
-    if (!this.newPlan.title.trim()) return;
+    submit(this.planForm, async (f) => {
+      const plans = this.myPlans();
+      const titleVal = f.title().value().trim();
+      const descVal = f.description().value().trim();
+      const sessionsVal = Number(f.sessionsPerWeek().value());
 
-    const plans = this.myPlans();
-
-    if (this.workoutService.selectedPlanId() !== null) {
-      // Update existing
-      const plan = plans.find((p) => p.id === this.workoutService.selectedPlanId());
-      if (plan) {
-        plan.title = this.newPlan.title;
-        plan.description = this.newPlan.description;
-        plan.days = this.newPlan.sessionsPerWeek;
-        await this.dbService.saveWorkoutPlan(plan);
+      if (this.workoutService.selectedPlanId() !== null) {
+        // Update existing
+        const plan = plans.find((p) => p.id === this.workoutService.selectedPlanId());
+        if (plan) {
+          plan.title = titleVal;
+          plan.description = descVal;
+          plan.days = sessionsVal;
+          await this.dbService.saveWorkoutPlan(plan);
+        }
+      } else {
+        // Create new
+        const newId = Date.now();
+        const newPlan: WorkoutPlan = {
+          id: newId,
+          title: titleVal,
+          description: descVal,
+          days: sessionsVal,
+          sessions: [],
+        };
+        await this.dbService.saveWorkoutPlan(newPlan);
+        this.expandedPlanId.set(newId);
       }
-    } else {
-      // Create new
-      const newId = Date.now();
-      const newPlan: WorkoutPlan = {
-        id: newId,
-        title: this.newPlan.title,
-        description: this.newPlan.description,
-        days: this.newPlan.sessionsPerWeek,
-        sessions: [],
-      };
-      await this.dbService.saveWorkoutPlan(newPlan);
-      this.expandedPlanId.set(newId);
-    }
 
-    this.isOpenPlanForm.set(false);
-    await this.loadPlans();
+      this.isOpenPlanForm.set(false);
+      await this.loadPlans();
+    });
   }
 }

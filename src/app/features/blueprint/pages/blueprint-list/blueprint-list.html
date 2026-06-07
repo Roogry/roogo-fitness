@@ -42,42 +42,44 @@
     >
       <!-- Sheet Content (Scrollable) -->
       <div class="flex flex-col gap-6">
-        <div class="flex flex-col gap-3">
+        <z-form-field class="flex flex-col gap-3">
           <label
+            z-form-label
             for="name"
             class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
             Plan Name <span class="text-destructive">*</span>
           </label>
-          <input
-            id="name"
-            name="name"
-            z-input
-            [(ngModel)]="newPlan.title"
-            required
-            placeholder="e.g. Push Pull Legs"
-            class="w-full"
-          />
-        </div>
+          <z-form-control [errorMessage]="planForm.title().errors()[0]?.message ?? ''">
+            <input
+              id="name"
+              z-input
+              [formField]="planForm.title"
+              placeholder="e.g. Push Pull Legs"
+              class="w-full"
+            />
+          </z-form-control>
+        </z-form-field>
 
-        <div class="flex flex-col gap-3">
+        <z-form-field class="flex flex-col gap-3">
           <label
+            z-form-label
             for="description"
             class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
             Description
           </label>
-          <textarea
-            id="description"
-            name="description"
-            z-input
-            rows="3"
-            [(ngModel)]="newPlan.description"
-            required
-            placeholder="Optional details about this plan..."
-            class="w-full"
-          ></textarea>
-        </div>
+          <z-form-control [errorMessage]="planForm.description().errors()[0]?.message ?? ''">
+            <textarea
+              id="description"
+              z-input
+              rows="3"
+              [formField]="planForm.description"
+              placeholder="Optional details about this plan..."
+              class="w-full"
+            ></textarea>
+          </z-form-control>
+        </z-form-field>
 
         <div class="flex flex-col gap-3">
           <label
@@ -92,26 +94,20 @@
               z-button
               zType="ghost"
               class="w-10 h-10 rounded-xl flex items-center justify-center bg-background border border-border text-foreground hover:bg-muted disabled:opacity-50"
-              (click)="
-                newPlan.sessionsPerWeek =
-                  newPlan.sessionsPerWeek > 1 ? newPlan.sessionsPerWeek - 1 : 1
-              "
-              [disabled]="newPlan.sessionsPerWeek <= 1"
+              (click)="decrementSessions()"
+              [disabled]="planModel().sessionsPerWeek <= 1"
             >
               <ng-icon name="lucideMinus" class="w-4 h-4"></ng-icon>
             </button>
             <div class="flex flex-col items-center justify-center w-16">
-              <span class="text-xl font-bold">{{ newPlan.sessionsPerWeek }}</span>
+              <span class="text-xl font-bold">{{ planModel().sessionsPerWeek }}</span>
             </div>
             <button
               z-button
               zType="ghost"
               class="w-10 h-10 rounded-xl flex items-center justify-center bg-background border border-border text-foreground hover:bg-muted disabled:opacity-50"
-              (click)="
-                newPlan.sessionsPerWeek =
-                  newPlan.sessionsPerWeek < 7 ? newPlan.sessionsPerWeek + 1 : 7
-              "
-              [disabled]="newPlan.sessionsPerWeek >= 7"
+              (click)="incrementSessions()"
+              [disabled]="planModel().sessionsPerWeek >= 7"
             >
               <ng-icon name="lucidePlus" class="w-4 h-4"></ng-icon>
             </button>
@@ -126,7 +122,7 @@
             z-button
             zShape="circle"
             class="w-full"
-            [disabled]="!newPlan.title.trim()"
+            [disabled]="planForm().invalid()"
             (click)="savePlan()"
           >
             <ng-icon name="lucideSave"></ng-icon>

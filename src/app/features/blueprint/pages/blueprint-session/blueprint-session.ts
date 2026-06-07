@@ -1,6 +1,5 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -16,13 +15,14 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { RooSheetComponent } from '@/shared/components/sheet';
 import { ZardInputDirective } from '@/shared/components/zard/input';
 import { WorkoutPlanSession } from '@/shared/models/workout.model';
+import { form, FormField, required } from '@angular/forms/signals';
+import { ZardFormImports } from '@/shared/components/zard/form';
 
 @Component({
   selector: 'app-blueprint-session',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
     ExerciseAutocomplete,
     ExerciseTracker,
     HeaderComponent,
@@ -30,6 +30,8 @@ import { WorkoutPlanSession } from '@/shared/models/workout.model';
     ZardInputDirective,
     RooSheetComponent,
     NgIcon,
+    FormField,
+    ZardFormImports,
   ],
   providers: [provideIcons({ lucideDumbbell, lucidePlus, lucideCheck })],
   templateUrl: './blueprint-session.html',
@@ -43,6 +45,32 @@ export class BlueprintSession implements OnInit {
   // State
   isAddSheetOpen = signal(false);
   selectedSession = signal<WorkoutPlanSession | null>(null);
+
+  titleModel = signal({
+    title: '',
+  });
+
+  titleForm = form(this.titleModel, (f) => {
+    required(f.title, { message: 'Session title is required' });
+  });
+
+  constructor() {
+    effect(() => {
+      const extTitle = this.workoutService.sessionTitle();
+      if (extTitle !== this.titleModel().title) {
+        this.titleModel.set({ title: extTitle });
+        this.titleForm().reset();
+      }
+    });
+
+    effect(() => {
+      const isInvalid = this.titleForm().invalid();
+      const currentTitle = this.titleModel().title;
+      if (!isInvalid && this.workoutService.sessionTitle() !== currentTitle) {
+        this.workoutService.sessionTitle.set(currentTitle);
+      }
+    });
+  }
 
   ngOnInit() {
     this.route.paramMap.subscribe(async (params) => {
