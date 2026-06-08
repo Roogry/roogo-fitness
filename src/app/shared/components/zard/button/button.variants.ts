@@ -57,6 +57,12 @@ export const buttonVariants = cva(
       zSize: 'default',
       zShape: 'default',
     },
+    compoundVariants: [
+      { zShape: 'circle', zSize: 'default', class: 'px-4' },
+      { zShape: 'circle', zSize: 'xs', class: 'px-2' },
+      { zShape: 'circle', zSize: 'sm', class: 'px-3' },
+      { zShape: 'circle', zSize: 'lg', class: 'px-5' },
+    ],
   },
 );
 export type ZardButtonShapeVariants = NonNullable<VariantProps<typeof buttonVariants>['zShape']>;
