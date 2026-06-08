@@ -124,7 +124,7 @@ export class WorkoutService {
     this.clearSession();
   }
 
-  async deleteSessionFromBlueprint(planId: number, sessionId: number): Promise<void> {
+  async deleteSessionFromPlan(planId: number, sessionId: number): Promise<void> {
     const plan = await this.dbService.getWorkoutPlan(planId);
     if (!plan) throw new Error('Plan not found');
 
@@ -132,7 +132,7 @@ export class WorkoutService {
     await this.dbService.saveWorkoutPlan(plan);
   }
 
-  async setSessionFromBlueprint(planId: number, sessionId: number) {
+  async setSessionFromPlan(planId: number, sessionId: number) {
     const plan = await this.dbService.getWorkoutPlan(planId);
     if (!plan) throw new Error('Plan not found');
 

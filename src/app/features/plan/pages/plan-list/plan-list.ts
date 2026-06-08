@@ -21,7 +21,7 @@ import { RooSheetComponent } from '@/shared/components/sheet';
 import { PlanCardComponent } from '../../components/plan-card/plan-card.component';
 
 @Component({
-  selector: 'app-blueprint-list',
+  selector: 'app-plan-list',
   standalone: true,
   imports: [
     CommonModule,
@@ -43,9 +43,9 @@ import { PlanCardComponent } from '../../components/plan-card/plan-card.componen
       lucideSave,
     }),
   ],
-  templateUrl: './blueprint-list.html',
+  templateUrl: './plan-list.html',
 })
-export class BlueprintList implements OnInit {
+export class PlanList implements OnInit {
   dbService = inject(DbService);
   workoutService = inject(WorkoutService);
   router = inject(Router);
@@ -157,7 +157,6 @@ export class BlueprintList implements OnInit {
 
     // Move sessions from deleted plan to default plan
     if (defaultPlan && planToDelete.sessions.length > 0) {
-      // Need clone to trigger updates correctly if needed, but save to db is what matters
       defaultPlan.sessions = [...defaultPlan.sessions, ...planToDelete.sessions];
       await this.dbService.saveWorkoutPlan(defaultPlan);
     }

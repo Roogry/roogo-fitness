@@ -82,7 +82,7 @@ export class PlanCardComponent {
     this.workoutService.clearSession();
     this.workoutService.selectedPlanId.set(this.plan.id);
     this.workoutService.sessionTitle.set('New Session');
-    this.router.navigate([`blueprint/${this.plan.id}/session/create`]);
+    this.router.navigate([`plan/${this.plan.id}/session/create`]);
   }
 
   deletePlan(event: Event) {

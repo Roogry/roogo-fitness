@@ -49,7 +49,7 @@ export class SessionDetail implements OnInit {
       if (planIdParam && sessionIdParam) {
         this.planId = Number(planIdParam);
         this.sessionId = Number(sessionIdParam);
-        await this.workoutService.setSessionFromBlueprint(this.planId, this.sessionId);
+        await this.workoutService.setSessionFromPlan(this.planId, this.sessionId);
       }
     });
   }
@@ -65,8 +65,8 @@ export class SessionDetail implements OnInit {
       zCancelText: 'Cancel',
       zOkDestructive: true,
       zOnOk: async () => {
-        await this.workoutService.deleteSessionFromBlueprint(this.planId!, this.sessionId!);
-        this.router.navigate(['/blueprint']);
+        await this.workoutService.deleteSessionFromPlan(this.planId!, this.sessionId!);
+        this.router.navigate(['/plan']);
       },
     });
   }

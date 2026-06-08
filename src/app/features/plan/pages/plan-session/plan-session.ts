@@ -16,7 +16,7 @@ import { ZardFormImports } from '@/shared/components/zard/form';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
 
 @Component({
-  selector: 'app-blueprint-session',
+  selector: 'app-plan-session',
   standalone: true,
   imports: [
     CommonModule,
@@ -31,10 +31,10 @@ import { ZardDialogService } from '@/shared/components/zard/dialog';
     ZardFormImports,
   ],
   providers: [provideIcons({ lucideDumbbell, lucidePlus, lucideCheck })],
-  templateUrl: './blueprint-session.html',
-  styleUrl: './blueprint-session.css',
+  templateUrl: './plan-session.html',
+  styleUrl: './plan-session.css',
 })
-export class BlueprintSession implements OnInit {
+export class PlanSession implements OnInit {
   workoutService = inject(WorkoutService);
   router = inject(Router);
   route = inject(ActivatedRoute);
@@ -79,7 +79,7 @@ export class BlueprintSession implements OnInit {
       if (sessionIdParam) {
         const sessionId = Number(sessionIdParam);
         this.editSessionId.set(sessionId);
-        await this.workoutService.setSessionFromBlueprint(planId, sessionId);
+        await this.workoutService.setSessionFromPlan(planId, sessionId);
         this.titleModel.set({ title: this.workoutService.sessionTitle() });
       } else {
         this.editSessionId.set(null);
@@ -101,7 +101,7 @@ export class BlueprintSession implements OnInit {
         zDescription: 'Workout template successfully updated!',
         zOkText: 'OK',
         zOnOk: () => {
-          this.router.navigate(['/blueprint']);
+          this.router.navigate(['/plan']);
         },
       });
     } else {
@@ -112,7 +112,7 @@ export class BlueprintSession implements OnInit {
         zDescription: 'Workout template successfully saved to plan!',
         zOkText: 'OK',
         zOnOk: () => {
-          this.router.navigate(['/blueprint']);
+          this.router.navigate(['/plan']);
         },
       });
     }
