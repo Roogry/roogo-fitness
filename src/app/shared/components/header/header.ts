@@ -12,7 +12,7 @@ import { ZardButtonComponent } from '../zard/button/button.component';
   providers: [provideIcons({ lucideArrowLeft })],
   templateUrl: './header.html',
   host: {
-    class: 'block w-full',
+    class: 'block w-full z-99',
   },
 })
 export class HeaderComponent {

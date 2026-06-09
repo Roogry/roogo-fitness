@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideDumbbell, lucidePlus, lucideCheck } from '@ng-icons/lucide';
-import { WorkoutService } from '@/core/services/workout.service';
+import { PlanService } from '@/core/services/plan.service';
 import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-autocomplete/exercise-autocomplete';
-import { ExerciseTracker } from '@/features/exercise/components/exercise-tracker/exercise-tracker';
+import { PlanExerciseCardComponent } from '../../components/plan-exercise-card/plan-exercise-card';
 import { HeaderComponent } from '@/shared/components/header/header';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { RooSheetComponent } from '@/shared/components/sheet';
@@ -21,7 +21,7 @@ import { ZardDialogService } from '@/shared/components/zard/dialog';
   imports: [
     CommonModule,
     ExerciseAutocomplete,
-    ExerciseTracker,
+    PlanExerciseCardComponent,
     HeaderComponent,
     ZardButtonComponent,
     ZardInputDirective,
@@ -35,7 +35,7 @@ import { ZardDialogService } from '@/shared/components/zard/dialog';
   styleUrl: './plan-session.css',
 })
 export class PlanSession implements OnInit {
-  workoutService = inject(WorkoutService);
+  planService = inject(PlanService);
   router = inject(Router);
   route = inject(ActivatedRoute);
   dialogService = inject(ZardDialogService);
@@ -58,14 +58,14 @@ export class PlanSession implements OnInit {
     effect(() => {
       const isInvalid = this.titleForm().invalid();
       const currentTitle = this.titleModel().title;
-      if (!isInvalid && this.workoutService.sessionTitle() !== currentTitle) {
-        this.workoutService.sessionTitle.set(currentTitle);
+      if (!isInvalid && this.planService.sessionTitle() !== currentTitle) {
+        this.planService.sessionTitle.set(currentTitle);
       }
     });
   }
 
   ngOnInit() {
-    const extTitle = this.workoutService.sessionTitle();
+    const extTitle = this.planService.sessionTitle();
     if (extTitle !== this.titleModel().title) {
       this.titleModel.set({ title: extTitle });
     }
@@ -73,14 +73,14 @@ export class PlanSession implements OnInit {
     this.route.paramMap.subscribe(async (params) => {
       const idParam = params.get('id');
       const planId = parseInt(idParam ?? '');
-      this.workoutService.selectedPlanId.set(planId);
+      this.planService.selectedPlanId.set(planId);
 
       const sessionIdParam = params.get('sessionId');
       if (sessionIdParam) {
         const sessionId = Number(sessionIdParam);
         this.editSessionId.set(sessionId);
-        await this.workoutService.setSessionFromPlan(planId, sessionId);
-        this.titleModel.set({ title: this.workoutService.sessionTitle() });
+        await this.planService.setSessionFromPlan(planId, sessionId);
+        this.titleModel.set({ title: this.planService.sessionTitle() });
       } else {
         this.editSessionId.set(null);
       }
@@ -88,13 +88,21 @@ export class PlanSession implements OnInit {
   }
 
   onExerciseSelected(exercise: any) {
-    this.workoutService.addTrackedExercise(exercise);
+    this.planService.addPlannedExercise(exercise);
     this.isAddSheetOpen.set(false);
+  }
+
+  onUpdateTarget(exerciseId: number, updates: any) {
+    this.planService.updatePlannedExercise(exerciseId, updates);
+  }
+
+  onRemoveExercise(exerciseId: number) {
+    this.planService.removePlannedExercise(exerciseId);
   }
 
   async onSaveSessionClick() {
     if (this.isEditMode()) {
-      await this.workoutService.updateSession(this.editSessionId()!);
+      await this.planService.updateSession(this.editSessionId()!);
       this.dialogService.create({
         zWidth: '400px',
         zTitle: 'Success',
@@ -105,7 +113,7 @@ export class PlanSession implements OnInit {
         },
       });
     } else {
-      await this.workoutService.createSession();
+      await this.planService.createSession();
       this.dialogService.create({
         zWidth: '400px',
         zTitle: 'Success',

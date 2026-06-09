@@ -12,7 +12,7 @@ import {
   lucideSave,
 } from '@ng-icons/lucide';
 import { DbService } from '@/core/services/db.service';
-import { WorkoutService } from '@/core/services/workout.service';
+import { PlanService } from '@/core/services/plan.service';
 import { WorkoutPlan } from '@/shared/models/workout.model';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardInputDirective } from '@/shared/components/zard/input';
@@ -47,7 +47,7 @@ import { PlanCardComponent } from '../../components/plan-card/plan-card.componen
 })
 export class PlanList implements OnInit {
   dbService = inject(DbService);
-  workoutService = inject(WorkoutService);
+  planService = inject(PlanService);
   router = inject(Router);
 
   isOpenPlanForm = signal(false);
@@ -115,7 +115,7 @@ export class PlanList implements OnInit {
   openCreatePlanSheet() {
     this.planModel.set({ title: '', description: '', sessionsPerWeek: 3 });
     this.planForm().reset();
-    this.workoutService.selectedPlanId.set(null);
+    this.planService.selectedPlanId.set(null);
     this.isOpenPlanForm.set(true);
   }
 
@@ -128,7 +128,7 @@ export class PlanList implements OnInit {
       sessionsPerWeek: plan.days,
     });
     this.planForm().reset();
-    this.workoutService.selectedPlanId.set(plan.id);
+    this.planService.selectedPlanId.set(plan.id);
     this.isOpenPlanForm.set(true);
   }
 
@@ -178,9 +178,9 @@ export class PlanList implements OnInit {
       const descVal = f.description().value().trim();
       const sessionsVal = Number(f.sessionsPerWeek().value());
 
-      if (this.workoutService.selectedPlanId() !== null) {
+      if (this.planService.selectedPlanId() !== null) {
         // Update existing
-        const plan = plans.find((p) => p.id === this.workoutService.selectedPlanId());
+        const plan = plans.find((p) => p.id === this.planService.selectedPlanId());
         if (plan) {
           plan.title = titleVal;
           plan.description = descVal;

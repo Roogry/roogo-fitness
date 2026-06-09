@@ -1,12 +1,6 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { DbService } from './db.service';
-import {
-  Exercise,
-  LoggedSession,
-  LoggedExercise,
-  WorkoutPlanSession,
-  LoggedSet,
-} from '@/shared/models/workout.model';
+import { Exercise, LoggedSession, LoggedExercise, LoggedSet } from '@/shared/models/workout.model';
 
 @Injectable({
   providedIn: 'root',
@@ -64,75 +58,7 @@ export class WorkoutService {
     return this.dbService.getExerciseByKey(id);
   }
 
-  async createSession() {
-    if (this.trackedExercises().length === 0) return;
-
-    const planSession: WorkoutPlanSession = {
-      id: Date.now(),
-      title: this.sessionTitle() || 'New Template Session',
-      session_order: 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      exercises: this.trackedExercises().map((te, index) => ({
-        id: Date.now() + Math.floor(Math.random() * 1000),
-        exercise_order: index,
-        target_sets: te.sets.length,
-        target_reps: te.sets[0]?.reps_completed || 0,
-        target_weight: te.sets[0]?.weight_lifted || 0,
-        exercise: te.exercise,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      })),
-    };
-
-    const plan = await this.dbService.getWorkoutPlan(this.selectedPlanId()!);
-    if (!plan) throw new Error('The plan is not found');
-
-    if (plan) {
-      planSession.session_order = plan.sessions.length;
-      plan.sessions = [...(plan.sessions || []), planSession];
-      await this.dbService.saveWorkoutPlan(plan);
-      console.log('Template session successfully saved to plan!');
-    }
-    this.clearSession();
-  }
-
-  async updateSession(sessionId: number) {
-    const plan = await this.dbService.getWorkoutPlan(this.selectedPlanId()!);
-    if (!plan) throw new Error('The plan is not found');
-
-    const sessionIndex = plan.sessions.findIndex((s) => s.id === sessionId);
-    if (sessionIndex === -1) throw new Error('Session not found in plan');
-
-    plan.sessions[sessionIndex] = {
-      ...plan.sessions[sessionIndex],
-      title: this.sessionTitle() || plan.sessions[sessionIndex].title || 'Updated Template Session',
-      updatedAt: new Date().toISOString(),
-      exercises: this.trackedExercises().map((te, index) => ({
-        id: Date.now() + Math.floor(Math.random() * 1000),
-        exercise_order: index,
-        target_sets: te.sets.length,
-        target_reps: te.sets[0]?.reps_completed || 0,
-        target_weight: te.sets[0]?.weight_lifted || 0,
-        exercise: te.exercise,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      })),
-    };
-
-    await this.dbService.saveWorkoutPlan(plan);
-    this.clearSession();
-  }
-
-  async deleteSessionFromPlan(planId: number, sessionId: number): Promise<void> {
-    const plan = await this.dbService.getWorkoutPlan(planId);
-    if (!plan) throw new Error('Plan not found');
-
-    plan.sessions = (plan.sessions || []).filter((s) => s.id !== sessionId);
-    await this.dbService.saveWorkoutPlan(plan);
-  }
-
-  async setSessionFromPlan(planId: number, sessionId: number) {
+  async startSessionFromPlan(planId: number, sessionId: number) {
     const plan = await this.dbService.getWorkoutPlan(planId);
     if (!plan) throw new Error('Plan not found');
 

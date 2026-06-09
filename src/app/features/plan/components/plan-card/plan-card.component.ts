@@ -15,6 +15,7 @@ import {
   lucideTrash2,
 } from '@ng-icons/lucide';
 import { WorkoutService } from '@/core/services/workout.service';
+import { PlanService } from '@/core/services/plan.service';
 import { Router } from '@angular/router';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
 
@@ -51,6 +52,7 @@ export class PlanCardComponent {
 
   router = inject(Router);
   workoutService = inject(WorkoutService);
+  planService = inject(PlanService);
   dialogService = inject(ZardDialogService);
   isOpenPlanActions = signal(false);
 
@@ -67,7 +69,7 @@ export class PlanCardComponent {
 
   openPlanActionsSheet(event: Event) {
     event.stopPropagation();
-    this.workoutService.selectedPlanId.set(this.plan.id);
+    this.planService.selectedPlanId.set(this.plan.id);
   }
 
   editPlan(event: Event) {
@@ -79,9 +81,9 @@ export class PlanCardComponent {
     event.stopPropagation();
     this.isOpenPlanActions.set(false);
 
-    this.workoutService.clearSession();
-    this.workoutService.selectedPlanId.set(this.plan.id);
-    this.workoutService.sessionTitle.set('New Session');
+    this.planService.clearPlanSession();
+    this.planService.selectedPlanId.set(this.plan.id);
+    this.planService.sessionTitle.set('New Session');
     this.router.navigate([`plan/${this.plan.id}/session/create`]);
   }
 
