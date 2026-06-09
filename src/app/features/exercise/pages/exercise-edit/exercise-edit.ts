@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { HeaderComponent } from '@/shared/components/header/header';
+import { HeaderComponent } from '@/shared/components/header/header.component';
 import { ZardCardComponent } from '@/shared/components/zard/card/card.component';
 import { ZardButtonComponent } from '@/shared/components/zard/button/button.component';
 import { ZardInputDirective } from '@/shared/components/zard/input/input.directive';

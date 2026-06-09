@@ -4,13 +4,11 @@ import { Router, RouterLink } from '@angular/router';
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { WorkoutService } from '@/core/services/workout.service';
 import { DbService } from '@/core/services/db.service';
-import { LoggedWorkoutCardComponent } from '@/features/journey/pages/components/logged-workout-card/logged-workout-card';
 import { UpcomingSessionCardComponent } from '@/features/home/components/upcoming-session-card/upcoming-session-card';
-import { ExplorePlanCardComponent } from '@/features/home/components/explore-plan-card/explore-plan-card';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideDumbbell, lucideFlame, lucideCalendar } from '@ng-icons/lucide';
 import { LoggedSession, WorkoutPlan } from '@/shared/models/workout.model';
-import { ZardDialogService } from '@/shared/components/zard/dialog';
+import { HomeLoggedWorkoutCardComponent } from './components/home-logged-workout-card/home-logged-workout-card';
 
 @Component({
   selector: 'app-home',
@@ -19,9 +17,8 @@ import { ZardDialogService } from '@/shared/components/zard/dialog';
     CommonModule,
     ZardCardComponent,
     RouterLink,
-    LoggedWorkoutCardComponent,
+    HomeLoggedWorkoutCardComponent,
     UpcomingSessionCardComponent,
-    ExplorePlanCardComponent,
     NgIcon,
   ],
   providers: [provideIcons({ lucideDumbbell, lucideFlame, lucideCalendar })],
@@ -32,7 +29,6 @@ export class Home implements OnInit {
   router = inject(Router);
   workoutService = inject(WorkoutService);
   dbService = inject(DbService);
-  dialogService = inject(ZardDialogService);
 
   recentSessions = signal<LoggedSession[]>([]);
   activePlan = signal<WorkoutPlan | null>(null);
@@ -65,23 +61,4 @@ export class Home implements OnInit {
     { id: 102, title: 'Full Body Fundamentals', sessions_per_week: 3, difficulty: 'Beginner' },
     { id: 103, title: 'Upper/Lower Power', sessions_per_week: 4, difficulty: 'Advanced' },
   ];
-
-  startEmptyWorkout() {
-    if (this.workoutService.sessionStartTime()) {
-      this.dialogService.create({
-        zTitle: 'Active Workout Session',
-        zDescription: 'You already have an active workout session running.',
-        zContent: 'Are you sure you want to start a new workout? This will permanently delete your current active session data.',
-        zOkText: 'Start New',
-        zOkDestructive: true,
-        zCancelText: 'Cancel',
-        zOnOk: () => {
-          this.workoutService.clearSession();
-          this.router.navigate(['/session/active']);
-        }
-      });
-    } else {
-      this.router.navigate(['/session/active']);
-    }
-  }
 }

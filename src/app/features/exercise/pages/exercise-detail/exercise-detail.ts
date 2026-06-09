@@ -5,7 +5,7 @@ import { ActivatedRoute, RouterLink, RouterModule } from '@angular/router';
 import { WorkoutService } from '@/core/services/workout.service';
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
-import { HeaderComponent } from '@/shared/components/header/header';
+import { HeaderComponent } from '@/shared/components/header/header.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideDumbbell,

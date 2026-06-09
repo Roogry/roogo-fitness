@@ -19,6 +19,8 @@ import { ZardInputDirective } from '@/shared/components/zard/input';
 import { HeaderComponent } from '@/shared/components/header';
 import { RooSheetComponent } from '@/shared/components/sheet';
 import { PlanCardComponent } from '../../components/plan-card/plan-card.component';
+import { WorkoutService } from '@/core/services/workout.service';
+import { ZardDialogService } from '@/shared/components/zard/dialog';
 
 @Component({
   selector: 'app-plan-list',
@@ -46,9 +48,11 @@ import { PlanCardComponent } from '../../components/plan-card/plan-card.componen
   templateUrl: './plan-list.html',
 })
 export class PlanList implements OnInit {
-  dbService = inject(DbService);
-  planService = inject(PlanService);
   router = inject(Router);
+  dbService = inject(DbService);
+  workoutService = inject(WorkoutService);
+  planService = inject(PlanService);
+  dialogService = inject(ZardDialogService);
 
   isOpenPlanForm = signal(false);
   expandedPlanId = signal<number | null>(null);
@@ -72,6 +76,24 @@ export class PlanList implements OnInit {
       const firstRegular = plans.find((p) => !p.isDefault);
       this.expandedPlanId.set(firstRegular ? firstRegular.id : plans[0].id);
     }
+  }
+
+  startEmptyWorkout() {
+    if (this.workoutService.hasExercise()) return;
+
+    this.dialogService.create({
+      zTitle: 'Active Workout Session',
+      zDescription: 'You already have an active workout session running.',
+      zContent:
+        'Are you sure you want to start a new workout? This will permanently delete your current active session data.',
+      zOkText: 'Start New',
+      zOkDestructive: true,
+      zCancelText: 'Cancel',
+      zOnOk: () => {
+        this.workoutService.clearSession();
+        this.router.navigate(['/session/active']);
+      },
+    });
   }
 
   async loadPlans() {
@@ -133,16 +155,16 @@ export class PlanList implements OnInit {
   }
 
   decrementSessions() {
-    this.planModel.update(m => ({
+    this.planModel.update((m) => ({
       ...m,
-      sessionsPerWeek: m.sessionsPerWeek > 1 ? m.sessionsPerWeek - 1 : 1
+      sessionsPerWeek: m.sessionsPerWeek > 1 ? m.sessionsPerWeek - 1 : 1,
     }));
   }
 
   incrementSessions() {
-    this.planModel.update(m => ({
+    this.planModel.update((m) => ({
       ...m,
-      sessionsPerWeek: m.sessionsPerWeek < 7 ? m.sessionsPerWeek + 1 : 7
+      sessionsPerWeek: m.sessionsPerWeek < 7 ? m.sessionsPerWeek + 1 : 7,
     }));
   }
 

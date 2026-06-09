@@ -3,23 +3,17 @@
     <div class="flex flex-col gap-2">
       <span class="font-bold text-base sm:text-lg">{{ session().session_title }}</span>
       <div class="flex items-center gap-2">
-        @if (session().createdAt) {
-          <z-badge
-            zType="secondary"
-            [zTooltip]="session().createdAt ? (session().createdAt | date: 'medium') : 'unknown'"
-          >
-            {{ session().createdAt | timeAgo }}
-          </z-badge>
-        }
         <z-badge
           zType="secondary"
-          [zTooltip]="(session().start_time | date: 'medium') + ' until ' + (session().end_time | date: 'medium')"
+          [zTooltip]="
+            (session().start_time | date: 'medium') +
+            ' until ' +
+            (session().end_time | date: 'medium')
+          "
         >
           {{ session().total_duration | durationFormat }}
         </z-badge>
-        <z-badge
-          zType="secondary"
-        >
+        <z-badge zType="secondary">
           {{ session().total_weight_lifted | number: '1.0-1' }} kg
         </z-badge>
       </div>
@@ -32,8 +26,8 @@
       >
         {{ session().createdAt | timeAgo }}
       </span>
-      <div class="bg-primary/5 text-primary p-2 rounded-full">
-        <ng-icon name="lucideActivity" class="size-4"></ng-icon>
+      <div class="bg-primary/5 text-primary size-8 rounded-full flex items-center justify-center">
+        <ng-icon name="lucideActivity"></ng-icon>
       </div>
     </div>
   </div>
@@ -48,18 +42,11 @@
     [routerLink]="['/journey', session().id]"
     class="bg-secondary/50 rounded-[16px] p-3.5 flex justify-between items-center group cursor-pointer hover:bg-secondary/80 transition-colors"
   >
-    <span
-      class="text-sm font-medium text-secondary-foreground line-clamp-1 truncate mr-4"
-    >
+    <span class="text-sm font-medium text-secondary-foreground line-clamp-1 truncate mr-4">
       {{ getExerciseSummary(session()) }}
     </span>
-    <div
-      class="bg-background/50 rounded-full p-1.5 group-hover:bg-background transition-colors"
-    >
-      <ng-icon
-        name="lucideArrowRight"
-        class="w-4 h-4 text-foreground flex-shrink-0"
-      ></ng-icon>
+    <div class="bg-background/50 rounded-full p-1.5 group-hover:bg-background transition-colors">
+      <ng-icon name="lucideArrowRight" class="w-4 h-4 text-foreground flex-shrink-0"></ng-icon>
     </div>
   </a>
 </z-card>

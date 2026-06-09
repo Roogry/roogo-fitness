@@ -6,7 +6,7 @@ import { lucideEllipsis, lucideTrash2, lucidePencil } from '@ng-icons/lucide';
 import { WorkoutService } from '@/core/services/workout.service';
 import { PlanService } from '@/core/services/plan.service';
 import { PlanExerciseCardComponent } from '@/features/plan/components/plan-exercise-card/plan-exercise-card';
-import { HeaderComponent } from '@/shared/components/header/header';
+import { HeaderComponent } from '@/shared/components/header/header.component';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/zard/popover';
 import { ZardDialogService } from '@/shared/components/zard/dialog';

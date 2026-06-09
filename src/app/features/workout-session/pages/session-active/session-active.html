@@ -2,10 +2,16 @@
   <!-- Header -->
   <app-header title="Log Session" [showBackBtn]="true" class="sticky top-0">
     @if (workoutService.sessionStartTime()) {
-    <button right z-button zShape="circle" (click)="finishSession()" [disabled]="titleForm().invalid()">
-      <ng-icon name="lucideCheck" class="mr-1 hidden sm:inline-block"></ng-icon>
-      <span>Finish</span>
-    </button>
+      <button
+        right
+        z-button
+        zShape="circle"
+        (click)="finishSession()"
+        [disabled]="titleForm().invalid()"
+      >
+        <ng-icon name="lucideCheck" class="hidden sm:inline-block"></ng-icon>
+        <span class="hidden sm:inline-block">Finish</span>
+      </button>
     }
   </app-header>
 
@@ -13,88 +19,128 @@
     <div class="flex flex-col gap-4">
       <!-- Session Stats Panel -->
       @if (workoutService.sessionStartTime()) {
-      <div class="mb-6 p-4 flex items-center justify-between rounded-4xl bg-secondary/60 border-1 border-border">
-        <div class="px-4 flex flex-col items-center justify-center text-center">
-          <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Volume</span>
-          <span class="font-medium">{{ workoutService.totalVolume() }}
-            <span class="text-sm font-medium text-foreground">kg</span></span>
+        <div
+          class="mb-6 p-4 flex items-center justify-between rounded-4xl bg-secondary/60 border-1 border-border"
+        >
+          <div class="px-4 flex flex-col items-center justify-center text-center">
+            <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Volume</span>
+            <span class="font-medium"
+              >{{ workoutService.totalVolume() }}
+              <span class="text-sm font-medium text-foreground">kg</span></span
+            >
+          </div>
+
+          <div class="h-6 w-[1px] bg-border"></div>
+
+          <div class="min-w-[150px] px-4 flex flex-col items-center justify-center text-center">
+            <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider"
+              >Duration</span
+            >
+            <span class="font-medium">{{ workoutService.sessionDuration() | durationFormat }}</span>
+          </div>
+
+          <div class="h-6 w-[1px] bg-border"></div>
+
+          <div class="px-4 flex flex-col items-center justify-center text-center">
+            <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Sets</span>
+            <span class="font-medium"
+              >{{ workoutService.totalSets() }}
+              <span class="text-sm font-medium text-foreground">set</span></span
+            >
+          </div>
         </div>
-
-        <div class="h-6 w-[1px] bg-border"></div>
-
-        <div class="min-w-[150px] px-4 flex flex-col items-center justify-center text-center">
-          <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Duration</span>
-          <span class="font-medium">{{ workoutService.sessionDuration() | durationFormat }}</span>
-        </div>
-
-        <div class="h-6 w-[1px] bg-border"></div>
-
-        <div class="px-4 flex flex-col items-center justify-center text-center">
-          <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Sets</span>
-          <span class="font-medium">{{ workoutService.totalSets() }}
-            <span class="text-sm font-medium text-foreground">set</span></span>
-        </div>
-      </div>
       }
 
       <z-form-field class="flex flex-col gap-3">
-        <label z-form-label for="title"
-          class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+        <label
+          z-form-label
+          for="title"
+          class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
           Session Title
         </label>
         <z-form-control [errorMessage]="titleForm.title().errors()[0]?.message ?? ''">
-          <input id="title" z-input [formField]="titleForm.title" placeholder="Name your session..." class="w-full" />
+          <input
+            id="title"
+            z-input
+            [formField]="titleForm.title"
+            placeholder="Name your session..."
+            class="w-full"
+          />
         </z-form-control>
       </z-form-field>
 
       @if (!workoutService.sessionStartTime()) {
-      <button z-button zShape="circle" class="w-full mb-4" [disabled]="titleForm().invalid()" (click)="workoutService.startSessionTimer()">
-        Start Session
-      </button>
+        <button
+          z-button
+          zShape="circle"
+          class="w-full mb-4"
+          [disabled]="titleForm().invalid()"
+          (click)="workoutService.startSessionTimer()"
+        >
+          Start Session
+        </button>
       }
 
       <!-- Active Exercises -->
       @if (workoutService.trackedExercises().length === 0) {
-      <div class="py-8 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl">
-        <ng-icon name="lucideDumbbell" class="h-12 w-12 mx-auto mb-4"></ng-icon>
-        <p>No exercises tracked yet.</p>
-      </div>
+        <div
+          class="py-8 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl"
+        >
+          <ng-icon name="lucideDumbbell" class="h-12 w-12 mx-auto mb-4"></ng-icon>
+          <p>No exercises tracked yet.</p>
+        </div>
       }
 
       @for (tracked of workoutService.trackedExercises(); track tracked.exercise.id) {
-      <app-exercise-tracker [trackedExercise]="tracked"
-        [editable]="workoutService.sessionStartTime() !== null"></app-exercise-tracker>
+        <app-exercise-tracker
+          [trackedExercise]="tracked"
+          [editable]="workoutService.sessionStartTime() !== null"
+        ></app-exercise-tracker>
       }
 
       <div class="mt-4 flex flex-col gap-4">
         @if (workoutService.sessionStartTime()) {
-        <button z-button zShape="circle" class="w-full" (click)="isAddSheetOpen.set(true)">
-          <ng-icon name="lucidePlus"></ng-icon>
-          Add Exercise
-        </button>
+          <button z-button zShape="circle" class="w-full" (click)="isAddSheetOpen.set(true)">
+            <ng-icon name="lucidePlus"></ng-icon>
+            Add Exercise
+          </button>
         }
 
         @if (workoutService.sessionStartTime()) {
-        <button z-button zType="secondary" zShape="circle"
-          class="text-destructive hover:bg-destructive/20 hover:text-destructive" (click)="openDiscardConfirm()" zFull>
-          Discard
-        </button>
+          <button
+            z-button
+            zType="secondary"
+            zShape="circle"
+            class="text-destructive hover:bg-destructive/20 hover:text-destructive"
+            (click)="openDiscardConfirm()"
+            zFull
+          >
+            Discard
+          </button>
         }
       </div>
     </div>
   </main>
 
   <!-- Add Exercise Sheet -->
-  <app-sheet [isOpen]="isAddSheetOpen()" (onOpenChange)="isAddSheetOpen.set($event)" title="Add Exercise"
-    description="Search or add a custom exercise.">
-    <app-exercise-autocomplete (exerciseSelected)="onExerciseSelected($event)"></app-exercise-autocomplete>
+  <app-sheet
+    [isOpen]="isAddSheetOpen()"
+    (onOpenChange)="isAddSheetOpen.set($event)"
+    title="Add Exercise"
+    description="Search or add a custom exercise."
+  >
+    <app-exercise-autocomplete
+      (exerciseSelected)="onExerciseSelected($event)"
+    ></app-exercise-autocomplete>
   </app-sheet>
 
   <!-- Discard Confirmation Dialog Template -->
   <ng-template #discardDialog let-ref>
     <div class="flex flex-col gap-4">
       <p class="text-sm text-muted-foreground">
-        Are you sure you want to discard this session? All progress will be lost and cannot be recovered.
+        Are you sure you want to discard this session? All progress will be lost and cannot be
+        recovered.
       </p>
       <div class="flex justify-end gap-2 mt-4">
         <button z-button zType="outline" (click)="closeDiscard()">Cancel</button>

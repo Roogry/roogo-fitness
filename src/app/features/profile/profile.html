@@ -1,7 +1,9 @@
-<div class="mb-8">
-  <app-header title="Profile"></app-header>
+<div class="relative mb-8">
+  <app-header title="Profile" [isTransparant]="false"></app-header>
   <div class="px-4 w-full max-w-2xl mx-auto flex flex-col items-center justify-center">
-    <div class="w-24 h-24 rounded-full bg-muted flex items-center justify-center border-4 border-background shadow-sm mb-4 overflow-hidden">
+    <div
+      class="w-24 h-24 rounded-full bg-muted flex items-center justify-center border-4 border-background shadow-sm mb-4 overflow-hidden"
+    >
       <ng-icon name="lucideUser" class="w-10 h-10 text-muted-foreground/60"></ng-icon>
     </div>
     <h2 class="text-2xl font-bold">Roogo User</h2>

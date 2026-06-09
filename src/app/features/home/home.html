@@ -26,7 +26,7 @@
             >
             <h2 class="text-2xl font-bold">{{ activePlan()!.title }}</h2>
             <div class="flex items-center text-sm text-muted-foreground mt-2 gap-2">
-               <ng-icon name="lucideCalendar" class="w-4 h-4"></ng-icon>
+              <ng-icon name="lucideCalendar" class="w-4 h-4"></ng-icon>
               <span>{{ activePlan()!.days }} days / week</span>
             </div>
           </div>
@@ -48,43 +48,15 @@
 
           <!-- See More Outline Card -->
           <a routerLink="/plan" class="block min-w-[180px] snap-start">
-            <div class="bg-secondary/40 hover:border-primary/20 rounded-2xl p-4 flex flex-col justify-center items-center h-full w-full cursor-pointer border-2 border-dashed border-border hover:border-primary/50 hover:bg-secondary/20 transition-colors group">
+            <div
+              class="bg-secondary/40 hover:border-primary/20 rounded-2xl p-4 flex flex-col justify-center items-center h-full w-full cursor-pointer border-2 border-dashed border-border hover:border-primary/50 hover:bg-secondary/20 transition-colors group"
+            >
               <span class="text-sm font-medium transition-colors">View All</span>
             </div>
           </a>
         </div>
-
-        <!-- Start Empty Workout Action -->
-        <div class="mt-4">
-          <button
-            (click)="startEmptyWorkout()"
-            class="py-3 flex items-center justify-center gap-3 w-full bg-white border-1 border-border rounded-xl font-medium text-md hover:bg-secondary/60 hover:text-primary/80 cursor-pointer transition-all"
-          >
-            Start Empty Workout
-          </button>
-        </div>
       </z-card>
     }
-
-    <!-- Explore Plans Section (Horizontal) -->
-    <div class="mt-8 mb-2">
-      <div class="flex items-center justify-between mb-4 px-1">
-        <h3 class="font-semibold text-lg hover:text-primary transition-colors cursor-pointer">
-          Explore Plans
-        </h3>
-        <button
-          class="text-primary text-sm font-semibold bg-primary/10 px-3 py-1 rounded-full transition-colors hover:bg-primary hover:text-primary-foreground"
-        >
-          View All
-        </button>
-      </div>
-
-      <div class="flex overflow-x-auto gap-3 pb-2 snap-x hide-scrollbar">
-        @for (plan of otherPlans; track plan.id) {
-          <app-explore-plan-card [plan]="plan" />
-        }
-      </div>
-    </div>
 
     <!-- Recent Activity Section -->
     @if (recentSessions().length > 0) {
@@ -102,7 +74,7 @@
 
         <div class="flex flex-col gap-4">
           @for (session of recentSessions(); track session.id) {
-            <app-logged-workout-card [session]="session" />
+            <app-home-logged-workout-card [session]="session" />
           }
         </div>
       </div>

@@ -6,7 +6,7 @@ import { lucideDumbbell, lucidePlus, lucideCheck } from '@ng-icons/lucide';
 import { PlanService } from '@/core/services/plan.service';
 import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-autocomplete/exercise-autocomplete';
 import { PlanExerciseCardComponent } from '../../components/plan-exercise-card/plan-exercise-card';
-import { HeaderComponent } from '@/shared/components/header/header';
+import { HeaderComponent } from '@/shared/components/header/header.component';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { RooSheetComponent } from '@/shared/components/sheet';
 import { ZardInputDirective } from '@/shared/components/zard/input';

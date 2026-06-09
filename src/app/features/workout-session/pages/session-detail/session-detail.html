@@ -1,17 +1,17 @@
 <div class="min-h-screen bg-background text-foreground pb-8">
   <!-- Header -->
-  <app-header title="Workout Session" [showBackBtn]="true" class="sticky top-0">
+  <app-header [title]="planService.sessionTitle()" [showBackBtn]="true">
     <div right>
       <button
         z-button
         zPopover
-        zType="secondary"
+        zType="ghost"
         zSize="icon"
         zShape="circle"
         [zContent]="moreActions"
         zPlacement="bottomLeft"
       >
-        <ng-icon name="lucideEllipsis"></ng-icon>
+        <ng-icon name="lucideEllipsis" size="1.5rem"></ng-icon>
         <span class="sr-only">More</span>
       </button>
 
@@ -44,10 +44,8 @@
     </div>
   </app-header>
 
-  <main class="container mx-auto px-4 pb-6 max-w-2xl mt-4">
+  <main class="container mx-auto px-4 pb-6 max-w-2xl mt-8">
     <div class="flex flex-col gap-4">
-      <h1 class="text-2xl font-bold">{{ planService.sessionTitle() }}</h1>
-
       <!-- Exercises List -->
       @if (planService.plannedExercises().length === 0) {
         <div
@@ -58,7 +56,7 @@
       }
 
       @for (planned of planService.plannedExercises(); track planned.id) {
-        <app-plan-exercise-card [plannedExercise]="planned" [editable]="false"></app-plan-exercise-card>
+        <app-plan-exercise-card [plannedExercise]="planned" [editable]="false" />
       }
     </div>
   </main>

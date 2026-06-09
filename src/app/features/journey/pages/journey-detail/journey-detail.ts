@@ -5,9 +5,9 @@ import { WorkoutService } from '@/core/services/workout.service';
 import { LoggedSession } from '@/shared/models/workout.model';
 import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
-import { HeaderComponent } from '@/shared/components/header/header';
-import { ExerciseTracker } from "@/features/exercise/components/exercise-tracker/exercise-tracker";
-import { ZardPopoverComponent, ZardPopoverDirective } from "@/shared/components/zard/popover";
+import { HeaderComponent } from '@/shared/components/header/header.component';
+import { ExerciseTracker } from '@/features/exercise/components/exercise-tracker/exercise-tracker';
+import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/zard/popover';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideEllipsis, lucidePencil, lucideTrash2 } from '@ng-icons/lucide';
 

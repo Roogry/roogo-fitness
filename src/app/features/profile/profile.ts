@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HeaderComponent } from '@/shared/components/header/header';
+import { HeaderComponent } from '@/shared/components/header/header.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideUser } from '@ng-icons/lucide';
 

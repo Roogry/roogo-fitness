@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-background text-foreground pb-20">
   <!-- Header -->
-  <app-header title="Edit Exercise" [showBackBtn]="true" (backClick)="cancel()"> </app-header>
+  <app-header title="Edit Exercise" [showBackBtn]="true" (onBackClick)="cancel()"> </app-header>
 
   <main class="container mx-auto px-4 pb-8 max-w-2xl">
     @if (isLoading()) {
