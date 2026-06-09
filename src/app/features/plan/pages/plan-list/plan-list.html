@@ -37,7 +37,7 @@
     <app-sheet
       [isOpen]="isOpenPlanForm()"
       (onOpenChange)="isOpenPlanForm.set($event)"
-      [title]="workoutService.selectedPlanId() ? 'Edit Plan' : 'Create Plan'"
+      [title]="planService.selectedPlanId() ? 'Edit Plan' : 'Create Plan'"
       description="Design your new workout routine."
     >
       <!-- Sheet Content (Scrollable) -->
@@ -114,7 +114,7 @@
             (click)="savePlan()"
           >
             <ng-icon name="lucideSave"></ng-icon>
-            {{ workoutService.selectedPlanId() ? 'Save Changes' : 'Save Plan' }}
+            {{ planService.selectedPlanId() ? 'Save Changes' : 'Save Plan' }}
           </button>
         </div>
       </div>

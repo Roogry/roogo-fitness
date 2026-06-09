@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideEllipsis, lucideTrash2, lucidePencil } from '@ng-icons/lucide';
 import { WorkoutService } from '@/core/services/workout.service';
+import { PlanService } from '@/core/services/plan.service';
 import { ExerciseTracker } from '@/features/exercise/components/exercise-tracker/exercise-tracker';
 import { HeaderComponent } from '@/shared/components/header/header';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
@@ -34,6 +35,7 @@ import { ZardDialogService } from '@/shared/components/zard/dialog';
 })
 export class SessionDetail implements OnInit {
   workoutService = inject(WorkoutService);
+  planService = inject(PlanService);
   route = inject(ActivatedRoute);
   router = inject(Router);
   dialogService = inject(ZardDialogService);
@@ -49,7 +51,7 @@ export class SessionDetail implements OnInit {
       if (planIdParam && sessionIdParam) {
         this.planId = Number(planIdParam);
         this.sessionId = Number(sessionIdParam);
-        await this.workoutService.setSessionFromPlan(this.planId, this.sessionId);
+        await this.workoutService.startSessionFromPlan(this.planId, this.sessionId);
       }
     });
   }
@@ -65,7 +67,7 @@ export class SessionDetail implements OnInit {
       zCancelText: 'Cancel',
       zOkDestructive: true,
       zOnOk: async () => {
-        await this.workoutService.deleteSessionFromPlan(this.planId!, this.sessionId!);
+        await this.planService.deleteSessionFromPlan(this.planId!, this.sessionId!);
         this.router.navigate(['/plan']);
       },
     });

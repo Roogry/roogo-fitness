@@ -5,7 +5,7 @@
     [showBackBtn]="true"
     class="sticky top-0"
   >
-    @if (workoutService.hasExercise()) {
+    @if (planService.plannedExercises().length > 0) {
       <button
         right
         z-button
@@ -44,7 +44,7 @@
 
     <!-- Active Exercises -->
     <div class="flex flex-col gap-6">
-      @if (workoutService.trackedExercises().length === 0) {
+      @if (planService.plannedExercises().length === 0) {
         <div
           class="py-8 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl"
         >
@@ -53,8 +53,12 @@
         </div>
       }
 
-      @for (tracked of workoutService.trackedExercises(); track tracked.exercise.id) {
-        <app-exercise-tracker [trackedExercise]="tracked" [editable]="true"></app-exercise-tracker>
+      @for (planned of planService.plannedExercises(); track planned.exercise.id) {
+        <app-plan-exercise-card
+          [plannedExercise]="planned"
+          (updateTarget)="onUpdateTarget(planned.exercise.id, $event)"
+          (remove)="onRemoveExercise(planned.exercise.id)"
+        ></app-plan-exercise-card>
       }
 
       <button z-button zShape="circle" class="w-full" (click)="isAddSheetOpen.set(true)">

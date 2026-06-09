@@ -96,7 +96,7 @@ export class SessionActive implements OnInit {
         ) {
           return;
         }
-        await this.workoutService.setSessionFromPlan(Number(planId), Number(sessionId));
+        await this.workoutService.startSessionFromPlan(Number(planId), Number(sessionId));
       } else {
         // Jika sesi aktif sedang berjalan (baik empty session maupun dari plan), jangan hapus/reset
         if (this.workoutService.sessionStartTime()) {
