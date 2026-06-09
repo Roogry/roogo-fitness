@@ -1,146 +1,142 @@
-<div class="relative">
-  <app-header title="Workout Plans" [isTransparant]="true"></app-header>
+<app-header title="Workout Plans" [isTransparant]="true"></app-header>
 
-  <div class="container max-w-2xl mx-auto px-4">
-    <div class="flex flex-col gap-4">
-      <!-- Start Empty Workout Action -->
-      <button
-        z-button
-        type="button"
-        zType="secondary"
-        zShape="circle"
-        zSize="lg"
-        [disabled]="workoutService.hasExercise()"
-        (click)="startEmptyWorkout()"
-      >
-        <ng-icon name="lucideDumbbell" class="w-4 h-4"></ng-icon>
-        Start Empty Workout
+<div class="container max-w-2xl mx-auto px-4">
+  <div class="flex flex-col gap-4">
+    <!-- Start Empty Workout Action -->
+    <button
+      z-button
+      type="button"
+      zType="secondary"
+      zShape="circle"
+      zSize="lg"
+      [disabled]="workoutService.hasExercise()"
+      (click)="startEmptyWorkout()"
+    >
+      <ng-icon name="lucideDumbbell" class="w-4 h-4"></ng-icon>
+      Start Empty Workout
+    </button>
+
+    <h2 class="font-bold">Your Plans</h2>
+
+    <div class="grid grid-cols-2 gap-2">
+      <button z-button zType="secondary" zSize="lg" (click)="openCreatePlanSheet()">
+        <ng-icon name="lucideFolderPlus"></ng-icon>
+        <div><span class="hidden sm:inline-block">New</span> Plan</div>
       </button>
 
-      <h2 class="font-bold">Your Plans</h2>
-
-      <div class="grid grid-cols-2 gap-2">
-        <button z-button zType="secondary" zSize="lg" (click)="openCreatePlanSheet()">
-          <ng-icon name="lucideFolderPlus"></ng-icon>
-          <div><span class="hidden sm:inline-block">New</span> Plan</div>
-        </button>
-
-        <button z-button zType="secondary" zSize="lg" (click)="openCreatePlanSheet()">
-          <ng-icon name="lucideFolderPlus"></ng-icon>
-          <div><span class="hidden sm:inline-block">New</span> Session</div>
-        </button>
-      </div>
-
-      @if (displayedPlans.length === 0) {
-        <div
-          class="flex flex-col items-center justify-center text-center p-10 border border-border rounded-4xl"
-        >
-          <div class="p-4 bg-background border border-border rounded-full mb-4">
-            <ng-icon name="lucideDumbbell" class="w-8 h-8 text-muted-foreground"></ng-icon>
-          </div>
-          <h3 class="font-semibold text-lg mb-1">No Plans Yet</h3>
-          <p class="text-sm text-muted-foreground">
-            Create your first workout plan to get started.
-          </p>
-        </div>
-      } @else {
-        @for (plan of displayedPlans; track plan.id) {
-          <app-plan-card
-            [plan]="plan"
-            [isExpanded]="expandedPlanId() === plan.id"
-            (onToggle)="togglePlan(plan.id)"
-            (onEdit)="editPlan($event, plan)"
-            (onDelete)="deletePlan($event, plan.id)"
-          ></app-plan-card>
-        }
-      }
+      <button z-button zType="secondary" zSize="lg" (click)="openCreatePlanSheet()">
+        <ng-icon name="lucideFolderPlus"></ng-icon>
+        <div><span class="hidden sm:inline-block">New</span> Session</div>
+      </button>
     </div>
 
-    <!-- Plan Form Sheet -->
-    <app-sheet
-      [isOpen]="isOpenPlanForm()"
-      (onOpenChange)="isOpenPlanForm.set($event)"
-      [title]="planService.selectedPlanId() ? 'Edit Plan' : 'Create Plan'"
-      description="Design your new workout routine."
-    >
-      <!-- Sheet Content (Scrollable) -->
-      <div class="flex flex-col gap-6">
-        <z-form-field class="flex flex-col gap-3">
-          <label z-form-label for="name"> Plan Name <span class="text-destructive">*</span> </label>
-          <z-form-control [errorMessage]="planForm.title().errors()[0]?.message ?? ''">
-            <input
-              id="name"
-              z-input
-              [formField]="planForm.title"
-              placeholder="e.g. Push Pull Legs"
-              class="w-full"
-            />
-          </z-form-control>
-        </z-form-field>
-
-        <z-form-field class="flex flex-col gap-3">
-          <label z-form-label for="description"> Description </label>
-          <z-form-control [errorMessage]="planForm.description().errors()[0]?.message ?? ''">
-            <textarea
-              id="description"
-              z-input
-              rows="3"
-              [formField]="planForm.description"
-              placeholder="Optional details about this plan..."
-              class="w-full"
-            ></textarea>
-          </z-form-control>
-        </z-form-field>
-
-        <div class="flex flex-col gap-3">
-          <label
-            class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            Sessions Per Week
-          </label>
-          <div
-            class="flex items-center justify-between p-1 bg-secondary/50 rounded-2xl border border-border"
-          >
-            <button
-              z-button
-              zType="ghost"
-              class="w-10 h-10 rounded-xl flex items-center justify-center bg-background border border-border text-foreground hover:bg-muted disabled:opacity-50"
-              (click)="decrementSessions()"
-              [disabled]="planModel().sessionsPerWeek <= 1"
-            >
-              <ng-icon name="lucideMinus" class="w-4 h-4"></ng-icon>
-            </button>
-            <div class="flex flex-col items-center justify-center w-16">
-              <span class="text-xl font-bold">{{ planModel().sessionsPerWeek }}</span>
-            </div>
-            <button
-              z-button
-              zType="ghost"
-              class="w-10 h-10 rounded-xl flex items-center justify-center bg-background border border-border text-foreground hover:bg-muted disabled:opacity-50"
-              (click)="incrementSessions()"
-              [disabled]="planModel().sessionsPerWeek >= 7"
-            >
-              <ng-icon name="lucidePlus" class="w-4 h-4"></ng-icon>
-            </button>
-          </div>
+    @if (displayedPlans.length === 0) {
+      <div
+        class="flex flex-col items-center justify-center text-center p-10 border border-border rounded-4xl"
+      >
+        <div class="p-4 bg-background border border-border rounded-full mb-4">
+          <ng-icon name="lucideDumbbell" class="w-8 h-8 text-muted-foreground"></ng-icon>
         </div>
+        <h3 class="font-semibold text-lg mb-1">No Plans Yet</h3>
+        <p class="text-sm text-muted-foreground">Create your first workout plan to get started.</p>
       </div>
+    } @else {
+      @for (plan of displayedPlans; track plan.id) {
+        <app-plan-card
+          [plan]="plan"
+          [isExpanded]="expandedPlanId() === plan.id"
+          (onToggle)="togglePlan(plan.id)"
+          (onEdit)="editPlan($event, plan)"
+          (onDelete)="deletePlan($event, plan.id)"
+        ></app-plan-card>
+      }
+    }
+  </div>
 
-      <!-- Sheet Footer -->
-      <div app-sheet-footer>
-        <div class="mb-4">
+  <!-- Plan Form Sheet -->
+  <app-sheet
+    [isOpen]="isOpenPlanForm()"
+    (onOpenChange)="isOpenPlanForm.set($event)"
+    [title]="planService.selectedPlanId() ? 'Edit Plan' : 'Create Plan'"
+    description="Design your new workout routine."
+  >
+    <!-- Sheet Content (Scrollable) -->
+    <div class="flex flex-col gap-6">
+      <z-form-field class="flex flex-col gap-3">
+        <label z-form-label for="name"> Plan Name <span class="text-destructive">*</span> </label>
+        <z-form-control [errorMessage]="planForm.title().errors()[0]?.message ?? ''">
+          <input
+            id="name"
+            z-input
+            [formField]="planForm.title"
+            placeholder="e.g. Push Pull Legs"
+            class="w-full"
+          />
+        </z-form-control>
+      </z-form-field>
+
+      <z-form-field class="flex flex-col gap-3">
+        <label z-form-label for="description"> Description </label>
+        <z-form-control [errorMessage]="planForm.description().errors()[0]?.message ?? ''">
+          <textarea
+            id="description"
+            z-input
+            rows="3"
+            [formField]="planForm.description"
+            placeholder="Optional details about this plan..."
+            class="w-full"
+          ></textarea>
+        </z-form-control>
+      </z-form-field>
+
+      <div class="flex flex-col gap-3">
+        <label
+          class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          Sessions Per Week
+        </label>
+        <div
+          class="flex items-center justify-between p-1 bg-secondary/50 rounded-2xl border border-border"
+        >
           <button
             z-button
-            zShape="circle"
-            class="w-full"
-            [disabled]="planForm().invalid()"
-            (click)="savePlan()"
+            zType="ghost"
+            class="w-10 h-10 rounded-xl flex items-center justify-center bg-background border border-border text-foreground hover:bg-muted disabled:opacity-50"
+            (click)="decrementSessions()"
+            [disabled]="planModel().sessionsPerWeek <= 1"
           >
-            <ng-icon name="lucideSave"></ng-icon>
-            {{ planService.selectedPlanId() ? 'Save Changes' : 'Save Plan' }}
+            <ng-icon name="lucideMinus" class="w-4 h-4"></ng-icon>
+          </button>
+          <div class="flex flex-col items-center justify-center w-16">
+            <span class="text-xl font-bold">{{ planModel().sessionsPerWeek }}</span>
+          </div>
+          <button
+            z-button
+            zType="ghost"
+            class="w-10 h-10 rounded-xl flex items-center justify-center bg-background border border-border text-foreground hover:bg-muted disabled:opacity-50"
+            (click)="incrementSessions()"
+            [disabled]="planModel().sessionsPerWeek >= 7"
+          >
+            <ng-icon name="lucidePlus" class="w-4 h-4"></ng-icon>
           </button>
         </div>
       </div>
-    </app-sheet>
-  </div>
+    </div>
+
+    <!-- Sheet Footer -->
+    <div app-sheet-footer>
+      <div class="mb-4">
+        <button
+          z-button
+          zShape="circle"
+          class="w-full"
+          [disabled]="planForm().invalid()"
+          (click)="savePlan()"
+        >
+          <ng-icon name="lucideSave"></ng-icon>
+          {{ planService.selectedPlanId() ? 'Save Changes' : 'Save Plan' }}
+        </button>
+      </div>
+    </div>
+  </app-sheet>
 </div>
