@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-background text-foreground pb-8">
+<div class="min-h-screen bg-background text-foreground pb-[120px]">
   <!-- Header -->
   <app-header [title]="planService.sessionTitle()" [showBackBtn]="true">
     <div right>
@@ -60,4 +60,19 @@
       }
     </div>
   </main>
+
+  <div
+    class="fixed bottom-0 left-0 right-0 container max-w-2xl mx-auto px-6 sm:px-8 pb-12 pt-4 bg-linear-to-t from-background via-background/60 via-70% to-background/20 to-80%"
+  >
+    <button
+      z-button
+      zShape="circle"
+      zSize="lg"
+      class="mt-2"
+      zFull
+      (click)="onStartSessionClick($event)"
+    >
+      Start Session
+    </button>
+  </div>
 </div>

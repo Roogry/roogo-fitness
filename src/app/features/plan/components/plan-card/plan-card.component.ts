@@ -97,14 +97,13 @@ export class PlanCardComponent {
     this.router.navigate(['/session/detail'], { queryParams: { planId: this.plan.id, sessionId } });
   }
 
-  startSession(sessionId: number, event: Event) {
+  onStartSessionClick(sessionId: number, event: Event) {
     event.stopPropagation();
     if (this.workoutService.sessionStartTime()) {
       this.dialogService.create({
         zTitle: 'Active Workout Session',
-        zDescription: 'You already have an active workout session running.',
-        zContent:
-          'Are you sure you want to start a new workout? This will permanently delete your current active session data.',
+        zDescription:
+          'You already have an active workout session running. Are you sure you want to start a new workout?',
         zOkText: 'Start New',
         zOkDestructive: true,
         zCancelText: 'Cancel',
