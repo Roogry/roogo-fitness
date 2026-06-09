@@ -3,7 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideTrash2, lucideDumbbell } from '@ng-icons/lucide';
+import {
+  lucideTrash2,
+  lucideDumbbell,
+  lucideRepeat,
+  lucideFlagTriangleLeft,
+} from '@ng-icons/lucide';
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardInputDirective } from '@/shared/components/zard/input';
@@ -25,12 +30,13 @@ import { WorkoutPlanExercise } from '@/shared/models/workout.model';
     ZardBadgeComponent,
     ZardFormImports,
   ],
-  providers: [provideIcons({ lucideTrash2, lucideDumbbell })],
+  providers: [provideIcons({ lucideTrash2, lucideDumbbell, lucideRepeat, lucideFlagTriangleLeft })],
   templateUrl: './plan-exercise-card.html',
 })
 export class PlanExerciseCardComponent {
   plannedExercise = input.required<WorkoutPlanExercise>();
-  
+  editable = input<boolean>(true);
+
   updateTarget = output<Partial<WorkoutPlanExercise>>();
   remove = output<void>();
 

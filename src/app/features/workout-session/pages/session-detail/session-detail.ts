@@ -5,7 +5,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideEllipsis, lucideTrash2, lucidePencil } from '@ng-icons/lucide';
 import { WorkoutService } from '@/core/services/workout.service';
 import { PlanService } from '@/core/services/plan.service';
-import { ExerciseTracker } from '@/features/exercise/components/exercise-tracker/exercise-tracker';
+import { PlanExerciseCardComponent } from '@/features/plan/components/plan-exercise-card/plan-exercise-card';
 import { HeaderComponent } from '@/shared/components/header/header';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/zard/popover';
@@ -16,7 +16,7 @@ import { ZardDialogService } from '@/shared/components/zard/dialog';
   standalone: true,
   imports: [
     CommonModule,
-    ExerciseTracker,
+    PlanExerciseCardComponent,
     HeaderComponent,
     ZardButtonComponent,
     ZardPopoverComponent,
@@ -51,7 +51,7 @@ export class SessionDetail implements OnInit {
       if (planIdParam && sessionIdParam) {
         this.planId = Number(planIdParam);
         this.sessionId = Number(sessionIdParam);
-        await this.workoutService.startSessionFromPlan(this.planId, this.sessionId);
+        await this.planService.setSessionFromPlan(this.planId, this.sessionId);
       }
     });
   }
