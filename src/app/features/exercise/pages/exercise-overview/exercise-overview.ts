@@ -1,0 +1,21 @@
+import { Component, input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ZardCardComponent } from '@/shared/components/zard/card';
+import { ZardBadgeComponent } from '@/shared/components/zard/badge';
+import { Exercise } from '@/shared/models/workout.model';
+import { ExerciseMediaComponent } from '../../components/exercise-media/exercise-media';
+
+@Component({
+  selector: 'app-exercise-overview',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ZardCardComponent,
+    ZardBadgeComponent,
+    ExerciseMediaComponent,
+  ],
+  templateUrl: './exercise-overview.html',
+})
+export class ExerciseOverview {
+  exercise = input.required<Exercise>();
+}
