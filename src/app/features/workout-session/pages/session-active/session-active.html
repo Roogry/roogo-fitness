@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-background text-foreground pb-8">
+<div class="min-h-screen bg-background text-foreground pb-32">
   <!-- Header -->
   <app-header title="Log Session" [showBackBtn]="true" class="sticky top-0">
     @if (workoutService.sessionStartTime()) {
@@ -17,40 +17,6 @@
 
   <main class="container mx-auto px-4 pb-6 max-w-2xl mt-4">
     <div class="flex flex-col gap-4">
-      <!-- Session Stats Panel -->
-      @if (workoutService.sessionStartTime()) {
-        <div
-          class="mb-6 p-4 flex items-center justify-between rounded-4xl bg-secondary/60 border-1 border-border"
-        >
-          <div class="px-4 flex flex-col items-center justify-center text-center">
-            <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Volume</span>
-            <span class="font-medium"
-              >{{ workoutService.totalVolume() }}
-              <span class="text-sm font-medium text-foreground">kg</span></span
-            >
-          </div>
-
-          <div class="h-6 w-[1px] bg-border"></div>
-
-          <div class="min-w-[150px] px-4 flex flex-col items-center justify-center text-center">
-            <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider"
-              >Duration</span
-            >
-            <span class="font-medium">{{ workoutService.sessionDuration() | durationFormat }}</span>
-          </div>
-
-          <div class="h-6 w-[1px] bg-border"></div>
-
-          <div class="px-4 flex flex-col items-center justify-center text-center">
-            <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Sets</span>
-            <span class="font-medium"
-              >{{ workoutService.totalSets() }}
-              <span class="text-sm font-medium text-foreground">set</span></span
-            >
-          </div>
-        </div>
-      }
-
       <z-form-field class="flex flex-col gap-3">
         <label
           z-form-label
@@ -148,4 +114,39 @@
       </div>
     </div>
   </ng-template>
+
+  @if (workoutService.sessionStartTime()) {
+    <div class="fixed bottom-8 left-4 right-4 z-50 max-w-2xl mx-auto px-6">
+      <div
+        class="p-4 flex items-center rounded-4xl bg-secondary/60 backdrop-blur-md shadow-lg border border-border"
+      >
+        <div class="px-4 flex-2 flex flex-col items-center justify-center text-center">
+          <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Volume</span>
+          <span class="font-medium"
+            >{{ workoutService.totalVolume() }}
+            <span class="text-sm font-medium text-foreground">kg</span></span
+          >
+        </div>
+
+        <div class="h-6 w-[1px] bg-border"></div>
+
+        <div
+          class="min-w-[120px] px-4 flex-3 flex flex-col items-center justify-center text-center"
+        >
+          <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Duration</span>
+          <span class="font-medium">{{ workoutService.sessionDuration() | durationFormat }}</span>
+        </div>
+
+        <div class="h-6 w-[1px] bg-border"></div>
+
+        <div class="px-4 flex-2 flex flex-col items-center justify-center text-center">
+          <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Sets</span>
+          <span class="font-medium"
+            >{{ workoutService.totalSets() }}
+            <span class="text-sm font-medium text-foreground">set</span></span
+          >
+        </div>
+      </div>
+    </div>
+  }
 </div>
