@@ -1,0 +1,11 @@
+<div
+  class="bg-card p-6 rounded-xl border border-border flex flex-col items-center justify-center text-center shadow-xs"
+>
+  <div
+    class="w-7 h-7 bg-primary/10 text-primary rounded-full mb-2 flex items-center justify-center"
+  >
+    <ng-icon [name]="icon()"></ng-icon>
+  </div>
+  <span class="text-xs text-muted-foreground font-medium mb-1">{{ title() }}</span>
+  <span class="text-lg font-bold text-foreground">{{ value() }}</span>
+</div>

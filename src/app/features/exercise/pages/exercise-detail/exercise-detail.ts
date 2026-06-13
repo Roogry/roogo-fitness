@@ -10,7 +10,7 @@ import { lucideDumbbell, lucidePencil } from '@ng-icons/lucide';
 import { Exercise } from '@/shared/models/workout.model';
 import { ExerciseOverview } from '../exercise-overview/exercise-overview';
 import { ExerciseJourney } from '../exercise-journey/exercise-journey';
-import { pillVariants } from './exercise-detail.variants';
+import { NavPillsComponent, NavPillsItemComponent } from '@/shared/components/nav-pills';
 
 @Component({
   selector: 'app-exercise-detail',
@@ -24,6 +24,8 @@ import { pillVariants } from './exercise-detail.variants';
     NgIcon,
     ExerciseOverview,
     ExerciseJourney,
+    NavPillsComponent,
+    NavPillsItemComponent,
   ],
   providers: [
     provideIcons({
@@ -52,11 +54,6 @@ export class ExerciseDetail implements OnInit {
   lastLogged = signal<string | undefined>(undefined);
   recentSessions = signal<any[]>([]);
 
-  // Pills variant style generator
-  getPillClass(tab: 'overview' | 'journey') {
-    return pillVariants({ active: this.activeTab() === tab });
-  }
-
   setTab(tabName: 'overview' | 'journey') {
     this.activeTab.set(tabName);
   }
@@ -73,7 +70,7 @@ export class ExerciseDetail implements OnInit {
 
           // Fetch journey stats
           if (detail) {
-            const stats = await this.journeyService.getJourneyStats(id);
+            const stats = await this.journeyService.getExerciseJourneyStats(id);
             this.highestWeight.set(stats.highestWeight);
             this.highestWeightReps.set(stats.highestWeightReps);
             this.totalSets.set(stats.totalSets);

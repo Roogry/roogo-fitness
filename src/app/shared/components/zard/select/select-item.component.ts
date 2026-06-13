@@ -10,7 +10,9 @@ import {
   signal,
 } from '@angular/core';
 
-import { ZardIconComponent } from '@/shared/components/zard/icon';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCheck } from '@ng-icons/lucide';
+
 import {
   selectItemIconVariants,
   selectItemVariants,
@@ -28,11 +30,16 @@ interface SelectHost {
 
 @Component({
   selector: 'z-select-item, [z-select-item]',
-  imports: [ZardIconComponent],
+  imports: [NgIcon],
   template: `
     @if (isSelected()) {
       <span [class]="iconClasses()">
-        <z-icon zType="check" [zStrokeWidth]="strokeWidth()" aria-hidden="true" data-testid="check-icon" />
+        <ng-icon
+          name="lucideCheck"
+          [strokeWidth]="strokeWidth()"
+          aria-hidden="true"
+          data-testid="check-icon"
+        />
       </span>
     }
     <span class="truncate">
@@ -40,6 +47,7 @@ interface SelectHost {
     </span>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  viewProviders: [provideIcons({ lucideCheck })],
   host: {
     role: 'option',
     tabindex: '-1',
@@ -81,7 +89,9 @@ export class ZardSelectItemComponent {
 
   protected readonly strokeWidth = computed(() => (this.zMode() === 'compact' ? 3 : 2));
 
-  protected readonly isSelected = computed(() => this.select()?.selectedValue().includes(this.zValue()) ?? false);
+  protected readonly isSelected = computed(
+    () => this.select()?.selectedValue().includes(this.zValue()) ?? false,
+  );
 
   setSelectHost(selectHost: SelectHost) {
     this.select.set(selectHost);
