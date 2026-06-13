@@ -1,25 +1,21 @@
 import { Component, input, signal, computed, inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
-import { ZardCardComponent } from '@/shared/components/zard/card';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
-import { ZardBadgeComponent } from '@/shared/components/zard/badge';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideDumbbell,
   lucideChevronLeft,
   lucideChevronRight,
 } from '@ng-icons/lucide';
-import { Exercise } from '@/shared/models/workout.model';
+import { ExerciseMedia } from '@/shared/models/workout.model';
 
 @Component({
-  selector: 'app-exercise-overview',
+  selector: 'app-exercise-media',
   standalone: true,
   imports: [
     CommonModule,
-    ZardCardComponent,
     ZardButtonComponent,
-    ZardBadgeComponent,
     NgIcon,
   ],
   providers: [
@@ -29,25 +25,25 @@ import { Exercise } from '@/shared/models/workout.model';
       lucideChevronRight,
     }),
   ],
-  templateUrl: './exercise-overview.html',
+  templateUrl: './exercise-media.html',
 })
-export class ExerciseOverview {
+export class ExerciseMediaComponent {
   private sanitizer = inject(DomSanitizer);
 
-  exercise = input.required<Exercise>();
+  media = input.required<ExerciseMedia[]>();
   imageError = false;
   activeMediaIndex = signal(0);
 
   activeSafeUrl = computed(() => {
-    const ex = this.exercise();
+    const list = this.media();
     const idx = this.activeMediaIndex();
-    if (!ex || !ex.media || ex.media.length === 0) return null;
+    if (!list || list.length === 0) return null;
 
-    const media = ex.media[idx];
-    let url = media.media_url;
+    const item = list[idx];
+    let url = item.media_url;
 
     // Convert standard YouTube watch URLs to embed URLs format
-    if (media.media_type === 'youtube') {
+    if (item.media_type === 'youtube') {
       const match = url.match(/[?&]v=([^&]+)/);
       if (match && match[1]) {
         url = `https://www.youtube.com/embed/${match[1]}`;
@@ -61,12 +57,12 @@ export class ExerciseOverview {
   });
 
   nextMedia() {
-    const media = this.exercise()?.media || [];
-    this.activeMediaIndex.update((i) => (i + 1) % media.length);
+    const list = this.media() || [];
+    this.activeMediaIndex.update((i) => (i + 1) % list.length);
   }
 
   prevMedia() {
-    const media = this.exercise()?.media || [];
-    this.activeMediaIndex.update((i) => (i === 0 ? media.length - 1 : i - 1));
+    const list = this.media() || [];
+    this.activeMediaIndex.update((i) => (i === 0 ? list.length - 1 : i - 1));
   }
 }

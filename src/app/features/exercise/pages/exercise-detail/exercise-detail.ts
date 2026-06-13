@@ -11,8 +11,8 @@ import {
   lucidePencil,
 } from '@ng-icons/lucide';
 import { Exercise } from '@/shared/models/workout.model';
-import { ExerciseOverview } from '../../components/exercise-overview/exercise-overview';
-import { ExerciseJourney } from '../../components/exercise-journey/exercise-journey';
+import { ExerciseOverview } from '../exercise-overview/exercise-overview';
+import { ExerciseJourney } from '../exercise-journey/exercise-journey';
 import { pillVariants } from './exercise-detail.variants';
 
 @Component({

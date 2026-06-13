@@ -1,0 +1,28 @@
+<div class="flex flex-col gap-4">
+  <app-exercise-media [media]="exercise().media"></app-exercise-media>
+
+  <div class="pb-6 flex flex-col items-center text-center">
+    <div class="flex flex-wrap items-center justify-center gap-2">
+      <z-badge zType="secondary" zShape="pill">
+        {{ exercise().primary_muscle?.name }}
+      </z-badge>
+      @if (exercise().secondary_muscles; as secondary) {
+        @for (sec of secondary; track sec.id) {
+          <z-badge zType="outline" zShape="pill">
+            Secondary: {{ sec.name }}
+          </z-badge>
+        }
+      }
+    </div>
+  </div>
+
+  <z-card zTitle="About this exercise">
+    <p class="text-sm text-muted-foreground leading-relaxed">
+      Targets the {{ exercise().primary_muscle?.name }} muscles.
+      @if (exercise().short_description) {
+        <br><br>
+        {{ exercise().short_description }}
+      }
+    </p>
+  </z-card>
+</div>

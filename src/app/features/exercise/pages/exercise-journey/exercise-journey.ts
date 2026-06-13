@@ -1,8 +1,7 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ZardCardComponent } from '@/shared/components/zard/card';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideHistory, lucideFlame, lucideCalendar } from '@ng-icons/lucide';
+import { RecentExercise } from '../../components/recent-exercise/recent-exercise';
 
 @Component({
   selector: 'app-exercise-journey',
@@ -10,14 +9,7 @@ import { lucideHistory, lucideFlame, lucideCalendar } from '@ng-icons/lucide';
   imports: [
     CommonModule,
     ZardCardComponent,
-    NgIcon,
-  ],
-  providers: [
-    provideIcons({
-      lucideHistory,
-      lucideFlame,
-      lucideCalendar,
-    }),
+    RecentExercise,
   ],
   templateUrl: './exercise-journey.html',
 })
