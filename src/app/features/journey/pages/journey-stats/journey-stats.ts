@@ -1,8 +1,12 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { JourneyService } from '@/core/services/journey.service';
-import { ZardCalendarGridComponent } from '@/shared/components/calendar/calendar-grid.component';
-import { generateCalendarDays, calendarMonths, makeSafeDate } from '@/shared/components/calendar/calendar.utils';
+import { ZardCalendarGridComponent } from '@/shared/components/zard/calendar/calendar-grid.component';
+import {
+  generateCalendarDays,
+  calendarMonths,
+  makeSafeDate,
+} from '@/shared/components/zard/calendar/calendar.utils';
 import { JourneyStatCardComponent } from '../../components/journey-stat-card/journey-stat-card';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -17,12 +21,7 @@ import {
 @Component({
   selector: 'app-journey-stats',
   standalone: true,
-  imports: [
-    CommonModule,
-    ZardCalendarGridComponent,
-    JourneyStatCardComponent,
-    NgIcon,
-  ],
+  imports: [CommonModule, ZardCalendarGridComponent, JourneyStatCardComponent, NgIcon],
   providers: [
     provideIcons({
       lucideFlame,
@@ -102,7 +101,7 @@ export class JourneyStatsComponent implements OnInit {
       this.lastSession.set(stats.lastSession);
       this.currentStreak.set(stats.currentStreak);
       this.longestStreak.set(stats.longestStreak);
-      
+
       // Map ISO string dates (YYYY-MM-DD) to Date objects
       const dates = stats.workoutDates.map((dateStr) => {
         const [year, month, day] = dateStr.split('-').map(Number);
