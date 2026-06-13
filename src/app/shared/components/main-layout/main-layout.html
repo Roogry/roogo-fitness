@@ -1,4 +1,4 @@
-<div class="h-screen overflow-hidden relative">
+<div class="h-dvh overflow-hidden relative">
   <div class="relative w-full h-[calc(100dvh-80px)] overflow-y-auto overscroll-contain">
     <div class="pb-8">
       <router-outlet />
@@ -7,10 +7,10 @@
 
   <!-- Floating Widget (Hanya muncul jika session berjalan) -->
   @if (workoutService.sessionStartTime() !== null) {
-    <div class="absolute bottom-[100px] left-0 right-0 px-4 pb-2 z-50">
+    <div class="absolute bottom-[100px] left-0 right-0 px-6 pb-2 z-50">
       <app-active-session-widget />
     </div>
   }
 
-  <app-bottom-nav class="z-40" />
+  <app-bottom-nav class="z-40 fixed inset-x-0 bottom-0" />
 </div>

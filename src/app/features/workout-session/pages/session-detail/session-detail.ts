@@ -75,25 +75,6 @@ export class SessionDetail implements OnInit {
 
   onStartSessionClick(event: Event) {
     event.stopPropagation();
-    if (this.workoutService.sessionStartTime()) {
-      this.dialogService.create({
-        zTitle: 'Active Workout Session',
-        zDescription:
-          'You already have an active workout session running. Are you sure you want to start a new workout?',
-        zOkText: 'Start New',
-        zOkDestructive: true,
-        zCancelText: 'Cancel',
-        zOnOk: () => {
-          this.workoutService.clearSession();
-          this.router.navigate(['/session/active'], {
-            queryParams: { planId: this.planId, sessionId: this.sessionId },
-          });
-        },
-      });
-    } else {
-      this.router.navigate(['/session/active'], {
-        queryParams: { planId: this.planId, sessionId: this.sessionId },
-      });
-    }
+    this.workoutService.startSessionFlow(this.planId, this.sessionId);
   }
 }

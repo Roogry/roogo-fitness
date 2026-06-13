@@ -1,4 +1,6 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { DbService } from './db.service';
 import { Exercise, LoggedSession, LoggedExercise, LoggedSet } from '@/shared/models/workout.model';
 
@@ -8,6 +10,8 @@ import { Exercise, LoggedSession, LoggedExercise, LoggedSet } from '@/shared/mod
 export class WorkoutService {
   // Services
   private dbService = inject(DbService);
+  private router = inject(Router);
+  private dialogService = inject(ZardDialogService);
   selectedPlanId = signal<number | null>(null);
   sessionTitle = signal<string>('');
   trackedExercises = signal<LoggedExercise[]>([]);
@@ -264,5 +268,28 @@ export class WorkoutService {
     this.stopSession();
     this.selectedPlanId.set(null);
     this.sessionTitle.set('');
+  }
+
+  startSessionFlow(planId: number | null, sessionId: number | null) {
+    if (this.sessionStartTime()) {
+      this.dialogService.create({
+        zTitle: 'Active Workout Session',
+        zDescription:
+          'You already have an active workout session running. Are you sure you want to start a new workout?',
+        zOkText: 'Start New',
+        zOkDestructive: true,
+        zCancelText: 'Cancel',
+        zOnOk: () => {
+          this.clearSession();
+          this.router.navigate(['/session/active'], {
+            queryParams: { planId, sessionId, autoStart: 'true' },
+          });
+        },
+      });
+    } else {
+      this.router.navigate(['/session/active'], {
+        queryParams: { planId, sessionId, autoStart: 'true' },
+      });
+    }
   }
 }
