@@ -51,7 +51,7 @@ export class ZardButtonComponent implements OnDestroy {
 
   readonly zType = input<ZardButtonTypeVariants>('default');
   readonly zSize = input<ZardButtonSizeVariants>('default');
-  readonly zShape = input<ZardButtonShapeVariants>('default');
+  readonly zShape = input<ZardButtonShapeVariants>('circle');
   readonly class = input<ClassValue>('');
   readonly zFull = input(false, { transform: booleanAttribute });
   readonly zLoading = input(false, { transform: booleanAttribute });
@@ -72,7 +72,7 @@ export class ZardButtonComponent implements OnDestroy {
         const el = this.elementRef.nativeElement;
         const hasIcon = el.querySelector('z-icon, [z-icon]') !== null;
         const children = Array.from<Node>(el.childNodes);
-        const hasText = children.some(node => {
+        const hasText = children.some((node) => {
           if (node.nodeType === 3) {
             return node.textContent?.trim() !== '';
           }

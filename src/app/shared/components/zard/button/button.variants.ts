@@ -55,7 +55,7 @@ export const buttonVariants = cva(
     defaultVariants: {
       zType: 'default',
       zSize: 'default',
-      zShape: 'default',
+      zShape: 'circle',
     },
     compoundVariants: [
       { zShape: 'circle', zSize: 'default', class: 'px-4' },
