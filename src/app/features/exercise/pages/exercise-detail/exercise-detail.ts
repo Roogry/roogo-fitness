@@ -73,7 +73,7 @@ export class ExerciseDetail implements OnInit {
 
           // Fetch journey stats
           if (detail) {
-            const stats = await this.journeyService.getJourneyStats(id);
+            const stats = await this.journeyService.getExerciseJourneyStats(id);
             this.highestWeight.set(stats.highestWeight);
             this.highestWeightReps.set(stats.highestWeightReps);
             this.totalSets.set(stats.totalSets);

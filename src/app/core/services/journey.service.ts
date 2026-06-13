@@ -8,9 +8,9 @@ import { JourneyStats, RecentExerciseSession } from '@/shared/models/workout.mod
 export class JourneyService {
   private dbService = inject(DbService);
 
-  async getJourneyStats(exerciseId: number, limit: number = 4): Promise<JourneyStats> {
+  async getExerciseJourneyStats(exerciseId: number, limit: number = 4): Promise<JourneyStats> {
     const sessions = await this.dbService.getLoggedSessions();
-    
+
     let highestWeight = 0;
     let highestWeightReps = 0;
     let totalSets = 0;
@@ -20,9 +20,7 @@ export class JourneyService {
     // Sessions are already sorted by start_time descending in DbService.getLoggedSessions()
     for (const session of sessions) {
       if (session.workouts) {
-        const matchingWorkout = session.workouts.find(
-          (w) => w.exercise.id === exerciseId
-        );
+        const matchingWorkout = session.workouts.find((w) => w.exercise.id === exerciseId);
 
         if (matchingWorkout && matchingWorkout.sets) {
           totalSets += matchingWorkout.sets.length;
