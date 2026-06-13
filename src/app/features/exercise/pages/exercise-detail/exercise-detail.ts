@@ -1,19 +1,19 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink, RouterModule } from '@angular/router';
 import { WorkoutService } from '@/core/services/workout.service';
-import { ZardCardComponent } from '@/shared/components/zard/card';
+import { JourneyService } from '@/core/services/journey.service';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { HeaderComponent } from '@/shared/components/header/header.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideDumbbell,
   lucidePencil,
-  lucideChevronLeft,
-  lucideChevronRight,
 } from '@ng-icons/lucide';
 import { Exercise } from '@/shared/models/workout.model';
+import { ExerciseOverview } from '../../components/exercise-overview/exercise-overview';
+import { ExerciseJourney } from '../../components/exercise-journey/exercise-journey';
+import { pillVariants } from './exercise-detail.variants';
 
 @Component({
   selector: 'app-exercise-detail',
@@ -22,17 +22,16 @@ import { Exercise } from '@/shared/models/workout.model';
     CommonModule,
     RouterModule,
     RouterLink,
-    ZardCardComponent,
     ZardButtonComponent,
     HeaderComponent,
     NgIcon,
+    ExerciseOverview,
+    ExerciseJourney,
   ],
   providers: [
     provideIcons({
       lucideDumbbell,
       lucidePencil,
-      lucideChevronLeft,
-      lucideChevronRight,
     }),
   ],
   templateUrl: './exercise-detail.html',
@@ -41,43 +40,26 @@ import { Exercise } from '@/shared/models/workout.model';
 export class ExerciseDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private workoutService = inject(WorkoutService);
-  private sanitizer = inject(DomSanitizer);
+  private journeyService = inject(JourneyService);
 
   exercise = signal<Exercise | undefined>(undefined);
   isLoading = signal<boolean>(true);
-  imageError = false;
-  activeMediaIndex = signal(0);
+  
+  // Tab state
+  activeTab = signal<'overview' | 'journey'>('overview');
+  
+  // Journey data
+  highestWeight = signal<number>(0);
+  totalSets = signal<number>(0);
+  recentSessions = signal<any[]>([]);
 
-  activeSafeUrl = computed(() => {
-    const ex = this.exercise();
-    const idx = this.activeMediaIndex();
-    if (!ex || !ex.media || ex.media.length === 0) return null;
-
-    const media = ex.media[idx];
-    let url = media.media_url;
-
-    // Convert standard YouTube watch URLs to embed URLs format
-    if (media.media_type === 'youtube') {
-      const match = url.match(/[?&]v=([^&]+)/);
-      if (match && match[1]) {
-        url = `https://www.youtube.com/embed/${match[1]}`;
-      } else if (url.includes('youtu.be/')) {
-        const id = url.split('youtu.be/')[1].split('?')[0];
-        url = `https://www.youtube.com/embed/${id}`;
-      }
-    }
-
-    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
-  });
-
-  nextMedia() {
-    const media = this.exercise()?.media || [];
-    this.activeMediaIndex.update((i) => (i + 1) % media.length);
+  // Pills variant style generator
+  getPillClass(tab: 'overview' | 'journey') {
+    return pillVariants({ active: this.activeTab() === tab });
   }
 
-  prevMedia() {
-    const media = this.exercise()?.media || [];
-    this.activeMediaIndex.update((i) => (i === 0 ? media.length - 1 : i - 1));
+  setTab(tabName: 'overview' | 'journey') {
+    this.activeTab.set(tabName);
   }
 
   ngOnInit() {
@@ -89,6 +71,18 @@ export class ExerciseDetail implements OnInit {
         try {
           const detail = await this.workoutService.getExerciseById(id);
           this.exercise.set(detail);
+
+          // Fetch journey stats
+          if (detail) {
+            const [pr, sets, sessions] = await Promise.all([
+              this.journeyService.getHighestWeight(id),
+              this.journeyService.getTotalSets(id),
+              this.journeyService.getRecentSessions(id),
+            ]);
+            this.highestWeight.set(pr);
+            this.totalSets.set(sets);
+            this.recentSessions.set(sessions);
+          }
         } catch (error) {
           console.error('Failed to load exercise', error);
         } finally {
@@ -100,3 +94,4 @@ export class ExerciseDetail implements OnInit {
     });
   }
 }
+

@@ -129,6 +129,7 @@ export class SessionActive implements OnInit {
 
   openDiscardConfirm() {
     this.dialogRef = this.dialogService.create({
+      zWidth: '400px',
       zContent: this.discardDialogTemplate,
       zTitle: 'Discard Session?',
       zHideFooter: true,

@@ -1,0 +1,103 @@
+<div class="flex flex-col gap-4">
+  @if (exercise().media && exercise().media.length > 0) {
+    <div
+      class="relative w-full aspect-video bg-muted rounded-4xl overflow-hidden border border-border flex items-center justify-center group"
+    >
+      @let activeMedia = exercise().media[activeMediaIndex()];
+
+      @if (activeMedia.media_type === 'youtube') {
+        <iframe
+          [src]="activeSafeUrl()"
+          class="w-full h-full"
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
+      } @else if (activeMedia.media_type === 'video') {
+        <video
+          [src]="activeMedia.media_url"
+          class="w-full h-full object-cover"
+          controls
+          playsinline
+        ></video>
+      } @else {
+        <img
+          [src]="activeMedia.media_url"
+          class="w-full h-full object-cover"
+          (error)="imageError = true"
+          [class.hidden]="imageError"
+        />
+        @if (imageError) {
+          <ng-icon name="lucideDumbbell" class="h-10 w-10 text-muted-foreground"></ng-icon>
+        }
+      }
+
+      <!-- Carousel Controls -->
+      @if (exercise().media.length > 1) {
+        <div
+          class="absolute inset-x-0 flex justify-between items-center px-2 opacity-0 group-hover:opacity-100 transition-opacity"
+        >
+          <button
+            z-button
+            zType="outline"
+            zSize="icon"
+            class="h-8 w-8 rounded-full bg-background/80 backdrop-blur"
+            (click)="prevMedia()"
+          >
+            <ng-icon name="lucideChevronLeft" class="h-4 w-4"></ng-icon>
+          </button>
+          <button
+            z-button
+            zType="outline"
+            zSize="icon"
+            class="h-8 w-8 rounded-full bg-background/80 backdrop-blur"
+            (click)="nextMedia()"
+          >
+            <ng-icon name="lucideChevronRight" class="h-4 w-4"></ng-icon>
+          </button>
+        </div>
+
+        <!-- Dots -->
+        <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
+          @for (m of exercise().media; track m.id; let i = $index) {
+            <div
+              class="h-1.5 w-1.5 rounded-full transition-all"
+              [class.bg-white]="activeMediaIndex() === i"
+              [class.bg-white/50]="activeMediaIndex() !== i"
+            ></div>
+          }
+        </div>
+      }
+    </div>
+  } @else {
+    <div
+      class="h-20 w-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center"
+    >
+      <ng-icon name="lucideDumbbell" class="h-10 w-10 text-primary"></ng-icon>
+    </div>
+  }
+
+  <div class="pb-6 flex flex-col items-center text-center">
+    <div class="flex flex-wrap items-center justify-center gap-2">
+      <z-badge zType="secondary" zShape="pill">
+        {{ exercise().primary_muscle?.name }}
+      </z-badge>
+      @if (exercise().secondary_muscles; as secondary) {
+        @for (sec of secondary; track sec.id) {
+          <z-badge zType="outline" zShape="pill">
+            Secondary: {{ sec.name }}
+          </z-badge>
+        }
+      }
+    </div>
+  </div>
+
+  <z-card zTitle="About this exercise">
+    <p class="text-sm text-muted-foreground leading-relaxed">
+      Targets the {{ exercise().primary_muscle?.name }} muscles.
+      @if (exercise().short_description) {
+        <br><br>
+        {{ exercise().short_description }}
+      }
+    </p>
+  </z-card>
+</div>
