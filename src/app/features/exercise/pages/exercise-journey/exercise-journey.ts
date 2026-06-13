@@ -8,12 +8,7 @@ import { lucideFlame } from '@ng-icons/lucide';
 @Component({
   selector: 'app-exercise-journey',
   standalone: true,
-  imports: [
-    CommonModule,
-    ZardCardComponent,
-    RecentExerciseCardComponent,
-    NgIcon,
-  ],
+  imports: [CommonModule, ZardCardComponent, RecentExerciseCardComponent, NgIcon],
   providers: [
     provideIcons({
       lucideFlame,

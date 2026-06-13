@@ -7,11 +7,7 @@ import { lucideCalendar } from '@ng-icons/lucide';
 @Component({
   selector: 'app-recent-exercise-card',
   standalone: true,
-  imports: [
-    CommonModule,
-    ZardCardComponent,
-    NgIcon,
-  ],
+  imports: [CommonModule, ZardCardComponent, NgIcon],
   providers: [
     provideIcons({
       lucideCalendar,

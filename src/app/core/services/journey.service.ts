@@ -53,9 +53,7 @@ export class JourneyService {
     // Sessions are already sorted by start_time descending in DbService.getLoggedSessions()
     for (const session of sessions) {
       if (session.workouts) {
-        const matchingWorkout = session.workouts.find(
-          (w) => w.exercise.id === exerciseId
-        );
+        const matchingWorkout = session.workouts.find((w) => w.exercise.id === exerciseId);
 
         if (matchingWorkout && matchingWorkout.sets && matchingWorkout.sets.length > 0) {
           result.push({

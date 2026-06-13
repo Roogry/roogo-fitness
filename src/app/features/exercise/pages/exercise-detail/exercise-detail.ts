@@ -6,10 +6,7 @@ import { JourneyService } from '@/core/services/journey.service';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { HeaderComponent } from '@/shared/components/header/header.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import {
-  lucideDumbbell,
-  lucidePencil,
-} from '@ng-icons/lucide';
+import { lucideDumbbell, lucidePencil } from '@ng-icons/lucide';
 import { Exercise } from '@/shared/models/workout.model';
 import { ExerciseOverview } from '../exercise-overview/exercise-overview';
 import { ExerciseJourney } from '../exercise-journey/exercise-journey';
@@ -44,10 +41,10 @@ export class ExerciseDetail implements OnInit {
 
   exercise = signal<Exercise | undefined>(undefined);
   isLoading = signal<boolean>(true);
-  
+
   // Tab state
   activeTab = signal<'overview' | 'journey'>('overview');
-  
+
   // Journey data
   highestWeight = signal<number>(0);
   totalSets = signal<number>(0);
@@ -94,4 +91,3 @@ export class ExerciseDetail implements OnInit {
     });
   }
 }
-
