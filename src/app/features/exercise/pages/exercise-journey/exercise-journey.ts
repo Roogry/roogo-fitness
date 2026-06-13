@@ -5,6 +5,8 @@ import { RecentExerciseCardComponent } from '../../components/recent-exercise-ca
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideFlame } from '@ng-icons/lucide';
 
+import { RecentExerciseSession } from '@/shared/models/workout.model';
+
 @Component({
   selector: 'app-exercise-journey',
   standalone: true,
@@ -18,6 +20,8 @@ import { lucideFlame } from '@ng-icons/lucide';
 })
 export class ExerciseJourney {
   highestWeight = input.required<number>();
+  highestWeightReps = input.required<number>();
   totalSets = input.required<number>();
-  recentSessions = input.required<any[]>();
+  lastLogged = input<string | undefined>(undefined);
+  recentSessions = input.required<RecentExerciseSession[]>();
 }

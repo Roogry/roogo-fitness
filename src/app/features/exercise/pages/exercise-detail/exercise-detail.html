@@ -38,16 +38,19 @@
         </div>
 
         <!-- Tab Contents -->
-        @if (activeTab() === 'overview') {
-          <app-exercise-overview [exercise]="exercise()!" />
-        }
-
-        @if (activeTab() === 'journey') {
-          <app-exercise-journey
-            [highestWeight]="highestWeight()"
-            [totalSets]="totalSets()"
-            [recentSessions]="recentSessions()"
-          />
+        @switch (activeTab()) {
+          @case ('overview') {
+            <app-exercise-overview [exercise]="exercise()!" />
+          }
+          @case ('journey') {
+            <app-exercise-journey
+              [highestWeight]="highestWeight()"
+              [highestWeightReps]="highestWeightReps()"
+              [totalSets]="totalSets()"
+              [lastLogged]="lastLogged()"
+              [recentSessions]="recentSessions()"
+            />
+          }
         }
       </div>
     } @else {
