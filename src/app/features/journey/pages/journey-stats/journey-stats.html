@@ -1,0 +1,45 @@
+<div class="w-full flex flex-col gap-6">
+  @if (isLoading()) {
+    <div class="flex items-center justify-center p-12">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+  } @else {
+    <!-- Calendar View -->
+    <div
+      class="flex flex-col items-center justify-center bg-card p-4 rounded-3xl border border-border shadow-xs"
+    >
+      <z-calendar
+        zMode="multiple"
+        [value]="workoutDates()"
+        class="border-0 bg-transparent p-0"
+      ></z-calendar>
+    </div>
+
+    <!-- Streak Metrics Grid -->
+    <div class="grid grid-cols-2 gap-4">
+      <app-journey-stat-card
+        icon="lucideFlame"
+        title="Current Streak"
+        [value]="currentStreak() === 1 ? '1 Week' : currentStreak() + ' Weeks'"
+      ></app-journey-stat-card>
+
+      <app-journey-stat-card
+        icon="lucideTrophy"
+        title="Longest Streak"
+        [value]="longestStreak() === 1 ? '1 Week' : longestStreak() + ' Weeks'"
+      ></app-journey-stat-card>
+
+      <app-journey-stat-card
+        icon="lucideDumbbell"
+        title="Total Sessions"
+        [value]="totalSessions() === 1 ? '1 Session' : totalSessions() + ' Sessions'"
+      ></app-journey-stat-card>
+
+      <app-journey-stat-card
+        icon="lucideCalendar"
+        title="Last Session"
+        [value]="lastSession()"
+      ></app-journey-stat-card>
+    </div>
+  }
+</div>

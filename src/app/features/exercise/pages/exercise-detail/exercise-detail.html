@@ -30,12 +30,10 @@
     } @else if (exercise()) {
       <div class="flex flex-col gap-4">
         <!-- Pills Navigation -->
-        <div
-          class="flex p-1 bg-muted/60 rounded-full w-full max-w-xs mx-auto mb-2 border border-border/50"
-        >
-          <button [class]="getPillClass('overview')" (click)="setTab('overview')">Overview</button>
-          <button [class]="getPillClass('journey')" (click)="setTab('journey')">Journey</button>
-        </div>
+        <app-nav-pills>
+          <button app-nav-pills-item [active]="activeTab() === 'overview'" (click)="setTab('overview')">Overview</button>
+          <button app-nav-pills-item [active]="activeTab() === 'journey'" (click)="setTab('journey')">Journey</button>
+        </app-nav-pills>
 
         <!-- Tab Contents -->
         @switch (activeTab()) {

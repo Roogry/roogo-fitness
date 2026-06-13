@@ -1,33 +1,27 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideActivity } from '@ng-icons/lucide';
 import { HeaderComponent } from '@/shared/components/header/header.component';
-import { LoggedWorkoutCardComponent } from '@/features/journey/components/logged-workout-card/logged-workout-card';
-import { WorkoutService } from '@/core/services/workout.service';
-import { LoggedSession } from '@/shared/models/workout.model';
+import { NavPillsComponent, NavPillsItemComponent } from '@/shared/components/nav-pills';
+import { JourneyHistoryComponent } from '../journey-history/journey-history';
+import { JourneyStatsComponent } from '../journey-stats/journey-stats';
 
 @Component({
   selector: 'app-journey',
-  imports: [CommonModule, HeaderComponent, LoggedWorkoutCardComponent, NgIcon],
-  providers: [provideIcons({ lucideActivity })],
+  standalone: true,
+  imports: [
+    CommonModule,
+    HeaderComponent,
+    NavPillsComponent,
+    NavPillsItemComponent,
+    JourneyHistoryComponent,
+    JourneyStatsComponent,
+  ],
   templateUrl: './journey-list.html',
 })
-export class JourneyList implements OnInit {
-  protected readonly journey = signal<LoggedSession[]>([]);
-  protected readonly isLoading = signal<boolean>(true);
+export class JourneyList {
+  activeTab = signal<'stats' | 'history'>('stats');
 
-  constructor(private workoutService: WorkoutService) {}
-
-  async ngOnInit() {
-    try {
-      this.isLoading.set(true);
-      const sessions = await this.workoutService.getLoggedWorkoutSessions();
-      this.journey.set(sessions);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      this.isLoading.set(false);
-    }
+  setTab(tab: 'stats' | 'history') {
+    this.activeTab.set(tab);
   }
 }
