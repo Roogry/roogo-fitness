@@ -1,8 +1,10 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, signal, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { DbService } from './db.service';
 import { Exercise, LoggedSession, LoggedExercise, LoggedSet } from '@/shared/models/workout.model';
+
+const ACTIVE_SESSION_STORAGE_KEY = 'roogo_active_session';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +20,63 @@ export class WorkoutService {
   sessionStartTime = signal<number | null>(null);
   sessionDuration = signal<number>(0);
   private durationInterval: any;
+  private isRestoring = false;
+
+  constructor() {
+    effect((onCleanup) => {
+      this.selectedPlanId();
+      this.sessionTitle();
+      this.trackedExercises();
+      this.sessionStartTime();
+
+      const timeoutId = setTimeout(() => {
+        this.saveStateToLocalStorage();
+      }, 500);
+
+      onCleanup(() => clearTimeout(timeoutId));
+    });
+
+    this.loadStateFromLocalStorage();
+  }
+
+  private saveStateToLocalStorage() {
+    if (this.isRestoring) return;
+
+    const stateToSave = {
+      selectedPlanId: this.selectedPlanId(),
+      sessionTitle: this.sessionTitle(),
+      trackedExercises: this.trackedExercises(),
+      sessionStartTime: this.sessionStartTime(),
+      sessionDuration: this.sessionDuration(),
+    };
+
+    localStorage.setItem(ACTIVE_SESSION_STORAGE_KEY, JSON.stringify(stateToSave));
+  }
+
+  private loadStateFromLocalStorage() {
+    const savedData = localStorage.getItem(ACTIVE_SESSION_STORAGE_KEY);
+    if (savedData) {
+      try {
+        this.isRestoring = true;
+        const parsed = JSON.parse(savedData);
+
+        this.selectedPlanId.set(parsed.selectedPlanId ?? null);
+        this.sessionTitle.set(parsed.sessionTitle ?? '');
+        this.trackedExercises.set(parsed.trackedExercises ?? []);
+
+        if (parsed.sessionStartTime) {
+          this.sessionStartTime.set(parsed.sessionStartTime);
+          this.sessionDuration.set(parsed.sessionDuration ?? 0);
+
+          this.startSessionTimer();
+        }
+      } catch (error) {
+        console.error('Gagal me-restore session dari local storage', error);
+      } finally {
+        this.isRestoring = false;
+      }
+    }
+  }
 
   // Computed state for UI convenience
   hasExercise = computed(() => this.trackedExercises().length > 0);
@@ -143,9 +202,11 @@ export class WorkoutService {
   }
 
   startSessionTimer() {
-    if (this.sessionStartTime()) return;
+    if (this.durationInterval) return;
 
-    this.sessionStartTime.set(Date.now());
+    if (!this.sessionStartTime()) {
+      this.sessionStartTime.set(Date.now());
+    }
     this.durationInterval = setInterval(() => {
       if (this.sessionStartTime()) {
         this.sessionDuration.set(Math.floor((Date.now() - this.sessionStartTime()!) / 1000));
@@ -268,6 +329,7 @@ export class WorkoutService {
     this.stopSession();
     this.selectedPlanId.set(null);
     this.sessionTitle.set('');
+    localStorage.removeItem(ACTIVE_SESSION_STORAGE_KEY);
   }
 
   startSessionFlow(planId: number | null, sessionId: number | null) {
