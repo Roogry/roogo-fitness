@@ -2,10 +2,10 @@ import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideFlame, lucideCalendar } from '@ng-icons/lucide';
+import { lucideCalendar } from '@ng-icons/lucide';
 
 @Component({
-  selector: 'app-recent-exercise',
+  selector: 'app-recent-exercise-card',
   standalone: true,
   imports: [
     CommonModule,
@@ -14,12 +14,11 @@ import { lucideFlame, lucideCalendar } from '@ng-icons/lucide';
   ],
   providers: [
     provideIcons({
-      lucideFlame,
       lucideCalendar,
     }),
   ],
-  templateUrl: './recent-exercise.html',
+  templateUrl: './recent-exercise-card.html',
 })
-export class RecentExercise {
-  recentSessions = input.required<any[]>();
+export class RecentExerciseCardComponent {
+  session = input.required<any>();
 }

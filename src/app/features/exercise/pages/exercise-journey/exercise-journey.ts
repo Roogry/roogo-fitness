@@ -1,7 +1,9 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ZardCardComponent } from '@/shared/components/zard/card';
-import { RecentExercise } from '../../components/recent-exercise/recent-exercise';
+import { RecentExerciseCardComponent } from '../../components/recent-exercise-card/recent-exercise-card';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideFlame } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-exercise-journey',
@@ -9,7 +11,13 @@ import { RecentExercise } from '../../components/recent-exercise/recent-exercise
   imports: [
     CommonModule,
     ZardCardComponent,
-    RecentExercise,
+    RecentExerciseCardComponent,
+    NgIcon,
+  ],
+  providers: [
+    provideIcons({
+      lucideFlame,
+    }),
   ],
   templateUrl: './exercise-journey.html',
 })
