@@ -47,7 +47,9 @@ export class ExerciseDetail implements OnInit {
 
   // Journey data
   highestWeight = signal<number>(0);
+  highestWeightReps = signal<number>(0);
   totalSets = signal<number>(0);
+  lastLogged = signal<string | undefined>(undefined);
   recentSessions = signal<any[]>([]);
 
   // Pills variant style generator
@@ -71,14 +73,12 @@ export class ExerciseDetail implements OnInit {
 
           // Fetch journey stats
           if (detail) {
-            const [pr, sets, sessions] = await Promise.all([
-              this.journeyService.getHighestWeight(id),
-              this.journeyService.getTotalSets(id),
-              this.journeyService.getRecentSessions(id),
-            ]);
-            this.highestWeight.set(pr);
-            this.totalSets.set(sets);
-            this.recentSessions.set(sessions);
+            const stats = await this.journeyService.getJourneyStats(id);
+            this.highestWeight.set(stats.highestWeight);
+            this.highestWeightReps.set(stats.highestWeightReps);
+            this.totalSets.set(stats.totalSets);
+            this.lastLogged.set(stats.lastLogged);
+            this.recentSessions.set(stats.recentSessions);
           }
         } catch (error) {
           console.error('Failed to load exercise', error);
