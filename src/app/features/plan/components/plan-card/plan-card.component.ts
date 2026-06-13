@@ -17,7 +17,6 @@ import {
 import { WorkoutService } from '@/core/services/workout.service';
 import { PlanService } from '@/core/services/plan.service';
 import { Router } from '@angular/router';
-import { ZardDialogService } from '@/shared/components/zard/dialog';
 
 @Component({
   selector: 'app-plan-card',
@@ -53,7 +52,6 @@ export class PlanCardComponent {
   router = inject(Router);
   workoutService = inject(WorkoutService);
   planService = inject(PlanService);
-  dialogService = inject(ZardDialogService);
   isOpenPlanActions = signal(false);
 
   getExerciseNames(session: WorkoutPlanSession): string {
@@ -99,25 +97,6 @@ export class PlanCardComponent {
 
   onStartSessionClick(sessionId: number, event: Event) {
     event.stopPropagation();
-    if (this.workoutService.sessionStartTime()) {
-      this.dialogService.create({
-        zTitle: 'Active Workout Session',
-        zDescription:
-          'You already have an active workout session running. Are you sure you want to start a new workout?',
-        zOkText: 'Start New',
-        zOkDestructive: true,
-        zCancelText: 'Cancel',
-        zOnOk: () => {
-          this.workoutService.clearSession();
-          this.router.navigate(['/session/active'], {
-            queryParams: { planId: this.plan.id, sessionId },
-          });
-        },
-      });
-    } else {
-      this.router.navigate(['/session/active'], {
-        queryParams: { planId: this.plan.id, sessionId },
-      });
-    }
+    this.workoutService.startSessionFlow(this.plan.id, sessionId);
   }
 }

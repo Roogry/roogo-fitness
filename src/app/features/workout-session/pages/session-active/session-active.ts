@@ -87,6 +87,7 @@ export class SessionActive implements OnInit {
     this.route.queryParamMap.subscribe(async (queryParams) => {
       const planId = queryParams.get('planId');
       const sessionId = queryParams.get('sessionId');
+      const autoStart = queryParams.get('autoStart');
 
       if (planId && sessionId) {
         // Jika sesi dengan planId ini sudah berjalan, jangan timpa datanya agar input pengguna tidak hilang
@@ -97,6 +98,10 @@ export class SessionActive implements OnInit {
           return;
         }
         await this.workoutService.startSessionFromPlan(Number(planId), Number(sessionId));
+
+        if (autoStart === 'true' && !this.workoutService.sessionStartTime()) {
+          this.workoutService.startSessionTimer();
+        }
       } else {
         // Jika sesi aktif sedang berjalan (baik empty session maupun dari plan), jangan hapus/reset
         if (this.workoutService.sessionStartTime()) {
