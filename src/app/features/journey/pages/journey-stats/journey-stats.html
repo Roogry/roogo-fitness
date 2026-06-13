@@ -6,13 +6,42 @@
   } @else {
     <!-- Calendar View -->
     <div
-      class="flex flex-col items-center justify-center bg-card p-4 rounded-3xl border border-border shadow-xs"
+      class="flex flex-col bg-card p-5 rounded-3xl border border-border shadow-xs w-full"
+      (touchstart)="onTouchStart($event)"
+      (touchend)="onTouchEnd($event)"
     >
-      <z-calendar
-        zMode="multiple"
-        [value]="workoutDates()"
-        class="border-0 bg-transparent p-0"
-      ></z-calendar>
+      <!-- Navigation Header -->
+      <div class="flex items-center justify-between w-full px-2">
+        <button
+          type="button"
+          (click)="onPreviousMonth()"
+          class="flex items-center justify-center p-1.5 rounded-lg border border-border bg-background hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+          aria-label="Previous month"
+        >
+          <ng-icon name="lucideChevronLeft" class="w-4 h-4"></ng-icon>
+        </button>
+        <span class="text-sm font-semibold text-foreground">
+          {{ monthName() }} {{ currentYear() }}
+        </span>
+        <button
+          type="button"
+          (click)="onNextMonth()"
+          class="flex items-center justify-center p-1.5 rounded-lg border border-border bg-background hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+          aria-label="Next month"
+        >
+          <ng-icon name="lucideChevronRight" class="w-4 h-4"></ng-icon>
+        </button>
+      </div>
+
+      <!-- Calendar Grid -->
+      <div class="w-full mt-4 select-none">
+        <z-calendar-grid
+          class="w-full block [&_.grid]:w-full [&_[role=row]]:w-full [&_[role=rowgroup]]:w-full [&_[role=gridcell]]:flex [&_[role=gridcell]]:justify-center [&_[role=columnheader]]:flex [&_[role=columnheader]]:justify-center"
+          [calendarDays]="calendarDays()"
+          (previousMonth)="onPreviousMonth()"
+          (nextMonth)="onNextMonth()"
+        />
+      </div>
     </div>
 
     <!-- Streak Metrics Grid -->

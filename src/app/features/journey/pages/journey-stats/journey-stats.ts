@@ -1,18 +1,27 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { JourneyService } from '@/core/services/journey.service';
-import { ZardCalendarComponent } from '@/shared/components/calendar';
+import { ZardCalendarGridComponent } from '@/shared/components/calendar/calendar-grid.component';
+import { generateCalendarDays, calendarMonths, makeSafeDate } from '@/shared/components/calendar/calendar.utils';
 import { JourneyStatCardComponent } from '../../components/journey-stat-card/journey-stat-card';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideFlame, lucideTrophy, lucideCalendar, lucideDumbbell } from '@ng-icons/lucide';
+import {
+  lucideFlame,
+  lucideTrophy,
+  lucideCalendar,
+  lucideDumbbell,
+  lucideChevronLeft,
+  lucideChevronRight,
+} from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-journey-stats',
   standalone: true,
   imports: [
     CommonModule,
-    ZardCalendarComponent,
+    ZardCalendarGridComponent,
     JourneyStatCardComponent,
+    NgIcon,
   ],
   providers: [
     provideIcons({
@@ -20,6 +29,8 @@ import { lucideFlame, lucideTrophy, lucideCalendar, lucideDumbbell } from '@ng-i
       lucideTrophy,
       lucideCalendar,
       lucideDumbbell,
+      lucideChevronLeft,
+      lucideChevronRight,
     }),
   ],
   templateUrl: './journey-stats.html',
@@ -33,6 +44,55 @@ export class JourneyStatsComponent implements OnInit {
   longestStreak = signal<number>(0);
   workoutDates = signal<Date[]>([]);
   isLoading = signal<boolean>(true);
+
+  // Custom Calendar state
+  currentDate = signal<Date>(new Date());
+  currentMonth = computed(() => this.currentDate().getMonth());
+  currentYear = computed(() => this.currentDate().getFullYear());
+  monthName = computed(() => calendarMonths[this.currentMonth()]);
+
+  calendarDays = computed(() => {
+    return generateCalendarDays({
+      year: this.currentYear(),
+      month: this.currentMonth(),
+      mode: 'multiple',
+      selectedDates: this.workoutDates(),
+      minDate: null,
+      maxDate: null,
+      disabled: false,
+    });
+  });
+
+  onPreviousMonth() {
+    const prev = makeSafeDate(this.currentYear(), this.currentMonth() - 1, 1);
+    this.currentDate.set(prev);
+  }
+
+  onNextMonth() {
+    const next = makeSafeDate(this.currentYear(), this.currentMonth() + 1, 1);
+    this.currentDate.set(next);
+  }
+
+  // Swipe gesture handling
+  private touchStartX = 0;
+
+  onTouchStart(event: TouchEvent) {
+    this.touchStartX = event.touches[0].clientX;
+  }
+
+  onTouchEnd(event: TouchEvent) {
+    const touchEndX = event.changedTouches[0].clientX;
+    const diff = touchEndX - this.touchStartX;
+    const minSwipeDistance = 50; // pixels
+
+    if (Math.abs(diff) > minSwipeDistance) {
+      if (diff > 0) {
+        this.onPreviousMonth();
+      } else {
+        this.onNextMonth();
+      }
+    }
+  }
 
   async ngOnInit() {
     try {
