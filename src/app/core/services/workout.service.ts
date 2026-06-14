@@ -121,7 +121,7 @@ export class WorkoutService {
     return this.dbService.getExerciseByKey(id);
   }
 
-  async startSessionFromPlan(planId: number, sessionId: number) {
+  async setupSessionFromPlan(planId: number, sessionId: number) {
     const plan = await this.dbService.getWorkoutPlan(planId);
     if (!plan) throw new Error('Plan not found');
 

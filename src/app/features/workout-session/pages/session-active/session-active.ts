@@ -50,6 +50,8 @@ export class SessionActive implements OnInit {
   @ViewChild('discardDialog') discardDialogTemplate!: TemplateRef<any>;
   private dialogRef?: ZardDialogRef<any>;
 
+  isAddSheetOpen = signal(false);
+  isFinishSheetOpen = signal(false);
   titleModel = signal({
     title: '',
     note: '',
@@ -59,20 +61,6 @@ export class SessionActive implements OnInit {
     required(f.title, { message: 'Session title is required' });
   });
 
-  // State
-  isAddSheetOpen = signal(false);
-  isFinishSheetOpen = signal(false);
-
-  constructor() {
-    effect(() => {
-      const extTitle = this.workoutService.sessionTitle();
-      if (extTitle !== this.titleModel().title) {
-        this.titleModel.set({ title: extTitle, note: this.titleModel().note });
-        this.titleForm().reset();
-      }
-    });
-  }
-
   ngOnInit() {
     this.setupSessionData();
   }
@@ -81,29 +69,28 @@ export class SessionActive implements OnInit {
     this.route.queryParamMap.subscribe(async (queryParams) => {
       const planId = queryParams.get('planId');
       const sessionId = queryParams.get('sessionId');
-      const autoStart = queryParams.get('autoStart');
+      const autoStart = queryParams.get('autoStart') === 'true';
+
+      const isSessionAlreadyRunning = !!this.workoutService.sessionStartTime();
 
       if (planId && sessionId) {
-        // Jika sesi dengan planId ini sudah berjalan, jangan timpa datanya agar input pengguna tidak hilang
-        if (
-          this.workoutService.sessionStartTime() &&
-          this.workoutService.selectedPlanId() === Number(planId)
-        ) {
-          return;
-        }
-        await this.workoutService.startSessionFromPlan(Number(planId), Number(sessionId));
+        if (!isSessionAlreadyRunning || this.workoutService.selectedPlanId() !== Number(planId)) {
+          await this.workoutService.setupSessionFromPlan(Number(planId), Number(sessionId));
 
-        if (autoStart === 'true' && !this.workoutService.sessionStartTime()) {
-          this.workoutService.startSessionTimer();
+          if (autoStart && !this.workoutService.sessionStartTime()) {
+            this.workoutService.startSessionTimer();
+          }
         }
-      } else {
-        // Jika sesi aktif sedang berjalan (baik empty session maupun dari plan), jangan hapus/reset
-        if (this.workoutService.sessionStartTime()) {
-          return;
-        }
+      } else if (!isSessionAlreadyRunning) {
         this.workoutService.clearSession();
         this.workoutService.sessionTitle.set('Workout Session');
       }
+
+      this.titleModel.set({
+        title: this.workoutService.sessionTitle(),
+        note: this.titleModel().note || '',
+      });
+      this.titleForm().reset();
     });
   }
 
@@ -117,10 +104,12 @@ export class SessionActive implements OnInit {
   }
 
   async finishSession() {
+    this.isFinishSheetOpen.set(false);
+
     const title = this.titleModel().title;
     const note = this.titleModel().note;
-    this.isFinishSheetOpen.set(false);
     await this.workoutService.finishSession(title, note);
+
     this.router.navigate(['/journey'], { queryParams: { tab: 'history' } });
   }
 
