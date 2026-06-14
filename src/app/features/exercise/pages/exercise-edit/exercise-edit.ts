@@ -74,6 +74,7 @@ export class ExerciseEdit implements OnInit {
   exerciseModel = signal({
     name: '',
     primaryGroup: '',
+    short_description: '',
     tips: '',
     instructions: [] as string[],
   });
@@ -111,6 +112,7 @@ export class ExerciseEdit implements OnInit {
         this.exerciseModel.set({
           name: exercise.name,
           primaryGroup: exercise.primary_muscle?.name || '',
+          short_description: exercise.short_description || '',
           tips: exercise.tips || '',
           instructions: exercise.instructions || [],
         });
@@ -219,6 +221,7 @@ export class ExerciseEdit implements OnInit {
       this.isSaving.set(true);
 
       const name = f.name().value().trim();
+      const shortDescription = f.short_description().value().trim();
       const primaryName = f.primaryGroup().value().trim();
       const primaryMuscle = this.availableMuscles().find((m) => m.name === primaryName);
       const secondaryMuscles = this.secondaryMuscles()
@@ -232,6 +235,7 @@ export class ExerciseEdit implements OnInit {
 
       this.exerciseService.updateExercise(this.selectedExercise()!, {
         name: name,
+        short_description: shortDescription,
         primary_muscle: primaryMuscle,
         secondary_muscles: secondaryMuscles.length ? secondaryMuscles : undefined,
         media: this.media(),

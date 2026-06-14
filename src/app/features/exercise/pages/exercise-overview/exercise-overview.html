@@ -16,11 +16,7 @@
 
   <z-card zTitle="About this exercise">
     <p class="text-sm text-muted-foreground leading-relaxed">
-      Targets the {{ exercise().primary_muscle?.name }} muscles.
-      @if (exercise().short_description) {
-        <br /><br />
-        {{ exercise().short_description }}
-      }
+      {{ exercise().short_description }}
     </p>
   </z-card>
 

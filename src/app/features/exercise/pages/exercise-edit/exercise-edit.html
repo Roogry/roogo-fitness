@@ -40,6 +40,26 @@
           <z-form-field class="flex flex-col gap-3">
             <label
               z-form-label
+              for="short_description"
+              class="text-sm font-medium leading-none"
+            >
+              Short Description
+            </label>
+            <z-form-control>
+              <textarea
+                id="short_description"
+                z-input
+                [formField]="exerciseForm.short_description"
+                placeholder="e.g. A brief description of the exercise..."
+                rows="3"
+                class="w-full min-h-[80px] p-3"
+              ></textarea>
+            </z-form-control>
+          </z-form-field>
+
+          <z-form-field class="flex flex-col gap-3">
+            <label
+              z-form-label
               for="muscle"
               class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
