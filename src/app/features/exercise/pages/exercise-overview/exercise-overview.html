@@ -8,9 +8,7 @@
       </z-badge>
       @if (exercise().secondary_muscles; as secondary) {
         @for (sec of secondary; track sec.id) {
-          <z-badge zType="outline" zShape="pill">
-            Secondary: {{ sec.name }}
-          </z-badge>
+          <z-badge zType="outline" zShape="pill"> Secondary: {{ sec.name }} </z-badge>
         }
       }
     </div>
@@ -20,7 +18,7 @@
     <p class="text-sm text-muted-foreground leading-relaxed">
       Targets the {{ exercise().primary_muscle?.name }} muscles.
       @if (exercise().short_description) {
-        <br><br>
+        <br /><br />
         {{ exercise().short_description }}
       }
     </p>
@@ -46,7 +44,9 @@
 
   @if (recommendations() && recommendations().length > 0) {
     <div class="flex flex-col gap-2 mt-2">
-      <h3 class="text-sm font-semibold text-foreground px-1">Other Exercises targeting {{ exercise().primary_muscle?.name }}</h3>
+      <h3 class="text-base font-semibold text-foreground px-1">
+        More {{ exercise().primary_muscle?.name }} Exercises
+      </h3>
       <div class="grid grid-cols-1 gap-2">
         @for (rec of recommendations(); track rec.id) {
           <a

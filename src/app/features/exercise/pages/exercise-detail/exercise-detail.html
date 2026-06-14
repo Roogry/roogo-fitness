@@ -29,7 +29,7 @@
   </app-nav-pills>
 </app-header>
 
-<main class="container mx-auto px-4 max-w-2xl">
+<main class="container mx-auto px-4 pb-20 max-w-2xl">
   @if (isLoading()) {
     <div class="flex justify-center py-12 text-muted-foreground">
       <div
@@ -41,7 +41,10 @@
       <!-- Tab Contents -->
       @switch (activeTab()) {
         @case ('overview') {
-          <app-exercise-overview [exercise]="exercise()!" [recommendations]="recommendedExercises()" />
+          <app-exercise-overview
+            [exercise]="exercise()!"
+            [recommendations]="recommendedExercises()"
+          />
         }
         @case ('journey') {
           <app-exercise-journey
