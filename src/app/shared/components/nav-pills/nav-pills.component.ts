@@ -1,4 +1,4 @@
-import { Component, HostListener, signal, input } from '@angular/core';
+import { Component, signal, input, inject, DestroyRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -14,20 +14,40 @@ import { CommonModule } from '@angular/common';
     '[class.scale-100]': '!isScrolled()',
   },
 })
-export class NavPillsComponent {
+export class NavPillsComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
+
   readonly disableScrollShrink = input<boolean>(false);
   readonly isScrolled = signal(false);
 
-  @HostListener('window:scroll', [])
-  onWindowScroll() {
-    console.log('disable:', this.disableScrollShrink());
+  ngOnInit() {
+    const handleScroll = (event: Event) => {
+      if (this.disableScrollShrink()) {
+        this.isScrolled.set(false);
+        return;
+      }
 
-    if (this.disableScrollShrink()) return;
+      const target = event.target;
+      let scrollTop = 0;
 
-    const scrollOffset =
-      window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-    console.log(scrollOffset);
+      if (target === document || target === window) {
+        scrollTop =
+          window.pageYOffset ||
+          document.documentElement.scrollTop ||
+          document.body.scrollTop ||
+          0;
+      } else if (target instanceof HTMLElement) {
+        scrollTop = target.scrollTop;
+      }
 
-    this.isScrolled.set(scrollOffset > 20);
+      this.isScrolled.set(scrollTop > 20);
+    };
+
+    // Use capture phase to intercept scroll events from scrollable child containers (e.g. MainLayout)
+    window.addEventListener('scroll', handleScroll, true);
+
+    this.destroyRef.onDestroy(() => {
+      window.removeEventListener('scroll', handleScroll, true);
+    });
   }
 }
