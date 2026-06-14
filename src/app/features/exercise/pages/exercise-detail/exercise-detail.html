@@ -1,65 +1,67 @@
-<div class="min-h-screen bg-background text-foreground pb-8">
-  <!-- Header -->
-  <app-header
-    [title]="exercise() ? exercise()!.name : 'Loading...'"
-    [isTransparant]="true"
-    [showBackBtn]="true"
-  >
-    @if (exercise()) {
-      <a
-        right
-        [routerLink]="['/exercise', exercise()!.id, 'edit']"
-        z-button
-        zType="outline"
-        zSize="icon"
-        zShape="circle"
-      >
-        <ng-icon name="lucidePencil"></ng-icon>
-        <span class="sr-only">Edit</span>
-      </a>
-    }
+<!-- Header -->
+<app-header
+  [title]="exercise() ? exercise()!.name : 'Loading...'"
+  [isTransparant]="true"
+  [showBackBtn]="true"
+>
+  @if (exercise()) {
+    <a
+      right
+      [routerLink]="['/exercise', exercise()!.id, 'edit']"
+      z-button
+      zType="outline"
+      zSize="icon"
+      zShape="circle"
+    >
+      <ng-icon name="lucidePencil"></ng-icon>
+      <span class="sr-only">Edit</span>
+    </a>
+  }
 
-    <!-- Pills Navigation -->
-    <app-nav-pills bottom>
-      <button app-nav-pills-item [active]="activeTab() === 'overview'" (click)="setTab('overview')">Overview</button>
-      <button app-nav-pills-item [active]="activeTab() === 'journey'" (click)="setTab('journey')">Journey</button>
-    </app-nav-pills>
-  </app-header>
+  <!-- Pills Navigation -->
+  <app-nav-pills bottom class="mt-4">
+    <button app-nav-pills-item [active]="activeTab() === 'overview'" (click)="setTab('overview')">
+      Overview
+    </button>
+    <button app-nav-pills-item [active]="activeTab() === 'journey'" (click)="setTab('journey')">
+      Journey
+    </button>
+  </app-nav-pills>
+</app-header>
 
-  <main class="container mx-auto px-4 pb-8 max-w-2xl">
-    @if (isLoading()) {
-      <div class="flex justify-center py-12 text-muted-foreground">
-        <div
-          class="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"
-        ></div>
-      </div>
-    } @else if (exercise()) {
-      <div class="flex flex-col gap-4">
-        <!-- Tab Contents -->
-        @switch (activeTab()) {
-          @case ('overview') {
-            <app-exercise-overview [exercise]="exercise()!" />
-          }
-          @case ('journey') {
-            <app-exercise-journey
-              [highestWeight]="highestWeight()"
-              [highestWeightReps]="highestWeightReps()"
-              [totalSets]="totalSets()"
-              [lastLogged]="lastLogged()"
-              [recentSessions]="recentSessions()"
-            />
-          }
-        }
-      </div>
-    } @else {
+<main class="container mx-auto px-4 max-w-2xl">
+  @if (isLoading()) {
+    <div class="flex justify-center py-12 text-muted-foreground">
       <div
-        class="py-12 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl mt-6"
-      >
-        <ng-icon name="lucideDumbbell" class="h-12 w-12 mx-auto mb-4 opacity-20"></ng-icon>
-        <h2 class="text-xl font-semibold text-foreground mb-2">Exercise Not Found</h2>
-        <p>The exercise you requested could not be found.</p>
-        <a routerLink="/" z-button class="mt-6">Return Home</a>
-      </div>
-    }
-  </main>
-</div>
+        class="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"
+      ></div>
+    </div>
+  } @else if (exercise()) {
+    <div class="flex flex-col gap-4">
+      <!-- Tab Contents -->
+      @switch (activeTab()) {
+        @case ('overview') {
+          <app-exercise-overview [exercise]="exercise()!" />
+        }
+        @case ('journey') {
+          <app-exercise-journey
+            [highestWeight]="highestWeight()"
+            [highestWeightReps]="highestWeightReps()"
+            [totalSets]="totalSets()"
+            [lastLogged]="lastLogged()"
+            [recentSessions]="recentSessions()"
+          />
+        }
+      }
+    </div>
+  } @else {
+    <div
+      class="py-12 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl mt-6"
+    >
+      <ng-icon name="lucideDumbbell" class="h-12 w-12 mx-auto mb-4 opacity-20"></ng-icon>
+      <h2 class="text-xl font-semibold text-foreground mb-2">Exercise Not Found</h2>
+      <p>The exercise you requested could not be found.</p>
+      <a routerLink="/" z-button class="mt-6">Return Home</a>
+    </div>
+  }
+</main>

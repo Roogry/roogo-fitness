@@ -7,9 +7,10 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `<ng-content></ng-content>`,
   host: {
-    'class': 'flex p-1 bg-muted/60 rounded-full w-full max-w-xs mx-auto mb-2 border border-border/50 transition-all duration-300 origin-top',
-    '[class.scale-90]': 'isScrolled()',
-    '[class.opacity-90]': 'isScrolled()',
+    class:
+      'flex p-1 mb-2 bg-muted/60 rounded-full w-full max-w-xs mx-auto border border-border/50 transition-all duration-300 origin-top',
+    '[class.scale-80]': 'isScrolled()',
+    '[class.max-w-[200px]!]': 'isScrolled()',
     '[class.scale-100]': '!isScrolled()',
   },
 })
@@ -19,11 +20,14 @@ export class NavPillsComponent {
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    if (this.disableScrollShrink()) {
-      this.isScrolled.set(false);
-      return;
-    }
-    const scrollOffset = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    console.log('disable:', this.disableScrollShrink());
+
+    if (this.disableScrollShrink()) return;
+
+    const scrollOffset =
+      window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    console.log(scrollOffset);
+
     this.isScrolled.set(scrollOffset > 20);
   }
 }
