@@ -1,7 +1,7 @@
 import { cva } from 'class-variance-authority';
 
 export const pillVariants = cva(
-  'flex-1 py-2 text-sm font-semibold rounded-full transition-all text-center cursor-pointer select-none outline-none border border-transparent',
+  'flex-1 py-2 text-sm font-semibold rounded-full transition-all text-center cursor-pointer select-none outline-none border border-transparent truncate',
   {
     variants: {
       active: {
@@ -12,5 +12,5 @@ export const pillVariants = cva(
     defaultVariants: {
       active: false,
     },
-  }
+  },
 );

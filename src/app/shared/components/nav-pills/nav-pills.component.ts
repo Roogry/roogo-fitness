@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal, input, inject, DestroyRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -7,7 +7,47 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `<ng-content></ng-content>`,
   host: {
-    'class': 'flex p-1 bg-muted/60 rounded-full w-full max-w-xs mx-auto mb-2 border border-border/50',
+    class:
+      'flex p-1 mb-2 bg-muted/60 rounded-full w-full max-w-xs mx-auto border border-border/50 transition-all duration-300 origin-top',
+    '[class.scale-80]': 'isScrolled()',
+    '[class.max-w-[200px]!]': 'isScrolled()',
+    '[class.scale-100]': '!isScrolled()',
   },
 })
-export class NavPillsComponent {}
+export class NavPillsComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
+
+  readonly disableScrollShrink = input<boolean>(false);
+  readonly isScrolled = signal(false);
+
+  ngOnInit() {
+    const handleScroll = (event: Event) => {
+      if (this.disableScrollShrink()) {
+        this.isScrolled.set(false);
+        return;
+      }
+
+      const target = event.target;
+      let scrollTop = 0;
+
+      if (target === document || target === window) {
+        scrollTop =
+          window.pageYOffset ||
+          document.documentElement.scrollTop ||
+          document.body.scrollTop ||
+          0;
+      } else if (target instanceof HTMLElement) {
+        scrollTop = target.scrollTop;
+      }
+
+      this.isScrolled.set(scrollTop > 20);
+    };
+
+    // Use capture phase to intercept scroll events from scrollable child containers (e.g. MainLayout)
+    window.addEventListener('scroll', handleScroll, true);
+
+    this.destroyRef.onDestroy(() => {
+      window.removeEventListener('scroll', handleScroll, true);
+    });
+  }
+}
