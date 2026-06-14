@@ -52,6 +52,7 @@ export class SessionActive implements OnInit {
 
   titleModel = signal({
     title: '',
+    note: '',
   });
 
   titleForm = form(this.titleModel, (f) => {
@@ -60,21 +61,14 @@ export class SessionActive implements OnInit {
 
   // State
   isAddSheetOpen = signal(false);
+  isFinishSheetOpen = signal(false);
 
   constructor() {
     effect(() => {
       const extTitle = this.workoutService.sessionTitle();
       if (extTitle !== this.titleModel().title) {
-        this.titleModel.set({ title: extTitle });
+        this.titleModel.set({ title: extTitle, note: this.titleModel().note });
         this.titleForm().reset();
-      }
-    });
-
-    effect(() => {
-      const isInvalid = this.titleForm().invalid();
-      const currentTitle = this.titleModel().title;
-      if (!isInvalid && this.workoutService.sessionTitle() !== currentTitle) {
-        this.workoutService.sessionTitle.set(currentTitle);
       }
     });
   }
@@ -123,7 +117,10 @@ export class SessionActive implements OnInit {
   }
 
   async finishSession() {
-    await this.workoutService.finishSession();
+    const title = this.titleModel().title;
+    const note = this.titleModel().note;
+    this.isFinishSheetOpen.set(false);
+    await this.workoutService.finishSession(title, note);
     this.router.navigate(['/journey']);
   }
 
