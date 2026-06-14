@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, ViewChild, TemplateRef, effect } from '@angular/core';
+import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -11,7 +11,7 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { RooSheetComponent } from '@/shared/components/sheet/sheet';
 import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 import { ZardInputDirective } from '@/shared/components/zard/input';
-import { ZardDialogService, ZardDialogRef } from '@/shared/components/zard/dialog';
+import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { form, FormField, required } from '@angular/forms/signals';
 import { ZardFormImports } from '@/shared/components/zard/form';
 
@@ -47,37 +47,16 @@ export class SessionActive implements OnInit {
   route = inject(ActivatedRoute);
   dialogService = inject(ZardDialogService);
 
-  @ViewChild('discardDialog') discardDialogTemplate!: TemplateRef<any>;
-  private dialogRef?: ZardDialogRef<any>;
-
+  isAddSheetOpen = signal(false);
+  isFinishSheetOpen = signal(false);
   titleModel = signal({
     title: '',
+    note: '',
   });
 
   titleForm = form(this.titleModel, (f) => {
     required(f.title, { message: 'Session title is required' });
   });
-
-  // State
-  isAddSheetOpen = signal(false);
-
-  constructor() {
-    effect(() => {
-      const extTitle = this.workoutService.sessionTitle();
-      if (extTitle !== this.titleModel().title) {
-        this.titleModel.set({ title: extTitle });
-        this.titleForm().reset();
-      }
-    });
-
-    effect(() => {
-      const isInvalid = this.titleForm().invalid();
-      const currentTitle = this.titleModel().title;
-      if (!isInvalid && this.workoutService.sessionTitle() !== currentTitle) {
-        this.workoutService.sessionTitle.set(currentTitle);
-      }
-    });
-  }
 
   ngOnInit() {
     this.setupSessionData();
@@ -87,29 +66,28 @@ export class SessionActive implements OnInit {
     this.route.queryParamMap.subscribe(async (queryParams) => {
       const planId = queryParams.get('planId');
       const sessionId = queryParams.get('sessionId');
-      const autoStart = queryParams.get('autoStart');
+      const autoStart = queryParams.get('autoStart') === 'true';
+
+      const isSessionAlreadyRunning = !!this.workoutService.sessionStartTime();
 
       if (planId && sessionId) {
-        // Jika sesi dengan planId ini sudah berjalan, jangan timpa datanya agar input pengguna tidak hilang
-        if (
-          this.workoutService.sessionStartTime() &&
-          this.workoutService.selectedPlanId() === Number(planId)
-        ) {
-          return;
-        }
-        await this.workoutService.startSessionFromPlan(Number(planId), Number(sessionId));
+        if (!isSessionAlreadyRunning || this.workoutService.selectedPlanId() !== Number(planId)) {
+          await this.workoutService.setupSessionFromPlan(Number(planId), Number(sessionId));
 
-        if (autoStart === 'true' && !this.workoutService.sessionStartTime()) {
-          this.workoutService.startSessionTimer();
+          if (autoStart && !this.workoutService.sessionStartTime()) {
+            this.workoutService.startSessionTimer();
+          }
         }
-      } else {
-        // Jika sesi aktif sedang berjalan (baik empty session maupun dari plan), jangan hapus/reset
-        if (this.workoutService.sessionStartTime()) {
-          return;
-        }
+      } else if (!isSessionAlreadyRunning) {
         this.workoutService.clearSession();
         this.workoutService.sessionTitle.set('Workout Session');
       }
+
+      this.titleModel.set({
+        title: this.workoutService.sessionTitle(),
+        note: this.titleModel().note || '',
+      });
+      this.titleForm().reset();
     });
   }
 
@@ -123,28 +101,27 @@ export class SessionActive implements OnInit {
   }
 
   async finishSession() {
-    await this.workoutService.finishSession();
-    this.router.navigate(['/journey']);
+    this.isFinishSheetOpen.set(false);
+
+    const title = this.titleModel().title;
+    const note = this.titleModel().note;
+    await this.workoutService.finishSession(title, note);
+
+    this.router.navigate(['/journey'], { queryParams: { tab: 'history' } });
   }
 
   openDiscardConfirm() {
-    this.dialogRef = this.dialogService.create({
+    this.dialogService.create({
       zWidth: '400px',
-      zContent: this.discardDialogTemplate,
       zTitle: 'Discard Session?',
-      zHideFooter: true,
+      zDescription: 'Are you sure you want to discard this session? All progress will be lost and cannot be recovered.',
+      zOkText: 'Discard',
+      zOkDestructive: true,
+      zCancelText: 'Cancel',
+      zOnOk: () => {
+        this.workoutService.clearSession();
+        this.router.navigate(['/']);
+      }
     });
-  }
-
-  confirmDiscard() {
-    this.workoutService.clearSession();
-    this.closeDiscard();
-    this.router.navigate(['/']);
-  }
-
-  closeDiscard() {
-    if (this.dialogRef) {
-      this.dialogRef.close();
-    }
   }
 }

@@ -121,7 +121,7 @@ export class WorkoutService {
     return this.dbService.getExerciseByKey(id);
   }
 
-  async startSessionFromPlan(planId: number, sessionId: number) {
+  async setupSessionFromPlan(planId: number, sessionId: number) {
     const plan = await this.dbService.getWorkoutPlan(planId);
     if (!plan) throw new Error('Plan not found');
 
@@ -150,18 +150,22 @@ export class WorkoutService {
     }
   }
 
-  async finishSession() {
+  async finishSession(title?: string, notes?: string) {
     if (this.trackedExercises().length === 0) return;
+
+    if (title !== undefined) {
+      this.sessionTitle.set(title);
+    }
 
     const session: LoggedSession = {
       id: Date.now(),
       user_id: Date.now() + Math.floor(Math.random() * 1000),
-      session_title: this.sessionTitle() || 'Unplanned Session',
+      session_title: title || this.sessionTitle() || 'Unplanned Session',
       start_time: new Date(this.sessionStartTime() || Date.now()).toISOString(),
       end_time: new Date().toISOString(),
       total_duration: this.sessionDuration(),
       total_weight_lifted: this.totalVolume(),
-      notes: '',
+      notes: notes || '',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       workouts: this.trackedExercises().map((te) => ({
