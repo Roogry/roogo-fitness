@@ -168,20 +168,6 @@
     </div>
   </app-sheet>
 
-  <!-- Discard Confirmation Dialog Template -->
-  <ng-template #discardDialog let-ref>
-    <div class="flex flex-col gap-4">
-      <p class="text-sm text-muted-foreground">
-        Are you sure you want to discard this session? All progress will be lost and cannot be
-        recovered.
-      </p>
-      <div class="flex justify-end gap-2 mt-4">
-        <button z-button zType="outline" (click)="closeDiscard()">Cancel</button>
-        <button z-button zType="destructive" (click)="confirmDiscard()">Discard</button>
-      </div>
-    </div>
-  </ng-template>
-
   @if (workoutService.sessionStartTime()) {
     <div class="fixed bottom-8 left-4 right-4 z-50 max-w-2xl mx-auto px-6">
       <div

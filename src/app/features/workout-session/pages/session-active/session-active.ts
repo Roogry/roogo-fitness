@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, ViewChild, TemplateRef, effect } from '@angular/core';
+import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -11,7 +11,7 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { RooSheetComponent } from '@/shared/components/sheet/sheet';
 import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 import { ZardInputDirective } from '@/shared/components/zard/input';
-import { ZardDialogService, ZardDialogRef } from '@/shared/components/zard/dialog';
+import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { form, FormField, required } from '@angular/forms/signals';
 import { ZardFormImports } from '@/shared/components/zard/form';
 
@@ -46,9 +46,6 @@ export class SessionActive implements OnInit {
   router = inject(Router);
   route = inject(ActivatedRoute);
   dialogService = inject(ZardDialogService);
-
-  @ViewChild('discardDialog') discardDialogTemplate!: TemplateRef<any>;
-  private dialogRef?: ZardDialogRef<any>;
 
   isAddSheetOpen = signal(false);
   isFinishSheetOpen = signal(false);
@@ -114,23 +111,17 @@ export class SessionActive implements OnInit {
   }
 
   openDiscardConfirm() {
-    this.dialogRef = this.dialogService.create({
+    this.dialogService.create({
       zWidth: '400px',
-      zContent: this.discardDialogTemplate,
       zTitle: 'Discard Session?',
-      zHideFooter: true,
+      zDescription: 'Are you sure you want to discard this session? All progress will be lost and cannot be recovered.',
+      zOkText: 'Discard',
+      zOkDestructive: true,
+      zCancelText: 'Cancel',
+      zOnOk: () => {
+        this.workoutService.clearSession();
+        this.router.navigate(['/']);
+      }
     });
-  }
-
-  confirmDiscard() {
-    this.workoutService.clearSession();
-    this.closeDiscard();
-    this.router.navigate(['/']);
-  }
-
-  closeDiscard() {
-    if (this.dialogRef) {
-      this.dialogRef.close();
-    }
   }
 }
