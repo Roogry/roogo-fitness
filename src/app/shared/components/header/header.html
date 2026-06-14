@@ -1,34 +1,41 @@
-<header class="h-full relative container max-w-2xl mx-auto flex items-center justify-between">
-  <div class="absolute left-4 flex items-center gap-4">
-    <!-- Left action area -->
-    @if (showBackBtn()) {
-      <button
-        z-button
-        [zType]="isTransparant() ? 'outline' : 'ghost'"
-        zSize="icon"
-        zShape="circle"
-        (click)="goBack()"
-      >
-        <ng-icon name="lucideArrowLeft" size="1.5rem"></ng-icon>
-        <span class="sr-only">Back</span>
-      </button>
-    }
-    <ng-content select="[left]"></ng-content>
+<header class="w-full relative container max-w-2xl mx-auto flex flex-col justify-center">
+  <!-- Top Row -->
+  <div class="h-full min-h-[56px] relative flex items-center justify-between w-full">
+    <div class="absolute left-4 flex items-center gap-4">
+      <!-- Left action area -->
+      @if (showBackBtn()) {
+        <button
+          z-button
+          [zType]="isTransparant() ? 'outline' : 'ghost'"
+          zSize="icon"
+          zShape="circle"
+          (click)="goBack()"
+        >
+          <ng-icon name="lucideArrowLeft" size="1.5rem"></ng-icon>
+          <span class="sr-only">Back</span>
+        </button>
+      }
+      <ng-content select="[left]"></ng-content>
+    </div>
 
-    <!-- Centered title area -->
+    <div
+      class="w-full max-w-sm h-full m-auto flex items-center justify-center gap-3 font-bold text-2xl tracking-tight truncate text-center"
+    >
+      <ng-content select="[title-icon]"></ng-content>
+      @if (title()) {
+        <h1 class="truncate">{{ title() }}</h1>
+      }
+    </div>
+
+    <!-- Right action area -->
+    <div class="absolute right-4 flex items-center gap-4">
+      <ng-content select="[right]"></ng-content>
+    </div>
   </div>
 
-  <div
-    class="w-full max-w-sm h-full m-auto flex items-center justify-center gap-3 font-bold text-2xl tracking-tight truncate text-center"
-  >
-    <ng-content select="[title-icon]"></ng-content>
-    @if (title()) {
-      <h1 class="truncate">{{ title() }}</h1>
-    }
-  </div>
-
-  <!-- Right action area -->
-  <div class="absolute right-4 flex items-center gap-4">
-    <ng-content select="[right]"></ng-content>
+  <!-- Bottom Row (New slot) -->
+  <div class="w-full flex justify-center pb-4">
+    <ng-content select="[bottom]"></ng-content>
   </div>
 </header>
+

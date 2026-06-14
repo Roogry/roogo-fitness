@@ -18,6 +18,12 @@
         <span class="sr-only">Edit</span>
       </a>
     }
+
+    <!-- Pills Navigation -->
+    <app-nav-pills bottom>
+      <button app-nav-pills-item [active]="activeTab() === 'overview'" (click)="setTab('overview')">Overview</button>
+      <button app-nav-pills-item [active]="activeTab() === 'journey'" (click)="setTab('journey')">Journey</button>
+    </app-nav-pills>
   </app-header>
 
   <main class="container mx-auto px-4 pb-8 max-w-2xl">
@@ -29,12 +35,6 @@
       </div>
     } @else if (exercise()) {
       <div class="flex flex-col gap-4">
-        <!-- Pills Navigation -->
-        <app-nav-pills>
-          <button app-nav-pills-item [active]="activeTab() === 'overview'" (click)="setTab('overview')">Overview</button>
-          <button app-nav-pills-item [active]="activeTab() === 'journey'" (click)="setTab('journey')">Journey</button>
-        </app-nav-pills>
-
         <!-- Tab Contents -->
         @switch (activeTab()) {
           @case ('overview') {
