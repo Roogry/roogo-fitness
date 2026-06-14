@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink, RouterModule } from '@angular/router';
 import { WorkoutService } from '@/core/services/workout.service';
 import { JourneyService } from '@/core/services/journey.service';
+import { ExerciseService } from '@/core/services/exercise.service';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { HeaderComponent } from '@/shared/components/header/header.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -40,8 +41,10 @@ export class ExerciseDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private workoutService = inject(WorkoutService);
   private journeyService = inject(JourneyService);
+  private exerciseService = inject(ExerciseService);
 
   exercise = signal<Exercise | undefined>(undefined);
+  recommendedExercises = signal<Exercise[]>([]);
   isLoading = signal<boolean>(true);
 
   // Tab state
@@ -67,6 +70,14 @@ export class ExerciseDetail implements OnInit {
         try {
           const detail = await this.workoutService.getExerciseById(id);
           this.exercise.set(detail);
+
+          // Fetch recommendations
+          if (detail && detail.primary_muscle) {
+            const recommendations = await this.exerciseService.getExercisesByMuscle(detail.primary_muscle.id);
+            this.recommendedExercises.set(recommendations.filter((e) => e.id !== detail.id));
+          } else {
+            this.recommendedExercises.set([]);
+          }
 
           // Fetch journey stats
           if (detail) {
