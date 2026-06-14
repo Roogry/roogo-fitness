@@ -10,7 +10,7 @@ import { MuscleService } from '@/core/services/muscle.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { form, FormField, required, submit } from '@angular/forms/signals';
 import { ZardFormImports } from '@/shared/components/zard/form';
-import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import {
   lucideArrowLeft,
   lucideSave,
@@ -24,6 +24,8 @@ import {
 } from '@ng-icons/lucide';
 import { ExerciseService } from '@/core/services/exercise.service';
 import { Exercise, ExerciseMedia, Muscle } from '@/shared/models/workout.model';
+import { ExerciseInstructionList } from '../../components/exercise-instruction-list/exercise-instruction-list';
+import { ExerciseMediaManagement } from '../../components/exercise-media-management/exercise-media-management';
 
 @Component({
   selector: 'app-exercise-edit',
@@ -39,7 +41,8 @@ import { Exercise, ExerciseMedia, Muscle } from '@/shared/models/workout.model';
     NgIcon,
     FormField,
     ZardFormImports,
-    DragDropModule,
+    ExerciseInstructionList,
+    ExerciseMediaManagement,
   ],
   providers: [
     provideIcons({
@@ -82,7 +85,6 @@ export class ExerciseEdit implements OnInit {
 
   secondaryMuscles = signal<string[]>([]);
   media = signal<ExerciseMedia[]>([]);
-  newMediaUrl = signal('');
 
   availableMuscles = signal<Muscle[]>([]);
 
@@ -137,10 +139,7 @@ export class ExerciseEdit implements OnInit {
     this.router.navigate(['/']);
   }
 
-  addMedia() {
-    const url = this.newMediaUrl().trim();
-    if (!url) return;
-
+  addMedia(url: string) {
     let type = 'image';
     if (url.includes('youtube.com') || url.includes('youtu.be')) {
       type = 'youtube';
@@ -159,8 +158,6 @@ export class ExerciseEdit implements OnInit {
         },
       ];
     });
-
-    this.newMediaUrl.set('');
   }
 
   removeMedia(index: number) {
