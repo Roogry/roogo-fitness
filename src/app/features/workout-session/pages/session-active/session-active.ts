@@ -121,7 +121,7 @@ export class SessionActive implements OnInit {
     const note = this.titleModel().note;
     this.isFinishSheetOpen.set(false);
     await this.workoutService.finishSession(title, note);
-    this.router.navigate(['/journey']);
+    this.router.navigate(['/journey'], { queryParams: { tab: 'history' } });
   }
 
   openDiscardConfirm() {

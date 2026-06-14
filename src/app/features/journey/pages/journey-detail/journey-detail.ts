@@ -64,6 +64,6 @@ export class JourneyDetail implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/journey']);
+    this.router.navigate(['/journey'], { queryParams: { tab: 'history' } });
   }
 }
