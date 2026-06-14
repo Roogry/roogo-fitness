@@ -17,6 +17,8 @@ export interface Exercise {
   recommended_rest_time_sec?: number;
   secondary_muscles?: Muscle[];
   media: ExerciseMedia[];
+  instructions?: string[];
+  tips?: string;
   createdAt?: string;
   updatedAt?: string;
 }

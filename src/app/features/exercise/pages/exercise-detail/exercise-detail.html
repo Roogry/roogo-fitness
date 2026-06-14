@@ -41,7 +41,7 @@
       <!-- Tab Contents -->
       @switch (activeTab()) {
         @case ('overview') {
-          <app-exercise-overview [exercise]="exercise()!" />
+          <app-exercise-overview [exercise]="exercise()!" [recommendations]="recommendedExercises()" />
         }
         @case ('journey') {
           <app-exercise-journey

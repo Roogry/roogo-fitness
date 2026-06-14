@@ -10,6 +10,7 @@ import { MuscleService } from '@/core/services/muscle.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { form, FormField, required, submit } from '@angular/forms/signals';
 import { ZardFormImports } from '@/shared/components/zard/form';
+import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import {
   lucideArrowLeft,
   lucideSave,
@@ -19,6 +20,7 @@ import {
   lucideChevronDown,
   lucideTrash2,
   lucidePlus,
+  lucideGripVertical,
 } from '@ng-icons/lucide';
 import { ExerciseService } from '@/core/services/exercise.service';
 import { Exercise, ExerciseMedia, Muscle } from '@/shared/models/workout.model';
@@ -37,6 +39,7 @@ import { Exercise, ExerciseMedia, Muscle } from '@/shared/models/workout.model';
     NgIcon,
     FormField,
     ZardFormImports,
+    DragDropModule,
   ],
   providers: [
     provideIcons({
@@ -48,6 +51,7 @@ import { Exercise, ExerciseMedia, Muscle } from '@/shared/models/workout.model';
       lucideChevronDown,
       lucideTrash2,
       lucidePlus,
+      lucideGripVertical,
     }),
   ],
   templateUrl: './exercise-edit.html',
@@ -67,6 +71,8 @@ export class ExerciseEdit implements OnInit {
   exerciseModel = signal({
     name: '',
     primaryGroup: '',
+    tips: '',
+    instructions: [] as string[],
   });
 
   exerciseForm = form(this.exerciseModel, (f) => {
@@ -87,7 +93,7 @@ export class ExerciseEdit implements OnInit {
       try {
         this.isLoading.set(true);
 
-        if (!idParam) throw new Error('Failed to load exercise');
+         if (!idParam) throw new Error('Failed to load exercise');
 
         // Load muscles in parallel with exercise
         const id = parseInt(idParam, 10);
@@ -103,6 +109,8 @@ export class ExerciseEdit implements OnInit {
         this.exerciseModel.set({
           name: exercise.name,
           primaryGroup: exercise.primary_muscle?.name || '',
+          tips: exercise.tips || '',
+          instructions: exercise.instructions || [],
         });
         this.exerciseForm().reset();
 
@@ -185,6 +193,28 @@ export class ExerciseEdit implements OnInit {
     });
   }
 
+  addInstruction() {
+    this.exerciseModel.update((m) => ({
+      ...m,
+      instructions: [...m.instructions, ''],
+    }));
+  }
+
+  removeInstruction(index: number) {
+    this.exerciseModel.update((m) => ({
+      ...m,
+      instructions: m.instructions.filter((_, i) => i !== index),
+    }));
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    this.exerciseModel.update((m) => {
+      const newInstructions = [...m.instructions];
+      moveItemInArray(newInstructions, event.previousIndex, event.currentIndex);
+      return { ...m, instructions: newInstructions };
+    });
+  }
+
   save() {
     submit(this.exerciseForm, async (f) => {
       if (!this.selectedExercise()) return;
@@ -198,11 +228,18 @@ export class ExerciseEdit implements OnInit {
         .map((name) => this.availableMuscles().find((m) => m.name === name))
         .filter((m): m is Muscle => !!m);
 
+      const instructions = f.instructions().value()
+        .map((step: string) => step.trim())
+        .filter(Boolean);
+      const tips = f.tips().value().trim();
+
       this.exerciseService.updateExercise(this.selectedExercise()!, {
         name: name,
         primary_muscle: primaryMuscle,
         secondary_muscles: secondaryMuscles.length ? secondaryMuscles : undefined,
         media: this.media(),
+        instructions: instructions,
+        tips: tips,
       });
       this.isSaving.set(false);
       this.router.navigate(['/exercise', this.selectedExercise()?.id]);

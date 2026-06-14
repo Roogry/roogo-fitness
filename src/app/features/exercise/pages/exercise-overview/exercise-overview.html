@@ -25,4 +25,42 @@
       }
     </p>
   </z-card>
+
+  @if (exercise().instructions && exercise().instructions!.length > 0) {
+    <z-card zTitle="Instructions">
+      <ol class="list-decimal pl-5 space-y-2 text-sm text-muted-foreground leading-relaxed">
+        @for (step of exercise().instructions; track $index) {
+          <li>{{ step }}</li>
+        }
+      </ol>
+    </z-card>
+  }
+
+  @if (exercise().tips) {
+    <z-card zTitle="Tips">
+      <p class="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+        {{ exercise().tips }}
+      </p>
+    </z-card>
+  }
+
+  @if (recommendations() && recommendations().length > 0) {
+    <div class="flex flex-col gap-2 mt-2">
+      <h3 class="text-sm font-semibold text-foreground px-1">Other Exercises targeting {{ exercise().primary_muscle?.name }}</h3>
+      <div class="grid grid-cols-1 gap-2">
+        @for (rec of recommendations(); track rec.id) {
+          <a
+            [routerLink]="['/exercise', rec.id]"
+            class="flex items-center justify-between p-4 bg-card hover:bg-muted/50 border border-border rounded-xl transition-colors duration-200"
+          >
+            <div class="flex flex-col">
+              <span class="font-medium text-sm text-foreground">{{ rec.name }}</span>
+              <span class="text-xs text-muted-foreground">{{ rec.primary_muscle?.name }}</span>
+            </div>
+            <span class="text-xs font-semibold text-primary">View Details &rarr;</span>
+          </a>
+        }
+      </div>
+    </div>
+  }
 </div>

@@ -36,4 +36,9 @@ export class ExerciseService {
   updateExercise(current: Exercise, updates: Partial<Exercise>) {
     this.dbService.saveExercise({ ...current, ...updates });
   }
+
+  async getExercisesByMuscle(muscleId: number): Promise<Exercise[]> {
+    const exercises = await this.dbService.getExercises();
+    return exercises.filter((e) => e.primary_muscle?.id === muscleId);
+  }
 }
