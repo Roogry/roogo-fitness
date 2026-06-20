@@ -13,6 +13,10 @@ export class PlanService {
   plannedExercises = signal<WorkoutPlanExercise[]>([]);
 
   addPlannedExercise(exercise: Exercise) {
+    if (!exercise || exercise.id === undefined || exercise.id === null) {
+      console.warn('Cannot add an invalid or undefined exercise:', exercise);
+      return;
+    }
     this.plannedExercises.update((current) => {
       if (current.find((pe) => pe.exercise_id === exercise.id)) {
         return current;

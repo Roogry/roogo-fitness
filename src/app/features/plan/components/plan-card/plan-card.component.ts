@@ -72,6 +72,7 @@ export class PlanCardComponent implements OnInit {
     }
     const map = this.exerciseMap();
     return session.exercises
+      .filter((pe) => pe && pe.exercise_id !== undefined && pe.exercise_id !== null)
       .map((pe) => {
         const ex = map.get(pe.exercise_id);
         return ex ? ex.name : `Exercise #${pe.exercise_id}`;

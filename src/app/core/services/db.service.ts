@@ -151,7 +151,8 @@ export class DbService {
     return db.getAll('exercises');
   }
 
-  async getExerciseByKey(key: any): Promise<Exercise> {
+  async getExerciseByKey(key: any): Promise<Exercise | undefined> {
+    if (key === undefined || key === null) return undefined;
     const db = await this.dbPromise;
     return db.get('exercises', key);
   }

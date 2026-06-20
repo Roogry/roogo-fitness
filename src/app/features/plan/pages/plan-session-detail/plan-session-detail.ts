@@ -50,7 +50,9 @@ export class PlanSessionDetail implements OnInit {
   constructor() {
     effect(async () => {
       const plannedList = this.planService.plannedExercises();
-      const ids = plannedList.map((pe) => pe.exercise_id);
+      const ids = plannedList
+        .filter((pe) => pe && pe.exercise_id !== undefined && pe.exercise_id !== null)
+        .map((pe) => pe.exercise_id);
       const res = await this.exerciseService.loadExercisesToMap(ids, this.exercisesMap());
       if (res.changed) {
         this.exercisesMap.set(res.map);
