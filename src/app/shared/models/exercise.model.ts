@@ -1,3 +1,8 @@
+export interface Range {
+  min: number;
+  max: number;
+}
+
 export interface Muscle {
   id: number;
   name: string;
@@ -9,10 +14,10 @@ export interface Exercise {
   name: string;
   short_description?: string;
   primary_muscle?: Muscle;
-  recommended_warmup_sets?: number;
-  recommended_working_sets?: number;
-  recommended_rpe?: number;
-  recommended_rest_time_sec?: number;
+  recommended_warmup_sets?: Range;
+  recommended_working_sets?: Range;
+  recommended_rpe?: Range;
+  recommended_rest_time_sec?: Range;
   secondary_muscles?: Muscle[];
   media: ExerciseMedia[];
   instructions?: string[];
