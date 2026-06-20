@@ -7,6 +7,8 @@ import { lucideCalendar } from '@ng-icons/lucide';
 /**
  * A card component displaying a recent exercise session for quick reference.
  *
+ * @property {any} session - The recent session data to display.
+ *
  * @example
  * <app-recent-exercise-card [session]="mySession"></app-recent-exercise-card>
  */

@@ -11,6 +11,11 @@ import { lucideGripVertical, lucideTrash2, lucidePlus } from '@ng-icons/lucide';
 /**
  * A component displaying a reorderable list of exercise instructions.
  *
+ * @property {any} instructions - The array of instructions to display.
+ * @property {void} addInstruction - Event emitted when the user requests to add an instruction.
+ * @property {number} removeInstruction - Event emitted with the index of the instruction to remove.
+ * @property {CdkDragDrop<string[]>} dropInstruction - Event emitted when an instruction is dragged and dropped.
+ *
  * @example
  * <app-exercise-instruction-list [instructions]="instructions" (addInstruction)="onAdd()"></app-exercise-instruction-list>
  */

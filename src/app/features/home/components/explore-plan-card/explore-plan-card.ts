@@ -17,6 +17,8 @@ export interface ExplorePlan {
 /**
  * A card component displaying details of a workout plan in the explore section.
  *
+ * @property {ExplorePlan} plan - The workout plan to display.
+ *
  * @example
  * <app-explore-plan-card [plan]="myExplorePlan"></app-explore-plan-card>
  */

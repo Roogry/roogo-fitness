@@ -11,6 +11,8 @@ import { lucideSearch, lucidePlus, lucideDumbbell } from '@ng-icons/lucide';
  * An autocomplete input component for searching and selecting exercises.
  * Allows creating a new exercise if it doesn't exist.
  *
+ * @property {Exercise} exerciseSelected - Event emitted when an exercise is selected or created.
+ *
  * @example
  * <app-exercise-autocomplete (exerciseSelected)="onSelect($event)"></app-exercise-autocomplete>
  */

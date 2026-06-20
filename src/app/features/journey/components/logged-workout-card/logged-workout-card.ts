@@ -13,6 +13,8 @@ import { lucideActivity, lucideArrowRight } from '@ng-icons/lucide';
 /**
  * A card component displaying details of a logged workout session on the journey page.
  *
+ * @property {LoggedSession} session - The logged session to display.
+ *
  * @example
  * <app-logged-workout-card [session]="mySession"></app-logged-workout-card>
  */

@@ -15,6 +15,12 @@ import { ExerciseMedia } from '@/shared/models';
 /**
  * A component for managing the media (videos/images) associated with an exercise.
  *
+ * @property {ExerciseMedia[]} media - The current list of media associated with the exercise.
+ * @property {string} addMedia - Event emitted with the URL of new media to add.
+ * @property {number} removeMedia - Event emitted with the index of media to remove.
+ * @property {number} moveMediaUp - Event emitted with the index of media to move up.
+ * @property {number} moveMediaDown - Event emitted with the index of media to move down.
+ *
  * @example
  * <app-exercise-media-management [media]="mediaList"></app-exercise-media-management>
  */

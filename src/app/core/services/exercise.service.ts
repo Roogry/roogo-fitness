@@ -37,7 +37,10 @@ export class ExerciseService {
    * @example
    * const result = await this.exerciseService.loadExercisesToMap([1, 2], new Map());
    */
-  async loadExercisesToMap(exerciseIds: number[], currentMap: Map<number, Exercise>): Promise<{ map: Map<number, Exercise>; changed: boolean }> {
+  async loadExercisesToMap(
+    exerciseIds: number[],
+    currentMap: Map<number, Exercise>,
+  ): Promise<{ map: Map<number, Exercise>; changed: boolean }> {
     const newMap = new Map(currentMap);
     let changed = false;
 

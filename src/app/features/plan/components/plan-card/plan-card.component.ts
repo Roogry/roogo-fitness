@@ -22,6 +22,12 @@ import { Router } from '@angular/router';
 /**
  * A card component displaying a user's workout plan, including its sessions and actions.
  *
+ * @property {WorkoutPlan} plan - The workout plan to display.
+ * @property {boolean} isExpanded - Whether the plan card is expanded to show sessions.
+ * @property {void} onToggle - Event emitted when the card expansion is toggled.
+ * @property {Event} onEdit - Event emitted when the edit action is triggered.
+ * @property {Event} onDelete - Event emitted when the delete action is triggered.
+ *
  * @example
  * <app-plan-card [plan]="myPlan" (onToggle)="toggle()" (onEdit)="edit()"></app-plan-card>
  */

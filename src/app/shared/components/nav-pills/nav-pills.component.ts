@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 /**
  * Container for navigation pills. Shrinks visually on scroll unless disabled.
  * 
+ * @property {boolean} disableScrollShrink - If true, disables the shrink-on-scroll behavior.
+ * 
  * @example
  * <app-nav-pills>
  *   <button app-nav-pills-item [active]="true">Tab 1</button>

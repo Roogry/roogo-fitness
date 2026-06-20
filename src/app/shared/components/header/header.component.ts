@@ -18,6 +18,13 @@ import { headerVariants } from './header.variants';
 /**
  * A shared header component with title and back navigation.
  * 
+ * @property {string} title - The title displayed in the header.
+ * @property {boolean} isTransparant - Whether the header background is transparent.
+ * @property {boolean} showBackBtn - Whether to show the back navigation button.
+ * @property {any[] | null} backLink - Optional specific router link array for back navigation.
+ * @property {ClassValue} class - Additional CSS classes for styling.
+ * @property {void} onBackClick - Event emitted when the back button is clicked.
+ * 
  * @example
  * <app-header title="Dashboard" [showBackBtn]="true" (onBackClick)="handleBack()"></app-header>
  */

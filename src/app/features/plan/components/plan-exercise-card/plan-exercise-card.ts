@@ -19,6 +19,12 @@ import { Exercise, WorkoutPlanExercise } from '@/shared/models';
 /**
  * A card component displaying an individual exercise within a workout plan session, allowing edits to sets, reps, and weight.
  *
+ * @property {WorkoutPlanExercise} plannedExercise - The planned exercise data including targets.
+ * @property {Exercise} exercise - The base exercise definition.
+ * @property {boolean} editable - Whether the target fields can be edited.
+ * @property {Partial<WorkoutPlanExercise>} updateTarget - Event emitted when a target value is changed.
+ * @property {void} remove - Event emitted when the remove button is clicked.
+ *
  * @example
  * <app-plan-exercise-card [plannedExercise]="exercise" [exercise]="exerciseDetails"></app-plan-exercise-card>
  */

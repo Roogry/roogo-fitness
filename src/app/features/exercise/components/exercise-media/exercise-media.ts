@@ -9,6 +9,8 @@ import { ExerciseMedia } from '@/shared/models';
 /**
  * A component displaying media content (images/videos) for a specific exercise.
  *
+ * @property {ExerciseMedia[]} media - The list of media content to display.
+ *
  * @example
  * <app-exercise-media [media]="exercise.media"></app-exercise-media>
  */

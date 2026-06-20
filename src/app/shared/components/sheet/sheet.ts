@@ -7,10 +7,10 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 /**
  * A slide-in sheet component for displaying content or forms overlaying the screen.
  *
- * @input title - The title of the sheet header. Defaults to empty string.
- * @input description - The description or subtitle displayed below the title. Defaults to null.
- * @input isOpen - Whether the sheet is currently open and visible. Defaults to false.
- * @output onOpenChange - Event emitted when the open state of the sheet changes.
+ * @property {string} title - The title of the sheet header. Defaults to empty string.
+ * @property {string | null} description - The description or subtitle displayed below the title. Defaults to null.
+ * @property {boolean} isOpen - Whether the sheet is currently open and visible. Defaults to false.
+ * @property {boolean} onOpenChange - Event emitted when the open state of the sheet changes.
  *
  * @example
  * <app-sheet title="Edit Session" [isOpen]="isSheetOpen" (onOpenChange)="isSheetOpen = $event">
@@ -55,7 +55,7 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 export class RooSheetComponent {
   readonly title = input('');
   readonly description = input<string | null>(null);
-  readonly isOpen = signal<boolean>(false);
+  readonly isOpen = input<boolean>(false);
 
   readonly onOpenChange = output<boolean>();
 
@@ -68,7 +68,6 @@ export class RooSheetComponent {
    * sheetComponent.close();
    */
   close() {
-    this.isOpen.set(false);
     this.onOpenChange.emit(false);
   }
 }

@@ -15,6 +15,9 @@ import { ZardFormImports } from '@/shared/components/zard/form';
 /**
  * A component that tracks an active exercise session, allowing the user to log sets, weight, and reps.
  *
+ * @property {LoggedExercise} trackedExercise - The specific exercise instance currently being tracked.
+ * @property {boolean} editable - Whether the tracker inputs can be modified.
+ *
  * @example
  * <app-exercise-tracker [trackedExercise]="currentExercise"></app-exercise-tracker>
  */

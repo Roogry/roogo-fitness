@@ -6,6 +6,8 @@ import { pillVariants } from './nav-pills.variants';
  * Individual pill item for the nav-pills component.
  * Applies active styling based on input.
  * 
+ * @property {boolean} active - Whether the pill item is currently active/selected.
+ * 
  * @example
  * <button app-nav-pills-item [active]="true">Tab 1</button>
  */
