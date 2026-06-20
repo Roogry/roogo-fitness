@@ -1,7 +1,6 @@
-import { Injectable, inject, signal } from '@angular/core';
-import { Exercise } from '@/shared/models/workout.model';
+import { Injectable, inject } from '@angular/core';
+import { Exercise } from '@/shared/models';
 import { DbService } from './db.service';
-import { mockExercises } from '@/core/mocks/workout.mock';
 
 @Injectable({
   providedIn: 'root',
@@ -9,10 +8,8 @@ import { mockExercises } from '@/core/mocks/workout.mock';
 export class ExerciseService {
   private dbService = inject(DbService);
 
-  private mockExercises = [...mockExercises];
-
   async getExerciseById(id: number): Promise<Exercise | undefined> {
-    return this.mockExercises.find((e) => e.id === id);
+    return this.dbService.getExerciseByKey(id);
   }
 
   async searchExercises(query: string): Promise<Exercise[]> {
@@ -23,13 +20,13 @@ export class ExerciseService {
     return exercises.filter((e) => e.name.toLowerCase().includes(lowerQuery));
   }
 
-  addCustomExercise(name: string): Exercise {
+  async addCustomExercise(name: string): Promise<Exercise> {
     const newExercise: Exercise = {
       id: Date.now(),
       name,
       media: [],
     };
-    this.mockExercises.push(newExercise);
+    await this.dbService.saveExercise(newExercise);
     return newExercise;
   }
 

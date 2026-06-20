@@ -66,8 +66,8 @@ export class ExerciseAutocomplete implements OnInit {
     this.exerciseSelected.emit(exercise);
   }
 
-  createNewExercise(name: string) {
-    const newEx = this.exerciseService.addCustomExercise(name);
+  async createNewExercise(name: string) {
+    const newEx = await this.exerciseService.addCustomExercise(name);
     this.selectExercise(newEx);
   }
 }
