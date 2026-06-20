@@ -28,6 +28,13 @@ import {
 import { calendarVariants } from '@/shared/components/zard/calendar/calendar.variants';
 import { mergeClasses, noopFn } from '@/shared/utils/merge-classes';
 
+/**
+ * A comprehensive calendar component supporting single, multiple, and date range selections.
+ * Integrates seamlessly with Angular forms via ControlValueAccessor.
+ * 
+ * @example
+ * <z-calendar zMode="range" [(ngModel)]="dateRange" />
+ */
 @Component({
   selector: 'z-calendar, [z-calendar]',
   imports: [ZardCalendarNavigationComponent, ZardCalendarGridComponent],
@@ -72,7 +79,10 @@ import { mergeClasses, noopFn } from '@/shared/utils/merge-classes';
 export class ZardCalendarComponent implements ControlValueAccessor {
   private readonly gridRef = viewChild.required(ZardCalendarGridComponent);
 
-  // Public method to reset navigation (useful for date-picker)
+  /**
+   * Resets the calendar navigation to reflect the currently selected date.
+   * Useful when integrating the calendar within a date-picker popover.
+   */
   resetNavigation(): void {
     const value = this.currentDate();
     this.currentMonthValue.set(value.getMonth().toString());

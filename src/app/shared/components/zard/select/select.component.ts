@@ -54,6 +54,16 @@ type OnChangeType = (value: string) => void;
 
 const COMPACT_MODE_WIDTH_THRESHOLD = 100;
 
+/**
+ * A customizable select dropdown component supporting single and multiple selections.
+ * Integrates with Angular forms via ControlValueAccessor.
+ * 
+ * @example
+ * <z-select [(ngModel)]="fruit" zPlaceholder="Select a fruit">
+ *   <z-select-item zValue="apple">Apple</z-select-item>
+ *   <z-select-item zValue="banana">Banana</z-select-item>
+ * </z-select>
+ */
 @Component({
   selector: 'z-select, [z-select]',
   imports: [OverlayModule, ZardBadgeComponent, NgIcon],
@@ -252,6 +262,9 @@ export class ZardSelectComponent implements ControlValueAccessor, OnDestroy {
     }
   }
 
+  /**
+   * Toggles the dropdown visibility.
+   */
   toggle() {
     if (this.disabledState()) {
       return;
@@ -264,6 +277,12 @@ export class ZardSelectComponent implements ControlValueAccessor, OnDestroy {
     }
   }
 
+  /**
+   * Selects an item by value and label.
+   * 
+   * @param value The value of the item.
+   * @param label The label of the item.
+   */
   selectItem(value: string, label: string) {
     if (this.disabledState()) {
       return;

@@ -1,6 +1,13 @@
 import type { ListenerOptions } from '@angular/core';
 import { EventManagerPlugin } from '@angular/platform-browser';
 
+/**
+ * Angular EventManagerPlugin that adds debounce support to events.
+ * 
+ * @example
+ * // Debounce input events by 300ms (default) or specified delay
+ * <input (input.debounce.500)="handler()">
+ */
 export class ZardDebounceEventManagerPlugin extends EventManagerPlugin {
   override supports(eventName: string): boolean {
     return /\.debounce(?:\.|$)/.test(eventName);

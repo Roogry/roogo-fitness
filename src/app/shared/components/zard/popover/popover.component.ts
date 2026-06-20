@@ -73,6 +73,13 @@ const POPOVER_POSITIONS_MAP: { [key: string]: ConnectedPosition } = {
   },
 } as const;
 
+/**
+ * A directive to display content in a popover overlaid on the UI.
+ * 
+ * @example
+ * <button [zPopover]="myPopover" zTrigger="click">Open Popover</button>
+ * <ng-template #myPopover>Popover Content</ng-template>
+ */
 @Directive({
   selector: '[zPopover]',
   standalone: true,
@@ -396,6 +403,10 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
   }
 }
 
+/**
+ * A component representing the popover container.
+ * Internal use for the zPopover directive.
+ */
 @Component({
   selector: 'z-popover',
   imports: [],

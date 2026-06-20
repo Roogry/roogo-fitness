@@ -8,6 +8,12 @@ import { ZardButtonComponent } from '@/shared/components/zard/button/button.comp
 import { ZardInputDirective } from '@/shared/components/zard/input/input.directive';
 import { lucideGripVertical, lucideTrash2, lucidePlus } from '@ng-icons/lucide';
 
+/**
+ * A component displaying a reorderable list of exercise instructions.
+ *
+ * @example
+ * <app-exercise-instruction-list [instructions]="instructions" (addInstruction)="onAdd()"></app-exercise-instruction-list>
+ */
 @Component({
   selector: 'app-exercise-instruction-list',
   standalone: true,
@@ -37,14 +43,36 @@ export class ExerciseInstructionList {
   removeInstruction = output<number>();
   dropInstruction = output<CdkDragDrop<string[]>>();
 
+  /**
+   * Emits an event to trigger adding a new instruction.
+   *
+   * @example
+   * this.onAdd();
+   */
   onAdd() {
     this.addInstruction.emit();
   }
 
+  /**
+   * Emits an event to remove an instruction at a specific index.
+   *
+   * @param {number} index - The index of the instruction to remove.
+   *
+   * @example
+   * this.onRemove(1);
+   */
   onRemove(index: number) {
     this.removeInstruction.emit(index);
   }
 
+  /**
+   * Handles drag and drop reordering of the instructions list.
+   *
+   * @param {CdkDragDrop<string[]>} event - The drag and drop event details.
+   *
+   * @example
+   * this.onDrop(dropEvent);
+   */
   onDrop(event: CdkDragDrop<string[]>) {
     this.dropInstruction.emit(event);
   }

@@ -1,9 +1,22 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
+/**
+ * Converts a date or date string into a relative time ago format (e.g., 'just now', '5 minutes ago').
+ * @example
+ * <!-- returns 'an hour ago' depending on the current time -->
+ * {{ someDate | timeAgo }}
+ */
 @Pipe({
   name: 'timeAgo',
 })
 export class TimeAgoPipe implements PipeTransform {
+  /**
+   * Transforms a date value into a relative time string.
+   * @param value The date string, Date object, or undefined/null.
+   * @returns A relative time string, or an empty string if value is empty.
+   * @example
+   * new TimeAgoPipe().transform('2026-06-20T10:00:00Z'); // '5 hours ago'
+   */
   transform(value: string | Date | undefined | null): string {
     if (!value) return '';
 

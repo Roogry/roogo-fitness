@@ -4,6 +4,12 @@ import { Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideChevronRight } from '@ng-icons/lucide';
 
+/**
+ * A card component displaying an upcoming workout session for the user's active plan.
+ *
+ * @example
+ * <app-upcoming-session-card [planId]="1" [sessionId]="2" title="Push Day" [isUpNext]="true"></app-upcoming-session-card>
+ */
 @Component({
   selector: 'app-upcoming-session-card',
   standalone: true,
@@ -22,6 +28,13 @@ export class UpcomingSessionCardComponent {
   @Input() title!: string;
   @Input({ transform: booleanAttribute }) isUpNext!: boolean;
 
+  /**
+   * Navigates the user to the details page for this specific session.
+   *
+   * @example
+   * // Triggered on user click
+   * this.goToSession();
+   */
   goToSession() {
     if (this.planId && this.sessionId) {
       this.router.navigate(['/plan', this.planId, 'session', this.sessionId]);

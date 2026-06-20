@@ -28,6 +28,12 @@ interface SelectHost {
   navigateTo(): void;
 }
 
+/**
+ * An individual selectable item within a ZardSelect component.
+ * 
+ * @example
+ * <z-select-item zValue="apple">Apple</z-select-item>
+ */
 @Component({
   selector: 'z-select-item, [z-select-item]',
   imports: [NgIcon],

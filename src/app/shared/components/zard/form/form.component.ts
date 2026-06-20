@@ -18,6 +18,15 @@ import {
 } from '@/shared/components/zard/form/form.variants';
 import { mergeClasses } from '@/shared/utils/merge-classes';
 
+/**
+ * A wrapper component for an entire form field, including its label and control.
+ * 
+ * @example
+ * <z-form-field>
+ *   <z-form-label>Name</z-form-label>
+ *   <z-form-control><input z-input /></z-form-control>
+ * </z-form-field>
+ */
 @Component({
   selector: 'z-form-field, [z-form-field]',
   template: '<ng-content />',
@@ -34,6 +43,14 @@ export class ZardFormFieldComponent {
   protected readonly classes = computed(() => mergeClasses(formFieldVariants(), this.class()));
 }
 
+/**
+ * A wrapper for a form control that handles layout and validation messages.
+ * 
+ * @example
+ * <z-form-control errorMessage="Required field">
+ *   <input z-input />
+ * </z-form-control>
+ */
 @Component({
   selector: 'z-form-control, [z-form-control]',
   imports: [],
@@ -66,6 +83,12 @@ export class ZardFormControlComponent {
   protected readonly classes = computed(() => mergeClasses(formControlVariants(), this.class()));
 }
 
+/**
+ * A label component specifically styled for form fields.
+ * 
+ * @example
+ * <z-form-label [zRequired]="true">Email</z-form-label>
+ */
 @Component({
   selector: 'z-form-label, label[z-form-label]',
   template: '<ng-content />',
@@ -85,6 +108,12 @@ export class ZardFormLabelComponent {
   );
 }
 
+/**
+ * A component to display validation messages or help text.
+ * 
+ * @example
+ * <z-form-message zType="error">Invalid email</z-form-message>
+ */
 @Component({
   selector: 'z-form-message, [z-form-message]',
   template: '<ng-content />',

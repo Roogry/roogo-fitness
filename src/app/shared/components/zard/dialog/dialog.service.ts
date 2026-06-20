@@ -18,6 +18,9 @@ type ContentType<T> = ComponentType<T> | TemplateRef<T> | string;
 
 export const Z_MODAL_DATA = new InjectionToken<any>('Z_MODAL_DATA');
 
+/**
+ * Service for programmatically managing and opening dialogs.
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -26,6 +29,12 @@ export class ZardDialogService {
   private injector = inject(Injector);
   private platformId = inject(PLATFORM_ID);
 
+  /**
+   * Opens a new dialog with the specified component or template.
+   * 
+   * @param config Configuration options for the dialog.
+   * @returns A reference to the newly opened dialog.
+   */
   create<T, U>(config: ZardDialogOptions<T, U>): ZardDialogRef<T> {
     return this.open<T, U>(config.zContent as ComponentType<T>, config);
   }

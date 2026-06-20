@@ -10,6 +10,12 @@ import { TimeAgoPipe } from '@/shared/pipes/time-ago-pipe';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideActivity, lucideArrowRight } from '@ng-icons/lucide';
 
+/**
+ * A card component displaying details of a logged workout session on the journey page.
+ *
+ * @example
+ * <app-logged-workout-card [session]="mySession"></app-logged-workout-card>
+ */
 @Component({
   selector: 'app-logged-workout-card',
   standalone: true,
@@ -30,6 +36,15 @@ import { lucideActivity, lucideArrowRight } from '@ng-icons/lucide';
 export class LoggedWorkoutCardComponent {
   session = input.required<LoggedSession>();
 
+  /**
+   * Generates a brief summary string of the exercises performed in the session.
+   *
+   * @param {LoggedSession} session - The logged session data.
+   * @returns {string} A summary string of exercise names.
+   *
+   * @example
+   * const summary = this.getExerciseSummary(session); // e.g. "Squat, Bench Press & 3 more"
+   */
   getExerciseSummary(session: LoggedSession): string {
     const names = new Set(session.workouts.map((w) => w.exercise.name).filter(Boolean));
     const uniqueNames = Array.from(names);

@@ -1,6 +1,14 @@
 import { Component, signal, input, inject, DestroyRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+/**
+ * Container for navigation pills. Shrinks visually on scroll unless disabled.
+ * 
+ * @example
+ * <app-nav-pills>
+ *   <button app-nav-pills-item [active]="true">Tab 1</button>
+ * </app-nav-pills>
+ */
 @Component({
   selector: 'app-nav-pills',
   standalone: true,
@@ -20,6 +28,14 @@ export class NavPillsComponent implements OnInit {
   readonly disableScrollShrink = input<boolean>(false);
   readonly isScrolled = signal(false);
 
+  /**
+   * Initializes scroll listener to shrink pills when scrolling down.
+   * 
+   * @returns {void}
+   * 
+   * @example
+   * navPillsComponent.ngOnInit();
+   */
   ngOnInit() {
     const handleScroll = (event: Event) => {
       if (this.disableScrollShrink()) {

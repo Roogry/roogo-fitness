@@ -10,6 +10,13 @@ import {
   type EffectRef,
 } from '@angular/core';
 
+/**
+ * Type guard to check if a given value is an Angular TemplateRef.
+ * @param value The value to check.
+ * @returns True if the value is a TemplateRef, false otherwise.
+ * @example
+ * if (isTemplateRef(myValue)) { ... }
+ */
 export function isTemplateRef<C = unknown>(value: unknown): value is TemplateRef<C> {
   return value instanceof TemplateRef;
 }
@@ -19,6 +26,12 @@ export interface ZardStringTemplateOutletContext {
   [key: string]: unknown;
 }
 
+/**
+ * A structural directive that safely renders either a string or an Angular TemplateRef.
+ * Useful when a component property can accept either a static string or a custom template.
+ * @example
+ * <ng-container *zStringTemplateOutlet="myTemplateOrString; context: myContext"></ng-container>
+ */
 @Directive({
   selector: '[zStringTemplateOutlet]',
   exportAs: 'zStringTemplateOutlet',
@@ -140,6 +153,14 @@ export class ZardStringTemplateOutletDirective<T = unknown> implements OnDestroy
     this.#lastContext = oldCtx;
   }
 
+  /**
+   * Static context guard for Angular's strict template type checking.
+   * @param _dir The directive instance.
+   * @param _ctx The context to check.
+   * @returns True, indicating the context is of type ZardStringTemplateOutletContext.
+   * @example
+   * ZardStringTemplateOutletDirective.ngTemplateContextGuard(dir, ctx);
+   */
   static ngTemplateContextGuard<T>(
     _dir: ZardStringTemplateOutletDirective<T>,
     _ctx: unknown,

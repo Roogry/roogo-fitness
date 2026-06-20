@@ -4,6 +4,14 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideX } from '@ng-icons/lucide';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 
+/**
+ * A slide-in sheet component for displaying content or forms overlaying the screen.
+ * 
+ * @example
+ * <app-sheet title="Edit Session" [isOpen]="isSheetOpen" (onOpenChange)="isSheetOpen = $event">
+ *   <!-- Content here -->
+ * </app-sheet>
+ */
 @Component({
   selector: 'app-sheet',
   standalone: true,
@@ -46,6 +54,14 @@ export class RooSheetComponent {
 
   @Output() onOpenChange = new EventEmitter<boolean>();
 
+  /**
+   * Closes the sheet and emits the onOpenChange event.
+   * 
+   * @returns {void}
+   * 
+   * @example
+   * sheetComponent.close();
+   */
   close() {
     this.isOpen = false;
     this.onOpenChange.emit(false);

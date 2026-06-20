@@ -5,6 +5,12 @@ import { mergeClasses } from '@/shared/utils/merge-classes';
 import { iconVariants, type ZardIconSizeVariants } from './icon.variants';
 import { ZARD_ICONS, ZARD_ICON_IMPORTS, type ZardIcon } from './icons';
 
+/**
+ * An icon component that renders SVG icons using @ng-icons.
+ * 
+ * @example
+ * <z-icon zType="check" zSize="sm" />
+ */
 @Component({
   selector: 'z-icon, [z-icon]',
   standalone: true,

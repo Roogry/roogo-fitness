@@ -17,6 +17,14 @@ import { mergeClasses } from '@/shared/utils/merge-classes';
 
 import { cardBodyVariants, cardFooterVariants, cardHeaderVariants, cardVariants } from './card.variants';
 
+/**
+ * A flexible card component for displaying grouped content with an optional header, body, and footer.
+ * 
+ * @example
+ * <z-card zTitle="Card Title" zDescription="Card description">
+ *   <p>Card content goes here.</p>
+ * </z-card>
+ */
 @Component({
   selector: 'z-card',
   imports: [ZardStringTemplateOutletDirective, ZardButtonComponent, ZardIdDirective],

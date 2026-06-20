@@ -1,12 +1,27 @@
 import { Injectable, inject } from '@angular/core';
 import { DbService } from '../../../core/services/db.service';
 
+/**
+ * Service for calculating and retrieving user journey statistics and workout streaks.
+ *
+ * @example
+ * const stats = await journeyService.getJourneyStreakStats();
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class JourneyService {
   private dbService = inject(DbService);
 
+  /**
+   * Retrieves user statistics including total sessions, current streak, and longest streak.
+   *
+   * @returns {Promise<any>} An object containing streak statistics and workout dates.
+   *
+   * @example
+   * const stats = await journeyService.getJourneyStreakStats();
+   * console.log(stats.currentStreak);
+   */
   async getJourneyStreakStats() {
     const sessions = await this.dbService.getLoggedSessions();
 

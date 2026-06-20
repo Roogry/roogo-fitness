@@ -26,6 +26,13 @@ import {
 type OnTouchedType = () => void;
 type OnChangeType = (value: string) => void;
 
+/**
+ * A directive to style and enhance native input and textarea elements.
+ * Integrates with Angular forms via ControlValueAccessor.
+ * 
+ * @example
+ * <input z-input zSize="md" placeholder="Enter text" />
+ */
 @Directive({
   selector: 'input[z-input], textarea[z-input]',
   providers: [
@@ -77,10 +84,20 @@ export class ZardInputDirective implements ControlValueAccessor {
     });
   }
 
+  /**
+   * Disables or enables the underlying input element.
+   * 
+   * @param b True to disable, false to enable.
+   */
   disable(b: boolean): void {
     this.elementRef.nativeElement.disabled = b;
   }
 
+  /**
+   * Sets the dataset slot property on the host element.
+   * 
+   * @param name The slot name.
+   */
   setDataSlot(name: string): void {
     if (this.elementRef?.nativeElement?.dataset) {
       this.elementRef.nativeElement.dataset.slot = name;
@@ -97,6 +114,9 @@ export class ZardInputDirective implements ControlValueAccessor {
     this.onTouched();
   }
 
+  /**
+   * Gets the type of the input element (either textarea or default).
+   */
   getType(): ZardInputTypeVariants {
     const isTextarea = this.elementRef.nativeElement.tagName.toLowerCase() === 'textarea';
     return isTextarea ? 'textarea' : 'default';

@@ -8,6 +8,12 @@ class ZardIdInternalService {
   }
 }
 
+/**
+ * Generates a unique, prefixed ID for an element and exposes it to the template.
+ * Useful for maintaining stable IDs, especially for accessibility (e.g., pairing labels with inputs).
+ * @example
+ * <div [zardId]="'my-prefix'" #myId="zardId" [id]="myId.id()"></div>
+ */
 @Directive({
   selector: '[zardId]',
   exportAs: 'zardId',

@@ -4,6 +4,12 @@ import { ZardCardComponent } from '@/shared/components/zard/card';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCalendar } from '@ng-icons/lucide';
 
+/**
+ * A card component displaying a recent exercise session for quick reference.
+ *
+ * @example
+ * <app-recent-exercise-card [session]="mySession"></app-recent-exercise-card>
+ */
 @Component({
   selector: 'app-recent-exercise-card',
   standalone: true,

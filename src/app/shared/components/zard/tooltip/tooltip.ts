@@ -56,6 +56,12 @@ const throttle = (callback: () => void, wait: number) => {
   };
 };
 
+/**
+ * A directive that displays a tooltip when hovering or clicking on an element.
+ * 
+ * @example
+ * <button zTooltip="This is a tooltip" zPosition="top">Hover me</button>
+ */
 @Directive({
   selector: '[zTooltip]',
   host: {
@@ -253,6 +259,10 @@ export class ZardTooltipDirective implements OnInit, OnDestroy {
   }
 }
 
+/**
+ * A component representing the visual tooltip element.
+ * Internal use for the zTooltip directive.
+ */
 @Component({
   selector: 'z-tooltip',
   imports: [ZardStringTemplateOutletDirective, ZardIdDirective],

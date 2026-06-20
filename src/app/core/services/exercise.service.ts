@@ -9,13 +9,34 @@ import {
 @Injectable({
   providedIn: 'root',
 })
+/**
+ * Service to manage exercise data and operations.
+ * @example
+ * const exerciseService = inject(ExerciseService);
+ * const exercises = await exerciseService.getExercises('push');
+ */
 export class ExerciseService {
   private dbService = inject(DbService);
 
+  /**
+   * Retrieves a specific exercise by its ID.
+   * @param {number} id The ID of the exercise.
+   * @returns {Promise<Exercise | undefined>} A promise resolving to the exercise, or undefined if not found.
+   * @example
+   * const exercise = await this.exerciseService.getExerciseById(1);
+   */
   async getExerciseById(id: number): Promise<Exercise | undefined> {
     return this.dbService.getExerciseByKey(id);
   }
 
+  /**
+   * Loads a list of exercises by their IDs into an existing Map.
+   * @param {number[]} exerciseIds The array of exercise IDs to load.
+   * @param {Map<number, Exercise>} currentMap The current map of exercises.
+   * @returns {Promise<{ map: Map<number, Exercise>; changed: boolean }>} A promise resolving to an object with the updated map and a changed flag.
+   * @example
+   * const result = await this.exerciseService.loadExercisesToMap([1, 2], new Map());
+   */
   async loadExercisesToMap(exerciseIds: number[], currentMap: Map<number, Exercise>): Promise<{ map: Map<number, Exercise>; changed: boolean }> {
     const newMap = new Map(currentMap);
     let changed = false;
@@ -32,6 +53,13 @@ export class ExerciseService {
     return { map: newMap, changed };
   }
 
+  /**
+   * Retrieves all exercises, optionally filtered by a search query.
+   * @param {string} query The search string to filter exercises by name.
+   * @returns {Promise<Exercise[]>} A promise resolving to an array of matched exercises.
+   * @example
+   * const exercises = await this.exerciseService.getExercises('bench');
+   */
   async getExercises(query: string): Promise<Exercise[]> {
     const exercises = await this.dbService.getExercises();
     if (!query.trim()) return exercises;
@@ -40,6 +68,13 @@ export class ExerciseService {
     return exercises.filter((e) => e.name.toLowerCase().includes(lowerQuery));
   }
 
+  /**
+   * Creates and saves a new custom exercise.
+   * @param {string} name The name of the new exercise.
+   * @returns {Promise<Exercise>} A promise resolving to the newly created exercise.
+   * @example
+   * const newExercise = await this.exerciseService.addCustomExercise('Custom Pushup');
+   */
   async addCustomExercise(name: string): Promise<Exercise> {
     const newExercise: Exercise = {
       id: Date.now(),
@@ -50,15 +85,38 @@ export class ExerciseService {
     return newExercise;
   }
 
+  /**
+   * Updates an existing exercise with new data.
+   * @param {Exercise} current The current exercise object.
+   * @param {Partial<Exercise>} updates The properties to update.
+   * @returns {void}
+   * @example
+   * this.exerciseService.updateExercise(exercise, { name: 'Updated Name' });
+   */
   updateExercise(current: Exercise, updates: Partial<Exercise>) {
     this.dbService.saveExercise({ ...current, ...updates });
   }
 
+  /**
+   * Retrieves exercises that target a specific primary muscle.
+   * @param {number} muscleId The ID of the primary muscle.
+   * @returns {Promise<Exercise[]>} A promise resolving to an array of exercises.
+   * @example
+   * const exercises = await this.exerciseService.getExercisesByMuscle(1);
+   */
   async getExercisesByMuscle(muscleId: number): Promise<Exercise[]> {
     const exercises = await this.dbService.getExercises();
     return exercises.filter((e) => e.primary_muscle?.id === muscleId);
   }
 
+  /**
+   * Retrieves journey statistics (personal records, recent sessions) for a specific exercise.
+   * @param {number} exerciseId The ID of the exercise.
+   * @param {number} [limit=4] The maximum number of recent sessions to retrieve.
+   * @returns {Promise<JourneyStats>} A promise resolving to the exercise journey statistics.
+   * @example
+   * const stats = await this.exerciseService.getExerciseJourneyStats(1, 5);
+   */
   async getExerciseJourneyStats(exerciseId: number, limit: number = 4): Promise<JourneyStats> {
     const sessions = await this.dbService.getLoggedSessions();
 

@@ -20,6 +20,15 @@ import {
   calendarWeekdayVariants,
 } from './calendar.variants';
 
+/**
+ * A calendar grid component that renders days of the month and handles keyboard navigation.
+ * 
+ * @example
+ * <z-calendar-grid
+ *   [calendarDays]="days"
+ *   (dateSelect)="onDateSelect($event)"
+ * />
+ */
 @Component({
   selector: 'z-calendar-grid',
   template: `
@@ -144,7 +153,9 @@ export class ZardCalendarGridComponent {
   }
 
   /**
-   * Public method to set focus on a specific day index
+   * Sets focus on a specific day index in the calendar grid.
+   * 
+   * @param index The index of the day to focus.
    */
   setFocusedDayIndex(index: number): void {
     this.focusedDayIndex.set(index);
@@ -152,7 +163,7 @@ export class ZardCalendarGridComponent {
   }
 
   /**
-   * Public method to reset focus based on priority
+   * Resets focus to the currently selected day, today's date, or the first available day.
    */
   resetFocus(): void {
     const targetIndex = this.getFocusedDayIndex();

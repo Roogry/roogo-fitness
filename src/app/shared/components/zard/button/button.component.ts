@@ -24,6 +24,12 @@ import {
 } from './button.variants';
 import { ZardIconComponent } from '@/shared/components/zard/icon/icon.component';
 
+/**
+ * A versatile button component supporting various types, sizes, shapes, and states like loading or disabled.
+ * 
+ * @example
+ * <button z-button zType="default" zSize="md">Submit</button>
+ */
 @Component({
   selector: 'z-button, button[z-button], a[z-button]',
   imports: [ZardIconComponent],

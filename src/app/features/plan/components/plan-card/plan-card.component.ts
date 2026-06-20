@@ -19,6 +19,12 @@ import { PlanService } from '@/core/services/plan.service';
 import { ExerciseService } from '@/core/services/exercise.service';
 import { Router } from '@angular/router';
 
+/**
+ * A card component displaying a user's workout plan, including its sessions and actions.
+ *
+ * @example
+ * <app-plan-card [plan]="myPlan" (onToggle)="toggle()" (onEdit)="edit()"></app-plan-card>
+ */
 @Component({
   selector: 'app-plan-card',
   standalone: true,
@@ -66,6 +72,15 @@ export class PlanCardComponent implements OnInit {
     this.exerciseMap.set(map);
   }
 
+  /**
+   * Generates a brief summary string of the exercise names within a session.
+   *
+   * @param {WorkoutPlanSession} session - The workout plan session.
+   * @returns {string} A summary string of exercise names.
+   *
+   * @example
+   * const names = this.getExerciseNames(session);
+   */
   getExerciseNames(session: WorkoutPlanSession): string {
     if (!session.exercises || session.exercises.length === 0) {
       return 'No exercises added yet.';

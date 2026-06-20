@@ -15,6 +15,12 @@ import { ZardButtonComponent } from '../zard/button/button.component';
 import { ClassValue, mergeClasses } from '@/shared/utils';
 import { headerVariants } from './header.variants';
 
+/**
+ * A shared header component with title and back navigation.
+ * 
+ * @example
+ * <app-header title="Dashboard" [showBackBtn]="true" (onBackClick)="handleBack()"></app-header>
+ */
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -43,6 +49,14 @@ export class HeaderComponent {
     mergeClasses(headerVariants({ isTransparant: this.isTransparant() }), this.class()),
   );
 
+  /**
+   * Navigates the user back to the previous view or specified link.
+   * 
+   * @returns {void}
+   * 
+   * @example
+   * headerComponent.goBack();
+   */
   goBack() {
     if (this.backLink()) {
       this.router.navigate(this.backLink()!);

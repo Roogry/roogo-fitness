@@ -18,6 +18,17 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardSelectItemComponent } from '@/shared/components/zard/select/select-item.component';
 import { ZardSelectComponent } from '@/shared/components/zard/select/select.component';
 
+/**
+ * Navigation controls for a calendar, including previous/next month buttons and month/year selectors.
+ * 
+ * @example
+ * <z-calendar-navigation
+ *   [currentMonth]="month"
+ *   [currentYear]="year"
+ *   (monthChange)="onMonthChange($event)"
+ *   (yearChange)="onYearChange($event)"
+ * />
+ */
 @Component({
   selector: 'z-calendar-navigation',
   imports: [ZardButtonComponent, NgIcon, ZardSelectComponent, ZardSelectItemComponent],

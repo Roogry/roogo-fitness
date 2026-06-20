@@ -6,6 +6,12 @@ import { mergeClasses } from '@/shared/utils/merge-classes';
 
 import { badgeVariants, type ZardBadgeShapeVariants, type ZardBadgeTypeVariants } from './badge.variants';
 
+/**
+ * A badge component to display small amounts of information, such as status or counts.
+ * 
+ * @example
+ * <z-badge zType="default" zShape="pill">Status</z-badge>
+ */
 @Component({
   selector: 'z-badge',
   template: `

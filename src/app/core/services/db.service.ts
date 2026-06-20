@@ -6,6 +6,12 @@ import { mockMuscles, mockExercises, mockLoggedSessions, mockWorkoutPlans } from
 @Injectable({
   providedIn: 'root'
 })
+/**
+ * Service to manage IndexedDB operations for workout plans, logged sessions, exercises, and muscles.
+ * @example
+ * const dbService = inject(DbService);
+ * const plans = await dbService.getWorkoutPlans();
+ */
 export class DbService {
   private dbPromise: Promise<IDBPDatabase<any>>;
 
@@ -101,16 +107,36 @@ export class DbService {
   }
 
   // --- CRUD for Workout Plans ---
+  /**
+   * Retrieves all workout plans from the database.
+   * @returns {Promise<WorkoutPlan[]>} A promise resolving to an array of workout plans.
+   * @example
+   * const plans = await this.dbService.getWorkoutPlans();
+   */
   async getWorkoutPlans(): Promise<WorkoutPlan[]> {
     const db = await this.dbPromise;
     return db.getAll('workout_plans');
   }
 
+  /**
+   * Retrieves a specific workout plan by its ID.
+   * @param {number} id The ID of the workout plan.
+   * @returns {Promise<WorkoutPlan | undefined>} A promise resolving to the workout plan, or undefined if not found.
+   * @example
+   * const plan = await this.dbService.getWorkoutPlan(1);
+   */
   async getWorkoutPlan(id: number): Promise<WorkoutPlan | undefined> {
     const db = await this.dbPromise;
     return db.get('workout_plans', id);
   }
 
+  /**
+   * Saves or updates a workout plan in the database.
+   * @param {WorkoutPlan} plan The workout plan to save.
+   * @returns {Promise<number>} A promise resolving to the ID of the saved plan.
+   * @example
+   * const id = await this.dbService.saveWorkoutPlan(newPlan);
+   */
   async saveWorkoutPlan(plan: WorkoutPlan): Promise<number> {
     const db = await this.dbPromise;
     const now = new Date().toISOString();
@@ -119,12 +145,25 @@ export class DbService {
     return db.put('workout_plans', plan);
   }
 
+  /**
+   * Deletes a workout plan by its ID.
+   * @param {number} id The ID of the workout plan to delete.
+   * @returns {Promise<void>} A promise resolving when the deletion is complete.
+   * @example
+   * await this.dbService.deleteWorkoutPlan(1);
+   */
   async deleteWorkoutPlan(id: number): Promise<void> {
     const db = await this.dbPromise;
     return db.delete('workout_plans', id);
   }
 
   // --- CRUD for Logged Sessions ---
+  /**
+   * Retrieves all logged sessions from the database, sorted by start time descending.
+   * @returns {Promise<LoggedSession[]>} A promise resolving to an array of logged sessions.
+   * @example
+   * const sessions = await this.dbService.getLoggedSessions();
+   */
   async getLoggedSessions(): Promise<LoggedSession[]> {
     const db = await this.dbPromise;
     // Get all sessions and sort by start time descending
@@ -132,11 +171,25 @@ export class DbService {
     return sessions.reverse();
   }
 
+  /**
+   * Retrieves a specific logged session by its ID.
+   * @param {number} id The ID of the logged session.
+   * @returns {Promise<LoggedSession | undefined>} A promise resolving to the logged session, or undefined if not found.
+   * @example
+   * const session = await this.dbService.getLoggedSession(1);
+   */
   async getLoggedSession(id: number): Promise<LoggedSession | undefined> {
     const db = await this.dbPromise;
     return db.get('logged_sessions', id);
   }
 
+  /**
+   * Saves or updates a logged session in the database.
+   * @param {LoggedSession} session The logged session to save.
+   * @returns {Promise<number>} A promise resolving to the ID of the saved session.
+   * @example
+   * const id = await this.dbService.saveLoggedSession(newSession);
+   */
   async saveLoggedSession(session: LoggedSession): Promise<number> {
     const db = await this.dbPromise;
     const now = new Date().toISOString();
@@ -146,17 +199,37 @@ export class DbService {
   }
 
   // --- CRUD for Exercises ---
+  /**
+   * Retrieves all exercises from the database.
+   * @returns {Promise<Exercise[]>} A promise resolving to an array of exercises.
+   * @example
+   * const exercises = await this.dbService.getExercises();
+   */
   async getExercises(): Promise<Exercise[]> {
     const db = await this.dbPromise;
     return db.getAll('exercises');
   }
 
+  /**
+   * Retrieves a specific exercise by its key/ID.
+   * @param {any} key The key/ID of the exercise.
+   * @returns {Promise<Exercise | undefined>} A promise resolving to the exercise, or undefined if not found.
+   * @example
+   * const exercise = await this.dbService.getExerciseByKey(1);
+   */
   async getExerciseByKey(key: any): Promise<Exercise | undefined> {
     if (key === undefined || key === null) return undefined;
     const db = await this.dbPromise;
     return db.get('exercises', key);
   }
 
+  /**
+   * Saves or updates an exercise in the database.
+   * @param {Exercise} exercise The exercise to save.
+   * @returns {Promise<number>} A promise resolving to the ID of the saved exercise.
+   * @example
+   * const id = await this.dbService.saveExercise(newExercise);
+   */
   async saveExercise(exercise: Exercise): Promise<number> {
     const db = await this.dbPromise;
     const now = new Date().toISOString();
@@ -166,6 +239,12 @@ export class DbService {
   }
 
   // --- CRUD for Muscles ---
+  /**
+   * Retrieves all muscles from the database.
+   * @returns {Promise<Muscle[]>} A promise resolving to an array of muscles.
+   * @example
+   * const muscles = await this.dbService.getMuscles();
+   */
   async getMuscles(): Promise<Muscle[]> {
     const db = await this.dbPromise;
     return db.getAll('muscles');

@@ -6,6 +6,12 @@ import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideDumbbell, lucideFlame } from '@ng-icons/lucide';
 
+/**
+ * A floating widget component displaying the user's currently active workout session timer and status.
+ *
+ * @example
+ * <app-active-session-widget></app-active-session-widget>
+ */
 @Component({
   selector: 'app-active-session-widget',
   standalone: true,
@@ -18,6 +24,12 @@ export class ActiveSessionWidgetComponent {
   workoutService = inject(WorkoutService);
   private router = inject(Router);
 
+  /**
+   * Navigates the user back to the active session view.
+   *
+   * @example
+   * this.goToActiveSession();
+   */
   goToActiveSession() {
     this.router.navigate(['/session/active']);
   }

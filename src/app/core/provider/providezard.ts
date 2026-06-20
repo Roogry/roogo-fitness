@@ -4,6 +4,14 @@ import { EVENT_MANAGER_PLUGINS } from '@angular/platform-browser';
 import { ZardDebounceEventManagerPlugin } from './event-manager-plugins/zard-debounce-event-manager-plugin';
 import { ZardEventManagerPlugin } from './event-manager-plugins/zard-event-manager-plugin';
 
+/**
+ * Provides Zard event manager plugins for the Angular application.
+ * @returns {EnvironmentProviders} The configured environment providers.
+ * @example
+ * bootstrapApplication(AppComponent, {
+ *   providers: [provideZard()]
+ * });
+ */
 export function provideZard(): EnvironmentProviders {
   const eventManagerPlugins = [
     {

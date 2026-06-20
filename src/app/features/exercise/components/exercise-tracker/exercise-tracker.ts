@@ -12,6 +12,12 @@ import { ZardBadgeComponent } from '@/shared/components/zard/badge';
 import { LoggedExercise, LoggedSet } from '@/shared/models';
 import { ZardFormImports } from '@/shared/components/zard/form';
 
+/**
+ * A component that tracks an active exercise session, allowing the user to log sets, weight, and reps.
+ *
+ * @example
+ * <app-exercise-tracker [trackedExercise]="currentExercise"></app-exercise-tracker>
+ */
 @Component({
   selector: 'app-exercise-tracker',
   standalone: true,
@@ -50,6 +56,13 @@ export class ExerciseTracker {
     minLength(f.reps, 1, { message: 'Reps must be greater than 0' });
   });
 
+  /**
+   * Handles the submission of the new workout set form.
+   *
+   * @example
+   * // Triggered on user clicking Add Set button
+   * this.onAddWorkoutSetClick();
+   */
   onAddWorkoutSetClick() {
     submit(this.workoutSetForm, async (f) => {
       this.workoutService.addSet(
@@ -63,14 +76,37 @@ export class ExerciseTracker {
     });
   }
 
+  /**
+   * Updates an existing logged set with new values.
+   *
+   * @param {number} setId - The ID of the logged set to update.
+   * @param {Partial<LoggedSet>} updates - The partial set data to update.
+   *
+   * @example
+   * this.updateSet(1, { reps: 10 });
+   */
   updateSet(setId: number, updates: Partial<LoggedSet>) {
     this.workoutService.updateSet(this.trackedExercise().exercise.id, setId, updates);
   }
 
+  /**
+   * Removes a specific set from the logged session.
+   *
+   * @param {number} setId - The ID of the set to remove.
+   *
+   * @example
+   * this.removeSet(1);
+   */
   removeSet(setId: number) {
     this.workoutService.removeSet(this.trackedExercise().exercise.id, setId);
   }
 
+  /**
+   * Removes the entire tracked exercise and all its sets from the session.
+   *
+   * @example
+   * this.removeExercise();
+   */
   removeExercise() {
     this.workoutService.removeTrackedExercise(this.trackedExercise().exercise.id);
   }

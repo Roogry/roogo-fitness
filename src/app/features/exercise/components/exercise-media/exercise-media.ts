@@ -6,6 +6,12 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideDumbbell, lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
 import { ExerciseMedia } from '@/shared/models';
 
+/**
+ * A component displaying media content (images/videos) for a specific exercise.
+ *
+ * @example
+ * <app-exercise-media [media]="exercise.media"></app-exercise-media>
+ */
 @Component({
   selector: 'app-exercise-media',
   standalone: true,
@@ -48,11 +54,23 @@ export class ExerciseMediaComponent {
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   });
 
+  /**
+   * Advances the display to the next media item in the list.
+   *
+   * @example
+   * this.nextMedia();
+   */
   nextMedia() {
     const list = this.media() || [];
     this.activeMediaIndex.update((i) => (i + 1) % list.length);
   }
 
+  /**
+   * Returns the display to the previous media item in the list.
+   *
+   * @example
+   * this.prevMedia();
+   */
   prevMedia() {
     const list = this.media() || [];
     this.activeMediaIndex.update((i) => (i === 0 ? list.length - 1 : i - 1));

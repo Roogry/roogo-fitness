@@ -53,6 +53,13 @@ export class ZardDialogOptions<T, U> {
   zWidth?: string;
 }
 
+/**
+ * A dialog component that presents content in a modal layer, blocking interaction with the rest of the application.
+ * 
+ * @example
+ * // Normally invoked programmatically via DialogService
+ * this.dialogService.open(MyComponent, { zTitle: 'Dialog Title' });
+ */
 @Component({
   selector: 'z-dialog',
   imports: [OverlayModule, PortalModule, ZardButtonComponent, NgIcon],
