@@ -23,614 +23,734 @@ export const mockExercises: Exercise[] = [
   {
     id: 100,
     name: 'Wide-Grip Pull-Up',
-    short_description:
-      "1.5x shoulder width overhand grip. Slow 2-3 second negative. Feel your lats pulling apart on the way down. Slight 0.5-1 second pause at the bottom, then lift your chest up and drive your elbows down as you lift yourself up. Don't be afraid to use assistance. Add weight if needed. Keep the form tight and controlled! Once you hit the Last Set RPE on the final set, switch to partial reps. These should be the bottom half of the ROM. Stop once you have 0-1 half reps left in the tank.",
-    primary_muscle: {
-      id: 9,
-      name: 'Lats',
-    },
+    short_description: 'Tarik tubuh ke atas dengan otot latissimus (sayap). Gunakan bantuan jika perlu, atau tambahkan beban.',
+    primary_muscle: { id: 9, name: 'Lats' },
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 120, max: 180 },
     media: [],
+    instructions: [
+      'Gunakan pegangan overhand 1.5x lebar bahu.',
+      'Tarik napas dan angkat dada ke atas, dorong siku ke bawah untuk mengangkat tubuh.',
+      'Tahan 0.5-1 detik di puncak gerakan.',
+      'Turun perlahan dalam 2-3 detik hingga lengan lurus.',
+      'Lakukan partial reps (setengah gerakan bawah) di set terakhir jika sudah mendekati failure.'
+    ],
+    tips: 'Rasakan regangan pada otot sayap saat turun. Jaga postur tetap stabil dan hindari mengayun.'
   },
   {
     id: 101,
     name: 'Chest-Supported Machine Row',
-    short_description:
-      'Set the chest pad up so you get a deep stretch on each rep. Once you hit the Last Set RPE on the final set, switch to partial reps. These should be the bottom half of the ROM. Stop once you have 0-1 half reps left in the tank.',
-    primary_muscle: {
-      id: 9,
-      name: 'Lats',
-    },
+    short_description: 'Tarik beban dengan fokus pada kontraksi punggung, gunakan pad dada sebagai tumpuan.',
+    primary_muscle: { id: 9, name: 'Lats' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 120, max: 180 },
     media: [],
+    instructions: [
+      'Atur pad dada agar otot punggung bisa meregang maksimal di posisi awal.',
+      'Tarik tuas ke belakang hingga siku melewati tubuh.',
+      'Turunkan perlahan dan rasakan regangan.',
+      'Di set terakhir, gunakan partial reps (setengah gerakan awal) hingga mendekati failure.'
+    ],
+    tips: 'Tarik dengan siku, bukan dengan telapak tangan.'
   },
   {
     id: 102,
     name: 'Half-Kneeling 1-Arm Lat Pulldown',
-    short_description:
-      "Try to keep the cable and your wrist aligned in a straight line throughout the pull. Feel a nice, deep lat stretch at the top. On all sets, alternate full-ROM reps and half-ROM reps (i.e. do 1 rep with full-ROM, then 1 rep half-ROM (in the stretched/top half), then 1 rep full-ROM, then 1 rep half-ROM). Repeat until you've reached the target reps (partial reps count towards the rep count).",
-    primary_muscle: {
-      id: 9,
-      name: 'Lats',
-    },
+    short_description: 'Tarik kabel dengan satu tangan dalam posisi setengah berlutut untuk rentang gerak maksimal otot lat.',
+    primary_muscle: { id: 9, name: 'Lats' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Posisikan tubuh setengah berlutut, sejajarkan pergelangan tangan dengan kabel.',
+      'Tarik kabel ke bawah hingga siku mendekati pinggang.',
+      'Rentangkan kembali ke atas hingga otot lat meregang sempurna.',
+      'Selang-seling antara gerakan penuh (full-ROM) dan setengah gerakan atas (half-ROM) di tiap repetisi.'
+    ],
+    tips: 'Jaga agar kabel dan pergelangan tangan selalu dalam satu garis lurus.'
   },
   {
     id: 103,
     name: 'Cable 1-Arm Face Pull',
-    short_description:
-      'Pull the cable towards eye-level, with a slight pause at the bottom of each rep (when your arm is bent).',
-    primary_muscle: {
-      id: 6,
-      name: 'Back Delt',
-    },
+    short_description: 'Tarik kabel ke arah wajah menggunakan satu tangan untuk melatih otot bahu belakang.',
+    primary_muscle: { id: 6, name: 'Back Delt' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Atur kabel setinggi mata.',
+      'Tarik kabel ke arah wajah hingga lengan menekuk.',
+      'Tahan sejenak saat kontraksi maksimal (ketika lengan tertekuk).',
+      'Kembalikan ke posisi awal secara perlahan.'
+    ],
+    tips: 'Fokus pada kontraksi otot bahu belakang, bukan sekadar menarik beban.'
   },
   {
     id: 104,
     name: 'Seated Super-Bayesian High Cable Curl',
-    short_description:
-      'Set up the cable at hand height and feel a deep stretch on each rep. Curl until the handle reaches the bench.',
-    primary_muscle: {
-      id: 8,
-      name: 'Biceps',
-    },
+    short_description: 'Latihan bisep menggunakan kabel tinggi dengan posisi duduk membelakangi mesin.',
+    primary_muscle: { id: 8, name: 'Biceps' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Atur kabel setinggi tangan saat duduk tegak.',
+      'Tarik pegangan ke arah tubuh hingga menyentuh bangku.',
+      'Kembali perlahan dan rasakan regangan maksimal pada otot bisep di akhir gerakan.'
+    ],
+    tips: 'Jaga siku agar tetap stabil dan tidak ikut tertarik ke depan.'
   },
   {
     id: 105,
     name: 'Cable Crunch',
-    short_description:
-      'Round your lower back as you crunch. Maintain a mind-muscle connection with your 6-pack.',
-    primary_muscle: {
-      id: 16,
-      name: 'Core',
-    },
+    short_description: 'Gunakan kabel untuk melatih otot perut dengan memberikan beban yang konsisten.',
+    primary_muscle: { id: 16, name: 'Core' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 8, max: 10 },
     recommended_rest_time_sec: { min: 60, max: 120 },
     media: [],
+    instructions: [
+      'Pegang tali kabel di belakang leher sambil berlutut.',
+      'Bungkukkan punggung dan tarik tubuh ke bawah dengan otot perut (crunch).',
+      'Tahan sejenak lalu kembali ke atas perlahan.'
+    ],
+    tips: 'Bulatkan punggung bawah Anda, jangan hanya menunduk atau membungkuk dari pinggul.'
   },
   {
     id: 106,
     name: 'Meadows Incline DB Lateral Raise',
-    short_description:
-      'Lie down on your side on a ~30° bench. Start with the DB in front of you, raise the DB to parallel to the floor and lower the DB behind you, feeling a deep stretch in your delts, then reverse this motion (2 reps have now been completed). No pausing between reps.',
-    primary_muscle: {
-      id: 5,
-      name: 'Side Delt',
-    },
+    short_description: 'Latihan bahu samping dengan berbaring menyamping di bangku miring.',
+    primary_muscle: { id: 5, name: 'Side Delt' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Berbaring miring di bangku dengan kemiringan ~30°.',
+      'Mulai dengan dumbbell di depan tubuh, lalu angkat sejajar dengan lantai.',
+      'Turunkan dumbbell sedikit ke arah belakang tubuh untuk regangan ekstra.',
+      'Angkat kembali dari belakang ke posisi semula tanpa jeda.'
+    ],
+    tips: 'Rasakan regangan dalam di otot bahu samping. Lakukan repetisi mengalir tanpa henti.'
   },
   {
     id: 107,
     name: 'Flat Machine Chest Press',
-    short_description:
-      '1 second pause on the chest while maintaining tension on the chest. Once you hit the Last Set RPE on the final set, switch to partial reps. These should be the bottom half of the ROM. Stop once you have 0-1 half reps left in the tank.',
-    primary_muscle: {
-      id: 2,
-      name: 'Midle Chest',
-    },
+    short_description: 'Dorongan dada menggunakan mesin posisi datar untuk melatih otot dada tengah.',
+    primary_muscle: { id: 2, name: 'Midle Chest' },
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 180, max: 300 },
     media: [],
+    instructions: [
+      'Duduk tegak dan dorong tuas mesin ke depan.',
+      'Turunkan perlahan dan tahan 1 detik saat tuas mendekati dada.',
+      'Jaga ketegangan pada otot dada selama gerakan berlangsung.',
+      'Di set terakhir, gunakan partial reps (setengah bawah) hingga mendekati failure.'
+    ],
+    tips: 'Jangan mengunci siku terlalu lurus saat mendorong ke depan.'
   },
   {
     id: 108,
     name: 'Bottom-Half Seated Cable Flye',
-    short_description:
-      'All reps and sets are to be performed in the bottom half of the ROM. Focus on feeling a deep stretch in your pecs at the bottom of each rep.',
-    primary_muscle: {
-      id: 2,
-      name: 'Midle Chest',
-    },
+    short_description: 'Latihan otot dada tengah dengan gerakan setengah bawah untuk regangan maksimal.',
+    primary_muscle: { id: 2, name: 'Midle Chest' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 8, max: 10 },
     recommended_rest_time_sec: { min: 120, max: 180 },
     media: [],
+    instructions: [
+      'Duduk tegak, pegang tuas kabel di kedua sisi tangan.',
+      'Tarik kabel ke depan hanya sampai setengah jalan.',
+      'Kembalikan perlahan hingga lengan terbuka dan dada meregang penuh.',
+      'Lakukan semua repetisi di setengah rentang gerak (bottom half) ini.'
+    ],
+    tips: 'Fokus pada regangan yang dalam di otot dada pada posisi awal gerakan.'
   },
   {
     id: 109,
     name: 'DB Shoulder Press',
-    short_description:
-      'Bring your hands down to shoulder height on each rep, maintaining tension on the shoulders.',
-    primary_muscle: {
-      id: 4,
-      name: 'Front Delt',
-    },
+    short_description: 'Dorongan bahu dengan dumbbell untuk menargetkan otot bahu depan.',
+    primary_muscle: { id: 4, name: 'Front Delt' },
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 120, max: 180 },
     media: [],
+    instructions: [
+      'Duduk di bangku tegak, angkat dumbbell ke posisi setinggi bahu.',
+      'Dorong dumbbell lurus ke atas hingga lengan hampir terkunci.',
+      'Turunkan perlahan hingga tangan berada kembali di ketinggian bahu.',
+      'Jaga ketegangan di otot bahu lalu dorong kembali ke atas.'
+    ],
+    tips: 'Bawa siku sedikit ke depan saat mendorong untuk menjaga sendi bahu tetap aman.'
   },
   {
     id: 110,
     name: 'Overhead Cable Triceps Extension (Bar)',
-    short_description:
-      'Feel a nasty stretch on the triceps throughout the entire negative. Pause for 1 second in the stretch part of each rep. Immediately after the final set, drop the weight by ~25% and go to failure again.',
-    primary_muscle: {
-      id: 7,
-      name: 'Triceps',
-    },
+    short_description: 'Ekstensi trisep di atas kepala menggunakan kabel untuk peregangan otot maksimal.',
+    primary_muscle: { id: 7, name: 'Triceps' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 8, max: 10 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Pegang bar kabel di atas kepala dengan posisi tubuh membelakangi mesin.',
+      'Dorong lengan lurus ke depan dengan bantuan otot trisep.',
+      'Tekuk lengan kembali secara perlahan dan tahan 1 detik di posisi regangan maksimal.',
+      'Setelah set terakhir, kurangi beban 25% dan lakukan lagi hingga failure (drop set).'
+    ],
+    tips: 'Rasakan tarikan (stretch) yang kuat pada trisep saat lengan ditekuk ke belakang.'
   },
   {
     id: 111,
     name: 'Cable Triceps Kickback',
-    short_description:
-      "There are two ways you can do this: upright or bent over. Choose the one that feels more comfortable for you. The main thing is that when you're in the full squeeze, your shoulder should be positioned back behind your torso.",
-    primary_muscle: {
-      id: 7,
-      name: 'Triceps',
-    },
+    short_description: 'Latihan isolasi trisep menggunakan tarikan kabel.',
+    primary_muscle: { id: 7, name: 'Triceps' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 8, max: 10 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Berdiri tegak atau membungkuk, pegang ujung kabel tanpa alat bantu pelengkap.',
+      'Posisikan bahu sedikit di belakang tubuh.',
+      'Tarik kabel ke belakang hingga lengan terentang lurus dan trisep menegang.',
+      'Kembalikan perlahan ke posisi awal dengan siku menekuk.'
+    ],
+    tips: 'Pastikan bahu tidak ikut bergerak maju-mundur, biarkan hanya engsel siku yang bekerja.'
   },
   {
     id: 112,
     name: 'Seated Leg Curl',
-    short_description:
-      'Lean forward over the machine to get a maximum stretch in your hamstrings. Once you hit failure on the final set, continue with lengthened partials in the top half of the ROM, until you can no longer achieve a full half rep.',
-    primary_muscle: {
-      id: 13,
-      name: 'Hamstrings',
-    },
+    short_description: 'Latih otot hamstring (paha belakang) dengan posisi duduk menggunakan mesin.',
+    primary_muscle: { id: 13, name: 'Hamstrings' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Duduk di mesin dan condongkan badan sedikit ke depan untuk regangan ekstra.',
+      'Tekuk lutut dan tarik bantalan sekuat tenaga ke bawah.',
+      'Kembali ke posisi awal secara perlahan untuk menahan beban.',
+      'Di set terakhir, jika sudah mencapai failure, lanjutkan dengan partial reps di bagian lurus atas gerakan.'
+    ],
+    tips: 'Pastikan pinggul tetap menempel kuat di kursi mesin saat menarik beban.'
   },
   {
     id: 113,
     name: 'Bottom-Half Smith Machine Squat',
-    short_description:
-      'All reps and sets are to be performed in the bottom half of the ROM. Once you are under the bar, set up your feet as you would a normal squat and then bring them forward ~3-6 inches. This will cause you to lean back into the bar slightly, allowing for a more upright squat, while also placing more tension on the quads. If your heels are raising at the bottom, you may need to bring your feet more forward. If your feet feel like they are slipping or your lower back is rounding at the bottom, try bringing your feet ba...',
-    primary_muscle: {
-      id: 12,
-      name: 'Quadriceps',
-    },
+    short_description: 'Squat setengah gerakan bawah dengan mesin Smith untuk memfokuskan tarikan pada otot paha depan.',
+    primary_muscle: { id: 12, name: 'Quadriceps' },
     recommended_warmup_sets: { min: 3, max: 4 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 6, max: 8 },
     recommended_rest_time_sec: { min: 180, max: 300 },
     media: [],
+    instructions: [
+      'Masuk ke bawah bar dan posisikan kaki lebih maju (3-6 inci) dari posisi squat normal.',
+      'Bersandar sedikit ke bar dan turun perlahan hingga squat dalam.',
+      'Berdiri hanya sampai setengah jalan (bottom half) dan turun kembali.',
+      'Lakukan semua repetisi di setengah bawah gerakan ini tanpa pernah berdiri tegak.'
+    ],
+    tips: 'Jika tumit terangkat saat di bawah, majukan sedikit posisi kaki. Jaga tubuh selalu tegak menempel ke bar.'
   },
   {
     id: 114,
     name: 'Glute-Ham Raise',
-    short_description:
-      'Cut out the top ~25% of the ROM, where there will be minimal tension on the hamstrings. Squeeze your hamstrings to pull yourself up!',
-    primary_muscle: {
-      id: 13,
-      name: 'Hamstrings',
-    },
+    short_description: 'Latihan fungsional untuk paha belakang (hamstring) dengan mengangkat beban badan.',
+    primary_muscle: { id: 13, name: 'Hamstrings' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 120, max: 180 },
     media: [],
+    instructions: [
+      'Kunci pergelangan kaki di mesin GHR.',
+      'Turunkan tubuh secara perlahan mengandalkan kekuatan otot paha belakang.',
+      'Gunakan kontraksi hamstring untuk menarik tubuh kembali naik.',
+      'Hentikan gerakan naik sebelum tegak sepenuhnya (sekitar 75%) agar ketegangan otot tidak hilang.'
+    ],
+    tips: 'Jangan mengayunkan punggung untuk naik, murni gunakan tarikan hamstring.'
   },
   {
     id: 115,
     name: 'Leg Extension',
-    short_description:
-      'Set the seat back as far as it will go while still feeling comfortable. Grab the handles as hard as you can to pull your butt down into the seat. Use a 2-3 second negative. Feel your quads pulling apart on the negative. Once you hit failure on the final set, continue with lengthened partials in the bottom half of the ROM, until you can no longer achieve a full half rep.',
-    primary_muscle: {
-      id: 12,
-      name: 'Quadriceps',
-    },
+    short_description: 'Isolasi paha depan (quadriceps) untuk pengembangan bentuk otot kaki.',
+    primary_muscle: { id: 12, name: 'Quadriceps' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Atur sandaran kursi sedikit ke belakang senyaman mungkin.',
+      'Pegang erat pegangan tangan mesin untuk menahan panggul tetap menempel di kursi.',
+      'Luruskan kaki ke atas dengan kuat, lalu turunkan lambat dalam 2-3 detik.',
+      'Setelah failure di set terakhir, teruskan dengan partial reps di posisi bawah hingga otot tidak kuat mengangkat lagi.'
+    ],
+    tips: 'Rasakan regangan serat otot paha saat gerakan turun (negatif).'
   },
   {
     id: 116,
     name: 'Standing Calf Raise',
-    short_description:
-      '1-2 second pause at the bottom of each rep. Instead of just going up onto your toes, think about rolling your ankle back and forth on the balls of your feet. For the weighted static hold, after the final rep of the final set, rather than reracking the weight immediately, pause at the very bottom of the ROM (with full tension still on the calves) and maintain this hold for 30 seconds.',
-    primary_muscle: {
-      id: 15,
-      name: 'Calves',
-    },
+    short_description: 'Latihan beban betis sambil berdiri untuk menguatkan dan memperbesar otot betis.',
+    primary_muscle: { id: 15, name: 'Calves' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Berdiri dengan ujung telapak kaki di pinggiran platform mesin.',
+      'Turunkan tumit ke bawah sejauh mungkin dan tahan diam 1-2 detik.',
+      'Angkat tubuh ke atas dengan menekan dari ujung kaki setinggi mungkin.',
+      'Di set terakhir, selesai rep terakhir, tahan posisi tumit paling bawah (regangan penuh) selama 30 detik tanpa melepas beban.'
+    ],
+    tips: 'Saat naik, cobalah sedikit memutar beban di sekitar pangkal jari kaki untuk aktivasi otot betis yang lebih baik.'
   },
   {
     id: 117,
     name: 'Machine Hip Abduction',
-    short_description:
-      'If possible, use pads to increase the range of motion on the machine. Lean forward and grab onto the machine rails to stretch the glutes further.',
-    primary_muscle: {
-      id: 14,
-      name: 'Gluteus',
-    },
+    short_description: 'Dorongan membuka paha untuk melatih dan mengencangkan bokong luar.',
+    primary_muscle: { id: 14, name: 'Gluteus' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Duduk bersandar atau sedikit condong ke depan sambil memegang rel mesin.',
+      'Gunakan sisi luar lutut untuk mendorong bantalan ke arah luar.',
+      'Buka selebar mungkin, tahan sejenak, lalu tutup kembali secara perlahan.'
+    ],
+    tips: 'Gunakan pad/ganjalan tambahan di luar lutut jika perlu untuk mendapatkan jangkauan gerakan (ROM) yang lebih besar sejak awal.'
   },
   {
     id: 118,
     name: 'DB Wrist Curl (Flexion)',
-    short_description:
-      'Decide on your weak point using The Weak Point Table in your Hypertrophy Handbook. Perform ONE of the exercises listed under Exercise 1 for the sets and reps provided here.',
-    primary_muscle: {
-      id: 8,
-      name: 'Biceps',
-    },
+    short_description: 'Latihan tekuk pergelangan untuk menguatkan lengan bawah bagian dalam.',
+    primary_muscle: { id: 8, name: 'Biceps' },
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 120, max: 180 },
     media: [],
+    instructions: [
+      'Posisikan lengan bawah di bangku, biarkan tangan dengan dumbbell menggantung di ujung.',
+      'Posisi telapak tangan menghadap ke atas.',
+      'Turunkan dumbbell hingga ke ujung jari yang ditekuk.',
+      'Gulung kembali dumbbell ke arah dalam menggunakan kekuatan pergelangan.'
+    ],
+    tips: 'Pastikan gerakan murni dari engsel pergelangan tangan, lengan bawah tidak ikut bergerak.'
   },
   {
     id: 119,
     name: 'DB Wrist Curl (Extension)',
-    short_description:
-      'If your weak point is feeling recovered (not sore or fatigued) then feel free to hit Exercise 2. If your weak point is feeling tired or sore, do not perform the second weak point exercise this week.',
-    primary_muscle: {
-      id: 8,
-      name: 'Biceps',
-    },
+    short_description: 'Ekstensi pergelangan untuk lengan bawah bagian luar yang stabil.',
+    primary_muscle: { id: 8, name: 'Biceps' },
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 120, max: 180 },
     media: [],
+    instructions: [
+      'Tumpu lengan bawah di bangku dengan tangan menggantung, telapak tangan menghadap bawah.',
+      'Genggam dumbbell dan turunkan perlahan ke bawah.',
+      'Angkat perlahan dumbbell ke atas sejauh pergelangan bisa menekuk mundur.'
+    ],
+    tips: 'Hanya lakukan latihan ini jika area lemah di lengan bawah terasa bugar dan tidak sakit.'
   },
   {
     id: 120,
     name: 'EZ-Bar Cable Curl',
-    short_description:
-      'Set up the cable at the lowest position. Maintain constant tension on the biceps. Slow, controlled reps!',
-    primary_muscle: {
-      id: 8,
-      name: 'Biceps',
-    },
+    short_description: 'Latihan kabel melengkung (EZ) untuk pembentukan puncak bisep.',
+    primary_muscle: { id: 8, name: 'Biceps' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Kaitkan bar EZ ke katrol kabel paling bawah.',
+      'Berdiri tegak, pegang bar dari bawah, dan tarik ke arah dada.',
+      'Jaga siku terkunci di sisi tubuh.',
+      'Turunkan bar dengan lambat dan hindari beban jatuh bebas.'
+    ],
+    tips: 'Fokus pada perlambatan saat turun, ini akan menjaga beban konsisten menerpa bisep.'
   },
   {
     id: 121,
     name: 'EZ-Bar Skull Crusher',
-    short_description:
-      'Feel a nasty stretch on the triceps throughout the entire negative. Pause for 1 second in the stretch part of each rep.',
-    primary_muscle: {
-      id: 7,
-      name: 'Triceps',
-    },
+    short_description: 'Latihan beban bebas populer untuk membangun ukuran keseluruhan trisep.',
+    primary_muscle: { id: 7, name: 'Triceps' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Berbaring datar dan pegang bar EZ tepat di atas wajah/dada atas.',
+      'Tekuk siku perlahan hingga bar turun mendekati dahi atau sedikit di atas kepala.',
+      'Tahan sebentar di posisi bawah agar trisep teregang penuh (stretch).',
+      'Dorong kembali ke atas tegak lurus.'
+    ],
+    tips: 'Jaga kedua siku agak merapat dan diam, jangan membiarkannya terbuka terlalu lebar saat mengangkat.'
   },
   {
     id: 122,
     name: 'Bottom-Half Incline DB Curl',
-    short_description:
-      'All reps and sets are to be performed in the bottom half of the ROM. Keep your upper back planted against the bench. Go light on these and focus on feeling your biceps pull and squeeze.',
-    primary_muscle: {
-      id: 8,
-      name: 'Biceps',
-    },
+    short_description: 'Isolasi bisep dengan kemiringan untuk regangan otot maksimal.',
+    primary_muscle: { id: 8, name: 'Biceps' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 8, max: 10 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Duduk santai di bangku miring (incline) dengan tangan lurus ke bawah di samping badan.',
+      'Gulung dumbbell (curl) ke atas hanya sampai setengah posisi (tangan mendatar).',
+      'Turunkan kembali hingga tangan lurus dan bisep tertarik.',
+      'Ulangi repetisi di area setengah bawah gerakan ini.'
+    ],
+    tips: 'Gunakan beban yang ringan agar gerakan tetap fokus pada perasaan otot menegang, bukan memaksakan ayunan.'
   },
   {
     id: 123,
     name: 'Triceps Pressdown (Bar)',
-    short_description: 'Focus on squeezing your triceps to move the weight',
-    primary_muscle: {
-      id: 2,
-      name: 'Midle Chest',
-    },
+    short_description: 'Dorongan bar kabel lurus untuk kontraksi trisep yang stabil.',
+    primary_muscle: { id: 7, name: 'Triceps' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 8, max: 10 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Pegang bar lurus pada katrol atas.',
+      'Tahan siku rapat di sisi rusuk.',
+      'Tekan bar ke bawah hingga kedua tangan lurus sepenuhnya.',
+      'Kembalikan pelan-pelan tanpa mengangkat siku dari posisinya.'
+    ],
+    tips: 'Fokuskan pikiran untuk memeras (squeeze) trisep agar beban bergerak ke bawah.'
   },
   {
     id: 124,
     name: 'Roman Chair Leg Raise',
-    short_description:
-      'Allow your lower back to round as you curl your legs up. 10-20 reps is a broad range on purpose: just go until you hit RPE 9-10 (0-1 reps shy of failure) with controlled form.',
-    primary_muscle: {
-      id: 16,
-      name: 'Core',
-    },
+    short_description: 'Angkat kaki dengan sandaran untuk otot perut bagian bawah dan inti inti (core).',
+    primary_muscle: { id: 16, name: 'Core' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 9, max: 10 },
     recommended_rest_time_sec: { min: 60, max: 120 },
     media: [],
+    instructions: [
+      'Masuk ke alat Roman chair dan tahan badan dengan kedua lengan bawah.',
+      'Biarkan punggung bawah ikut membulat ringan saat mengangkat lutut atau kaki lurus.',
+      'Gulung perut dan angkat lutut setinggi mungkin menuju dada.',
+      'Lakukan hingga RPE 9-10 (hampir gagal) dengan bentuk terkendali.'
+    ],
+    tips: 'Tujuan utama adalah kontraksi perut (crunch) dari bawah, bukan sekadar mengangkat kaki dengan sendi pinggul.'
   },
   {
     id: 125,
     name: 'Smith Machine Deficit Row',
-    short_description:
-      'Focus on getting a big stretch and touch your stomach/chest on each rep! Once you hit the Last Set RPE on the final set, switch to partial reps. These should be the bottom half of the ROM. Stop once you have 0-1 half reps left in the tank.',
-    primary_muscle: {
-      id: 9,
-      name: 'Lats',
-    },
+    short_description: 'Tarikan punggung membungkuk memakai pijakan tinggi untuk rentang penuh.',
+    primary_muscle: { id: 9, name: 'Lats' },
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 180, max: 240 },
     media: [],
+    instructions: [
+      'Berdiri di atas pijakan setebal beberapa inci agar palang bisa turun lebih rendah.',
+      'Bungkukkan dada paralel ke lantai.',
+      'Tarik palang mesin Smith sampai perut dan rasakan kontraksinya.',
+      'Turun perlahan demi stretch yang lebih panjang di punggung bawah gerakan.',
+      'Gunakan partial reps di set akhir bila mendekati gagal.'
+    ],
+    tips: 'Rasakan regangan otot bahu atas/lat saat menahan gerakan turun (negatif).'
   },
   {
     id: 126,
     name: 'Neutral-Grip Lat Pulldown',
-    short_description:
-      "Do these pulldowns with the handle more out in front of you, more like a cross between pullover and a pulldown. Focus on feeling your lats working more than the weight you're using. On all sets, alternate full-ROM reps and half-ROM reps (i.e. do 1 rep with full-ROM, then 1 rep half-ROM (in the stretched/top half), then 1 rep full-ROM, then 1 rep half-ROM). Repeat until you've reached the target reps (partial reps count towards the rep count).",
-    primary_muscle: {
-      id: 9,
-      name: 'Lats',
-    },
+    short_description: 'Tarikan pulldown posisi telapak berhadapan untuk aktivasi dominan otot sayap.',
+    primary_muscle: { id: 9, name: 'Lats' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 120, max: 180 },
     media: [],
+    instructions: [
+      'Gunakan V-Grip atau sejenisnya. Letakkan pegangan sedikit menjauh di depan muka Anda.',
+      'Tarik turun seakan menarik ke perut atas atau dada bawah.',
+      'Lakukan sistem 1 rep full ROM berseling 1 rep half ROM di atas.',
+      'Lanjutkan pola ini sampai angka repetisi target terpenuhi.'
+    ],
+    tips: 'Kendalikan beban perlahan, ini seperti gabungan gerakan pullover lurus dan pulldown klasik.'
   },
   {
     id: 127,
     name: 'Moto Cable Row',
-    short_description:
-      'Try to keep your forearm in line with the cable throughout the pull. Smooth, controlled reps.',
-    primary_muscle: {
-      id: 9,
-      name: 'Lats',
-    },
+    short_description: 'Gerakan seperti memutar gas motor saat menarik kabel, sangat presisi untuk lat bawah.',
+    primary_muscle: { id: 9, name: 'Lats' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Duduk pada mesin kabel mendatar atau posisi tuas dada bawah.',
+      'Tarik gagang ke belakang dengan halus tanpa sentakan kasar.',
+      'Pertahankan posisi lengan bawah yang berjejer rapi segaris dengan lintasan kabel.',
+      'Kembalikan dengan ritme yang sama.'
+    ],
+    tips: 'Hindari melengkungkan punggung terlalu ekstrem ke belakang.'
   },
   {
     id: 128,
     name: 'Bottom-Half EZ-Bar Preacher Curl',
-    short_description:
-      'All reps and sets are to be performed in the bottom half of the ROM. Keep your triceps firmly pinned against the pad as you curl. No pausing at the top or bottom: constant tension on the biceps!',
-    primary_muscle: {
-      id: 8,
-      name: 'Biceps',
-    },
+    short_description: 'Preacher curl gerakan bawah menjaga bisep di bawah beban konstan tanpa jeda istirahat.',
+    primary_muscle: { id: 8, name: 'Biceps' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Posisikan ketiak menempel pada bantalan preacher curl secara sempurna.',
+      'Angkat barbell separuh jalan menuju posisi vertikal (hindari mengangkat sampai tegak).',
+      'Turun pelan menuju lurus tapi cegah sendi terkunci sepenuhnya.',
+      'Terus lakukan rep setengah jalan ini tanpa berhenti memompa.'
+    ],
+    tips: 'Tekan trisep keras-keras ke atas bantalan empuk untuk mengunci lengan.'
   },
   {
     id: 129,
     name: 'Super-Stretch Reverse Pec Deck',
-    short_description:
-      'Face side on to the machine and pull your arm across your body to pre-stretch your rear delt. Do reverse flyes 1 arm at a time. Start with your weaker arm.',
-    primary_muscle: {
-      id: 2,
-      name: 'Midle Chest',
-    },
+    short_description: 'Latihan fly belakang di mesin dada dibalik (reverse) secara satu-satu untuk fokus delt belakang.',
+    primary_muscle: { id: 6, name: 'Back Delt' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Duduk menyamping berhadapan profil ke mesin pec deck.',
+      'Pegang lengan mesin yang ada di sisi berlawanan dada dan tarik agar otot bahu belakang memanjang terlebih dahulu.',
+      'Tarik keluar secara melengkung dengan bahu belakang.',
+      'Mulai dulu dengan sisi lengan Anda yang terasa lebih lemah.'
+    ],
+    tips: 'Lakukan tarikan dengan rileks, hindari menghentakkan beban.'
   },
   {
     id: 130,
     name: 'Machine Cheat Shrug',
-    short_description:
-      'Use controlled momentum and leg drive to shrug the weight up and then CONTROL the negative. Each negative should last 1-2 seconds. Shrug explosively!',
-    primary_muscle: {
-      id: 10,
-      name: 'Traps',
-    },
+    short_description: 'Latihan angkat bahu (traps) berbeban besar memanfaatkan hentakan ringan dan pengereman turun lambat.',
+    primary_muscle: { id: 10, name: 'Traps' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Pegang tuas di mesin angkat bahu (atau smith machine).',
+      'Naikkan beban dengan sedikit bantuan dorongan per kaki yang kuat dan cepat (explosive).',
+      'Di puncak angkatan bahu, mulai pelankan dengan sangat keras saat beban menurun (1-2 detik negatif).',
+      'Ulangi siklus angkat hentak dan turun lambat.'
+    ],
+    tips: 'Sangat vital untuk menahan beban (negatif) dalam proses turun. Ini kunci pertumbuhannya.'
   },
   {
     id: 131,
     name: 'High-Cable Cuffed Lateral Raise',
-    short_description:
-      'Focus on squeezing your lateral delt to move the weight. Once you hit failure on the final set, continue with lengthened partials in the bottom half of the ROM, until you can no longer achieve a full half rep.',
-    primary_muscle: {
-      id: 5,
-      name: 'Side Delt',
-    },
+    short_description: 'Lateral raise kabel menggunakan ikatan manset di posisi start atas.',
+    primary_muscle: { id: 5, name: 'Side Delt' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Posisikan katrol sedikit ke atas dan lingkarkan sabuk manset di pergelangan lengan.',
+      'Fokus tarik beban dari samping ke atas mempergunakan tenaga bahu samping/tengah.',
+      'Saat mendekati failure, jadikan rentang bawah gerakan parsial sebagai senjata final agar otot habis sempurna.'
+    ],
+    tips: 'Karena tanpa digenggam jari, lengan terasa menyatu dengan kabel, berikan tekanan psikologis penuh ke bahu lateral.'
   },
   {
     id: 132,
     name: 'Bottom-Half Low Incline DB Press',
-    short_description:
-      'All reps and sets are to be performed in the bottom half of the ROM. Set the bench at a ~15° incline. 1 second pause on the chest on each rep while maintaining tension on the pecs.',
-    primary_muscle: {
-      id: 2,
-      name: 'Midle Chest',
-    },
+    short_description: 'Dumbbell press kemiringan rendah difokuskan murni pada area repetisi dada melar (bawah).',
+    primary_muscle: { id: 1, name: 'Upper Chest' },
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 120, max: 180 },
     media: [],
+    instructions: [
+      'Rendahkan bangku menjadi sekitar 15° (1-2 klik dari datar).',
+      'Dorong DB hanya seperdua jalan, berhenti sebelum tangan memanjang.',
+      'Turunkan DB lebar-lebar dengan perlahan.',
+      'Sertakan jeda 1 detik kala DB berada paling bawah (paling merentangkan dada).'
+    ],
+    tips: 'Biarkan dada tetap menggelembung dan naik, ini mendistribusikan semua regangan murni ke dalam pectoralis.'
   },
   {
     id: 133,
     name: 'Machine Shoulder Press',
-    short_description: 'Keep tension on the shoulders at the bottom.',
-    primary_muscle: {
-      id: 4,
-      name: 'Front Delt',
-    },
+    short_description: 'Dorongan bahu mesin yang amat stabil.',
+    primary_muscle: { id: 4, name: 'Front Delt' },
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 120, max: 180 },
     media: [],
+    instructions: [
+      'Pilih pegangan netral atau sejajar di bahu Anda.',
+      'Tekan angkat hingga ekstensi lengan hampir habis.',
+      'Kendalikan penuh sewaktu tuas mendekat kembali ke titik asal.',
+      'Tahan otot agar tak sampai kendor ketika beban di bawah.'
+    ],
+    tips: 'Atur posisi kursi sedemikian agar dorongan terasa masuk merata ke pilar deltoid.'
   },
   {
     id: 134,
     name: 'Katana Triceps Extension',
-    short_description:
-      'Flare your elbows out at about 45° and keep your elbows locked in place as you complete the extensions. Once you hit failure on the final set, continue with lengthened partials in the bottom half of the ROM, until you can no longer achieve a full half rep.',
-    primary_muscle: {
-      id: 7,
-      name: 'Triceps',
-    },
+    short_description: 'Ekstensi trisep silang tubuh dari atas persis layaknya hunusan katana punggung.',
+    primary_muscle: { id: 7, name: 'Triceps' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Memunggungi kabel mesin. Pegang pegangan saling silang tangan.',
+      'Puntir siku ke luar membetuk formasi sudut sayap 45 derajat.',
+      'Rentangkan siku ke arah samping depan sambil memastikan pangkal lengan bawah membatu (diam).',
+      'Rampungkan deretan failure finalnya pakai rep parsial bagian terdalam.'
+    ],
+    tips: 'Rasakan peregangan trisep maksimal saat siku ditekuk penuh sebelum mulai memanjang.'
   },
   {
     id: 135,
     name: 'Cable Crossover Ladder',
-    short_description:
-      'Do one set with low cable position, one set with medium-height cable position, and one height with a high cable position.',
-    primary_muscle: {
-      id: 1,
-      name: 'Upper Chest',
-    },
+    short_description: 'Tiga varian tinggi kabel yang menyiksa semua serat dada dari tiga arah berbeda.',
+    primary_muscle: { id: 1, name: 'Upper Chest' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Pasang kabel tarikan lantai untuk menyasar dada atas (Set 1).',
+      'Naikkan ke level pinggang dada (tengah) demi menembus area tengah pecs (Set 2).',
+      'Pindahkan tinggi di atas bahu lalu tekankan pada pembelahan serat dada perut bawah (Set 3).'
+    ],
+    tips: 'Bentuk cengkraman layaknya lengan memeluk tong/pohon lebar, sedikit melengkungkan siku.'
   },
   {
     id: 136,
     name: 'Barbell RDL',
-    short_description:
-      "The RPE is intentionally low here because these will cause a lot of muscle damage. Don't be tempted to go too heavy. To keep tension on the hamstrings, stop about 75% of the way to full lockout on each rep (i.e. stay in the bottom 3/4 of the range of motion).",
-    primary_muscle: {
-      id: 13,
-      name: 'Hamstrings',
-    },
+    short_description: 'Latihan pengukur kekenyalan otot paha belakang (RDL) menuntut pemanjangan otot eksentrik ekstrem.',
+    primary_muscle: { id: 13, name: 'Hamstrings' },
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 6, max: 8 },
     recommended_rest_time_sec: { min: 180, max: 300 },
     media: [],
+    instructions: [
+      'Pegang bar dan jangan tergoda memasukkan pelat beban lebih dari kekuatan murni karena risiko sobekan mikro hamstring amat tinggi.',
+      'Dorong engsel panggul mundur jauh seraya bar menempel menapaki paha.',
+      'Selesaikan pendakian hanya 3/4 jalan tanpa pernah berdiri penuh.',
+      'Kembali renggangkan pinggul turun berulang-ulang tanpa rilis ketegangan.'
+    ],
+    tips: 'Pastikan dada terangkat tegak dan punggung lurus seperti baja.'
   },
   {
     id: 137,
     name: 'Super-ROM Leg Press',
-    short_description:
-      'Feet lower on the platform for more quad focus. Get as deep as you can without excessive back rounding. Control the negative and do a slight pause at the bottom of each rep.',
-    primary_muscle: {
-      id: 2,
-      name: 'Midle Chest',
-    },
+    short_description: 'Modifikasi press kaki agar mencetak ROM terdalam tanpa buttwink menyentuh pinggang bawah.',
+    primary_muscle: { id: 12, name: 'Quadriceps' },
     recommended_warmup_sets: { min: 3, max: 4 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 6, max: 8 },
     recommended_rest_time_sec: { min: 180, max: 300 },
     media: [],
+    instructions: [
+      'Pijakkan telapak kaki sangat rendah pada alas pelat, beri dominasi tegangan murni quads.',
+      'Turunkan muatan teramat pelan mendapati peregangan maksimal di lipatan paha.',
+      'Tunggu sejenak di titik bawah (jeda).',
+      'Berikan tenaga luncur dan dorong sampai lutut belum sampai terkunci mati.'
+    ],
+    tips: 'Jangan pernah perbolehkan panggul melipat dan memutar naik dari kursi!'
   },
   {
     id: 138,
     name: 'Smith Machine Reverse Lunge',
-    short_description:
-      'Minimize contribution from the back leg. Mind-muscle connection with your glutes here! After the final set for each leg, perform a quad static stretch for that leg for 30 seconds.',
-    primary_muscle: {
-      id: 12,
-      name: 'Quadriceps',
-    },
+    short_description: 'Lunge arah mundur berpola statis lewat mesin smith memberi isolasi kuat di paha depan / bokong luar.',
+    primary_muscle: { id: 12, name: 'Quadriceps' },
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 120, max: 180 },
     media: [],
+    instructions: [
+      'Dengan batang ada di pundak bawah, sodorkan satu tungkai menjauh mundur ke belakang lantai.',
+      'Minimalkan kerja tungkai belakang ini seminimalnya, fokus pakai tapak kaki depan guna jongkok dan angkat beban.',
+      'Ulangi set per kaki satu per satu secara independen.',
+      'Selesaikan siklus tiap kaki dengan peregangan kuadrisep peregangan statis (30 detik per kaki) secara mandiri.'
+    ],
+    tips: 'Bayangkan kaki belakang hanya untuk seimbang layaknya tongkat penyangga.'
   },
   {
     id: 139,
     name: 'Weighted 45° Hyperextension',
-    short_description:
-      'Squeeze your glutes hard at the top of each rep. Slow controlled reps on the way down, followed by an explosive positive.',
-    primary_muscle: {
-      id: 14,
-      name: 'Gluteus',
-    },
+    short_description: 'Isolasi murni glute membungkuk 45 derajat.',
+    primary_muscle: { id: 14, name: 'Gluteus' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 7, max: 9 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
+    instructions: [
+      'Sandarkan pangkal pinggul menabrak tepi busa 45° secara mantap sembari memegang lempeng pemberat (plate/DB).',
+      'Rebahkan tubuh lambat-lambat dikendalikan pantat (glute).',
+      'Hentakkan kembali tubuh ke sisi lurus secara meledak.',
+      'Akhiri momentum atas seraya mengunci gigitan gluteus ekstrem.'
+    ],
+    tips: 'Hati-hati jangan memakai punggung bawah guna mengangkat, lengkungkan sedikit saja dan biarkan pinggul berengsel memutar naik.'
   },
   {
     id: 140,
     name: 'Bottom-Half Standing Calf Raise',
-    short_description:
-      'All reps and sets are to be performed in the bottom half of the ROM. 1-2 second pause at the bottom of each rep. Instead of just going up onto your toes, think about rolling your ankle back and forth on the balls of your feet.',
-    primary_muscle: {
-      id: 15,
-      name: 'Calves',
-    },
+    short_description: 'Latihan peregangan betis dengan porsi terberat gerakan repetisi bawah saja.',
+    primary_muscle: { id: 15, name: 'Calves' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
     recommended_rest_time_sec: { min: 90, max: 120 },
     media: [],
-  },
+    instructions: [
+      'Dalam posisi mesin berdiri lurus, jinjit hingga kaki tegak lalu turun sepenuhnya dan rasakan urat meregang (jeda perlahan).',
+      'Ulangi angkatan tumit tetapi batasi hanya sampai paruh perjalanan (half-rep).',
+      'Ulangi rep-rep ini pada ruang dasar gerak bawah tersebut.'
+    ],
+    tips: 'Sensasinya akan luar biasa membakar. Posisikan gerakan menggelinding bola jemari ke depan-samping (bolak-balik) jika bisa mendalaminya.'
+  }
 ];
