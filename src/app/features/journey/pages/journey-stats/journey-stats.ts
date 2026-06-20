@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { JourneyService } from '@/core/services/journey.service';
+import { JourneyService } from '@/features/journey/services/journey.service';
 import { ZardCalendarGridComponent } from '@/shared/components/zard/calendar/calendar-grid.component';
 import {
   generateCalendarDays,

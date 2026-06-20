@@ -4,7 +4,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideActivity } from '@ng-icons/lucide';
 import { LoggedWorkoutCardComponent } from '@/features/journey/components/logged-workout-card/logged-workout-card';
 import { WorkoutService } from '@/core/services/workout.service';
-import { LoggedSession } from '@/shared/models/workout.model';
+import { LoggedSession } from '@/shared/models';
 
 @Component({
   selector: 'app-journey-history',

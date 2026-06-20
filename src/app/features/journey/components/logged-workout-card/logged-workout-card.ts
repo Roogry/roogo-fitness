@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { ZardBadgeComponent } from '@/shared/components/zard/badge';
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { ZardTooltipImports } from '@/shared/components/zard/tooltip';
-import { LoggedSession } from '@/shared/models/workout.model';
+import { LoggedSession } from '@/shared/models';
 import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 import { TimeAgoPipe } from '@/shared/pipes/time-ago-pipe';
 import { NgIcon, provideIcons } from '@ng-icons/core';

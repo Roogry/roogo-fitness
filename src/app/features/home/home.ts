@@ -7,7 +7,7 @@ import { DbService } from '@/core/services/db.service';
 import { UpcomingSessionCardComponent } from '@/features/home/components/upcoming-session-card/upcoming-session-card';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideDumbbell, lucideFlame, lucideCalendar } from '@ng-icons/lucide';
-import { LoggedSession, WorkoutPlan } from '@/shared/models/workout.model';
+import { LoggedSession, WorkoutPlan } from '@/shared/models';
 import { HomeLoggedWorkoutCardComponent } from './components/home-logged-workout-card/home-logged-workout-card';
 
 @Component({

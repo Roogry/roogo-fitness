@@ -10,7 +10,7 @@ import { HeaderComponent } from '@/shared/components/header/header.component';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { RooSheetComponent } from '@/shared/components/sheet';
 import { ZardInputDirective } from '@/shared/components/zard/input';
-import { WorkoutPlanSession } from '@/shared/models/workout.model';
+import { WorkoutPlanSession } from '@/shared/models';
 import { form, FormField, required } from '@angular/forms/signals';
 import { ZardFormImports } from '@/shared/components/zard/form';
 import { ZardDialogService } from '@/shared/components/zard/dialog';

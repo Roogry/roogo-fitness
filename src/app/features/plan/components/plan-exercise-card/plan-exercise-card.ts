@@ -14,7 +14,7 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardInputDirective } from '@/shared/components/zard/input';
 import { ZardBadgeComponent } from '@/shared/components/zard/badge';
 import { ZardFormImports } from '@/shared/components/zard/form';
-import { WorkoutPlanExercise } from '@/shared/models/workout.model';
+import { WorkoutPlanExercise } from '@/shared/models';
 
 @Component({
   selector: 'app-plan-exercise-card',

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, RouterLink } from '@angular/router';
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { ZardBadgeComponent } from '@/shared/components/zard/badge';
-import { Exercise } from '@/shared/models/workout.model';
+import { Exercise } from '@/shared/models';
 import { ExerciseMediaComponent } from '../../components/exercise-media/exercise-media';
 
 @Component({

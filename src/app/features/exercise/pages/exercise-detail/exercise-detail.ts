@@ -2,13 +2,13 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink, RouterModule } from '@angular/router';
 import { WorkoutService } from '@/core/services/workout.service';
-import { JourneyService } from '@/core/services/journey.service';
+import { JourneyService } from '@/features/journey/services/journey.service';
 import { ExerciseService } from '@/core/services/exercise.service';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { HeaderComponent } from '@/shared/components/header/header.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideDumbbell, lucidePencil } from '@ng-icons/lucide';
-import { Exercise } from '@/shared/models/workout.model';
+import { Exercise } from '@/shared/models';
 import { ExerciseOverview } from '../exercise-overview/exercise-overview';
 import { ExerciseJourney } from '../exercise-journey/exercise-journey';
 import { NavPillsComponent, NavPillsItemComponent } from '@/shared/components/nav-pills';
@@ -40,7 +40,6 @@ import { NavPillsComponent, NavPillsItemComponent } from '@/shared/components/na
 export class ExerciseDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private workoutService = inject(WorkoutService);
-  private journeyService = inject(JourneyService);
   private exerciseService = inject(ExerciseService);
 
   exercise = signal<Exercise | undefined>(undefined);
@@ -73,7 +72,9 @@ export class ExerciseDetail implements OnInit {
 
           // Fetch recommendations
           if (detail && detail.primary_muscle) {
-            const recommendations = await this.exerciseService.getExercisesByMuscle(detail.primary_muscle.id);
+            const recommendations = await this.exerciseService.getExercisesByMuscle(
+              detail.primary_muscle.id,
+            );
             this.recommendedExercises.set(recommendations.filter((e) => e.id !== detail.id));
           } else {
             this.recommendedExercises.set([]);
@@ -81,7 +82,7 @@ export class ExerciseDetail implements OnInit {
 
           // Fetch journey stats
           if (detail) {
-            const stats = await this.journeyService.getExerciseJourneyStats(id);
+            const stats = await this.exerciseService.getExerciseJourneyStats(id);
             this.highestWeight.set(stats.highestWeight);
             this.highestWeightReps.set(stats.highestWeightReps);
             this.totalSets.set(stats.totalSets);

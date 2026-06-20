@@ -1,10 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { DbService } from './db.service';
-import {
-  Exercise,
-  WorkoutPlanSession,
-  WorkoutPlanExercise,
-} from '@/shared/models/workout.model';
+import { Exercise, WorkoutPlanSession, WorkoutPlanExercise } from '@/shared/models';
 
 @Injectable({
   providedIn: 'root',
@@ -40,8 +36,8 @@ export class PlanService {
       current.map((pe) =>
         pe.exercise.id === exerciseId
           ? { ...pe, ...updates, updatedAt: new Date().toISOString() }
-          : pe
-      )
+          : pe,
+      ),
     );
   }
 
@@ -52,7 +48,7 @@ export class PlanService {
         .map((pe, index) => ({
           ...pe,
           exercise_order: index,
-        }))
+        })),
     );
   }
 
@@ -83,7 +79,7 @@ export class PlanService {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       exercises: this.plannedExercises().map((pe, index) => ({
-        id: pe.id || (Date.now() + Math.floor(Math.random() * 1000)),
+        id: pe.id || Date.now() + Math.floor(Math.random() * 1000),
         exercise_order: index,
         target_sets: pe.target_sets,
         target_reps: pe.target_reps,
@@ -117,7 +113,7 @@ export class PlanService {
       title: this.sessionTitle() || plan.sessions[sessionIndex].title || 'Updated Template Session',
       updatedAt: new Date().toISOString(),
       exercises: this.plannedExercises().map((pe, index) => ({
-        id: pe.id || (Date.now() + Math.floor(Math.random() * 1000)),
+        id: pe.id || Date.now() + Math.floor(Math.random() * 1000),
         exercise_order: index,
         target_sets: pe.target_sets,
         target_reps: pe.target_reps,

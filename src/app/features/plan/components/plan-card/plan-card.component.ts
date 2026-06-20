@@ -1,6 +1,6 @@
 import { Component, EventEmitter, inject, Input, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WorkoutPlan, WorkoutPlanSession } from '@/shared/models/workout.model';
+import { WorkoutPlan, WorkoutPlanSession } from '@/shared/models';
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/zard/popover';

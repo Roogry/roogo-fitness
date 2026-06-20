@@ -3,21 +3,13 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import {
-  lucideDumbbell,
-  lucideChevronLeft,
-  lucideChevronRight,
-} from '@ng-icons/lucide';
-import { ExerciseMedia } from '@/shared/models/workout.model';
+import { lucideDumbbell, lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
+import { ExerciseMedia } from '@/shared/models';
 
 @Component({
   selector: 'app-exercise-media',
   standalone: true,
-  imports: [
-    CommonModule,
-    ZardButtonComponent,
-    NgIcon,
-  ],
+  imports: [CommonModule, ZardButtonComponent, NgIcon],
   providers: [
     provideIcons({
       lucideDumbbell,

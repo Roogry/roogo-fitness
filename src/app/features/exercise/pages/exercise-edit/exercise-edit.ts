@@ -23,7 +23,7 @@ import {
   lucideGripVertical,
 } from '@ng-icons/lucide';
 import { ExerciseService } from '@/core/services/exercise.service';
-import { Exercise, ExerciseMedia, Muscle } from '@/shared/models/workout.model';
+import { Exercise, ExerciseMedia, Muscle } from '@/shared/models';
 import { ExerciseInstructionList } from '../../components/exercise-instruction-list/exercise-instruction-list';
 import { ExerciseMediaManagement } from '../../components/exercise-media-management/exercise-media-management';
 
@@ -96,7 +96,7 @@ export class ExerciseEdit implements OnInit {
       try {
         this.isLoading.set(true);
 
-         if (!idParam) throw new Error('Failed to load exercise');
+        if (!idParam) throw new Error('Failed to load exercise');
 
         // Load muscles in parallel with exercise
         const id = parseInt(idParam, 10);
@@ -228,7 +228,9 @@ export class ExerciseEdit implements OnInit {
         .map((name) => this.availableMuscles().find((m) => m.name === name))
         .filter((m): m is Muscle => !!m);
 
-      const instructions = f.instructions().value()
+      const instructions = f
+        .instructions()
+        .value()
         .map((step: string) => step.trim())
         .filter(Boolean);
       const tips = f.tips().value().trim();

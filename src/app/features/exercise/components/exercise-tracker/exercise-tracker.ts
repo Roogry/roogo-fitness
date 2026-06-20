@@ -9,7 +9,7 @@ import { ZardCardComponent } from '@/shared/components/zard/card';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardInputDirective } from '@/shared/components/zard/input';
 import { ZardBadgeComponent } from '@/shared/components/zard/badge';
-import { LoggedExercise, LoggedSet } from '@/shared/models/workout.model';
+import { LoggedExercise, LoggedSet } from '@/shared/models';
 import { ZardFormImports } from '@/shared/components/zard/form';
 
 @Component({

@@ -2,7 +2,7 @@ import { Injectable, computed, inject, signal, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { DbService } from './db.service';
-import { Exercise, LoggedSession, LoggedExercise, LoggedSet } from '@/shared/models/workout.model';
+import { Exercise, LoggedSession, LoggedExercise, LoggedSet } from '@/shared/models';
 
 const ACTIVE_SESSION_STORAGE_KEY = 'roogo_active_session';
 

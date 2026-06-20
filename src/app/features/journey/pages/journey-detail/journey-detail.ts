@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkoutService } from '@/core/services/workout.service';
-import { LoggedSession } from '@/shared/models/workout.model';
+import { LoggedSession } from '@/shared/models';
 import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { HeaderComponent } from '@/shared/components/header/header.component';

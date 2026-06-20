@@ -10,17 +10,12 @@ import {
   lucideTrash2,
   lucidePlus,
 } from '@ng-icons/lucide';
-import { ExerciseMedia } from '@/shared/models/workout.model';
+import { ExerciseMedia } from '@/shared/models';
 
 @Component({
   selector: 'app-exercise-media-management',
   standalone: true,
-  imports: [
-    CommonModule,
-    NgIcon,
-    ZardButtonComponent,
-    ZardInputDirective,
-  ],
+  imports: [CommonModule, NgIcon, ZardButtonComponent, ZardInputDirective],
   providers: [
     provideIcons({
       lucideVideo,
@@ -34,7 +29,7 @@ import { ExerciseMedia } from '@/shared/models/workout.model';
 })
 export class ExerciseMediaManagement {
   media = input.required<ExerciseMedia[]>();
-  
+
   addMedia = output<string>();
   removeMedia = output<number>();
   moveMediaUp = output<number>();

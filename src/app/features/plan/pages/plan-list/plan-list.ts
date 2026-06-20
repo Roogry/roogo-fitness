@@ -13,7 +13,7 @@ import {
 } from '@ng-icons/lucide';
 import { DbService } from '@/core/services/db.service';
 import { PlanService } from '@/core/services/plan.service';
-import { WorkoutPlan } from '@/shared/models/workout.model';
+import { WorkoutPlan } from '@/shared/models';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardInputDirective } from '@/shared/components/zard/input';
 import { HeaderComponent } from '@/shared/components/header';
