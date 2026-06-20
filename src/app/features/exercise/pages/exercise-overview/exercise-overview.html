@@ -30,6 +30,41 @@
     </z-card>
   }
 
+  @if (exercise().recommended_warmup_sets || exercise().recommended_working_sets || exercise().recommended_rpe || exercise().recommended_rest_time_sec) {
+    <z-card zTitle="Recommendations">
+      <div class="grid grid-cols-2 gap-4 text-sm">
+        @if (exercise().recommended_warmup_sets; as warmupSets) {
+          <div class="flex flex-col">
+            <span class="text-muted-foreground">Warmup Sets</span>
+            <span class="font-medium text-foreground">{{ formatRange(warmupSets) }}</span>
+          </div>
+        }
+
+        @if (exercise().recommended_working_sets; as workingSets) {
+          <div class="flex flex-col">
+            <span class="text-muted-foreground">Working Sets</span>
+            <span class="font-medium text-foreground">{{ formatRange(workingSets) }}</span>
+          </div>
+        }
+
+        @if (exercise().recommended_rpe; as rpe) {
+          <div class="flex flex-col">
+            <span class="text-muted-foreground">RPE</span>
+            <span class="font-medium text-foreground">{{ formatRange(rpe) }}</span>
+          </div>
+        }
+
+        @if (exercise().recommended_rest_time_sec; as restTime) {
+          <div class="flex flex-col">
+            <span class="text-muted-foreground">Rest Time</span>
+            <span class="font-medium text-foreground">{{ formatRange(restTime) }} sec</span>
+          </div>
+        }
+      </div>
+    </z-card>
+  }
+
+
   @if (exercise().tips) {
     <z-card zTitle="Tips">
       <p class="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
