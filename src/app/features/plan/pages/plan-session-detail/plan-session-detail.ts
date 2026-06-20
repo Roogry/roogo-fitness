@@ -33,9 +33,9 @@ import { ZardDialogService } from '@/shared/components/zard/dialog';
       lucidePencil,
     }),
   ],
-  templateUrl: './session-detail.html',
+  templateUrl: './plan-session-detail.html',
 })
-export class SessionDetail implements OnInit {
+export class PlanSessionDetail implements OnInit {
   workoutService = inject(WorkoutService);
   planService = inject(PlanService);
   exerciseService = inject(ExerciseService);
@@ -59,9 +59,9 @@ export class SessionDetail implements OnInit {
   }
 
   ngOnInit() {
-    this.route.queryParamMap.subscribe(async (queryParams) => {
-      const planIdParam = queryParams.get('planId');
-      const sessionIdParam = queryParams.get('sessionId');
+    this.route.paramMap.subscribe(async (params) => {
+      const planIdParam = params.get('id');
+      const sessionIdParam = params.get('sessionId');
 
       if (planIdParam && sessionIdParam) {
         this.planId = Number(planIdParam);

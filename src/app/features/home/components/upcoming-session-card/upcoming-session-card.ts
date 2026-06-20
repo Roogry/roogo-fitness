@@ -24,9 +24,7 @@ export class UpcomingSessionCardComponent {
 
   goToSession() {
     if (this.planId && this.sessionId) {
-      this.router.navigate(['/session/detail'], {
-        queryParams: { planId: this.planId, sessionId: this.sessionId },
-      });
+      this.router.navigate(['/plan', this.planId, 'session', this.sessionId]);
     }
   }
 }

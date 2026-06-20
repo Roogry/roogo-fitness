@@ -6,9 +6,9 @@ import { Profile } from './features/profile/profile';
 import { Home } from './features/home/home';
 import { JourneyList } from './features/journey/pages/journey-list/journey-list';
 import { PlanList } from './features/plan/pages/plan-list/plan-list';
-import { SessionActive } from './features/workout-session/pages/session-active/session-active';
-import { SessionDetail } from './features/workout-session/pages/session-detail/session-detail';
-import { PlanSession } from './features/plan/pages/plan-session/plan-session';
+import { SessionActive } from './features/session-active/pages/session-active/session-active';
+import { PlanSessionDetail } from './features/plan/pages/plan-session-detail/plan-session-detail';
+import { PlanSessionForm } from './features/plan/pages/plan-session-form/plan-session-form';
 import { JourneyDetail } from './features/journey/pages/journey-detail/journey-detail';
 
 export const routes: Routes = [
@@ -25,8 +25,8 @@ export const routes: Routes = [
   { path: 'exercise/:id', component: ExerciseDetail },
   { path: 'exercise/:id/edit', component: ExerciseEdit },
   { path: 'session/active', component: SessionActive },
-  { path: 'session/detail', component: SessionDetail },
   { path: 'journey/:id', component: JourneyDetail },
-  { path: 'plan/:id/session/:sessionId/edit', component: PlanSession },
-  { path: 'plan/:id/session/:action', component: PlanSession },
+  { path: 'plan/:id/session/new', component: PlanSessionForm },
+  { path: 'plan/:id/session/:sessionId', component: PlanSessionDetail },
+  { path: 'plan/:id/session/:sessionId/edit', component: PlanSessionForm },
 ];

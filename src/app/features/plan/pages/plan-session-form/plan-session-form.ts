@@ -32,10 +32,9 @@ import { ZardDialogService } from '@/shared/components/zard/dialog';
     ZardFormImports,
   ],
   providers: [provideIcons({ lucideDumbbell, lucidePlus, lucideCheck })],
-  templateUrl: './plan-session.html',
-  styleUrl: './plan-session.css',
+  templateUrl: './plan-session-form.html',
 })
-export class PlanSession implements OnInit {
+export class PlanSessionForm implements OnInit {
   planService = inject(PlanService);
   exerciseService = inject(ExerciseService);
   router = inject(Router);
@@ -83,8 +82,7 @@ export class PlanSession implements OnInit {
     }
 
     this.route.paramMap.subscribe(async (params) => {
-      const idParam = params.get('id');
-      const planId = parseInt(idParam ?? '');
+      const planId = parseInt(params.get('id') ?? '');
       this.planService.selectedPlanId.set(planId);
 
       const sessionIdParam = params.get('sessionId');

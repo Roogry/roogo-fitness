@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { BottomNav } from '../bottom-nav/bottom-nav';
 import { WorkoutService } from '@/core/services/workout.service';
-import { ActiveSessionWidgetComponent } from '@/features/workout-session/components/active-session-widget/active-session-widget';
+import { ActiveSessionWidgetComponent } from '@/features/session-active/components/active-session-widget/active-session-widget';
 
 @Component({
   selector: 'app-main-layout',

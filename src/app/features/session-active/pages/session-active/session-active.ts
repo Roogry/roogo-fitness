@@ -39,7 +39,6 @@ import { ZardFormImports } from '@/shared/components/zard/form';
     }),
   ],
   templateUrl: './session-active.html',
-  styleUrl: './session-active.css',
 })
 export class SessionActive implements OnInit {
   workoutService = inject(WorkoutService);
@@ -114,14 +113,15 @@ export class SessionActive implements OnInit {
     this.dialogService.create({
       zWidth: '400px',
       zTitle: 'Discard Session?',
-      zDescription: 'Are you sure you want to discard this session? All progress will be lost and cannot be recovered.',
+      zDescription:
+        'Are you sure you want to discard this session? All progress will be lost and cannot be recovered.',
       zOkText: 'Discard',
       zOkDestructive: true,
       zCancelText: 'Cancel',
       zOnOk: () => {
         this.workoutService.clearSession();
         this.router.navigate(['/']);
-      }
+      },
     });
   }
 }

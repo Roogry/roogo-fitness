@@ -48,7 +48,7 @@
         <div
           class="py-8 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl"
         >
-          <ng-icon name="lucideDumbbell" class="h-12 w-12 mx-auto mb-4"></ng-icon>
+          <ng-icon name="lucideDumbbell" class="h-12 w-12 mx-auto mb-4" />
           <p>Choose exercises to put in.</p>
         </div>
       }
@@ -60,7 +60,7 @@
             [exercise]="ex"
             (updateTarget)="onUpdateTarget(planned.exercise_id, $event)"
             (remove)="onRemoveExercise(planned.exercise_id)"
-          ></app-plan-exercise-card>
+          />
         }
       }
 
@@ -78,8 +78,6 @@
     title="Add Exercise"
     description="Search or add a custom exercise."
   >
-    <app-exercise-autocomplete
-      (exerciseSelected)="onExerciseSelected($event)"
-    ></app-exercise-autocomplete>
+    <app-exercise-autocomplete (exerciseSelected)="onExerciseSelected($event)" />
   </app-sheet>
 </div>

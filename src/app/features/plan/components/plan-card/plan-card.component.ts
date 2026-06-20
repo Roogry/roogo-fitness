@@ -100,7 +100,7 @@ export class PlanCardComponent implements OnInit {
     this.planService.clearPlanSession();
     this.planService.selectedPlanId.set(this.plan.id);
     this.planService.sessionTitle.set('New Session');
-    this.router.navigate([`plan/${this.plan.id}/session/create`]);
+    this.router.navigate([`plan/${this.plan.id}/session/new`]);
   }
 
   deletePlan(event: Event) {
@@ -110,7 +110,7 @@ export class PlanCardComponent implements OnInit {
 
   detailSession(sessionId: number, event: Event) {
     event.stopPropagation();
-    this.router.navigate(['/session/detail'], { queryParams: { planId: this.plan.id, sessionId } });
+    this.router.navigate(['/plan', this.plan.id, 'session', sessionId]);
   }
 
   onStartSessionClick(sessionId: number, event: Event) {
