@@ -1,6 +1,6 @@
-import { Component, EventEmitter, inject, Input, Output, signal } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WorkoutPlan, WorkoutPlanSession } from '@/shared/models';
+import { Exercise, WorkoutPlan, WorkoutPlanSession } from '@/shared/models';
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/zard/popover';
@@ -16,6 +16,7 @@ import {
 } from '@ng-icons/lucide';
 import { WorkoutService } from '@/core/services/workout.service';
 import { PlanService } from '@/core/services/plan.service';
+import { ExerciseService } from '@/core/services/exercise.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -41,7 +42,7 @@ import { Router } from '@angular/router';
   ],
   templateUrl: './plan-card.html',
 })
-export class PlanCardComponent {
+export class PlanCardComponent implements OnInit {
   @Input({ required: true }) plan!: WorkoutPlan;
   @Input() isExpanded = false;
 
@@ -52,13 +53,30 @@ export class PlanCardComponent {
   router = inject(Router);
   workoutService = inject(WorkoutService);
   planService = inject(PlanService);
+  exerciseService = inject(ExerciseService);
   isOpenPlanActions = signal(false);
+  exerciseMap = signal<Map<number, Exercise>>(new Map());
+
+  async ngOnInit() {
+    const exercises = await this.exerciseService.getExercises('');
+    const map = new Map<number, Exercise>();
+    for (const ex of exercises) {
+      map.set(ex.id, ex);
+    }
+    this.exerciseMap.set(map);
+  }
 
   getExerciseNames(session: WorkoutPlanSession): string {
     if (!session.exercises || session.exercises.length === 0) {
       return 'No exercises added yet.';
     }
-    return session.exercises.map((pe) => pe.exercise.name).join(', ');
+    const map = this.exerciseMap();
+    return session.exercises
+      .map((pe) => {
+        const ex = map.get(pe.exercise_id);
+        return ex ? ex.name : `Exercise #${pe.exercise_id}`;
+      })
+      .join(', ');
   }
 
   handleToggle() {

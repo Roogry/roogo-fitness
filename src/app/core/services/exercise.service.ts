@@ -16,7 +16,23 @@ export class ExerciseService {
     return this.dbService.getExerciseByKey(id);
   }
 
-  async searchExercises(query: string): Promise<Exercise[]> {
+  async loadExercisesToMap(exerciseIds: number[], currentMap: Map<number, Exercise>): Promise<{ map: Map<number, Exercise>; changed: boolean }> {
+    const newMap = new Map(currentMap);
+    let changed = false;
+
+    for (const id of exerciseIds) {
+      if (!newMap.has(id)) {
+        const ex = await this.getExerciseById(id);
+        if (ex) {
+          newMap.set(id, ex);
+          changed = true;
+        }
+      }
+    }
+    return { map: newMap, changed };
+  }
+
+  async getExercises(query: string): Promise<Exercise[]> {
     const exercises = await this.dbService.getExercises();
     if (!query.trim()) return exercises;
 

@@ -1,4 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ExerciseService } from '@/core/services/exercise.service';
+import { Exercise } from '@/shared/models';
+import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -36,12 +38,25 @@ import { ZardDialogService } from '@/shared/components/zard/dialog';
 export class SessionDetail implements OnInit {
   workoutService = inject(WorkoutService);
   planService = inject(PlanService);
+  exerciseService = inject(ExerciseService);
   route = inject(ActivatedRoute);
   router = inject(Router);
   dialogService = inject(ZardDialogService);
 
   planId: number | null = null;
   sessionId: number | null = null;
+  exercisesMap = signal<Map<number, Exercise>>(new Map());
+
+  constructor() {
+    effect(async () => {
+      const plannedList = this.planService.plannedExercises();
+      const ids = plannedList.map((pe) => pe.exercise_id);
+      const res = await this.exerciseService.loadExercisesToMap(ids, this.exercisesMap());
+      if (res.changed) {
+        this.exercisesMap.set(res.map);
+      }
+    });
+  }
 
   ngOnInit() {
     this.route.queryParamMap.subscribe(async (queryParams) => {

@@ -56,7 +56,9 @@
       }
 
       @for (planned of planService.plannedExercises(); track planned.id) {
-        <app-plan-exercise-card [plannedExercise]="planned" [editable]="false" />
+        @if (exercisesMap().get(planned.exercise_id); as ex) {
+          <app-plan-exercise-card [plannedExercise]="planned" [exercise]="ex" [editable]="false" />
+        }
       }
     </div>
   </main>

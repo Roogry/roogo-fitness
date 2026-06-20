@@ -2,15 +2,15 @@
   <div class="flex flex-col gap-6">
     <!-- Header -->
     <div class="flex justify-between items-center">
-      <a [routerLink]="['/exercise', plannedExercise().exercise.id]" class="group">
+      <a [routerLink]="['/exercise', exercise().id]" class="group">
         <div class="flex items-center gap-3">
           <div
             class="h-12 w-12 rounded-full overflow-hidden bg-muted flex items-center justify-center flex-shrink-0 group-hover:opacity-60 transition-opacity"
           >
-            @if (plannedExercise().exercise.media && plannedExercise().exercise.media.length > 0) {
+            @if (exercise().media && exercise().media.length > 0) {
               <img
-                [src]="plannedExercise().exercise.media[0].media_url"
-                [alt]="plannedExercise().exercise.name"
+                [src]="exercise().media[0].media_url"
+                [alt]="exercise().name"
                 class="h-full w-full object-cover"
               />
             } @else {
@@ -21,11 +21,11 @@
             <h3
               class="font-semibold text-base sm:text-lg text-primary group-hover:opacity-60 transition-opacity leading-tight"
             >
-              {{ plannedExercise().exercise.name }}
+              {{ exercise().name }}
             </h3>
             <div class="flex items-center gap-2 mt-1">
               <z-badge zType="secondary">
-                {{ plannedExercise().exercise.primary_muscle?.name }}
+                {{ exercise().primary_muscle?.name }}
               </z-badge>
             </div>
           </div>
@@ -52,7 +52,7 @@
         <div class="grid grid-cols-3 gap-3">
           <z-form-field>
             <label
-              [attr.for]="'sets-' + plannedExercise().exercise.id"
+              [attr.for]="'sets-' + exercise().id"
               z-form-label
               class="text-xs text-muted-foreground"
             >
@@ -61,7 +61,7 @@
             <z-form-control>
               <input
                 z-input
-                [id]="'sets-' + plannedExercise().exercise.id"
+                [id]="'sets-' + exercise().id"
                 type="number"
                 min="1"
                 placeholder="3"
@@ -74,7 +74,7 @@
 
           <z-form-field>
             <label
-              [attr.for]="'weight-' + plannedExercise().exercise.id"
+              [attr.for]="'weight-' + exercise().id"
               z-form-label
               class="text-xs text-muted-foreground"
             >
@@ -83,7 +83,7 @@
             <z-form-control>
               <input
                 z-input
-                [id]="'weight-' + plannedExercise().exercise.id"
+                [id]="'weight-' + exercise().id"
                 type="number"
                 min="0"
                 step="0.5"
@@ -97,7 +97,7 @@
 
           <z-form-field>
             <label
-              [attr.for]="'reps-' + plannedExercise().exercise.id"
+              [attr.for]="'reps-' + exercise().id"
               z-form-label
               class="text-xs text-muted-foreground"
             >
@@ -106,7 +106,7 @@
             <z-form-control>
               <input
                 z-input
-                [id]="'reps-' + plannedExercise().exercise.id"
+                [id]="'reps-' + exercise().id"
                 type="number"
                 min="1"
                 placeholder="10"

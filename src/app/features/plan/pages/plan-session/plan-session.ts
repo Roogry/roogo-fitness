@@ -10,7 +10,8 @@ import { HeaderComponent } from '@/shared/components/header/header.component';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { RooSheetComponent } from '@/shared/components/sheet';
 import { ZardInputDirective } from '@/shared/components/zard/input';
-import { WorkoutPlanSession } from '@/shared/models';
+import { ExerciseService } from '@/core/services/exercise.service';
+import { Exercise, WorkoutPlanSession } from '@/shared/models';
 import { form, FormField, required } from '@angular/forms/signals';
 import { ZardFormImports } from '@/shared/components/zard/form';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
@@ -36,6 +37,7 @@ import { ZardDialogService } from '@/shared/components/zard/dialog';
 })
 export class PlanSession implements OnInit {
   planService = inject(PlanService);
+  exerciseService = inject(ExerciseService);
   router = inject(Router);
   route = inject(ActivatedRoute);
   dialogService = inject(ZardDialogService);
@@ -45,6 +47,7 @@ export class PlanSession implements OnInit {
   selectedSession = signal<WorkoutPlanSession | null>(null);
   editSessionId = signal<number | null>(null);
   isEditMode = computed(() => this.editSessionId() !== null);
+  exercisesMap = signal<Map<number, Exercise>>(new Map());
 
   titleModel = signal({
     title: '',
@@ -60,6 +63,15 @@ export class PlanSession implements OnInit {
       const currentTitle = this.titleModel().title;
       if (!isInvalid && this.planService.sessionTitle() !== currentTitle) {
         this.planService.sessionTitle.set(currentTitle);
+      }
+    });
+
+    effect(async () => {
+      const plannedList = this.planService.plannedExercises();
+      const ids = plannedList.map((pe) => pe.exercise_id);
+      const res = await this.exerciseService.loadExercisesToMap(ids, this.exercisesMap());
+      if (res.changed) {
+        this.exercisesMap.set(res.map);
       }
     });
   }
@@ -88,6 +100,11 @@ export class PlanSession implements OnInit {
   }
 
   onExerciseSelected(exercise: any) {
+    this.exercisesMap.update((m) => {
+      const newMap = new Map(m);
+      newMap.set(exercise.id, exercise);
+      return newMap;
+    });
     this.planService.addPlannedExercise(exercise);
     this.isAddSheetOpen.set(false);
   }

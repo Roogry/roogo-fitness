@@ -49,7 +49,7 @@ export class ExerciseAutocomplete implements OnInit {
     // Debounce search
     this.searchTimeout = setTimeout(async () => {
       try {
-        const matches = await this.exerciseService.searchExercises(query);
+        const matches = await this.exerciseService.getExercises(query);
         this.results.set(matches);
       } finally {
         this.isSearching.set(false);

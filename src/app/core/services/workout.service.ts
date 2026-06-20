@@ -132,7 +132,11 @@ export class WorkoutService {
     this.selectedPlanId.set(plan.id);
 
     if (session.exercises) {
-      const activeExercises: LoggedExercise[] = session.exercises.map((pe) => {
+      const activeExercises: LoggedExercise[] = [];
+      for (const pe of session.exercises) {
+        const exercise = await this.getExerciseById(pe.exercise_id);
+        if (!exercise) continue;
+
         const sets: LoggedSet[] = Array.from({ length: pe.target_sets || 0 }).map((_, i) => ({
           id: Date.now() + Math.floor(Math.random() * 10000) + i,
           set_number: i + 1,
@@ -140,12 +144,12 @@ export class WorkoutService {
           weight_lifted: pe.target_weight,
         }));
 
-        return {
+        activeExercises.push({
           id: Date.now() + Math.floor(Math.random() * 1000) + pe.id,
-          exercise: pe.exercise,
+          exercise: exercise,
           sets: sets,
-        };
-      });
+        });
+      }
       this.trackedExercises.set(activeExercises);
     }
   }

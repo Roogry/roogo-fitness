@@ -1,5 +1,3 @@
-import { Exercise } from './exercise.model';
-
 export interface WorkoutPlan {
   id: number;
   user_id?: number;
@@ -31,5 +29,5 @@ export interface WorkoutPlanExercise {
   target_rest_time?: number;
   createdAt?: string;
   updatedAt?: string;
-  exercise: Exercise;
+  exercise_id: number;
 }

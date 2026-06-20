@@ -14,7 +14,7 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardInputDirective } from '@/shared/components/zard/input';
 import { ZardBadgeComponent } from '@/shared/components/zard/badge';
 import { ZardFormImports } from '@/shared/components/zard/form';
-import { WorkoutPlanExercise } from '@/shared/models';
+import { Exercise, WorkoutPlanExercise } from '@/shared/models';
 
 @Component({
   selector: 'app-plan-exercise-card',
@@ -35,6 +35,7 @@ import { WorkoutPlanExercise } from '@/shared/models';
 })
 export class PlanExerciseCardComponent {
   plannedExercise = input.required<WorkoutPlanExercise>();
+  exercise = input.required<Exercise>();
   editable = input<boolean>(true);
 
   updateTarget = output<Partial<WorkoutPlanExercise>>();

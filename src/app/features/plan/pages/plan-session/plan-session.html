@@ -53,12 +53,15 @@
         </div>
       }
 
-      @for (planned of planService.plannedExercises(); track planned.exercise.id) {
-        <app-plan-exercise-card
-          [plannedExercise]="planned"
-          (updateTarget)="onUpdateTarget(planned.exercise.id, $event)"
-          (remove)="onRemoveExercise(planned.exercise.id)"
-        ></app-plan-exercise-card>
+      @for (planned of planService.plannedExercises(); track planned.id) {
+        @if (exercisesMap().get(planned.exercise_id); as ex) {
+          <app-plan-exercise-card
+            [plannedExercise]="planned"
+            [exercise]="ex"
+            (updateTarget)="onUpdateTarget(planned.exercise_id, $event)"
+            (remove)="onRemoveExercise(planned.exercise_id)"
+          ></app-plan-exercise-card>
+        }
       }
 
       <button z-button zShape="circle" class="w-full" (click)="isAddSheetOpen.set(true)">

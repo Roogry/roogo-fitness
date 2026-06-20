@@ -14,7 +14,7 @@ export class PlanService {
 
   addPlannedExercise(exercise: Exercise) {
     this.plannedExercises.update((current) => {
-      if (current.find((pe) => pe.exercise.id === exercise.id)) {
+      if (current.find((pe) => pe.exercise_id === exercise.id)) {
         return current;
       }
       const newPlannedExercise: WorkoutPlanExercise = {
@@ -23,7 +23,7 @@ export class PlanService {
         target_sets: 3,
         target_reps: 10,
         target_weight: 0,
-        exercise: exercise,
+        exercise_id: exercise.id,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -34,7 +34,7 @@ export class PlanService {
   updatePlannedExercise(exerciseId: number, updates: Partial<WorkoutPlanExercise>) {
     this.plannedExercises.update((current) =>
       current.map((pe) =>
-        pe.exercise.id === exerciseId
+        pe.exercise_id === exerciseId
           ? { ...pe, ...updates, updatedAt: new Date().toISOString() }
           : pe,
       ),
@@ -44,7 +44,7 @@ export class PlanService {
   removePlannedExercise(exerciseId: number) {
     this.plannedExercises.update((current) =>
       current
-        .filter((pe) => pe.exercise.id !== exerciseId)
+        .filter((pe) => pe.exercise_id !== exerciseId)
         .map((pe, index) => ({
           ...pe,
           exercise_order: index,
@@ -84,7 +84,7 @@ export class PlanService {
         target_sets: pe.target_sets,
         target_reps: pe.target_reps,
         target_weight: pe.target_weight,
-        exercise: pe.exercise,
+        exercise_id: pe.exercise_id,
         createdAt: pe.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       })),
@@ -118,7 +118,7 @@ export class PlanService {
         target_sets: pe.target_sets,
         target_reps: pe.target_reps,
         target_weight: pe.target_weight,
-        exercise: pe.exercise,
+        exercise_id: pe.exercise_id,
         createdAt: pe.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       })),
