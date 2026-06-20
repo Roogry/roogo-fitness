@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideX } from '@ng-icons/lucide';
@@ -6,7 +6,12 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 
 /**
  * A slide-in sheet component for displaying content or forms overlaying the screen.
- * 
+ *
+ * @input title - The title of the sheet header. Defaults to empty string.
+ * @input description - The description or subtitle displayed below the title. Defaults to null.
+ * @input isOpen - Whether the sheet is currently open and visible. Defaults to false.
+ * @output onOpenChange - Event emitted when the open state of the sheet changes.
+ *
  * @example
  * <app-sheet title="Edit Session" [isOpen]="isSheetOpen" (onOpenChange)="isSheetOpen = $event">
  *   <!-- Content here -->
@@ -48,22 +53,22 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
   `,
 })
 export class RooSheetComponent {
-  @Input() title = '';
-  @Input() description?: string;
-  @Input() isOpen = false;
+  readonly title = input('');
+  readonly description = input<string | null>(null);
+  readonly isOpen = signal<boolean>(false);
 
-  @Output() onOpenChange = new EventEmitter<boolean>();
+  readonly onOpenChange = output<boolean>();
 
   /**
    * Closes the sheet and emits the onOpenChange event.
-   * 
+   *
    * @returns {void}
-   * 
+   *
    * @example
    * sheetComponent.close();
    */
   close() {
-    this.isOpen = false;
+    this.isOpen.set(false);
     this.onOpenChange.emit(false);
   }
 }

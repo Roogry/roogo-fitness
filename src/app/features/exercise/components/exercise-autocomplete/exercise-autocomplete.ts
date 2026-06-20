@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ZardBadgeComponent } from '@/shared/components/zard/badge';
 import { ZardInputDirective } from '@/shared/components/zard/input';
@@ -25,7 +25,7 @@ import { lucideSearch, lucidePlus, lucideDumbbell } from '@ng-icons/lucide';
 export class ExerciseAutocomplete implements OnInit {
   private exerciseService = inject(ExerciseService);
 
-  @Output() exerciseSelected = new EventEmitter<Exercise>();
+  readonly exerciseSelected = output<Exercise>();
 
   searchQuery = signal<string>('');
   results = signal<Exercise[]>([]);

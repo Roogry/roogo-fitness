@@ -2,12 +2,12 @@
   class="cursor-pointer transition-colors group overflow-hidden"
   (click)="handleToggle()"
   [ngClass]="{
-    'border-primary': isExpanded,
-    'hover:border-primary/50': !isExpanded,
+    'border-primary': isExpanded(),
+    'hover:border-primary/50': !isExpanded(),
   }"
 >
   <div class="flex justify-between items-center">
-    <span class="font-semibold flex-1 text-lg">{{ plan.title }}</span>
+    <span class="font-semibold flex-1 text-lg">{{ plan().title }}</span>
 
     <button
       z-button
@@ -32,7 +32,7 @@
       zShape="circle"
       class="text-secondary-foreground"
       [ngClass]="{
-        'rotate-90 bg-primary/5 text-primary-foreground': isExpanded,
+        'rotate-90 bg-primary/5 text-primary-foreground': isExpanded(),
       }"
     >
       <ng-icon name="lucideChevronRight"></ng-icon>
@@ -77,9 +77,9 @@
   </div>
 
   <!-- Accordion Content (Sessions) -->
-  @if (isExpanded) {
+  @if (isExpanded()) {
     <div class="pt-4 flex flex-col gap-2 animate-in slide-in-from-top-2 fade-in duration-200">
-      @for (session of plan.sessions; track session.id) {
+      @for (session of plan().sessions; track session.id) {
         <div
           class="p-3 rounded-xl bg-secondary/30 hover:bg-secondary/60 transition-colors cursor-pointer border border-transparent hover:border-border"
           (click)="detailSession(session.id, $event)"

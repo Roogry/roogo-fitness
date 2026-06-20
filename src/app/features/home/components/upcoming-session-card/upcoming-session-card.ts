@@ -1,4 +1,4 @@
-import { Component, inject, numberAttribute, Input, booleanAttribute } from '@angular/core';
+import { Component, inject, numberAttribute, booleanAttribute, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -23,10 +23,10 @@ import { lucideChevronRight } from '@ng-icons/lucide';
 export class UpcomingSessionCardComponent {
   private router = inject(Router);
 
-  @Input({ transform: numberAttribute }) planId!: number;
-  @Input({ transform: numberAttribute }) sessionId!: number;
-  @Input() title!: string;
-  @Input({ transform: booleanAttribute }) isUpNext!: boolean;
+  readonly planId = input.required<number, unknown>({ transform: numberAttribute });
+  readonly sessionId = input.required<number, unknown>({ transform: numberAttribute });
+  readonly title = input.required<string>();
+  readonly isUpNext = input.required<boolean, unknown>({ transform: booleanAttribute });
 
   /**
    * Navigates the user to the details page for this specific session.
@@ -36,8 +36,10 @@ export class UpcomingSessionCardComponent {
    * this.goToSession();
    */
   goToSession() {
-    if (this.planId && this.sessionId) {
-      this.router.navigate(['/plan', this.planId, 'session', this.sessionId]);
+    const planId = this.planId();
+    const sessionId = this.sessionId();
+    if (planId && sessionId) {
+      this.router.navigate(['/plan', planId, 'session', sessionId]);
     }
   }
 }

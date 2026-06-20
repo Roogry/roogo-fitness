@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Exercise, WorkoutPlan, WorkoutPlanSession } from '@/shared/models';
 import { ZardCardComponent } from '@/shared/components/zard/card';
@@ -49,12 +49,12 @@ import { Router } from '@angular/router';
   templateUrl: './plan-card.html',
 })
 export class PlanCardComponent implements OnInit {
-  @Input({ required: true }) plan!: WorkoutPlan;
-  @Input() isExpanded = false;
+  readonly plan = input.required<WorkoutPlan>();
+  readonly isExpanded = input(false);
 
-  @Output() onToggle = new EventEmitter<void>();
-  @Output() onEdit = new EventEmitter<Event>();
-  @Output() onDelete = new EventEmitter<Event>();
+  readonly onToggle = output<void>();
+  readonly onEdit = output<Event>();
+  readonly onDelete = output<Event>();
 
   router = inject(Router);
   workoutService = inject(WorkoutService);
@@ -101,7 +101,7 @@ export class PlanCardComponent implements OnInit {
 
   openPlanActionsSheet(event: Event) {
     event.stopPropagation();
-    this.planService.selectedPlanId.set(this.plan.id);
+    this.planService.selectedPlanId.set(this.plan().id);
   }
 
   editPlan(event: Event) {
@@ -114,9 +114,10 @@ export class PlanCardComponent implements OnInit {
     this.isOpenPlanActions.set(false);
 
     this.planService.clearPlanSession();
-    this.planService.selectedPlanId.set(this.plan.id);
+    const plan = this.plan();
+    this.planService.selectedPlanId.set(plan.id);
     this.planService.sessionTitle.set('New Session');
-    this.router.navigate([`plan/${this.plan.id}/session/new`]);
+    this.router.navigate([`plan/${plan.id}/session/new`]);
   }
 
   deletePlan(event: Event) {
@@ -126,11 +127,11 @@ export class PlanCardComponent implements OnInit {
 
   detailSession(sessionId: number, event: Event) {
     event.stopPropagation();
-    this.router.navigate(['/plan', this.plan.id, 'session', sessionId]);
+    this.router.navigate(['/plan', this.plan().id, 'session', sessionId]);
   }
 
   onStartSessionClick(sessionId: number, event: Event) {
     event.stopPropagation();
-    this.workoutService.startSessionFlow(this.plan.id, sessionId);
+    this.workoutService.startSessionFlow(this.plan().id, sessionId);
   }
 }
