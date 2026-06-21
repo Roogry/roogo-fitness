@@ -7,6 +7,7 @@ export interface Muscle {
   id: number;
   name: string;
   anatomy_image_url?: string;
+  icon_url?: string;
 }
 
 export interface Exercise {

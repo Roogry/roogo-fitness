@@ -1,5 +1,5 @@
 import { Component, inject, signal, OnInit, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { WorkoutService } from '@/core/services/workout.service';
@@ -7,14 +7,16 @@ import { DbService } from '@/core/services/db.service';
 import { UpcomingSessionCardComponent } from '@/features/home/components/upcoming-session-card/upcoming-session-card';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideDumbbell, lucideFlame, lucideCalendar } from '@ng-icons/lucide';
-import { LoggedSession, WorkoutPlan } from '@/shared/models';
+import { LoggedSession, WorkoutPlan, Muscle } from '@/shared/models';
 import { HomeLoggedWorkoutCardComponent } from './components/home-logged-workout-card/home-logged-workout-card';
+import { MuscleService } from '@/core/services/muscle.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
     CommonModule,
+    NgOptimizedImage,
     ZardCardComponent,
     RouterLink,
     HomeLoggedWorkoutCardComponent,
@@ -27,11 +29,13 @@ import { HomeLoggedWorkoutCardComponent } from './components/home-logged-workout
 })
 export class Home implements OnInit {
   router = inject(Router);
-  workoutService = inject(WorkoutService);
   dbService = inject(DbService);
+  workoutService = inject(WorkoutService);
+  muscleService = inject(MuscleService);
 
   recentSessions = signal<LoggedSession[]>([]);
   activePlan = signal<WorkoutPlan | null>(null);
+  muscles = signal<Muscle[]>([]);
 
   mappedSessions = computed(() => {
     const plan = this.activePlan();
@@ -51,6 +55,9 @@ export class Home implements OnInit {
       if (active) {
         this.activePlan.set(active);
       }
+
+      const allMuscles = await this.muscleService.getMuscles();
+      this.muscles.set(allMuscles);
     } catch (e) {
       console.error('Failed to fetch home data', e);
     }

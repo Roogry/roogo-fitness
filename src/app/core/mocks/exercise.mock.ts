@@ -1,29 +1,29 @@
 import { Exercise, Muscle } from '@/shared/models';
 
 export const mockMuscles: Muscle[] = [
-  { id: 1, name: 'Upper Chest' },
-  { id: 2, name: 'Midle Chest' },
-  { id: 3, name: 'Lower Chest' },
-  { id: 4, name: 'Front Delt' },
-  { id: 5, name: 'Side Delt' },
-  { id: 6, name: 'Back Delt' },
-  { id: 7, name: 'Triceps' },
-  { id: 8, name: 'Biceps' },
-  { id: 9, name: 'Lats' },
-  { id: 10, name: 'Traps' },
-  { id: 11, name: 'Upper Back' },
-  { id: 12, name: 'Quadriceps' },
-  { id: 13, name: 'Hamstrings' },
-  { id: 14, name: 'Gluteus' },
-  { id: 15, name: 'Calves' },
-  { id: 16, name: 'Core' },
+  { id: 1, name: 'Upper Chest', icon_url: 'assets/images/muscles/upper_chest_mucle.webp' },
+  { id: 2, name: 'Midle Chest', icon_url: 'assets/images/muscles/middle_chest_mucle.webp' },
+  { id: 3, name: 'Lower Chest', icon_url: 'assets/images/muscles/lower_chest_mucle.webp' },
+  { id: 4, name: 'Front Delt', icon_url: 'assets/images/muscles/front_delt_mucle.webp' },
+  { id: 5, name: 'Side Delt', icon_url: 'assets/images/muscles/side_delt_mucle.webp' },
+  { id: 6, name: 'Back Delt', icon_url: 'assets/images/muscles/rear_delt_mucle.webp' },
+  { id: 7, name: 'Triceps', icon_url: 'assets/images/muscles/triceps_mucle.webp' },
+  { id: 8, name: 'Biceps', icon_url: 'assets/images/muscles/biceps_mucle.webp' },
+  { id: 9, name: 'Lats', icon_url: 'assets/images/muscles/lats_mucle.webp' },
+  { id: 10, name: 'Traps', icon_url: 'assets/images/muscles/traps_mucle.webp' },
+  { id: 11, name: 'Quadriceps', icon_url: 'assets/images/muscles/quadriceps_mucle.webp' },
+  { id: 12, name: 'Hamstrings', icon_url: 'assets/images/muscles/hamstrings_mucle.webp' },
+  { id: 13, name: 'Gluteus', icon_url: 'assets/images/muscles/gluteus_mucle.webp' },
+  { id: 14, name: 'Calves', icon_url: 'assets/images/muscles/calves_mucle.webp' },
+  { id: 15, name: 'Core', icon_url: 'assets/images/muscles/core_mucle.webp' },
 ];
 
 export const mockExercises: Exercise[] = [
   {
     id: 100,
     name: 'Wide-Grip Pull-Up',
-    short_description: 'Tarik tubuh ke atas dengan otot latissimus (sayap). Gunakan bantuan jika perlu, atau tambahkan beban.',
+    short_description:
+      'Tarik tubuh ke atas dengan otot latissimus (sayap). Gunakan bantuan jika perlu, atau tambahkan beban.',
     primary_muscle: { id: 9, name: 'Lats' },
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -35,14 +35,15 @@ export const mockExercises: Exercise[] = [
       'Tarik napas dan angkat dada ke atas, dorong siku ke bawah untuk mengangkat tubuh.',
       'Tahan 0.5-1 detik di puncak gerakan.',
       'Turun perlahan dalam 2-3 detik hingga lengan lurus.',
-      'Lakukan partial reps (setengah gerakan bawah) di set terakhir jika sudah mendekati failure.'
+      'Lakukan partial reps (setengah gerakan bawah) di set terakhir jika sudah mendekati failure.',
     ],
-    tips: 'Rasakan regangan pada otot sayap saat turun. Jaga postur tetap stabil dan hindari mengayun.'
+    tips: 'Rasakan regangan pada otot sayap saat turun. Jaga postur tetap stabil dan hindari mengayun.',
   },
   {
     id: 101,
     name: 'Chest-Supported Machine Row',
-    short_description: 'Tarik beban dengan fokus pada kontraksi punggung, gunakan pad dada sebagai tumpuan.',
+    short_description:
+      'Tarik beban dengan fokus pada kontraksi punggung, gunakan pad dada sebagai tumpuan.',
     primary_muscle: { id: 9, name: 'Lats' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -53,14 +54,15 @@ export const mockExercises: Exercise[] = [
       'Atur pad dada agar otot punggung bisa meregang maksimal di posisi awal.',
       'Tarik tuas ke belakang hingga siku melewati tubuh.',
       'Turunkan perlahan dan rasakan regangan.',
-      'Di set terakhir, gunakan partial reps (setengah gerakan awal) hingga mendekati failure.'
+      'Di set terakhir, gunakan partial reps (setengah gerakan awal) hingga mendekati failure.',
     ],
-    tips: 'Tarik dengan siku, bukan dengan telapak tangan.'
+    tips: 'Tarik dengan siku, bukan dengan telapak tangan.',
   },
   {
     id: 102,
     name: 'Half-Kneeling 1-Arm Lat Pulldown',
-    short_description: 'Tarik kabel dengan satu tangan dalam posisi setengah berlutut untuk rentang gerak maksimal otot lat.',
+    short_description:
+      'Tarik kabel dengan satu tangan dalam posisi setengah berlutut untuk rentang gerak maksimal otot lat.',
     primary_muscle: { id: 9, name: 'Lats' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
@@ -71,14 +73,15 @@ export const mockExercises: Exercise[] = [
       'Posisikan tubuh setengah berlutut, sejajarkan pergelangan tangan dengan kabel.',
       'Tarik kabel ke bawah hingga siku mendekati pinggang.',
       'Rentangkan kembali ke atas hingga otot lat meregang sempurna.',
-      'Selang-seling antara gerakan penuh (full-ROM) dan setengah gerakan atas (half-ROM) di tiap repetisi.'
+      'Selang-seling antara gerakan penuh (full-ROM) dan setengah gerakan atas (half-ROM) di tiap repetisi.',
     ],
-    tips: 'Jaga agar kabel dan pergelangan tangan selalu dalam satu garis lurus.'
+    tips: 'Jaga agar kabel dan pergelangan tangan selalu dalam satu garis lurus.',
   },
   {
     id: 103,
     name: 'Cable 1-Arm Face Pull',
-    short_description: 'Tarik kabel ke arah wajah menggunakan satu tangan untuk melatih otot bahu belakang.',
+    short_description:
+      'Tarik kabel ke arah wajah menggunakan satu tangan untuk melatih otot bahu belakang.',
     primary_muscle: { id: 6, name: 'Back Delt' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -89,14 +92,15 @@ export const mockExercises: Exercise[] = [
       'Atur kabel setinggi mata.',
       'Tarik kabel ke arah wajah hingga lengan menekuk.',
       'Tahan sejenak saat kontraksi maksimal (ketika lengan tertekuk).',
-      'Kembalikan ke posisi awal secara perlahan.'
+      'Kembalikan ke posisi awal secara perlahan.',
     ],
-    tips: 'Fokus pada kontraksi otot bahu belakang, bukan sekadar menarik beban.'
+    tips: 'Fokus pada kontraksi otot bahu belakang, bukan sekadar menarik beban.',
   },
   {
     id: 104,
     name: 'Seated Super-Bayesian High Cable Curl',
-    short_description: 'Latihan bisep menggunakan kabel tinggi dengan posisi duduk membelakangi mesin.',
+    short_description:
+      'Latihan bisep menggunakan kabel tinggi dengan posisi duduk membelakangi mesin.',
     primary_muscle: { id: 8, name: 'Biceps' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -106,14 +110,15 @@ export const mockExercises: Exercise[] = [
     instructions: [
       'Atur kabel setinggi tangan saat duduk tegak.',
       'Tarik pegangan ke arah tubuh hingga menyentuh bangku.',
-      'Kembali perlahan dan rasakan regangan maksimal pada otot bisep di akhir gerakan.'
+      'Kembali perlahan dan rasakan regangan maksimal pada otot bisep di akhir gerakan.',
     ],
-    tips: 'Jaga siku agar tetap stabil dan tidak ikut tertarik ke depan.'
+    tips: 'Jaga siku agar tetap stabil dan tidak ikut tertarik ke depan.',
   },
   {
     id: 105,
     name: 'Cable Crunch',
-    short_description: 'Gunakan kabel untuk melatih otot perut dengan memberikan beban yang konsisten.',
+    short_description:
+      'Gunakan kabel untuk melatih otot perut dengan memberikan beban yang konsisten.',
     primary_muscle: { id: 16, name: 'Core' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
@@ -123,9 +128,9 @@ export const mockExercises: Exercise[] = [
     instructions: [
       'Pegang tali kabel di belakang leher sambil berlutut.',
       'Bungkukkan punggung dan tarik tubuh ke bawah dengan otot perut (crunch).',
-      'Tahan sejenak lalu kembali ke atas perlahan.'
+      'Tahan sejenak lalu kembali ke atas perlahan.',
     ],
-    tips: 'Bulatkan punggung bawah Anda, jangan hanya menunduk atau membungkuk dari pinggul.'
+    tips: 'Bulatkan punggung bawah Anda, jangan hanya menunduk atau membungkuk dari pinggul.',
   },
   {
     id: 106,
@@ -141,14 +146,15 @@ export const mockExercises: Exercise[] = [
       'Berbaring miring di bangku dengan kemiringan ~30°.',
       'Mulai dengan dumbbell di depan tubuh, lalu angkat sejajar dengan lantai.',
       'Turunkan dumbbell sedikit ke arah belakang tubuh untuk regangan ekstra.',
-      'Angkat kembali dari belakang ke posisi semula tanpa jeda.'
+      'Angkat kembali dari belakang ke posisi semula tanpa jeda.',
     ],
-    tips: 'Rasakan regangan dalam di otot bahu samping. Lakukan repetisi mengalir tanpa henti.'
+    tips: 'Rasakan regangan dalam di otot bahu samping. Lakukan repetisi mengalir tanpa henti.',
   },
   {
     id: 107,
     name: 'Flat Machine Chest Press',
-    short_description: 'Dorongan dada menggunakan mesin posisi datar untuk melatih otot dada tengah.',
+    short_description:
+      'Dorongan dada menggunakan mesin posisi datar untuk melatih otot dada tengah.',
     primary_muscle: { id: 2, name: 'Midle Chest' },
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -159,14 +165,15 @@ export const mockExercises: Exercise[] = [
       'Duduk tegak dan dorong tuas mesin ke depan.',
       'Turunkan perlahan dan tahan 1 detik saat tuas mendekati dada.',
       'Jaga ketegangan pada otot dada selama gerakan berlangsung.',
-      'Di set terakhir, gunakan partial reps (setengah bawah) hingga mendekati failure.'
+      'Di set terakhir, gunakan partial reps (setengah bawah) hingga mendekati failure.',
     ],
-    tips: 'Jangan mengunci siku terlalu lurus saat mendorong ke depan.'
+    tips: 'Jangan mengunci siku terlalu lurus saat mendorong ke depan.',
   },
   {
     id: 108,
     name: 'Bottom-Half Seated Cable Flye',
-    short_description: 'Latihan otot dada tengah dengan gerakan setengah bawah untuk regangan maksimal.',
+    short_description:
+      'Latihan otot dada tengah dengan gerakan setengah bawah untuk regangan maksimal.',
     primary_muscle: { id: 2, name: 'Midle Chest' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
@@ -177,9 +184,9 @@ export const mockExercises: Exercise[] = [
       'Duduk tegak, pegang tuas kabel di kedua sisi tangan.',
       'Tarik kabel ke depan hanya sampai setengah jalan.',
       'Kembalikan perlahan hingga lengan terbuka dan dada meregang penuh.',
-      'Lakukan semua repetisi di setengah rentang gerak (bottom half) ini.'
+      'Lakukan semua repetisi di setengah rentang gerak (bottom half) ini.',
     ],
-    tips: 'Fokus pada regangan yang dalam di otot dada pada posisi awal gerakan.'
+    tips: 'Fokus pada regangan yang dalam di otot dada pada posisi awal gerakan.',
   },
   {
     id: 109,
@@ -195,14 +202,15 @@ export const mockExercises: Exercise[] = [
       'Duduk di bangku tegak, angkat dumbbell ke posisi setinggi bahu.',
       'Dorong dumbbell lurus ke atas hingga lengan hampir terkunci.',
       'Turunkan perlahan hingga tangan berada kembali di ketinggian bahu.',
-      'Jaga ketegangan di otot bahu lalu dorong kembali ke atas.'
+      'Jaga ketegangan di otot bahu lalu dorong kembali ke atas.',
     ],
-    tips: 'Bawa siku sedikit ke depan saat mendorong untuk menjaga sendi bahu tetap aman.'
+    tips: 'Bawa siku sedikit ke depan saat mendorong untuk menjaga sendi bahu tetap aman.',
   },
   {
     id: 110,
     name: 'Overhead Cable Triceps Extension (Bar)',
-    short_description: 'Ekstensi trisep di atas kepala menggunakan kabel untuk peregangan otot maksimal.',
+    short_description:
+      'Ekstensi trisep di atas kepala menggunakan kabel untuk peregangan otot maksimal.',
     primary_muscle: { id: 7, name: 'Triceps' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
@@ -213,9 +221,9 @@ export const mockExercises: Exercise[] = [
       'Pegang bar kabel di atas kepala dengan posisi tubuh membelakangi mesin.',
       'Dorong lengan lurus ke depan dengan bantuan otot trisep.',
       'Tekuk lengan kembali secara perlahan dan tahan 1 detik di posisi regangan maksimal.',
-      'Setelah set terakhir, kurangi beban 25% dan lakukan lagi hingga failure (drop set).'
+      'Setelah set terakhir, kurangi beban 25% dan lakukan lagi hingga failure (drop set).',
     ],
-    tips: 'Rasakan tarikan (stretch) yang kuat pada trisep saat lengan ditekuk ke belakang.'
+    tips: 'Rasakan tarikan (stretch) yang kuat pada trisep saat lengan ditekuk ke belakang.',
   },
   {
     id: 111,
@@ -231,14 +239,15 @@ export const mockExercises: Exercise[] = [
       'Berdiri tegak atau membungkuk, pegang ujung kabel tanpa alat bantu pelengkap.',
       'Posisikan bahu sedikit di belakang tubuh.',
       'Tarik kabel ke belakang hingga lengan terentang lurus dan trisep menegang.',
-      'Kembalikan perlahan ke posisi awal dengan siku menekuk.'
+      'Kembalikan perlahan ke posisi awal dengan siku menekuk.',
     ],
-    tips: 'Pastikan bahu tidak ikut bergerak maju-mundur, biarkan hanya engsel siku yang bekerja.'
+    tips: 'Pastikan bahu tidak ikut bergerak maju-mundur, biarkan hanya engsel siku yang bekerja.',
   },
   {
     id: 112,
     name: 'Seated Leg Curl',
-    short_description: 'Latih otot hamstring (paha belakang) dengan posisi duduk menggunakan mesin.',
+    short_description:
+      'Latih otot hamstring (paha belakang) dengan posisi duduk menggunakan mesin.',
     primary_muscle: { id: 13, name: 'Hamstrings' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -249,14 +258,15 @@ export const mockExercises: Exercise[] = [
       'Duduk di mesin dan condongkan badan sedikit ke depan untuk regangan ekstra.',
       'Tekuk lutut dan tarik bantalan sekuat tenaga ke bawah.',
       'Kembali ke posisi awal secara perlahan untuk menahan beban.',
-      'Di set terakhir, jika sudah mencapai failure, lanjutkan dengan partial reps di bagian lurus atas gerakan.'
+      'Di set terakhir, jika sudah mencapai failure, lanjutkan dengan partial reps di bagian lurus atas gerakan.',
     ],
-    tips: 'Pastikan pinggul tetap menempel kuat di kursi mesin saat menarik beban.'
+    tips: 'Pastikan pinggul tetap menempel kuat di kursi mesin saat menarik beban.',
   },
   {
     id: 113,
     name: 'Bottom-Half Smith Machine Squat',
-    short_description: 'Squat setengah gerakan bawah dengan mesin Smith untuk memfokuskan tarikan pada otot paha depan.',
+    short_description:
+      'Squat setengah gerakan bawah dengan mesin Smith untuk memfokuskan tarikan pada otot paha depan.',
     primary_muscle: { id: 12, name: 'Quadriceps' },
     recommended_warmup_sets: { min: 3, max: 4 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -267,14 +277,15 @@ export const mockExercises: Exercise[] = [
       'Masuk ke bawah bar dan posisikan kaki lebih maju (3-6 inci) dari posisi squat normal.',
       'Bersandar sedikit ke bar dan turun perlahan hingga squat dalam.',
       'Berdiri hanya sampai setengah jalan (bottom half) dan turun kembali.',
-      'Lakukan semua repetisi di setengah bawah gerakan ini tanpa pernah berdiri tegak.'
+      'Lakukan semua repetisi di setengah bawah gerakan ini tanpa pernah berdiri tegak.',
     ],
-    tips: 'Jika tumit terangkat saat di bawah, majukan sedikit posisi kaki. Jaga tubuh selalu tegak menempel ke bar.'
+    tips: 'Jika tumit terangkat saat di bawah, majukan sedikit posisi kaki. Jaga tubuh selalu tegak menempel ke bar.',
   },
   {
     id: 114,
     name: 'Glute-Ham Raise',
-    short_description: 'Latihan fungsional untuk paha belakang (hamstring) dengan mengangkat beban badan.',
+    short_description:
+      'Latihan fungsional untuk paha belakang (hamstring) dengan mengangkat beban badan.',
     primary_muscle: { id: 13, name: 'Hamstrings' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -285,9 +296,9 @@ export const mockExercises: Exercise[] = [
       'Kunci pergelangan kaki di mesin GHR.',
       'Turunkan tubuh secara perlahan mengandalkan kekuatan otot paha belakang.',
       'Gunakan kontraksi hamstring untuk menarik tubuh kembali naik.',
-      'Hentikan gerakan naik sebelum tegak sepenuhnya (sekitar 75%) agar ketegangan otot tidak hilang.'
+      'Hentikan gerakan naik sebelum tegak sepenuhnya (sekitar 75%) agar ketegangan otot tidak hilang.',
     ],
-    tips: 'Jangan mengayunkan punggung untuk naik, murni gunakan tarikan hamstring.'
+    tips: 'Jangan mengayunkan punggung untuk naik, murni gunakan tarikan hamstring.',
   },
   {
     id: 115,
@@ -303,14 +314,15 @@ export const mockExercises: Exercise[] = [
       'Atur sandaran kursi sedikit ke belakang senyaman mungkin.',
       'Pegang erat pegangan tangan mesin untuk menahan panggul tetap menempel di kursi.',
       'Luruskan kaki ke atas dengan kuat, lalu turunkan lambat dalam 2-3 detik.',
-      'Setelah failure di set terakhir, teruskan dengan partial reps di posisi bawah hingga otot tidak kuat mengangkat lagi.'
+      'Setelah failure di set terakhir, teruskan dengan partial reps di posisi bawah hingga otot tidak kuat mengangkat lagi.',
     ],
-    tips: 'Rasakan regangan serat otot paha saat gerakan turun (negatif).'
+    tips: 'Rasakan regangan serat otot paha saat gerakan turun (negatif).',
   },
   {
     id: 116,
     name: 'Standing Calf Raise',
-    short_description: 'Latihan beban betis sambil berdiri untuk menguatkan dan memperbesar otot betis.',
+    short_description:
+      'Latihan beban betis sambil berdiri untuk menguatkan dan memperbesar otot betis.',
     primary_muscle: { id: 15, name: 'Calves' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -321,9 +333,9 @@ export const mockExercises: Exercise[] = [
       'Berdiri dengan ujung telapak kaki di pinggiran platform mesin.',
       'Turunkan tumit ke bawah sejauh mungkin dan tahan diam 1-2 detik.',
       'Angkat tubuh ke atas dengan menekan dari ujung kaki setinggi mungkin.',
-      'Di set terakhir, selesai rep terakhir, tahan posisi tumit paling bawah (regangan penuh) selama 30 detik tanpa melepas beban.'
+      'Di set terakhir, selesai rep terakhir, tahan posisi tumit paling bawah (regangan penuh) selama 30 detik tanpa melepas beban.',
     ],
-    tips: 'Saat naik, cobalah sedikit memutar beban di sekitar pangkal jari kaki untuk aktivasi otot betis yang lebih baik.'
+    tips: 'Saat naik, cobalah sedikit memutar beban di sekitar pangkal jari kaki untuk aktivasi otot betis yang lebih baik.',
   },
   {
     id: 117,
@@ -338,9 +350,9 @@ export const mockExercises: Exercise[] = [
     instructions: [
       'Duduk bersandar atau sedikit condong ke depan sambil memegang rel mesin.',
       'Gunakan sisi luar lutut untuk mendorong bantalan ke arah luar.',
-      'Buka selebar mungkin, tahan sejenak, lalu tutup kembali secara perlahan.'
+      'Buka selebar mungkin, tahan sejenak, lalu tutup kembali secara perlahan.',
     ],
-    tips: 'Gunakan pad/ganjalan tambahan di luar lutut jika perlu untuk mendapatkan jangkauan gerakan (ROM) yang lebih besar sejak awal.'
+    tips: 'Gunakan pad/ganjalan tambahan di luar lutut jika perlu untuk mendapatkan jangkauan gerakan (ROM) yang lebih besar sejak awal.',
   },
   {
     id: 118,
@@ -356,9 +368,9 @@ export const mockExercises: Exercise[] = [
       'Posisikan lengan bawah di bangku, biarkan tangan dengan dumbbell menggantung di ujung.',
       'Posisi telapak tangan menghadap ke atas.',
       'Turunkan dumbbell hingga ke ujung jari yang ditekuk.',
-      'Gulung kembali dumbbell ke arah dalam menggunakan kekuatan pergelangan.'
+      'Gulung kembali dumbbell ke arah dalam menggunakan kekuatan pergelangan.',
     ],
-    tips: 'Pastikan gerakan murni dari engsel pergelangan tangan, lengan bawah tidak ikut bergerak.'
+    tips: 'Pastikan gerakan murni dari engsel pergelangan tangan, lengan bawah tidak ikut bergerak.',
   },
   {
     id: 119,
@@ -373,9 +385,9 @@ export const mockExercises: Exercise[] = [
     instructions: [
       'Tumpu lengan bawah di bangku dengan tangan menggantung, telapak tangan menghadap bawah.',
       'Genggam dumbbell dan turunkan perlahan ke bawah.',
-      'Angkat perlahan dumbbell ke atas sejauh pergelangan bisa menekuk mundur.'
+      'Angkat perlahan dumbbell ke atas sejauh pergelangan bisa menekuk mundur.',
     ],
-    tips: 'Hanya lakukan latihan ini jika area lemah di lengan bawah terasa bugar dan tidak sakit.'
+    tips: 'Hanya lakukan latihan ini jika area lemah di lengan bawah terasa bugar dan tidak sakit.',
   },
   {
     id: 120,
@@ -391,9 +403,9 @@ export const mockExercises: Exercise[] = [
       'Kaitkan bar EZ ke katrol kabel paling bawah.',
       'Berdiri tegak, pegang bar dari bawah, dan tarik ke arah dada.',
       'Jaga siku terkunci di sisi tubuh.',
-      'Turunkan bar dengan lambat dan hindari beban jatuh bebas.'
+      'Turunkan bar dengan lambat dan hindari beban jatuh bebas.',
     ],
-    tips: 'Fokus pada perlambatan saat turun, ini akan menjaga beban konsisten menerpa bisep.'
+    tips: 'Fokus pada perlambatan saat turun, ini akan menjaga beban konsisten menerpa bisep.',
   },
   {
     id: 121,
@@ -409,9 +421,9 @@ export const mockExercises: Exercise[] = [
       'Berbaring datar dan pegang bar EZ tepat di atas wajah/dada atas.',
       'Tekuk siku perlahan hingga bar turun mendekati dahi atau sedikit di atas kepala.',
       'Tahan sebentar di posisi bawah agar trisep teregang penuh (stretch).',
-      'Dorong kembali ke atas tegak lurus.'
+      'Dorong kembali ke atas tegak lurus.',
     ],
-    tips: 'Jaga kedua siku agak merapat dan diam, jangan membiarkannya terbuka terlalu lebar saat mengangkat.'
+    tips: 'Jaga kedua siku agak merapat dan diam, jangan membiarkannya terbuka terlalu lebar saat mengangkat.',
   },
   {
     id: 122,
@@ -427,9 +439,9 @@ export const mockExercises: Exercise[] = [
       'Duduk santai di bangku miring (incline) dengan tangan lurus ke bawah di samping badan.',
       'Gulung dumbbell (curl) ke atas hanya sampai setengah posisi (tangan mendatar).',
       'Turunkan kembali hingga tangan lurus dan bisep tertarik.',
-      'Ulangi repetisi di area setengah bawah gerakan ini.'
+      'Ulangi repetisi di area setengah bawah gerakan ini.',
     ],
-    tips: 'Gunakan beban yang ringan agar gerakan tetap fokus pada perasaan otot menegang, bukan memaksakan ayunan.'
+    tips: 'Gunakan beban yang ringan agar gerakan tetap fokus pada perasaan otot menegang, bukan memaksakan ayunan.',
   },
   {
     id: 123,
@@ -445,14 +457,15 @@ export const mockExercises: Exercise[] = [
       'Pegang bar lurus pada katrol atas.',
       'Tahan siku rapat di sisi rusuk.',
       'Tekan bar ke bawah hingga kedua tangan lurus sepenuhnya.',
-      'Kembalikan pelan-pelan tanpa mengangkat siku dari posisinya.'
+      'Kembalikan pelan-pelan tanpa mengangkat siku dari posisinya.',
     ],
-    tips: 'Fokuskan pikiran untuk memeras (squeeze) trisep agar beban bergerak ke bawah.'
+    tips: 'Fokuskan pikiran untuk memeras (squeeze) trisep agar beban bergerak ke bawah.',
   },
   {
     id: 124,
     name: 'Roman Chair Leg Raise',
-    short_description: 'Angkat kaki dengan sandaran untuk otot perut bagian bawah dan inti inti (core).',
+    short_description:
+      'Angkat kaki dengan sandaran untuk otot perut bagian bawah dan inti inti (core).',
     primary_muscle: { id: 16, name: 'Core' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -463,9 +476,9 @@ export const mockExercises: Exercise[] = [
       'Masuk ke alat Roman chair dan tahan badan dengan kedua lengan bawah.',
       'Biarkan punggung bawah ikut membulat ringan saat mengangkat lutut atau kaki lurus.',
       'Gulung perut dan angkat lutut setinggi mungkin menuju dada.',
-      'Lakukan hingga RPE 9-10 (hampir gagal) dengan bentuk terkendali.'
+      'Lakukan hingga RPE 9-10 (hampir gagal) dengan bentuk terkendali.',
     ],
-    tips: 'Tujuan utama adalah kontraksi perut (crunch) dari bawah, bukan sekadar mengangkat kaki dengan sendi pinggul.'
+    tips: 'Tujuan utama adalah kontraksi perut (crunch) dari bawah, bukan sekadar mengangkat kaki dengan sendi pinggul.',
   },
   {
     id: 125,
@@ -482,14 +495,15 @@ export const mockExercises: Exercise[] = [
       'Bungkukkan dada paralel ke lantai.',
       'Tarik palang mesin Smith sampai perut dan rasakan kontraksinya.',
       'Turun perlahan demi stretch yang lebih panjang di punggung bawah gerakan.',
-      'Gunakan partial reps di set akhir bila mendekati gagal.'
+      'Gunakan partial reps di set akhir bila mendekati gagal.',
     ],
-    tips: 'Rasakan regangan otot bahu atas/lat saat menahan gerakan turun (negatif).'
+    tips: 'Rasakan regangan otot bahu atas/lat saat menahan gerakan turun (negatif).',
   },
   {
     id: 126,
     name: 'Neutral-Grip Lat Pulldown',
-    short_description: 'Tarikan pulldown posisi telapak berhadapan untuk aktivasi dominan otot sayap.',
+    short_description:
+      'Tarikan pulldown posisi telapak berhadapan untuk aktivasi dominan otot sayap.',
     primary_muscle: { id: 9, name: 'Lats' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -500,14 +514,15 @@ export const mockExercises: Exercise[] = [
       'Gunakan V-Grip atau sejenisnya. Letakkan pegangan sedikit menjauh di depan muka Anda.',
       'Tarik turun seakan menarik ke perut atas atau dada bawah.',
       'Lakukan sistem 1 rep full ROM berseling 1 rep half ROM di atas.',
-      'Lanjutkan pola ini sampai angka repetisi target terpenuhi.'
+      'Lanjutkan pola ini sampai angka repetisi target terpenuhi.',
     ],
-    tips: 'Kendalikan beban perlahan, ini seperti gabungan gerakan pullover lurus dan pulldown klasik.'
+    tips: 'Kendalikan beban perlahan, ini seperti gabungan gerakan pullover lurus dan pulldown klasik.',
   },
   {
     id: 127,
     name: 'Moto Cable Row',
-    short_description: 'Gerakan seperti memutar gas motor saat menarik kabel, sangat presisi untuk lat bawah.',
+    short_description:
+      'Gerakan seperti memutar gas motor saat menarik kabel, sangat presisi untuk lat bawah.',
     primary_muscle: { id: 9, name: 'Lats' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
@@ -518,14 +533,15 @@ export const mockExercises: Exercise[] = [
       'Duduk pada mesin kabel mendatar atau posisi tuas dada bawah.',
       'Tarik gagang ke belakang dengan halus tanpa sentakan kasar.',
       'Pertahankan posisi lengan bawah yang berjejer rapi segaris dengan lintasan kabel.',
-      'Kembalikan dengan ritme yang sama.'
+      'Kembalikan dengan ritme yang sama.',
     ],
-    tips: 'Hindari melengkungkan punggung terlalu ekstrem ke belakang.'
+    tips: 'Hindari melengkungkan punggung terlalu ekstrem ke belakang.',
   },
   {
     id: 128,
     name: 'Bottom-Half EZ-Bar Preacher Curl',
-    short_description: 'Preacher curl gerakan bawah menjaga bisep di bawah beban konstan tanpa jeda istirahat.',
+    short_description:
+      'Preacher curl gerakan bawah menjaga bisep di bawah beban konstan tanpa jeda istirahat.',
     primary_muscle: { id: 8, name: 'Biceps' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -536,14 +552,15 @@ export const mockExercises: Exercise[] = [
       'Posisikan ketiak menempel pada bantalan preacher curl secara sempurna.',
       'Angkat barbell separuh jalan menuju posisi vertikal (hindari mengangkat sampai tegak).',
       'Turun pelan menuju lurus tapi cegah sendi terkunci sepenuhnya.',
-      'Terus lakukan rep setengah jalan ini tanpa berhenti memompa.'
+      'Terus lakukan rep setengah jalan ini tanpa berhenti memompa.',
     ],
-    tips: 'Tekan trisep keras-keras ke atas bantalan empuk untuk mengunci lengan.'
+    tips: 'Tekan trisep keras-keras ke atas bantalan empuk untuk mengunci lengan.',
   },
   {
     id: 129,
     name: 'Super-Stretch Reverse Pec Deck',
-    short_description: 'Latihan fly belakang di mesin dada dibalik (reverse) secara satu-satu untuk fokus delt belakang.',
+    short_description:
+      'Latihan fly belakang di mesin dada dibalik (reverse) secara satu-satu untuk fokus delt belakang.',
     primary_muscle: { id: 6, name: 'Back Delt' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -554,14 +571,15 @@ export const mockExercises: Exercise[] = [
       'Duduk menyamping berhadapan profil ke mesin pec deck.',
       'Pegang lengan mesin yang ada di sisi berlawanan dada dan tarik agar otot bahu belakang memanjang terlebih dahulu.',
       'Tarik keluar secara melengkung dengan bahu belakang.',
-      'Mulai dulu dengan sisi lengan Anda yang terasa lebih lemah.'
+      'Mulai dulu dengan sisi lengan Anda yang terasa lebih lemah.',
     ],
-    tips: 'Lakukan tarikan dengan rileks, hindari menghentakkan beban.'
+    tips: 'Lakukan tarikan dengan rileks, hindari menghentakkan beban.',
   },
   {
     id: 130,
     name: 'Machine Cheat Shrug',
-    short_description: 'Latihan angkat bahu (traps) berbeban besar memanfaatkan hentakan ringan dan pengereman turun lambat.',
+    short_description:
+      'Latihan angkat bahu (traps) berbeban besar memanfaatkan hentakan ringan dan pengereman turun lambat.',
     primary_muscle: { id: 10, name: 'Traps' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -572,9 +590,9 @@ export const mockExercises: Exercise[] = [
       'Pegang tuas di mesin angkat bahu (atau smith machine).',
       'Naikkan beban dengan sedikit bantuan dorongan per kaki yang kuat dan cepat (explosive).',
       'Di puncak angkatan bahu, mulai pelankan dengan sangat keras saat beban menurun (1-2 detik negatif).',
-      'Ulangi siklus angkat hentak dan turun lambat.'
+      'Ulangi siklus angkat hentak dan turun lambat.',
     ],
-    tips: 'Sangat vital untuk menahan beban (negatif) dalam proses turun. Ini kunci pertumbuhannya.'
+    tips: 'Sangat vital untuk menahan beban (negatif) dalam proses turun. Ini kunci pertumbuhannya.',
   },
   {
     id: 131,
@@ -589,14 +607,15 @@ export const mockExercises: Exercise[] = [
     instructions: [
       'Posisikan katrol sedikit ke atas dan lingkarkan sabuk manset di pergelangan lengan.',
       'Fokus tarik beban dari samping ke atas mempergunakan tenaga bahu samping/tengah.',
-      'Saat mendekati failure, jadikan rentang bawah gerakan parsial sebagai senjata final agar otot habis sempurna.'
+      'Saat mendekati failure, jadikan rentang bawah gerakan parsial sebagai senjata final agar otot habis sempurna.',
     ],
-    tips: 'Karena tanpa digenggam jari, lengan terasa menyatu dengan kabel, berikan tekanan psikologis penuh ke bahu lateral.'
+    tips: 'Karena tanpa digenggam jari, lengan terasa menyatu dengan kabel, berikan tekanan psikologis penuh ke bahu lateral.',
   },
   {
     id: 132,
     name: 'Bottom-Half Low Incline DB Press',
-    short_description: 'Dumbbell press kemiringan rendah difokuskan murni pada area repetisi dada melar (bawah).',
+    short_description:
+      'Dumbbell press kemiringan rendah difokuskan murni pada area repetisi dada melar (bawah).',
     primary_muscle: { id: 1, name: 'Upper Chest' },
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -607,9 +626,9 @@ export const mockExercises: Exercise[] = [
       'Rendahkan bangku menjadi sekitar 15° (1-2 klik dari datar).',
       'Dorong DB hanya seperdua jalan, berhenti sebelum tangan memanjang.',
       'Turunkan DB lebar-lebar dengan perlahan.',
-      'Sertakan jeda 1 detik kala DB berada paling bawah (paling merentangkan dada).'
+      'Sertakan jeda 1 detik kala DB berada paling bawah (paling merentangkan dada).',
     ],
-    tips: 'Biarkan dada tetap menggelembung dan naik, ini mendistribusikan semua regangan murni ke dalam pectoralis.'
+    tips: 'Biarkan dada tetap menggelembung dan naik, ini mendistribusikan semua regangan murni ke dalam pectoralis.',
   },
   {
     id: 133,
@@ -625,14 +644,15 @@ export const mockExercises: Exercise[] = [
       'Pilih pegangan netral atau sejajar di bahu Anda.',
       'Tekan angkat hingga ekstensi lengan hampir habis.',
       'Kendalikan penuh sewaktu tuas mendekat kembali ke titik asal.',
-      'Tahan otot agar tak sampai kendor ketika beban di bawah.'
+      'Tahan otot agar tak sampai kendor ketika beban di bawah.',
     ],
-    tips: 'Atur posisi kursi sedemikian agar dorongan terasa masuk merata ke pilar deltoid.'
+    tips: 'Atur posisi kursi sedemikian agar dorongan terasa masuk merata ke pilar deltoid.',
   },
   {
     id: 134,
     name: 'Katana Triceps Extension',
-    short_description: 'Ekstensi trisep silang tubuh dari atas persis layaknya hunusan katana punggung.',
+    short_description:
+      'Ekstensi trisep silang tubuh dari atas persis layaknya hunusan katana punggung.',
     primary_muscle: { id: 7, name: 'Triceps' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -643,14 +663,15 @@ export const mockExercises: Exercise[] = [
       'Memunggungi kabel mesin. Pegang pegangan saling silang tangan.',
       'Puntir siku ke luar membetuk formasi sudut sayap 45 derajat.',
       'Rentangkan siku ke arah samping depan sambil memastikan pangkal lengan bawah membatu (diam).',
-      'Rampungkan deretan failure finalnya pakai rep parsial bagian terdalam.'
+      'Rampungkan deretan failure finalnya pakai rep parsial bagian terdalam.',
     ],
-    tips: 'Rasakan peregangan trisep maksimal saat siku ditekuk penuh sebelum mulai memanjang.'
+    tips: 'Rasakan peregangan trisep maksimal saat siku ditekuk penuh sebelum mulai memanjang.',
   },
   {
     id: 135,
     name: 'Cable Crossover Ladder',
-    short_description: 'Tiga varian tinggi kabel yang menyiksa semua serat dada dari tiga arah berbeda.',
+    short_description:
+      'Tiga varian tinggi kabel yang menyiksa semua serat dada dari tiga arah berbeda.',
     primary_muscle: { id: 1, name: 'Upper Chest' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -660,14 +681,15 @@ export const mockExercises: Exercise[] = [
     instructions: [
       'Pasang kabel tarikan lantai untuk menyasar dada atas (Set 1).',
       'Naikkan ke level pinggang dada (tengah) demi menembus area tengah pecs (Set 2).',
-      'Pindahkan tinggi di atas bahu lalu tekankan pada pembelahan serat dada perut bawah (Set 3).'
+      'Pindahkan tinggi di atas bahu lalu tekankan pada pembelahan serat dada perut bawah (Set 3).',
     ],
-    tips: 'Bentuk cengkraman layaknya lengan memeluk tong/pohon lebar, sedikit melengkungkan siku.'
+    tips: 'Bentuk cengkraman layaknya lengan memeluk tong/pohon lebar, sedikit melengkungkan siku.',
   },
   {
     id: 136,
     name: 'Barbell RDL',
-    short_description: 'Latihan pengukur kekenyalan otot paha belakang (RDL) menuntut pemanjangan otot eksentrik ekstrem.',
+    short_description:
+      'Latihan pengukur kekenyalan otot paha belakang (RDL) menuntut pemanjangan otot eksentrik ekstrem.',
     primary_muscle: { id: 13, name: 'Hamstrings' },
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -678,14 +700,15 @@ export const mockExercises: Exercise[] = [
       'Pegang bar dan jangan tergoda memasukkan pelat beban lebih dari kekuatan murni karena risiko sobekan mikro hamstring amat tinggi.',
       'Dorong engsel panggul mundur jauh seraya bar menempel menapaki paha.',
       'Selesaikan pendakian hanya 3/4 jalan tanpa pernah berdiri penuh.',
-      'Kembali renggangkan pinggul turun berulang-ulang tanpa rilis ketegangan.'
+      'Kembali renggangkan pinggul turun berulang-ulang tanpa rilis ketegangan.',
     ],
-    tips: 'Pastikan dada terangkat tegak dan punggung lurus seperti baja.'
+    tips: 'Pastikan dada terangkat tegak dan punggung lurus seperti baja.',
   },
   {
     id: 137,
     name: 'Super-ROM Leg Press',
-    short_description: 'Modifikasi press kaki agar mencetak ROM terdalam tanpa buttwink menyentuh pinggang bawah.',
+    short_description:
+      'Modifikasi press kaki agar mencetak ROM terdalam tanpa buttwink menyentuh pinggang bawah.',
     primary_muscle: { id: 12, name: 'Quadriceps' },
     recommended_warmup_sets: { min: 3, max: 4 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -696,14 +719,15 @@ export const mockExercises: Exercise[] = [
       'Pijakkan telapak kaki sangat rendah pada alas pelat, beri dominasi tegangan murni quads.',
       'Turunkan muatan teramat pelan mendapati peregangan maksimal di lipatan paha.',
       'Tunggu sejenak di titik bawah (jeda).',
-      'Berikan tenaga luncur dan dorong sampai lutut belum sampai terkunci mati.'
+      'Berikan tenaga luncur dan dorong sampai lutut belum sampai terkunci mati.',
     ],
-    tips: 'Jangan pernah perbolehkan panggul melipat dan memutar naik dari kursi!'
+    tips: 'Jangan pernah perbolehkan panggul melipat dan memutar naik dari kursi!',
   },
   {
     id: 138,
     name: 'Smith Machine Reverse Lunge',
-    short_description: 'Lunge arah mundur berpola statis lewat mesin smith memberi isolasi kuat di paha depan / bokong luar.',
+    short_description:
+      'Lunge arah mundur berpola statis lewat mesin smith memberi isolasi kuat di paha depan / bokong luar.',
     primary_muscle: { id: 12, name: 'Quadriceps' },
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 2, max: 3 },
@@ -714,9 +738,9 @@ export const mockExercises: Exercise[] = [
       'Dengan batang ada di pundak bawah, sodorkan satu tungkai menjauh mundur ke belakang lantai.',
       'Minimalkan kerja tungkai belakang ini seminimalnya, fokus pakai tapak kaki depan guna jongkok dan angkat beban.',
       'Ulangi set per kaki satu per satu secara independen.',
-      'Selesaikan siklus tiap kaki dengan peregangan kuadrisep peregangan statis (30 detik per kaki) secara mandiri.'
+      'Selesaikan siklus tiap kaki dengan peregangan kuadrisep peregangan statis (30 detik per kaki) secara mandiri.',
     ],
-    tips: 'Bayangkan kaki belakang hanya untuk seimbang layaknya tongkat penyangga.'
+    tips: 'Bayangkan kaki belakang hanya untuk seimbang layaknya tongkat penyangga.',
   },
   {
     id: 139,
@@ -732,14 +756,15 @@ export const mockExercises: Exercise[] = [
       'Sandarkan pangkal pinggul menabrak tepi busa 45° secara mantap sembari memegang lempeng pemberat (plate/DB).',
       'Rebahkan tubuh lambat-lambat dikendalikan pantat (glute).',
       'Hentakkan kembali tubuh ke sisi lurus secara meledak.',
-      'Akhiri momentum atas seraya mengunci gigitan gluteus ekstrem.'
+      'Akhiri momentum atas seraya mengunci gigitan gluteus ekstrem.',
     ],
-    tips: 'Hati-hati jangan memakai punggung bawah guna mengangkat, lengkungkan sedikit saja dan biarkan pinggul berengsel memutar naik.'
+    tips: 'Hati-hati jangan memakai punggung bawah guna mengangkat, lengkungkan sedikit saja dan biarkan pinggul berengsel memutar naik.',
   },
   {
     id: 140,
     name: 'Bottom-Half Standing Calf Raise',
-    short_description: 'Latihan peregangan betis dengan porsi terberat gerakan repetisi bawah saja.',
+    short_description:
+      'Latihan peregangan betis dengan porsi terberat gerakan repetisi bawah saja.',
     primary_muscle: { id: 15, name: 'Calves' },
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
@@ -749,8 +774,8 @@ export const mockExercises: Exercise[] = [
     instructions: [
       'Dalam posisi mesin berdiri lurus, jinjit hingga kaki tegak lalu turun sepenuhnya dan rasakan urat meregang (jeda perlahan).',
       'Ulangi angkatan tumit tetapi batasi hanya sampai paruh perjalanan (half-rep).',
-      'Ulangi rep-rep ini pada ruang dasar gerak bawah tersebut.'
+      'Ulangi rep-rep ini pada ruang dasar gerak bawah tersebut.',
     ],
-    tips: 'Sensasinya akan luar biasa membakar. Posisikan gerakan menggelinding bola jemari ke depan-samping (bolak-balik) jika bisa mendalaminya.'
-  }
+    tips: 'Sensasinya akan luar biasa membakar. Posisikan gerakan menggelinding bola jemari ke depan-samping (bolak-balik) jika bisa mendalaminya.',
+  },
 ];
