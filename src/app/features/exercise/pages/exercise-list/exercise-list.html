@@ -35,15 +35,15 @@
         <button
           type="button"
           (click)="openPrimarySheet()"
-          class="flex items-center gap-2 px-3.5 py-2 text-sm font-medium border border-border rounded-full hover:bg-secondary/50 transition-colors cursor-pointer"
+          class="flex items-center gap-2 px-4 py-1.5 text-sm font-medium border border-border rounded-full hover:bg-secondary/50 transition-colors cursor-pointer"
         >
           <span>Primary</span>
           @if (selectedPrimaryMuscles().length > 0) {
-            <span
-              class="flex items-center justify-center bg-primary text-primary-foreground text-[10px] font-bold rounded-full w-5 h-5"
-            >
-              {{ selectedPrimaryMuscles().length }}
-            </span>
+            <div class="flex items-center justify-center bg-primary rounded-full w-5 h-5">
+              <span class="text-primary-foreground text-xs text-center font-bold">
+                {{ selectedPrimaryMuscles().length }}
+              </span>
+            </div>
           } @else {
             <ng-icon name="lucideChevronDown" class="w-4 h-4 opacity-50"></ng-icon>
           }
@@ -53,15 +53,15 @@
         <button
           type="button"
           (click)="openSecondarySheet()"
-          class="flex items-center gap-2 px-3.5 py-2 text-sm font-medium border border-border rounded-full hover:bg-secondary/50 transition-colors cursor-pointer"
+          class="flex items-center gap-2 px-4 py-1.5 text-sm font-medium border border-border rounded-full hover:bg-secondary/50 transition-colors cursor-pointer"
         >
           <span>Secondary</span>
           @if (selectedSecondaryMuscles().length > 0) {
-            <span
-              class="flex items-center justify-center bg-primary text-primary-foreground text-[10px] font-bold rounded-full w-5 h-5"
-            >
-              {{ selectedSecondaryMuscles().length }}
-            </span>
+            <div class="flex items-center justify-center bg-primary rounded-full w-5 h-5">
+              <span class="text-primary-foreground text-xs text-center font-bold">
+                {{ selectedSecondaryMuscles().length }}
+              </span>
+            </div>
           } @else {
             <ng-icon name="lucideChevronDown" class="w-4 h-4 opacity-50"></ng-icon>
           }
