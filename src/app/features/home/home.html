@@ -68,7 +68,13 @@
 
       <div class="flex overflow-x-auto gap-4 pb-2 snap-x hide-scrollbar">
         @for (muscle of muscles(); track muscle.id) {
-          <app-home-muscle-card [muscle]="muscle" />
+          <a
+            [routerLink]="['/exercise']"
+            [queryParams]="{ primary: [muscle.id] }"
+            class="flex flex-col items-center gap-2 min-w-[80px] snap-start group cursor-pointer"
+          >
+            <app-circle-muscle-card [muscle]="muscle" />
+          </a>
         }
       </div>
     </div>

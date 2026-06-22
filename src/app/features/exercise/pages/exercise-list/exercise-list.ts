@@ -7,13 +7,13 @@ import { MuscleService } from '@/core/services/muscle.service';
 import { Exercise, Muscle } from '@/shared/models';
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { ZardBadgeComponent } from '@/shared/components/zard/badge';
-import { ZardSelectComponent } from '@/shared/components/zard/select/select.component';
-import { ZardSelectItemComponent } from '@/shared/components/zard/select/select-item.component';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardInputDirective } from '@/shared/components/zard/input/input.directive';
 import { HeaderComponent } from '@/shared/components/header/header.component';
+import { RooSheetComponent } from '@/shared/components/sheet/sheet';
+import { CircleMuscleCardComponent } from '@/shared/components/circle-muscle-card/circle-muscle-card';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideSearch, lucideFilter, lucideX } from '@ng-icons/lucide';
+import { lucideSearch, lucideFilter, lucideX, lucideChevronDown, lucideCheck } from '@ng-icons/lucide';
 import { formatRange } from '@/shared/utils';
 
 @Component({
@@ -25,11 +25,11 @@ import { formatRange } from '@/shared/utils';
     RouterLink,
     ZardCardComponent,
     ZardBadgeComponent,
-    ZardSelectComponent,
-    ZardSelectItemComponent,
     ZardButtonComponent,
     ZardInputDirective,
     HeaderComponent,
+    RooSheetComponent,
+    CircleMuscleCardComponent,
     NgIcon,
   ],
   providers: [
@@ -37,6 +37,8 @@ import { formatRange } from '@/shared/utils';
       lucideSearch,
       lucideFilter,
       lucideX,
+      lucideChevronDown,
+      lucideCheck,
     }),
   ],
   templateUrl: './exercise-list.html',
@@ -72,6 +74,52 @@ export class ExerciseList implements OnInit {
   searchQuery = linkedSignal<string>(() =>
     this.queryParams()?.['query'] || ''
   );
+
+  // Sheet filter states
+  isPrimarySheetOpen = signal(false);
+  isSecondarySheetOpen = signal(false);
+  stagedPrimaryMuscles = signal<string[]>([]);
+  stagedSecondaryMuscles = signal<string[]>([]);
+
+  openPrimarySheet() {
+    this.stagedPrimaryMuscles.set(this.selectedPrimaryMuscles());
+    this.isPrimarySheetOpen.set(true);
+  }
+
+  openSecondarySheet() {
+    this.stagedSecondaryMuscles.set(this.selectedSecondaryMuscles());
+    this.isSecondarySheetOpen.set(true);
+  }
+
+  toggleStagedPrimary(id: string) {
+    this.stagedPrimaryMuscles.update((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  }
+
+  toggleStagedSecondary(id: string) {
+    this.stagedSecondaryMuscles.update((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  }
+
+  resetStagedPrimary() {
+    this.stagedPrimaryMuscles.set([]);
+  }
+
+  resetStagedSecondary() {
+    this.stagedSecondaryMuscles.set([]);
+  }
+
+  applyPrimaryFilters() {
+    this.selectedPrimaryMuscles.set(this.stagedPrimaryMuscles());
+    this.isPrimarySheetOpen.set(false);
+  }
+
+  applySecondaryFilters() {
+    this.selectedSecondaryMuscles.set(this.stagedSecondaryMuscles());
+    this.isSecondarySheetOpen.set(false);
+  }
 
   constructor() {
     effect(() => {

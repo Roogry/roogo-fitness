@@ -10,7 +10,7 @@ import { lucideDumbbell, lucideFlame, lucideCalendar } from '@ng-icons/lucide';
 import { LoggedSession, WorkoutPlan, Muscle } from '@/shared/models';
 import { HomeLoggedWorkoutCardComponent } from './components/home-logged-workout-card/home-logged-workout-card';
 import { MuscleService } from '@/core/services/muscle.service';
-import { HomeMuscleCardComponent } from './components/home-muscle-card/home-muscle-card';
+import { CircleMuscleCardComponent } from '@/shared/components/circle-muscle-card/circle-muscle-card';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +20,7 @@ import { HomeMuscleCardComponent } from './components/home-muscle-card/home-musc
     ZardCardComponent,
     RouterLink,
     HomeLoggedWorkoutCardComponent,
-    HomeMuscleCardComponent,
+    CircleMuscleCardComponent,
     UpcomingSessionCardComponent,
     NgIcon,
   ],
