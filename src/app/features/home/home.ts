@@ -1,5 +1,5 @@
 import { Component, inject, signal, OnInit, computed } from '@angular/core';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { WorkoutService } from '@/core/services/workout.service';
@@ -10,16 +10,17 @@ import { lucideDumbbell, lucideFlame, lucideCalendar } from '@ng-icons/lucide';
 import { LoggedSession, WorkoutPlan, Muscle } from '@/shared/models';
 import { HomeLoggedWorkoutCardComponent } from './components/home-logged-workout-card/home-logged-workout-card';
 import { MuscleService } from '@/core/services/muscle.service';
+import { CircleMuscleCardComponent } from '@/shared/components/circle-muscle-card/circle-muscle-card';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
     CommonModule,
-    NgOptimizedImage,
     ZardCardComponent,
     RouterLink,
     HomeLoggedWorkoutCardComponent,
+    CircleMuscleCardComponent,
     UpcomingSessionCardComponent,
     NgIcon,
   ],
