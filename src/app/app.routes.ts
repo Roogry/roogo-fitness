@@ -6,6 +6,7 @@ import { Profile } from './features/profile/profile';
 import { Home } from './features/home/home';
 import { JourneyList } from './features/journey/pages/journey-list/journey-list';
 import { PlanList } from './features/plan/pages/plan-list/plan-list';
+import { ExerciseList } from './features/exercise/pages/exercise-list/exercise-list';
 import { SessionActive } from './features/session-active/pages/session-active/session-active';
 import { PlanSessionDetail } from './features/plan/pages/plan-session-detail/plan-session-detail';
 import { PlanSessionForm } from './features/plan/pages/plan-session-form/plan-session-form';
@@ -20,6 +21,7 @@ export const routes: Routes = [
       { path: 'journey', component: JourneyList },
       { path: 'plan', component: PlanList },
       { path: 'profile', component: Profile },
+      { path: 'exercise', component: ExerciseList },
     ],
   },
   { path: 'exercise/:id', component: ExerciseDetail },

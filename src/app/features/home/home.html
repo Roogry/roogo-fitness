@@ -68,28 +68,7 @@
 
       <div class="flex overflow-x-auto gap-4 pb-2 snap-x hide-scrollbar">
         @for (muscle of muscles(); track muscle.id) {
-          @if (muscle.icon_url) {
-            <a
-              [routerLink]="['/exercise']"
-              [queryParams]="{ primary: muscle.id }"
-              class="flex flex-col items-center gap-2 min-w-[80px] snap-start group cursor-pointer"
-            >
-              <div
-                class="w-20 h-20 rounded-full bg-secondary/50 flex items-center justify-center p-2 border-2 border-transparent group-hover:border-primary/50 transition-colors relative"
-              >
-                <img
-                  [ngSrc]="muscle.icon_url"
-                  [alt]="muscle.name"
-                  fill
-                  class="object-contain p-2"
-                />
-              </div>
-              <span
-                class="text-xs font-medium text-center text-muted-foreground group-hover:text-primary transition-colors"
-                >{{ muscle.name }}</span
-              >
-            </a>
-          }
+          <app-home-muscle-card [muscle]="muscle" />
         }
       </div>
     </div>
