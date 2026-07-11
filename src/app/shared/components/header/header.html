@@ -3,7 +3,10 @@
 >
   <!-- Top Row -->
   <div class="h-full relative flex-1 flex items-center justify-between w-full">
-    <div class="absolute top-0 left-4 flex items-center gap-4">
+    <div
+      class="absolute left-4 flex items-center gap-4"
+      [ngClass]="hasBottom() ? 'top-0' : 'top-1/2 -translate-y-1/2'"
+    >
       <!-- Left action area -->
       @if (showBackBtn()) {
         <button
@@ -30,7 +33,10 @@
     </div>
 
     <!-- Right action area -->
-    <div class="absolute top-0 right-4 flex items-center gap-4">
+    <div
+      class="absolute right-4 flex items-center gap-4"
+      [ngClass]="hasBottom() ? 'top-0 ' : 'top-1/2 -translate-y-1/2'"
+    >
       <ng-content select="[right]"></ng-content>
     </div>
   </div>

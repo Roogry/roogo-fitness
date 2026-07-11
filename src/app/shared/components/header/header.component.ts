@@ -6,6 +6,9 @@ import {
   input,
   output,
   ViewEncapsulation,
+  ElementRef,
+  AfterViewInit,
+  signal
 } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -40,9 +43,10 @@ import { headerVariants } from './header.variants';
     '[class]': 'classes()',
   },
 })
-export class HeaderComponent {
+export class HeaderComponent implements AfterViewInit {
   private readonly router = inject(Router);
   private readonly location = inject(Location);
+  private readonly el = inject(ElementRef);
 
   readonly title = input<string>('');
   readonly isTransparant = input<boolean>(false);
@@ -52,9 +56,18 @@ export class HeaderComponent {
 
   readonly onBackClick = output<void>();
 
+  readonly hasBottom = signal(false);
+
   protected readonly classes = computed(() =>
     mergeClasses(headerVariants({ isTransparant: this.isTransparant() }), this.class()),
   );
+
+  ngAfterViewInit() {
+    const bottomNode = this.el.nativeElement.querySelector('[bottom]');
+    if (bottomNode) {
+      Promise.resolve().then(() => this.hasBottom.set(true));
+    }
+  }
 
   /**
    * Navigates the user back to the previous view or specified link.
