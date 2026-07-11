@@ -14,6 +14,17 @@
       <p class="text-sm text-muted-foreground mt-1">Profile settings coming soon.</p>
     </div>
 
-    <app-profile-backup></app-profile-backup>
+    <a
+      routerLink="/profile/storage-and-data"
+      class="block p-4 bg-card border border-border rounded-xl hover:bg-muted/30 transition-colors"
+    >
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="font-medium text-foreground">Storage & Data</h3>
+          <p class="text-sm text-muted-foreground mt-1">Manage your backups, restore, and clear application data.</p>
+        </div>
+        <ng-icon name="lucideChevronRight" class="text-muted-foreground/60 w-5 h-5"></ng-icon>
+      </div>
+    </a>
   </div>
 </div>

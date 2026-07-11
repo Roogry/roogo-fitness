@@ -1,0 +1,25 @@
+<app-header title="Storage & Data" [showBackBtn]="true"></app-header>
+<div class="px-4 w-full max-w-2xl mx-auto flex flex-col gap-6">
+  <!-- Backup and Restore Section -->
+  <app-profile-backup></app-profile-backup>
+
+  <!-- Reset Data Section -->
+  <div class="p-4 bg-card border border-border rounded-xl">
+    <h3 class="font-medium mb-1 text-destructive">Reset Data</h3>
+    <p class="text-sm text-muted-foreground mb-4">
+      Wipe all customized workout plans, logged sessions, and exercise updates. This will reset the application back to its initial state with seeded mock data.
+    </p>
+    <div>
+      <button
+        z-button
+        zType="destructive"
+        zSize="sm"
+        class="flex items-center gap-2"
+        (click)="onClearData()"
+      >
+        <ng-icon name="lucideDatabase" class="size-4" />
+        Clear Data
+      </button>
+    </div>
+  </div>
+</div>

@@ -305,4 +305,24 @@ export class DbService {
 
     await tx.done;
   }
+
+  /**
+   * Clears all data from all object stores and re-seeds with the initial default data.
+   */
+  async clearAllData(): Promise<void> {
+    try {
+      const db = await this.dbPromise;
+      const tx = db.transaction(['workout_plans', 'logged_sessions', 'exercises', 'muscles'], 'readwrite');
+      await tx.objectStore('workout_plans').clear();
+      await tx.objectStore('logged_sessions').clear();
+      await tx.objectStore('exercises').clear();
+      await tx.objectStore('muscles').clear();
+      await tx.done;
+      
+      await this.populateInitialData(db);
+    } catch (error) {
+      console.error('Error clearing database data:', error);
+      throw error;
+    }
+  }
 }
