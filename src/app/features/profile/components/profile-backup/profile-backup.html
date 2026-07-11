@@ -1,0 +1,33 @@
+<div class="p-4 bg-card border border-border rounded-xl">
+  <h3 class="font-medium mb-1">Backup & Restore</h3>
+  <p class="text-sm text-muted-foreground mb-4">Export your workouts, plans, and history to a JSON backup file, or restore them from an existing backup.</p>
+  <div class="flex gap-3">
+    <button
+      z-button
+      zType="default"
+      zSize="sm"
+      class="flex items-center gap-2"
+      (click)="exportData()"
+    >
+      <ng-icon name="lucideDownload" class="size-4" />
+      Export Backup
+    </button>
+    <button
+      z-button
+      zType="outline"
+      zSize="sm"
+      class="flex items-center gap-2"
+      (click)="fileInput.click()"
+    >
+      <ng-icon name="lucideUpload" class="size-4" />
+      Import Backup
+    </button>
+    <input
+      #fileInput
+      type="file"
+      accept=".json"
+      class="hidden"
+      (change)="onFileSelected($event)"
+    />
+  </div>
+</div>
