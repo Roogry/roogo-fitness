@@ -24,6 +24,7 @@ export class ProfileBackup {
       downloadJson(data, filename);
     } catch (err) {
       this.dialogService.create({
+        zWidth: '400px',
         zTitle: 'Export Failed',
         zDescription: 'Could not generate backup file.',
         zOkText: 'OK',
@@ -50,8 +51,10 @@ export class ProfileBackup {
       }
 
       this.dialogService.create({
+        zWidth: '400px',
         zTitle: 'Confirm Import',
-        zDescription: 'Importing data will overwrite your current local data. Are you sure you want to proceed?',
+        zDescription:
+          'Importing data will overwrite your current local data. Are you sure you want to proceed?',
         zOkText: 'Import',
         zOkDestructive: true,
         zCancelText: 'Cancel',
@@ -59,12 +62,14 @@ export class ProfileBackup {
           try {
             await this.dbService.importBackup(backup);
             this.dialogService.create({
+              zWidth: '400px',
               zTitle: 'Success',
               zDescription: 'Backup data successfully restored!',
               zOkText: 'OK',
             });
           } catch (err) {
             this.dialogService.create({
+              zWidth: '400px',
               zTitle: 'Error',
               zDescription: 'Failed to import backup data into IndexedDB.',
               zOkText: 'OK',
@@ -74,6 +79,7 @@ export class ProfileBackup {
       });
     } catch (err) {
       this.dialogService.create({
+        zWidth: '400px',
         zTitle: 'Invalid File',
         zDescription: 'The selected file is not a valid backup file or is corrupted.',
         zOkText: 'OK',

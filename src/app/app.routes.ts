@@ -11,6 +11,7 @@ import { SessionActive } from './features/session-active/pages/session-active/se
 import { PlanSessionDetail } from './features/plan/pages/plan-session-detail/plan-session-detail';
 import { PlanSessionForm } from './features/plan/pages/plan-session-form/plan-session-form';
 import { JourneyDetail } from './features/journey/pages/journey-detail/journey-detail';
+import { StorageDataPage } from './features/profile/pages/storage-data/storage-data';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,7 @@ export const routes: Routes = [
       { path: 'journey', component: JourneyList },
       { path: 'plan', component: PlanList },
       { path: 'profile', component: Profile },
+      { path: 'profile/storage-and-data', component: StorageDataPage },
       { path: 'exercise', component: ExerciseList },
     ],
   },
