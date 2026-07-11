@@ -1,0 +1,122 @@
+<app-sheet
+  [isOpen]="isOpen()"
+  (onOpenChange)="isOpen.set($event)"
+  title="Finish Session"
+  description="Review your workout summary and finalize details."
+>
+  <div class="flex flex-col gap-6">
+    <!-- 1. Session Title Input -->
+    <z-form-field class="flex flex-col gap-3">
+      <label
+        z-form-label
+        for="sheet-title"
+        class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+      >
+        Session Title
+      </label>
+      <z-form-control [errorMessage]="titleForm.title().errors()[0]?.message ?? ''">
+        <input
+          id="sheet-title"
+          z-input
+          [formField]="titleForm.title"
+          placeholder="Name your session..."
+          class="w-full"
+        />
+      </z-form-control>
+    </z-form-field>
+
+    <!-- 2. Session Metrics Summary -->
+    <div class="flex flex-col gap-4 p-4 bg-secondary/50 rounded-xl">
+      <div class="grid grid-cols-3 gap-4">
+        <div class="flex flex-col">
+          <span class="text-xs text-muted-foreground uppercase">Duration</span>
+          <span class="font-medium">{{ workoutService.sessionDuration() | durationFormat }}</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-xs text-muted-foreground uppercase">Total Volume</span>
+          <span class="font-medium">{{ workoutService.totalVolume() }} kg</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-xs text-muted-foreground uppercase">Total Sets</span>
+          <span class="font-medium">{{ workoutService.totalSets() }} sets</span>
+        </div>
+      </div>
+      <div class="flex flex-col pt-4 border-t border-border/50">
+        <span class="text-xs text-muted-foreground uppercase">Start Time</span>
+        <span class="font-medium">{{ workoutService.sessionStartTime() | date:'shortTime' }}</span>
+      </div>
+    </div>
+
+    <!-- Exceeded Target Section -->
+    @if (progressedExercises().length > 0) {
+      <div class="flex flex-col gap-3">
+        <h3 class="text-sm font-semibold text-primary">Exceeded Target</h3>
+        <div class="flex flex-col gap-2 p-4 bg-primary/5 rounded-xl border border-primary/10">
+          <p class="text-xs text-muted-foreground mb-1">
+            You exceeded your planned targets! Select which targets you want to update in your plan.
+          </p>
+          <div class="flex flex-col gap-3">
+            @for (prog of progressedExercises(); track prog.exerciseId) {
+              <z-checkbox
+                [(ngModel)]="prog.shouldUpdateTarget"
+                class="items-start"
+              >
+                <div class="flex flex-col ml-1">
+                  <span class="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                    {{ prog.exerciseName }}
+                  </span>
+                  <span class="text-xs text-muted-foreground">
+                    @if (prog.newWeight > prog.oldWeight) {
+                      Weight: {{ prog.oldWeight }}kg ➔ {{ prog.newWeight }}kg
+                    }
+                    @if (prog.newWeight > prog.oldWeight && prog.newReps > prog.oldReps) {
+                      &nbsp;•&nbsp;
+                    }
+                    @if (prog.newReps > prog.oldReps) {
+                      Reps: {{ prog.oldReps }} ➔ {{ prog.newReps }}
+                    }
+                  </span>
+                </div>
+              </z-checkbox>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- 3. Session Note Textarea -->
+    <z-form-field class="flex flex-col gap-3">
+      <label z-form-label class="text-sm font-medium">Session Note</label>
+      <z-form-control>
+        <textarea
+          z-input
+          rows="3"
+          placeholder="How did the workout feel?"
+          class="w-full resize-none"
+          [formField]="titleForm.note"
+        ></textarea>
+      </z-form-control>
+    </z-form-field>
+
+    <!-- 4. Action Buttons -->
+    <div class="flex flex-col gap-3 mt-4">
+      <button
+        z-button
+        zFull
+        (click)="finishSession()"
+        [disabled]="titleForm().invalid()"
+      >
+        Save Session
+      </button>
+      <button
+        z-button
+        zType="secondary"
+        class="text-destructive hover:bg-destructive/10"
+        zFull
+        (click)="openDiscardConfirm()"
+      >
+        Discard Session
+      </button>
+    </div>
+  </div>
+</app-sheet>

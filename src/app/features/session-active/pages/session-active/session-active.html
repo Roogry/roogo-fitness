@@ -6,7 +6,7 @@
         right
         z-button
         zShape="circle"
-        (click)="isFinishSheetOpen.set(true)"
+        (click)="openFinishSheet()"
       >
         <ng-icon name="lucideCheck" class="hidden sm:inline-block"></ng-icon>
         <span class="hidden sm:inline-block">Finish</span>
@@ -21,7 +21,6 @@
           z-button
           zShape="circle"
           class="w-full mb-4"
-          [disabled]="titleForm().invalid()"
           (click)="workoutService.startSessionTimer()"
         >
           Start Session
@@ -81,92 +80,11 @@
     ></app-exercise-autocomplete>
   </app-sheet>
 
-  <!-- Finish Session Sheet -->
-  <app-sheet
-    [isOpen]="isFinishSheetOpen()"
-    (onOpenChange)="isFinishSheetOpen.set($event)"
-    title="Finish Session"
-    description="Review your workout summary and finalize details."
-  >
-    <div class="flex flex-col gap-6">
-      <!-- 1. Session Title Input (Moved from main page) -->
-      <z-form-field class="flex flex-col gap-3">
-        <label
-          z-form-label
-          for="sheet-title"
-          class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-        >
-          Session Title
-        </label>
-        <z-form-control [errorMessage]="titleForm.title().errors()[0]?.message ?? ''">
-          <input
-            id="sheet-title"
-            z-input
-            [formField]="titleForm.title"
-            placeholder="Name your session..."
-            class="w-full"
-          />
-        </z-form-control>
-      </z-form-field>
-
-      <!-- 2. Session Metrics Summary -->
-      <div class="flex flex-col gap-4 p-4 bg-secondary/50 rounded-xl">
-        <div class="grid grid-cols-3 gap-4">
-          <div class="flex flex-col">
-            <span class="text-xs text-muted-foreground uppercase">Duration</span>
-            <span class="font-medium">{{ workoutService.sessionDuration() | durationFormat }}</span>
-          </div>
-          <div class="flex flex-col">
-            <span class="text-xs text-muted-foreground uppercase">Total Volume</span>
-            <span class="font-medium">{{ workoutService.totalVolume() }} kg</span>
-          </div>
-          <div class="flex flex-col">
-            <span class="text-xs text-muted-foreground uppercase">Total Sets</span>
-            <span class="font-medium">{{ workoutService.totalSets() }} sets</span>
-          </div>
-        </div>
-        <div class="flex flex-col pt-4 border-t border-border/50">
-          <span class="text-xs text-muted-foreground uppercase">Start Time</span>
-          <span class="font-medium">{{ workoutService.sessionStartTime() | date:'shortTime' }}</span>
-        </div>
-      </div>
-
-      <!-- 3. Session Note Textarea -->
-      <z-form-field class="flex flex-col gap-3">
-        <label z-form-label class="text-sm font-medium">Session Note</label>
-        <z-form-control>
-          <textarea
-            z-input
-            rows="3"
-            placeholder="How did the workout feel?"
-            class="w-full resize-none"
-            [formField]="titleForm.note"
-          ></textarea>
-        </z-form-control>
-      </z-form-field>
-
-      <!-- 4. Action Buttons -->
-      <div class="flex flex-col gap-3 mt-4">
-        <button
-          z-button
-          zFull
-          (click)="finishSession()"
-          [disabled]="titleForm().invalid()"
-        >
-          Save Session
-        </button>
-        <button
-          z-button
-          zType="secondary"
-          class="text-destructive hover:bg-destructive/10"
-          zFull
-          (click)="openDiscardConfirm()"
-        >
-          Discard Session
-        </button>
-      </div>
-    </div>
-  </app-sheet>
+  <!-- Finish Session Sheet Component -->
+  <app-active-session-finish-sheet
+    [(isOpen)]="isFinishSheetOpen"
+    [progressedExercises]="progressedExercises()"
+  ></app-active-session-finish-sheet>
 
   @if (workoutService.sessionStartTime()) {
     <div class="fixed bottom-8 left-4 right-4 z-50 max-w-2xl mx-auto px-6">

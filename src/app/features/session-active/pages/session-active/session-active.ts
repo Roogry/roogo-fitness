@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, effect } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -10,10 +10,8 @@ import { HeaderComponent } from '@/shared/components/header/header.component';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { RooSheetComponent } from '@/shared/components/sheet/sheet';
 import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
-import { ZardInputDirective } from '@/shared/components/zard/input';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
-import { form, FormField, required } from '@angular/forms/signals';
-import { ZardFormImports } from '@/shared/components/zard/form';
+import { ActiveSessionFinishSheet } from '../../components/active-session-finish-sheet/active-session-finish-sheet';
 
 @Component({
   selector: 'app-session-active',
@@ -24,12 +22,10 @@ import { ZardFormImports } from '@/shared/components/zard/form';
     ExerciseTracker,
     HeaderComponent,
     ZardButtonComponent,
-    ZardInputDirective,
     RooSheetComponent,
     DurationFormatPipe,
     NgIcon,
-    FormField,
-    ZardFormImports,
+    ActiveSessionFinishSheet,
   ],
   providers: [
     provideIcons({
@@ -48,14 +44,7 @@ export class SessionActive implements OnInit {
 
   isAddSheetOpen = signal(false);
   isFinishSheetOpen = signal(false);
-  titleModel = signal({
-    title: '',
-    note: '',
-  });
-
-  titleForm = form(this.titleModel, (f) => {
-    required(f.title, { message: 'Session title is required' });
-  });
+  progressedExercises = signal<any[]>([]);
 
   ngOnInit() {
     this.setupSessionData();
@@ -81,12 +70,6 @@ export class SessionActive implements OnInit {
         this.workoutService.clearSession();
         this.workoutService.sessionTitle.set('Workout Session');
       }
-
-      this.titleModel.set({
-        title: this.workoutService.sessionTitle(),
-        note: this.titleModel().note || '',
-      });
-      this.titleForm().reset();
     });
   }
 
@@ -99,14 +82,62 @@ export class SessionActive implements OnInit {
     }
   }
 
-  async finishSession() {
-    this.isFinishSheetOpen.set(false);
+  openFinishSheet() {
+    const progressions: any[] = [];
 
-    const title = this.titleModel().title;
-    const note = this.titleModel().note;
-    await this.workoutService.finishSession(title, note);
+    for (const tracked of this.workoutService.trackedExercises()) {
+      let targetWeight = 0;
+      let targetReps = 0;
+      const completedSets: { weight: number; reps: number; volume: number; exceeded: boolean }[] = [];
 
-    this.router.navigate(['/journey'], { queryParams: { tab: 'history' } });
+      for (const s of tracked.sets) {
+        const actualWeight = s.weight_lifted ?? 0;
+        const actualReps = s.reps_completed ?? 0;
+
+        if (actualWeight > 0 && actualReps > 0) {
+          const tWeight = s.target_weight ?? 0;
+          const tReps = s.target_reps ?? 0;
+
+          targetWeight = tWeight;
+          targetReps = tReps;
+
+          const exceeded = actualWeight > tWeight || actualReps > tReps;
+          completedSets.push({
+            weight: actualWeight,
+            reps: actualReps,
+            volume: actualWeight * actualReps,
+            exceeded,
+          });
+        }
+      }
+
+      const exceedingSets = completedSets.filter((s) => s.exceeded);
+
+      if (exceedingSets.length > 0) {
+        // Sort by volume descending, then by weight descending
+        exceedingSets.sort((a, b) => {
+          if (b.volume !== a.volume) {
+            return b.volume - a.volume;
+          }
+          return b.weight - a.weight;
+        });
+
+        const bestSet = exceedingSets[0];
+
+        progressions.push({
+          exerciseId: tracked.exercise.id,
+          exerciseName: tracked.exercise.name,
+          oldWeight: targetWeight,
+          oldReps: targetReps,
+          newWeight: bestSet.weight,
+          newReps: bestSet.reps,
+          shouldUpdateTarget: true,
+        });
+      }
+    }
+
+    this.progressedExercises.set(progressions);
+    this.isFinishSheetOpen.set(true);
   }
 
   openDiscardConfirm() {

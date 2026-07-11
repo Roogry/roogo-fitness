@@ -21,6 +21,7 @@ export class WorkoutService {
   private dialogService = inject(ZardDialogService);
 
   selectedPlanId = signal<number | null>(null);
+  selectedSessionId = signal<number | null>(null);
   sessionTitle = signal<string>('');
   trackedExercises = signal<LoggedExercise[]>([]);
   sessionStartTime = signal<number | null>(null);
@@ -32,6 +33,7 @@ export class WorkoutService {
   constructor() {
     effect((onCleanup) => {
       this.selectedPlanId();
+      this.selectedSessionId();
       this.sessionTitle();
       this.trackedExercises();
       this.sessionStartTime();
@@ -90,6 +92,7 @@ export class WorkoutService {
 
     const stateToSave = {
       selectedPlanId: this.selectedPlanId(),
+      selectedSessionId: this.selectedSessionId(),
       sessionTitle: this.sessionTitle(),
       trackedExercises: this.trackedExercises(),
       sessionStartTime: this.sessionStartTime(),
@@ -107,6 +110,7 @@ export class WorkoutService {
         const parsed = JSON.parse(savedData);
 
         this.selectedPlanId.set(parsed.selectedPlanId ?? null);
+        this.selectedSessionId.set(parsed.selectedSessionId ?? null);
         this.sessionTitle.set(parsed.sessionTitle ?? '');
         this.trackedExercises.set(parsed.trackedExercises ?? []);
 
@@ -152,6 +156,7 @@ export class WorkoutService {
 
     this.sessionTitle.set(session.title);
     this.selectedPlanId.set(plan.id);
+    this.selectedSessionId.set(sessionId);
 
     if (session.exercises) {
       const activeExercises: LoggedExercise[] = [];
@@ -162,8 +167,10 @@ export class WorkoutService {
         const sets: LoggedSet[] = Array.from({ length: pe.target_sets || 0 }).map((_, i) => ({
           id: Date.now() + Math.floor(Math.random() * 10000) + i,
           set_number: i + 1,
-          reps_completed: pe.target_reps,
-          weight_lifted: pe.target_weight,
+          reps_completed: undefined,
+          weight_lifted: undefined,
+          target_reps: pe.target_reps,
+          target_weight: pe.target_weight,
         }));
 
         activeExercises.push({
@@ -443,6 +450,7 @@ export class WorkoutService {
   clearSession() {
     this.stopSession();
     this.selectedPlanId.set(null);
+    this.selectedSessionId.set(null);
     this.sessionTitle.set('');
     localStorage.removeItem(ACTIVE_SESSION_STORAGE_KEY);
   }
@@ -477,5 +485,35 @@ export class WorkoutService {
         queryParams: { planId, sessionId, autoStart: 'true' },
       });
     }
+  }
+
+  /**
+   * Updates target values of specific exercises in the workout plan.
+   * @param {number} planId The ID of the plan.
+   * @param {number} sessionId The ID of the session.
+   * @param {Array<{ exerciseId: number; targetWeight?: number; targetReps?: number; }>} updates The updates to apply.
+   * @returns {Promise<void>}
+   */
+  async updatePlanTargets(planId: number, sessionId: number, updates: { exerciseId: number; targetWeight?: number; targetReps?: number; }[]) {
+    const plan = await this.dbService.getWorkoutPlan(planId);
+    if (!plan) return;
+
+    const session = plan.sessions.find((s) => s.id === sessionId);
+    if (!session || !session.exercises) return;
+
+    for (const update of updates) {
+      const exercise = session.exercises.find((e) => e.exercise_id === update.exerciseId);
+      if (exercise) {
+        if (update.targetWeight !== undefined) {
+          exercise.target_weight = update.targetWeight;
+        }
+        if (update.targetReps !== undefined) {
+          exercise.target_reps = update.targetReps;
+        }
+        exercise.updatedAt = new Date().toISOString();
+      }
+    }
+
+    await this.dbService.saveWorkoutPlan(plan);
   }
 }

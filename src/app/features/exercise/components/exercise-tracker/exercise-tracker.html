@@ -70,7 +70,7 @@
               z-input
               zBorderless
               type="number"
-              placeholder="0"
+              [placeholder]="set.target_weight?.toString() ?? '0'"
               [value]="set.weight_lifted?.toString() ?? ''"
               (valueChange)="updateSet(set.id, { weight_lifted: $event ? +$event : undefined })"
               [class]="'w-full text-center'"
@@ -85,7 +85,7 @@
               z-input
               zBorderless
               type="number"
-              placeholder="0"
+              [placeholder]="set.target_reps?.toString() ?? '0'"
               [value]="set.reps_completed?.toString() ?? ''"
               (valueChange)="updateSet(set.id, { reps_completed: $event ? +$event : undefined })"
               [class]="'w-full text-center'"

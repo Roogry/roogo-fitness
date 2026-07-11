@@ -35,4 +35,6 @@ export interface LoggedSet {
   completed_at?: string;
   createdAt?: string;
   updatedAt?: string;
+  target_weight?: number;
+  target_reps?: number;
 }
