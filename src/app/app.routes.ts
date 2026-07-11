@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { ExerciseDetail } from './features/exercise/pages/exercise-detail/exercise-detail';
 import { ExerciseEdit } from './features/exercise/pages/exercise-edit/exercise-edit';
 import { MainLayout } from './shared/components/main-layout/main-layout';
-import { Profile } from './features/profile/profile';
+import { Profile } from './features/profile/pages/profile/profile';
 import { Home } from './features/home/home';
 import { JourneyList } from './features/journey/pages/journey-list/journey-list';
 import { PlanList } from './features/plan/pages/plan-list/plan-list';

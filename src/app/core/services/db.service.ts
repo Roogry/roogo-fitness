@@ -249,4 +249,60 @@ export class DbService {
     const db = await this.dbPromise;
     return db.getAll('muscles');
   }
+
+  // --- Export / Import Backup ---
+  /**
+   * Consolidates and exports all database stores as a single JSON-serializable object.
+   */
+  async exportBackup(): Promise<any> {
+    const db = await this.dbPromise;
+    const workout_plans = await db.getAll('workout_plans');
+    const logged_sessions = await db.getAll('logged_sessions');
+    const exercises = await db.getAll('exercises');
+    const muscles = await db.getAll('muscles');
+
+    return {
+      version: 1,
+      workout_plans,
+      logged_sessions,
+      exercises,
+      muscles
+    };
+  }
+
+  /**
+   * Overwrites the database stores with the provided backup data.
+   */
+  async importBackup(data: any): Promise<void> {
+    const db = await this.dbPromise;
+    const tx = db.transaction(['workout_plans', 'logged_sessions', 'exercises', 'muscles'], 'readwrite');
+
+    await tx.objectStore('workout_plans').clear();
+    await tx.objectStore('logged_sessions').clear();
+    await tx.objectStore('exercises').clear();
+    await tx.objectStore('muscles').clear();
+
+    if (Array.isArray(data.workout_plans)) {
+      for (const plan of data.workout_plans) {
+        await tx.objectStore('workout_plans').put(plan);
+      }
+    }
+    if (Array.isArray(data.logged_sessions)) {
+      for (const session of data.logged_sessions) {
+        await tx.objectStore('logged_sessions').put(session);
+      }
+    }
+    if (Array.isArray(data.exercises)) {
+      for (const exercise of data.exercises) {
+        await tx.objectStore('exercises').put(exercise);
+      }
+    }
+    if (Array.isArray(data.muscles)) {
+      for (const muscle of data.muscles) {
+        await tx.objectStore('muscles').put(muscle);
+      }
+    }
+
+    await tx.done;
+  }
 }
