@@ -178,7 +178,6 @@ export class PlanService {
     };
 
     await this.dbService.saveWorkoutPlan(plan);
-    this.clearPlanSession();
   }
 
   /**

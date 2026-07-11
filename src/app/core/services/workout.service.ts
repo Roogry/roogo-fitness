@@ -458,6 +458,7 @@ export class WorkoutService {
   startSessionFlow(planId: number | null, sessionId: number | null) {
     if (this.sessionStartTime()) {
       this.dialogService.create({
+        zWidth: '400px',
         zTitle: 'Active Workout Session',
         zDescription:
           'You already have an active workout session running. Are you sure you want to start a new workout?',

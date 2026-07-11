@@ -120,6 +120,7 @@ export class PlanSessionForm implements OnInit {
   async onSaveSessionClick() {
     if (this.isEditMode()) {
       await this.planService.updateSession(this.editSessionId()!);
+
       this.dialogService.create({
         zWidth: '400px',
         zTitle: 'Success',
@@ -129,8 +130,10 @@ export class PlanSessionForm implements OnInit {
           this.router.navigate(['/plan']);
         },
       });
+      this.planService.clearPlanSession();
     } else {
       await this.planService.createSession();
+
       this.dialogService.create({
         zWidth: '400px',
         zTitle: 'Success',
