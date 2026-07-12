@@ -18,7 +18,7 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardInputDirective } from '@/shared/components/zard/input';
 import { HeaderComponent } from '@/shared/components/header';
 import { RooSheetComponent } from '@/shared/components/sheet';
-import { PlanCardComponent } from '../../components/plan-card/plan-card.component';
+import { PlanCardComponent } from '../../components/plan-card/plan-card';
 import { WorkoutService } from '@/core/services/workout.service';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
 

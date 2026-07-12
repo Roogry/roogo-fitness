@@ -15,11 +15,17 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardIdDirective, ZardStringTemplateOutletDirective } from '@/core';
 import { mergeClasses } from '@/shared/utils/merge-classes';
 
-import { cardBodyVariants, cardFooterVariants, cardHeaderVariants, cardVariants } from './card.variants';
+import {
+  cardBodyVariants,
+  cardFooterVariants,
+  cardHeaderVariants,
+  cardVariants,
+  ZardCardNoPaddingVariants,
+} from './card.variants';
 
 /**
  * A flexible card component for displaying grouped content with an optional header, body, and footer.
- * 
+ *
  * @example
  * <z-card zTitle="Card Title" zDescription="Card description">
  *   <p>Card content goes here.</p>
@@ -39,7 +45,11 @@ import { cardBodyVariants, cardFooterVariants, cardHeaderVariants, cardVariants 
 
           @let description = zDescription();
           @if (description) {
-            <div class="text-muted-foreground text-sm" [id]="descriptionId()" data-slot="card-description">
+            <div
+              class="text-muted-foreground text-sm"
+              [id]="descriptionId()"
+              data-slot="card-description"
+            >
               <ng-container *zStringTemplateOutlet="description">{{ description }}</ng-container>
             </div>
           }
@@ -90,6 +100,7 @@ export class ZardCardComponent {
   readonly class = input<ClassValue>('');
   readonly zFooterBorder = input(false);
   readonly zHeaderBorder = input(false);
+  readonly zLessPadding = input<ZardCardNoPaddingVariants>(false);
   readonly zAction = input('');
   readonly zDescription = input<string | TemplateRef<void>>();
   readonly zTitle = input<string | TemplateRef<void>>();
@@ -106,14 +117,24 @@ export class ZardCardComponent {
     return this.zDescription() && baseId ? `${baseId}-description` : null;
   });
 
-  protected readonly classes = computed(() => mergeClasses(cardVariants(), this.class()));
-  protected readonly bodyClasses = computed(() => mergeClasses(cardBodyVariants()));
+  protected readonly classes = computed(() =>
+    mergeClasses(cardVariants({ zLessPadding: this.zLessPadding() }), this.class()),
+  );
+  protected readonly bodyClasses = computed(() =>
+    mergeClasses(cardBodyVariants({ zLessPadding: this.zLessPadding() })),
+  );
   protected readonly footerClasses = computed(() =>
-    mergeClasses(cardFooterVariants(), this.zFooterBorder() ? 'border-t' : ''),
+    mergeClasses(
+      cardFooterVariants({ zLessPadding: this.zLessPadding() }),
+      this.zFooterBorder() ? 'border-t' : '',
+    ),
   );
 
   protected readonly headerClasses = computed(() =>
-    mergeClasses(cardHeaderVariants(), this.zHeaderBorder() ? 'border-b' : ''),
+    mergeClasses(
+      cardHeaderVariants({ zLessPadding: this.zLessPadding() }),
+      this.zHeaderBorder() ? 'border-b' : '',
+    ),
   );
 
   protected onClick(): void {
