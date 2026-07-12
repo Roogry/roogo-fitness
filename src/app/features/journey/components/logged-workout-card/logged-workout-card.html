@@ -1,52 +1,54 @@
-<z-card>
-  <div class="flex justify-between items-center mb-4">
-    <div class="flex flex-col gap-2">
-      <span class="font-bold text-base sm:text-lg">{{ session().session_title }}</span>
-      <div class="flex items-center gap-2">
-        <z-badge
-          zType="secondary"
-          [zTooltip]="
-            (session().start_time | date: 'medium') +
-            ' until ' +
-            (session().end_time | date: 'medium')
-          "
+<div class="bg-secondary/50 border border-border rounded-2xl sm:rounded-4xl">
+  <z-card [zLessPadding]="true">
+    <div class="flex justify-between items-center">
+      <div class="flex flex-col gap-2 p-3">
+        <span class="font-bold text-base sm:text-lg">{{ session().session_title }}</span>
+        <div class="flex items-center gap-2">
+          <z-badge
+            zType="secondary"
+            [zTooltip]="
+              (session().start_time | date: 'medium') +
+              ' until ' +
+              (session().end_time | date: 'medium')
+            "
+          >
+            {{ session().total_duration | durationFormat }}
+          </z-badge>
+          <z-badge zType="secondary">
+            {{ session().total_weight_lifted | number: '1.0-1' }} kg
+          </z-badge>
+        </div>
+      </div>
+
+      <div class="items-center gap-2 hidden sm:flex">
+        <span
+          class="text-sm text-muted-foreground"
+          [zTooltip]="session().createdAt ? (session().createdAt | date: 'medium') : 'unknown'"
         >
-          {{ session().total_duration | durationFormat }}
-        </z-badge>
-        <z-badge zType="secondary">
-          {{ session().total_weight_lifted | number: '1.0-1' }} kg
-        </z-badge>
+          {{ session().createdAt | timeAgo }}
+        </span>
+        <div class="bg-primary/5 text-primary size-8 rounded-full flex items-center justify-center">
+          <ng-icon name="lucideActivity"></ng-icon>
+        </div>
       </div>
     </div>
 
-    <div class="items-center gap-2 hidden sm:flex">
-      <span
-        class="text-sm text-muted-foreground"
-        [zTooltip]="session().createdAt ? (session().createdAt | date: 'medium') : 'unknown'"
-      >
-        {{ session().createdAt | timeAgo }}
+    <a
+      [routerLink]="['/journey', session().id]"
+      class="bg-muted/50 rounded-[16px] p-3.5 flex justify-between items-center group cursor-pointer hover:bg-secondary/80 transition-colors"
+    >
+      <span class="text-sm font-medium text-secondary-foreground line-clamp-1 truncate mr-4">
+        {{ getExerciseSummary(session()) }}
       </span>
-      <div class="bg-primary/5 text-primary size-8 rounded-full flex items-center justify-center">
-        <ng-icon name="lucideActivity"></ng-icon>
+      <div class="bg-background/50 rounded-full p-1.5 group-hover:bg-background transition-colors">
+        <ng-icon name="lucideArrowRight" class="w-4 h-4 text-foreground flex-shrink-0"></ng-icon>
       </div>
-    </div>
-  </div>
+    </a>
+  </z-card>
 
   @if (session().notes) {
-    <div class="bg-muted/30 border border-border/50 rounded-xl p-3 mb-4">
+    <div class="py-3 px-4 sm:px-5">
       <p class="text-sm text-muted-foreground italic">"{{ session().notes }}"</p>
     </div>
   }
-
-  <a
-    [routerLink]="['/journey', session().id]"
-    class="bg-secondary/50 rounded-[16px] p-3.5 flex justify-between items-center group cursor-pointer hover:bg-secondary/80 transition-colors"
-  >
-    <span class="text-sm font-medium text-secondary-foreground line-clamp-1 truncate mr-4">
-      {{ getExerciseSummary(session()) }}
-    </span>
-    <div class="bg-background/50 rounded-full p-1.5 group-hover:bg-background transition-colors">
-      <ng-icon name="lucideArrowRight" class="w-4 h-4 text-foreground flex-shrink-0"></ng-icon>
-    </div>
-  </a>
-</z-card>
+</div>

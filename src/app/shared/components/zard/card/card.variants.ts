@@ -2,20 +2,22 @@ import { cva, VariantProps } from 'class-variance-authority';
 
 import { mergeClasses } from '@/shared/utils/merge-classes';
 
-export const cardVariants = cva(
-  'bg-card text-card-foreground flex flex-col gap-4 rounded-2xl sm:rounded-4xl',
-  {
-    variants: {
-      zLessPadding: {
-        true: 'py-1 sm:py-2',
-        false: 'py-4 sm:py-6',
-      },
+export const cardVariants = cva('bg-card text-card-foreground flex flex-col gap-4', {
+  variants: {
+    zRounded: {
+      sm: 'rounded-lg sm:rounded-xl',
+      default: 'rounded-2xl sm:rounded-4xl',
     },
-    defaultVariants: {
-      zLessPadding: false,
+    zLessPadding: {
+      true: 'py-1 sm:py-2',
+      false: 'py-4 sm:py-6',
     },
   },
-);
+  defaultVariants: {
+    zLessPadding: false,
+    zRounded: 'default',
+  },
+});
 
 export const cardHeaderVariants = cva(
   mergeClasses(
@@ -63,6 +65,7 @@ export const cardFooterVariants = cva('flex flex-col gap-2 items-center', {
   },
 });
 
+export type ZardCardRoundedVariants = NonNullable<VariantProps<typeof cardVariants>['zRounded']>;
 export type ZardCardNoPaddingVariants = NonNullable<
   VariantProps<typeof cardVariants>['zLessPadding']
 >;
