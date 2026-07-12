@@ -1,4 +1,4 @@
-<app-header title="Your Journey">
+<app-header title="Your Journey" [transparent]="true">
   <!-- Tab Pills Navigation -->
   <app-nav-pills bottom class="mt-2">
     <button app-nav-pills-item [active]="activeTab() === 'stats'" (click)="setTab('stats')">

@@ -8,7 +8,7 @@ import {
   ViewEncapsulation,
   ElementRef,
   AfterViewInit,
-  signal
+  signal,
 } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -20,14 +20,14 @@ import { headerVariants } from './header.variants';
 
 /**
  * A shared header component with title and back navigation.
- * 
+ *
  * @property {string} title - The title displayed in the header.
- * @property {boolean} isTransparant - Whether the header background is transparent.
+ * @property {boolean} transparent - Whether the header background is transparent.
  * @property {boolean} showBackBtn - Whether to show the back navigation button.
  * @property {any[] | null} backLink - Optional specific router link array for back navigation.
  * @property {ClassValue} class - Additional CSS classes for styling.
  * @property {void} onBackClick - Event emitted when the back button is clicked.
- * 
+ *
  * @example
  * <app-header title="Dashboard" [showBackBtn]="true" (onBackClick)="handleBack()"></app-header>
  */
@@ -49,7 +49,7 @@ export class HeaderComponent implements AfterViewInit {
   private readonly el = inject(ElementRef);
 
   readonly title = input<string>('');
-  readonly isTransparant = input<boolean>(false);
+  readonly transparent = input<boolean>(false);
   readonly showBackBtn = input<boolean>(false);
   readonly backLink = input<any[] | null>(null);
   readonly class = input<ClassValue>('');
@@ -59,7 +59,7 @@ export class HeaderComponent implements AfterViewInit {
   readonly hasBottom = signal(false);
 
   protected readonly classes = computed(() =>
-    mergeClasses(headerVariants({ isTransparant: this.isTransparant() }), this.class()),
+    mergeClasses(headerVariants({ transparent: this.transparent() }), this.class()),
   );
 
   ngAfterViewInit() {
@@ -71,9 +71,9 @@ export class HeaderComponent implements AfterViewInit {
 
   /**
    * Navigates the user back to the previous view or specified link.
-   * 
+   *
    * @returns {void}
-   * 
+   *
    * @example
    * headerComponent.goBack();
    */

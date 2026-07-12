@@ -11,7 +11,7 @@
       @if (showBackBtn()) {
         <button
           z-button
-          [zType]="isTransparant() ? 'outline' : 'ghost'"
+          [zType]="transparent() ? 'outline' : 'ghost'"
           zSize="icon"
           zShape="circle"
           (click)="goBack()"

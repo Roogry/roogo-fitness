@@ -1,4 +1,4 @@
-<app-header title="Profile" [isTransparant]="false"></app-header>
+<app-header title="Profile" [transparent]="true"></app-header>
 <div class="px-4 w-full max-w-2xl mx-auto flex flex-col items-center justify-center">
   <div
     class="w-24 h-24 rounded-full bg-muted flex items-center justify-center border-4 border-background shadow-sm mb-4 overflow-hidden"
@@ -21,7 +21,9 @@
       <div class="flex items-center justify-between">
         <div>
           <h3 class="font-medium text-foreground">Storage & Data</h3>
-          <p class="text-sm text-muted-foreground mt-1">Manage your backups, restore, and clear application data.</p>
+          <p class="text-sm text-muted-foreground mt-1">
+            Manage your backups, restore, and clear application data.
+          </p>
         </div>
         <ng-icon name="lucideChevronRight" class="text-muted-foreground/60 w-5 h-5"></ng-icon>
       </div>
