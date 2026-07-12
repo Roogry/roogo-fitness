@@ -50,7 +50,7 @@ export class Home implements OnInit, AfterViewInit {
   activePlan = signal<WorkoutPlan | null>(null);
   muscles = signal<Muscle[]>([]);
   daysTrainedThisWeek = signal<number>(0);
-  nextSession = signal<WorkoutPlanSession | null>(null);
+  completedSessionIds = signal<Set<number>>(new Set());
 
   @ViewChild('scrollContainer') scrollContainer?: ElementRef<HTMLElement>;
 
@@ -65,7 +65,13 @@ export class Home implements OnInit, AfterViewInit {
     const plan = this.activePlan();
     if (!plan) return [];
 
-    return plan.sessions;
+    const completed = this.completedSessionIds();
+    return plan.sessions.filter((s) => !completed.has(s.id)).slice(0, 3);
+  });
+
+  nextSession = computed(() => {
+    const sessions = this.mappedSessions();
+    return sessions.length > 0 ? sessions[0] : null;
   });
 
   async ngOnInit() {
@@ -180,8 +186,10 @@ export class Home implements OnInit, AfterViewInit {
   ];
 
   updateNextSession(plan: WorkoutPlan | null, allSessions: LoggedSession[]) {
+    this.activePlan.set(plan);
+
     if (!plan || !plan.sessions || plan.sessions.length === 0) {
-      this.nextSession.set(null);
+      this.completedSessionIds.set(new Set());
       return;
     }
 
@@ -205,14 +213,6 @@ export class Home implements OnInit, AfterViewInit {
         .filter((id): id is number => id !== undefined && id !== null)
     );
 
-    // Find the first session in predefined order that is not completed
-    for (const session of plan.sessions) {
-      if (!completedSessionIds.has(session.id)) {
-        this.nextSession.set(session);
-        return;
-      }
-    }
-
-    this.nextSession.set(null);
+    this.completedSessionIds.set(completedSessionIds);
   }
 }

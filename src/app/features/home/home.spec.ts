@@ -129,4 +129,52 @@ describe('Home Component - Next Session Detection', () => {
     component.updateNextSession(mockPlan, mockSessions);
     expect(component.nextSession()).toBeNull();
   });
+
+  it('should hide completed sessions and limit mappedSessions to at most 3 sessions', () => {
+    const mockPlan: WorkoutPlan = {
+      id: 1,
+      title: 'PPL',
+      days: 5,
+      sessions: [
+        { id: 101, title: 'Push 1', session_order: 0, exercises: [] },
+        { id: 102, title: 'Pull 1', session_order: 1, exercises: [] },
+        { id: 103, title: 'Legs 1', session_order: 2, exercises: [] },
+        { id: 104, title: 'Push 2', session_order: 3, exercises: [] },
+        { id: 105, title: 'Pull 2', session_order: 4, exercises: [] },
+      ],
+    };
+
+    // Sessions 101 and 103 have been logged this week
+    const now = new Date();
+    const mockSessions: LoggedSession[] = [
+      {
+        id: 1,
+        workout_plan_session_id: 101,
+        session_title: 'Push 1',
+        start_time: now.toISOString(),
+        total_duration: 30,
+        total_weight_lifted: 1000,
+        workouts: [],
+      },
+      {
+        id: 2,
+        workout_plan_session_id: 103,
+        session_title: 'Legs 1',
+        start_time: now.toISOString(),
+        total_duration: 30,
+        total_weight_lifted: 1000,
+        workouts: [],
+      },
+    ];
+
+    component.updateNextSession(mockPlan, mockSessions);
+    // Should filter out 101 and 103. Remaining: 102, 104, 105.
+    // The mappedSessions should be exactly [102, 104, 105].
+    const mapped = component.mappedSessions();
+    expect(mapped.length).toBe(3);
+    expect(mapped[0].id).toBe(102);
+    expect(mapped[1].id).toBe(104);
+    expect(mapped[2].id).toBe(105);
+    expect(component.nextSession()?.id).toBe(102);
+  });
 });
