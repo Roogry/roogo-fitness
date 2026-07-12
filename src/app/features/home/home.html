@@ -7,7 +7,9 @@
     <div class="flex flex-col gap-1">
       <h1 class="text-xl font-bold">Keep it up, Mate!</h1>
       <div class="flex items-center gap-1">
-        <p class="text-sm text-muted-foreground">{{ daysTrainedThisWeek() }} {{ daysTrainedThisWeek() === 1 ? 'day' : 'days' }} this week</p>
+        <p class="text-sm text-muted-foreground">
+          {{ daysTrainedThisWeek() }} {{ daysTrainedThisWeek() === 1 ? 'day' : 'days' }} this week
+        </p>
         <ng-icon name="lucideFlame" class="h-3 w-3"></ng-icon>
       </div>
     </div>
@@ -66,7 +68,11 @@
         </h3>
       </div>
 
-      <div class="flex overflow-x-auto gap-4 pb-2 snap-x hide-scrollbar">
+      <div
+        #scrollContainer
+        (scroll)="onScroll(scrollContainer)"
+        class="grid grid-rows-2 grid-flow-col gap-4 overflow-x-auto pb-2 snap-x hide-scrollbar"
+      >
         @for (muscle of muscles(); track muscle.id) {
           <a
             [routerLink]="['/exercise']"
@@ -77,6 +83,21 @@
           </a>
         }
       </div>
+
+      <!-- Carousel indicator -->
+      @if (totalPages() > 1) {
+        <div class="flex justify-center items-center gap-1.5 mt-3">
+          @for (pageIndex of pagesArray(); track pageIndex) {
+            <button
+              (click)="scrollToPage(pageIndex)"
+              class="size-1.5 bg-primary rounded-full transition-all duration-300 focus:outline-none cursor-pointer"
+              [class.w-4]="activePage() === pageIndex"
+              [class.opacity-30]="activePage() !== pageIndex"
+              [attr.aria-label]="'Go to page ' + (pageIndex + 1)"
+            ></button>
+          }
+        </div>
+      }
     </div>
   }
 
