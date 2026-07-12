@@ -64,7 +64,7 @@
     <div class="mt-8 mb-4">
       <div class="flex items-center justify-between mb-4 px-1">
         <h3 class="font-semibold text-lg hover:text-primary transition-colors cursor-pointer">
-          Explore by Muscle
+          Focus Muscles
         </h3>
       </div>
 
@@ -77,7 +77,7 @@
           <a
             [routerLink]="['/exercise']"
             [queryParams]="{ primary: [muscle.id] }"
-            class="flex flex-col items-center gap-2 min-w-[80px] snap-start group cursor-pointer"
+            class="flex flex-col items-center gap-2 min-w-[64px] sm:min-w-[80px] snap-start group cursor-pointer"
           >
             <app-circle-muscle-card [muscle]="muscle" />
           </a>

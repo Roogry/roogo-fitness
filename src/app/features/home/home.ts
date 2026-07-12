@@ -126,21 +126,23 @@ export class Home implements OnInit, AfterViewInit {
 
     let current = 0;
     if (maxScrollLeft > 0 && total > 1) {
-      current = Math.round(container.scrollLeft / clientWidth);
-      
-      // If we are at the very end of the scroll, ensure the last indicator is active
-      if (Math.abs(container.scrollLeft - maxScrollLeft) <= 10) {
-        current = total - 1;
-      }
-      
-      if (current >= total) {
-        current = total - 1;
+      const scrollRatio = container.scrollLeft / maxScrollLeft;
+      if (scrollRatio > 0.85) {
+        current = Math.round(scrollRatio) * (total - 1);
+      } else {
+        current = Math.floor(scrollRatio) * (total - 1);
       }
     }
 
-    console.log(
-      `scrollWidth: ${scrollWidth}px, clientWidth: ${clientWidth}px, maxScrollLeft: ${maxScrollLeft}px, scrollLeft: ${container.scrollLeft}px, total: ${total}, current: ${current}`,
-    );
+    console.log({
+      scrollWidth,
+      clientWidth,
+      scrollLeft: container.scrollLeft,
+      maxScrollLeft,
+      scrollLeftRatio: container.scrollLeft / maxScrollLeft,
+      current,
+      total,
+    });
 
     if (this.totalPages() !== total) {
       this.totalPages.set(total || 1);
@@ -161,11 +163,7 @@ export class Home implements OnInit, AfterViewInit {
       const total = this.totalPages();
       if (total <= 1 || maxScrollLeft <= 0) return;
 
-      let targetScrollLeft = index * container.clientWidth;
-      if (index === total - 1) {
-        targetScrollLeft = maxScrollLeft;
-      }
-
+      const targetScrollLeft = (index / (total - 1)) * maxScrollLeft;
       container.scrollTo({
         left: targetScrollLeft,
         behavior: 'smooth',
