@@ -106,4 +106,26 @@ export class JourneyService {
       workoutDates,
     };
   }
+
+  /**
+   * Calculates how many unique days the user has trained in the current week (starting Monday).
+   * @returns {Promise<number>} Number of days trained.
+   */
+  async getDaysTrainedThisWeek(): Promise<number> {
+    const sessions = await this.dbService.getLoggedSessions();
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMonday);
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const uniqueDays = new Set<string>();
+    sessions.forEach((session) => {
+      const sessionDate = new Date(session.start_time);
+      if (sessionDate.getTime() >= startOfWeek.getTime()) {
+        uniqueDays.add(sessionDate.toDateString());
+      }
+    });
+    return uniqueDays.size;
+  }
 }

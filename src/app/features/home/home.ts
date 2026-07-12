@@ -11,6 +11,7 @@ import { LoggedSession, WorkoutPlan, Muscle } from '@/shared/models';
 import { HomeLoggedWorkoutCardComponent } from './components/home-logged-workout-card/home-logged-workout-card';
 import { MuscleService } from '@/core/services/muscle.service';
 import { CircleMuscleCardComponent } from '@/shared/components/circle-muscle-card/circle-muscle-card';
+import { JourneyService } from '@/features/journey/services/journey.service';
 
 @Component({
   selector: 'app-home',
@@ -33,10 +34,12 @@ export class Home implements OnInit {
   dbService = inject(DbService);
   workoutService = inject(WorkoutService);
   muscleService = inject(MuscleService);
+  journeyService = inject(JourneyService);
 
   recentSessions = signal<LoggedSession[]>([]);
   activePlan = signal<WorkoutPlan | null>(null);
   muscles = signal<Muscle[]>([]);
+  daysTrainedThisWeek = signal<number>(0);
 
   mappedSessions = computed(() => {
     const plan = this.activePlan();
@@ -50,6 +53,10 @@ export class Home implements OnInit {
       const allSessions = await this.workoutService.getLoggedWorkoutSessions();
       // Only grab the last 2 sessions
       this.recentSessions.set(allSessions.slice(0, 2));
+
+      // Calculate days trained this week using journeyService
+      const days = await this.journeyService.getDaysTrainedThisWeek();
+      this.daysTrainedThisWeek.set(days);
 
       const plans = await this.dbService.getWorkoutPlans();
       const active = plans.find((p) => p.isActive) || (plans.length > 0 ? plans[0] : null);

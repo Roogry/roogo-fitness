@@ -5,9 +5,9 @@
       <ng-icon name="lucideDumbbell" class="size-6"></ng-icon>
     </div>
     <div class="flex flex-col gap-1">
-      <h1 class="text-xl font-bold">Ganbatte, Jodie!</h1>
+      <h1 class="text-xl font-bold">Keep it up, Mate!</h1>
       <div class="flex items-center gap-1">
-        <p class="text-sm text-muted-foreground">3 days this week</p>
+        <p class="text-sm text-muted-foreground">{{ daysTrainedThisWeek() }} {{ daysTrainedThisWeek() === 1 ? 'day' : 'days' }} this week</p>
         <ng-icon name="lucideFlame" class="h-3 w-3"></ng-icon>
       </div>
     </div>
