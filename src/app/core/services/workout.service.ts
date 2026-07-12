@@ -201,6 +201,7 @@ export class WorkoutService {
     const session: LoggedSession = {
       id: Date.now(),
       user_id: Date.now() + Math.floor(Math.random() * 1000),
+      workout_plan_session_id: this.selectedSessionId(),
       session_title: title || this.sessionTitle() || 'Unplanned Session',
       start_time: new Date(this.sessionStartTime() || Date.now()).toISOString(),
       end_time: new Date().toISOString(),

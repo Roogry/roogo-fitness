@@ -36,6 +36,18 @@
         </div>
       </div>
 
+      @if (nextSession() === null) {
+        <div class="bg-primary/5 border border-primary/20 rounded-2xl p-4 mb-4 flex items-center gap-3">
+          <div class="p-2 bg-primary/10 text-primary rounded-xl flex items-center justify-center">
+            <ng-icon name="lucideFlame" class="w-5 h-5"></ng-icon>
+          </div>
+          <div>
+            <p class="font-semibold text-sm text-primary">All caught up for this week!</p>
+            <p class="text-xs text-muted-foreground">You have completed all scheduled workouts.</p>
+          </div>
+        </div>
+      }
+
       <!-- Horizontal List of Upcoming Sessions -->
       <div class="flex overflow-x-auto gap-3 pb-2 mt-4 snap-x hide-scrollbar">
         @for (session of mappedSessions(); track session.id) {
@@ -43,7 +55,7 @@
             [planId]="activePlan()!.id"
             [sessionId]="session.id"
             [title]="session.title"
-            [isUpNext]="$first"
+            [isUpNext]="session.id === nextSession()?.id"
           />
         }
 
