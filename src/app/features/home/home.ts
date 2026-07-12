@@ -17,7 +17,7 @@ import { DbService } from '@/core/services/db.service';
 import { UpcomingSessionCardComponent } from '@/features/home/components/upcoming-session-card/upcoming-session-card';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideDumbbell, lucideFlame, lucideCalendar } from '@ng-icons/lucide';
-import { LoggedSession, WorkoutPlan, Muscle } from '@/shared/models';
+import { LoggedSession, WorkoutPlan, WorkoutPlanSession, Muscle } from '@/shared/models';
 import { HomeLoggedWorkoutCardComponent } from './components/home-logged-workout-card/home-logged-workout-card';
 import { MuscleService } from '@/core/services/muscle.service';
 import { CircleMuscleCardComponent } from '@/shared/components/circle-muscle-card/circle-muscle-card';
@@ -50,6 +50,7 @@ export class Home implements OnInit, AfterViewInit {
   activePlan = signal<WorkoutPlan | null>(null);
   muscles = signal<Muscle[]>([]);
   daysTrainedThisWeek = signal<number>(0);
+  completedSessionIds = signal<Set<number>>(new Set());
 
   @ViewChild('scrollContainer') scrollContainer?: ElementRef<HTMLElement>;
 
@@ -64,7 +65,13 @@ export class Home implements OnInit, AfterViewInit {
     const plan = this.activePlan();
     if (!plan) return [];
 
-    return plan.sessions.slice(0, 3);
+    const completed = this.completedSessionIds();
+    return plan.sessions.filter((s) => !completed.has(s.id)).slice(0, 3);
+  });
+
+  nextSession = computed(() => {
+    const sessions = this.mappedSessions();
+    return sessions.length > 0 ? sessions[0] : null;
   });
 
   async ngOnInit() {
@@ -82,6 +89,7 @@ export class Home implements OnInit, AfterViewInit {
       if (active) {
         this.activePlan.set(active);
       }
+      this.updateNextSession(active, allSessions);
 
       const allMuscles = await this.muscleService.getMuscles();
       this.muscles.set(allMuscles);
@@ -176,4 +184,35 @@ export class Home implements OnInit, AfterViewInit {
     { id: 102, title: 'Full Body Fundamentals', sessions_per_week: 3, difficulty: 'Beginner' },
     { id: 103, title: 'Upper/Lower Power', sessions_per_week: 4, difficulty: 'Advanced' },
   ];
+
+  updateNextSession(plan: WorkoutPlan | null, allSessions: LoggedSession[]) {
+    this.activePlan.set(plan);
+
+    if (!plan || !plan.sessions || plan.sessions.length === 0) {
+      this.completedSessionIds.set(new Set());
+      return;
+    }
+
+    // Get the start of this week (Monday)
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMonday);
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    // Filter logged sessions to this week
+    const loggedSessionsThisWeek = allSessions.filter((session) => {
+      const sessionDate = new Date(session.start_time);
+      return sessionDate.getTime() >= startOfWeek.getTime();
+    });
+
+    // Extract set of completed plan session IDs
+    const completedSessionIds = new Set(
+      loggedSessionsThisWeek
+        .map((s) => s.workout_plan_session_id)
+        .filter((id): id is number => id !== undefined && id !== null)
+    );
+
+    this.completedSessionIds.set(completedSessionIds);
+  }
 }

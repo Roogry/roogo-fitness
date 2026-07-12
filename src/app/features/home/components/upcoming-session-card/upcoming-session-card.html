@@ -1,17 +1,30 @@
 <div
-  class="group/session bg-secondary/40 rounded-2xl p-4 flex justify-between items-center hover:bg-secondary/60 transition-colors border border-transparent hover:border-primary/20 h-full w-full cursor-pointer"
+  class="group/session rounded-2xl p-4 flex justify-between items-center transition-all border h-full w-full cursor-pointer"
+  [class.bg-primary/5]="isUpNext()"
+  [class.border-primary/30]="isUpNext()"
+  [class.bg-secondary/40]="!isUpNext()"
+  [class.border-transparent]="!isUpNext()"
+  [class.hover:bg-secondary/60]="!isUpNext()"
+  [class.hover:bg-primary/10]="isUpNext()"
+  [class.hover:border-primary/50]="isUpNext()"
+  [class.hover:border-primary/20]="!isUpNext()"
   (click)="goToSession()"
 >
   <div class="flex flex-col mr-4">
     @if (isUpNext()) {
-      <span class="text-xs text-muted-foreground mb-1">Up Next</span>
+      <span class="text-xs text-primary font-medium mb-1">Up Next</span>
     }
     <span class="font-semibold text-secondary-foreground text-sm whitespace-nowrap line-clamp-1">{{
       title()
     }}</span>
   </div>
   <div
-    class="h-10 w-10 rounded-full group-hover/session:bg-primary group-hover/session:text-white flex-shrink-0 flex items-center justify-center ransition-colors"
+    class="h-10 w-10 rounded-full flex-shrink-0 flex items-center justify-center transition-colors"
+    [class.bg-primary]="isUpNext()"
+    [class.text-white]="isUpNext()"
+    [class.bg-secondary/20]="!isUpNext()"
+    [class.group-hover/session:bg-primary]="!isUpNext()"
+    [class.group-hover/session:text-white]="!isUpNext()"
   >
     <ng-icon name="lucideChevronRight"></ng-icon>
   </div>
