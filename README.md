@@ -10,6 +10,12 @@ Roogo Fitness is a modern, responsive Angular web application designed for track
 - **Dynamic Editors:** Edit internal exercises, arrange media with dynamic drag/drop/reorder lists, and tag exercises to various muscle groups via multi-select dropdowns.
 - **Zard UI:** A highly customized, beautiful custom design system and component library built with TailwindCSS, tailored specifically for mobile-first fitness applications (including Cards, Buttons, Inputs, Badges, and Select menus).
 
+## Developer Documentation
+
+For junior developers, AI models, and new contributors, we maintain an extensive set of coding standards, architectural blueprints, and guidelines.
+
+👉 **Please start by reading the [Developer Documentation (docs/README.md)](./docs/README.md)**.
+
 ## Development
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.0.
