@@ -64,7 +64,11 @@
     <div class="flex flex-col gap-6">
       <z-form-field class="flex flex-col gap-3">
         <label z-form-label for="name"> Plan Name <span class="text-destructive">*</span> </label>
-        <z-form-control [errorMessage]="planForm.title().errors()[0]?.message ?? ''">
+        <z-form-control
+          [errorMessage]="
+            planForm.title().touched() ? (planForm.title().errors()[0]?.message ?? '') : ''
+          "
+        >
           <input
             id="name"
             z-input
