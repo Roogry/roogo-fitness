@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { DbService } from '../../../core/services/db.service';
+import { LoggedSession } from '@/shared/models';
 
 /**
  * Service for calculating and retrieving user journey statistics and workout streaks.
@@ -12,6 +13,28 @@ import { DbService } from '../../../core/services/db.service';
 })
 export class JourneyService {
   private dbService = inject(DbService);
+
+  /**
+   * Retrieves a specific logged workout session by its ID.
+   * @param {number} id The ID of the session.
+   * @returns {Promise<LoggedSession | undefined>} A promise resolving to the logged session.
+   * @example
+   * const session = await this.journeyService.getLoggedSession(1);
+   */
+  async getLoggedSession(id: number): Promise<LoggedSession | undefined> {
+    return this.dbService.getLoggedSession(id);
+  }
+
+  /**
+   * Deletes a logged session from the database.
+   * @param {number} id The ID of the session to delete.
+   * @returns {Promise<void>}
+   * @example
+   * await this.journeyService.deleteLoggedSession(1);
+   */
+  async deleteLoggedSession(id: number): Promise<void> {
+    return this.dbService.deleteLoggedSession(id);
+  }
 
   /**
    * Retrieves user statistics including total sessions, current streak, and longest streak.

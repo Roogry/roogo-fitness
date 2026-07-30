@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { WorkoutService } from '@/core/services/workout.service';
+import { JourneyService } from '../../services/journey.service';
 import { LoggedSession } from '@/shared/models';
 import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
@@ -31,7 +31,7 @@ import { lucideEllipsis, lucidePencil, lucideTrash2 } from '@ng-icons/lucide';
 export class JourneyDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private workoutService = inject(WorkoutService);
+  private journeyService = inject(JourneyService);
   private dialogService = inject(ZardDialogService);
 
   loggedSession = signal<LoggedSession | undefined>(undefined);
@@ -53,7 +53,7 @@ export class JourneyDetail implements OnInit {
     this.pageTitle.set('Loading...');
     try {
       this.isLoading.set(true);
-      const LoggedSession = await this.workoutService.getLoggedSession(id);
+      const LoggedSession = await this.journeyService.getLoggedSession(id);
 
       this.loggedSession.set(LoggedSession);
       this.pageTitle.set(LoggedSession?.session_title ?? 'Not Found');
@@ -77,7 +77,7 @@ export class JourneyDetail implements OnInit {
       zOkDestructive: true,
       zOnOk: async () => {
         try {
-          await this.workoutService.deleteLoggedSession(sessionId);
+          await this.journeyService.deleteLoggedSession(sessionId);
           this.goBack();
         } catch (error) {
           console.error('Failed to delete journey', error);
