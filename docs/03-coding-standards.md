@@ -21,6 +21,17 @@ To maintain consistency and readability across the codebase, all contributors an
 - **Rule**: Standard variable names, component properties, and function names.
 - **Examples**: `recentSessions`, `calculateTotalVolume()`, `activePlan`.
 
+### Event Handlers and Component Outputs
+- **Event Handler Functions**:
+  - **Format**: `on + [Element] + [Event]`
+  - **Rule**: Functions called in templates to handle events should be prefixed with `on`, followed by the target element/subject name and the event name.
+  - **Examples**: `onSaveButtonClick()`, `onSearchInputChange()`, `onUserCardClick()`.
+
+- **Component Output Signals / Event Emitters**:
+  - **Format**: `[Element] + [Event]`
+  - **Rule**: Component outputs (`output()`) should use the target element/subject name and event name, **without** the `on` prefix.
+  - **Examples**: `saveButtonClick = output<void>()`, `searchInputChange = output<string>()`, `deleteUserClick = output<string>()`.
+
 ### Constants
 - **Format**: `UPPER_SNAKE_CASE`
 - **Rule**: Global constant values that do not change.

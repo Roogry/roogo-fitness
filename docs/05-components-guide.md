@@ -43,6 +43,9 @@ export class CounterComponent {
 ### Signal Inputs and Outputs
 Replace traditional `@Input()` and `@Output()` decorators with the new signal-based functions.
 
+- **Component Outputs**: Use `[Element] + [Event]` pattern (without `on` prefix).
+- **Event Handlers**: Use `on + [Element] + [Event]` pattern for methods bound to template events.
+
 ```typescript
 import { Component, input, output } from '@angular/core';
 
@@ -53,11 +56,12 @@ export class UserCardComponent {
   // Optional input with default
   theme = input<'light' | 'dark'>('light');
   
-  // Output
-  deleteUser = output<string>();
+  // Output: [Element] + [Event]
+  deleteUserClick = output<string>();
 
-  onDelete() {
-    this.deleteUser.emit(this.user().id);
+  // Event handler method: on + [Element] + [Event]
+  onDeleteButtonClick() {
+    this.deleteUserClick.emit(this.user().id);
   }
 }
 ```
