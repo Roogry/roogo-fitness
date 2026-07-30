@@ -11,7 +11,17 @@
         <ng-icon name="lucideActivity" class="w-8 h-8 text-muted-foreground"></ng-icon>
       </div>
       <h3 class="font-semibold text-lg mb-1">No Workouts Yet</h3>
-      <p class="text-sm text-muted-foreground">Log your first workout to see it here.</p>
+      <p class="text-sm text-muted-foreground mb-6">Log your first workout to see it here.</p>
+      <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+        <button z-button zType="outline" class="w-full sm:w-auto" (click)="goToPlans()">
+          <ng-icon name="lucideFolder" class="size-4"></ng-icon>
+          <span>Go to Plans</span>
+        </button>
+        <button z-button zType="default" class="w-full sm:w-auto" (click)="startEmptyWorkout()">
+          <ng-icon name="lucidePlus" class="size-4"></ng-icon>
+          <span>Start Empty Workout</span>
+        </button>
+      </div>
     </div>
   } @else {
     <div class="flex flex-col gap-4">
