@@ -179,6 +179,18 @@ export class DbService {
   }
 
   /**
+   * Deletes a logged session from the database.
+   * @param {number} id The ID of the logged session to delete.
+   * @returns {Promise<void>}
+   * @example
+   * await this.dbService.deleteLoggedSession(1);
+   */
+  async deleteLoggedSession(id: number): Promise<void> {
+    const db = await this.dbPromise;
+    return db.delete('logged_sessions', id);
+  }
+
+  /**
    * Saves or updates a logged session in the database.
    * @param {LoggedSession} session The logged session to save.
    * @returns {Promise<number>} A promise resolving to the ID of the saved session.

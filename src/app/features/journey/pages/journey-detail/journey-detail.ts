@@ -8,6 +8,7 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { HeaderComponent } from '@/shared/components/header/header.component';
 import { ExerciseTracker } from '@/features/exercise/components/exercise-tracker/exercise-tracker';
 import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/zard/popover';
+import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideEllipsis, lucidePencil, lucideTrash2 } from '@ng-icons/lucide';
 
@@ -31,6 +32,7 @@ export class JourneyDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private workoutService = inject(WorkoutService);
+  private dialogService = inject(ZardDialogService);
 
   loggedSession = signal<LoggedSession | undefined>(undefined);
   pageTitle = signal<string>('Loading...');
@@ -61,6 +63,27 @@ export class JourneyDetail implements OnInit {
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  deleteJourney() {
+    const sessionId = this.loggedSession()?.id;
+    if (!sessionId) return;
+
+    this.dialogService.create({
+      zTitle: 'Delete Journey',
+      zWidth: '400px',
+      zDescription: 'Are you sure you want to delete this journey? This action cannot be undone.',
+      zOkText: 'Delete',
+      zOkDestructive: true,
+      zOnOk: async () => {
+        try {
+          await this.workoutService.deleteLoggedSession(sessionId);
+          this.goBack();
+        } catch (error) {
+          console.error('Failed to delete journey', error);
+        }
+      },
+    });
   }
 
   goBack() {
