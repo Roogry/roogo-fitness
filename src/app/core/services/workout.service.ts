@@ -290,17 +290,6 @@ export class WorkoutService {
   }
 
   /**
-   * Retrieves a specific logged workout session by its ID.
-   * @param {number} id The ID of the session.
-   * @returns {Promise<LoggedSession | undefined>} A promise resolving to the logged session.
-   * @example
-   * const session = await this.workoutService.getLoggedSession(1);
-   */
-  async getLoggedSession(id: number): Promise<LoggedSession | undefined> {
-    return this.dbService.getLoggedSession(id);
-  }
-
-  /**
    * Adds an exercise to the active tracked session.
    * @param {Exercise} exercise The exercise to track.
    * @returns {void}
