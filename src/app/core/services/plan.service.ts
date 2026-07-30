@@ -142,7 +142,6 @@ export class PlanService {
     planSession.session_order = plan.sessions.length;
     plan.sessions = [...(plan.sessions || []), planSession];
     await this.dbService.saveWorkoutPlan(plan);
-    console.log('Template session successfully saved to plan!');
 
     this.clearPlanSession();
   }

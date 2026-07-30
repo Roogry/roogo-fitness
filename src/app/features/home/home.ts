@@ -142,16 +142,6 @@ export class Home implements OnInit, AfterViewInit {
       }
     }
 
-    console.log({
-      scrollWidth,
-      clientWidth,
-      scrollLeft: container.scrollLeft,
-      maxScrollLeft,
-      scrollLeftRatio: container.scrollLeft / maxScrollLeft,
-      current,
-      total,
-    });
-
     if (this.totalPages() !== total) {
       this.totalPages.set(total || 1);
     }
@@ -210,7 +200,7 @@ export class Home implements OnInit, AfterViewInit {
     const completedSessionIds = new Set(
       loggedSessionsThisWeek
         .map((s) => s.workout_plan_session_id)
-        .filter((id): id is number => id !== undefined && id !== null)
+        .filter((id): id is number => id !== undefined && id !== null),
     );
 
     this.completedSessionIds.set(completedSessionIds);

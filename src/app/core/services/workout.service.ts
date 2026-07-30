@@ -232,12 +232,8 @@ export class WorkoutService {
       })),
     };
 
-    console.group('Saving Session to DB');
-    console.log('Session:', session);
-
     try {
       await this.dbService.saveLoggedSession(session);
-      console.log('Session successfully saved to IndexedDB!');
       this.clearSession();
     } catch (error) {
       throw new Error('Failed to save session to DB');
@@ -495,7 +491,11 @@ export class WorkoutService {
    * @param {Array<{ exerciseId: number; targetWeight?: number; targetReps?: number; }>} updates The updates to apply.
    * @returns {Promise<void>}
    */
-  async updatePlanTargets(planId: number, sessionId: number, updates: { exerciseId: number; targetWeight?: number; targetReps?: number; }[]) {
+  async updatePlanTargets(
+    planId: number,
+    sessionId: number,
+    updates: { exerciseId: number; targetWeight?: number; targetReps?: number }[],
+  ) {
     const plan = await this.dbService.getWorkoutPlan(planId);
     if (!plan) return;
 

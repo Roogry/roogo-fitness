@@ -4,7 +4,7 @@ import { WorkoutPlan, LoggedSession, Exercise, Muscle } from '@/shared/models';
 import { mockMuscles, mockExercises, mockLoggedSessions, mockWorkoutPlans } from '../mocks';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 /**
  * Service to manage IndexedDB operations for workout plans, logged sessions, exercises, and muscles.
@@ -23,7 +23,6 @@ export class DbService {
   private async requestPersistentStorage() {
     if (navigator.storage && navigator.storage.persist) {
       const isPersisted = await navigator.storage.persist();
-      console.log(`Persistent storage granted: ${isPersisted}`);
     }
   }
 
@@ -51,7 +50,7 @@ export class DbService {
         if (!db.objectStoreNames.contains('muscles')) {
           db.createObjectStore('muscles', { keyPath: 'id' });
         }
-      }
+      },
     });
 
     // Populate Initial Data if needed
@@ -64,7 +63,6 @@ export class DbService {
     // Logged Sessions
     const loggedSessionCount = await db.count('logged_sessions');
     if (loggedSessionCount === 0) {
-      console.log('Populating initial logged sessions data...');
       const tx = db.transaction('logged_sessions', 'readwrite');
       for (const loggedSession of mockLoggedSessions) {
         tx.store.put(loggedSession);
@@ -75,7 +73,6 @@ export class DbService {
     // Populate Muscles
     const muscleCount = await db.count('muscles');
     if (muscleCount === 0) {
-      console.log('Populating initial muscles data...');
       const tx = db.transaction('muscles', 'readwrite');
       for (const muscle of mockMuscles) {
         tx.store.put(muscle);
@@ -86,7 +83,6 @@ export class DbService {
     // Populate Exercises
     const exerciseCount = await db.count('exercises');
     if (exerciseCount === 0) {
-      console.log('Populating initial exercises data...');
       const tx = db.transaction('exercises', 'readwrite');
       for (const exercise of mockExercises) {
         tx.store.put(exercise);
@@ -97,7 +93,6 @@ export class DbService {
     // Populate Workout Plans
     const plansCount = await db.count('workout_plans');
     if (plansCount === 0) {
-      console.log('Populating initial workout plans...');
       const tx = db.transaction('workout_plans', 'readwrite');
       for (const plan of mockWorkoutPlans) {
         tx.store.put(plan);
@@ -266,7 +261,7 @@ export class DbService {
       workout_plans,
       logged_sessions,
       exercises,
-      muscles
+      muscles,
     };
   }
 
@@ -275,7 +270,10 @@ export class DbService {
    */
   async importBackup(data: any): Promise<void> {
     const db = await this.dbPromise;
-    const tx = db.transaction(['workout_plans', 'logged_sessions', 'exercises', 'muscles'], 'readwrite');
+    const tx = db.transaction(
+      ['workout_plans', 'logged_sessions', 'exercises', 'muscles'],
+      'readwrite',
+    );
 
     await tx.objectStore('workout_plans').clear();
     await tx.objectStore('logged_sessions').clear();
@@ -312,13 +310,16 @@ export class DbService {
   async clearAllData(): Promise<void> {
     try {
       const db = await this.dbPromise;
-      const tx = db.transaction(['workout_plans', 'logged_sessions', 'exercises', 'muscles'], 'readwrite');
+      const tx = db.transaction(
+        ['workout_plans', 'logged_sessions', 'exercises', 'muscles'],
+        'readwrite',
+      );
       await tx.objectStore('workout_plans').clear();
       await tx.objectStore('logged_sessions').clear();
       await tx.objectStore('exercises').clear();
       await tx.objectStore('muscles').clear();
       await tx.done;
-      
+
       await this.populateInitialData(db);
     } catch (error) {
       console.error('Error clearing database data:', error);
