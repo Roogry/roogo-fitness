@@ -79,21 +79,7 @@ export class PlanList implements OnInit {
   }
 
   startEmptyWorkout() {
-    if (this.workoutService.hasExercise()) return;
-
-    this.dialogService.create({
-      zTitle: 'Active Workout Session',
-      zDescription: 'You already have an active workout session running.',
-      zContent:
-        'Are you sure you want to start a new workout? This will permanently delete your current active session data.',
-      zOkText: 'Start New',
-      zOkDestructive: true,
-      zCancelText: 'Cancel',
-      zOnOk: () => {
-        this.workoutService.clearSession();
-        this.router.navigate(['/session/active']);
-      },
-    });
+    this.workoutService.startSessionFlow(null, null);
   }
 
   async loadPlans() {
