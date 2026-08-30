@@ -11,6 +11,7 @@ import { SessionActive } from './features/session-active/pages/session-active/se
 import { PlanSessionDetail } from './features/plan/pages/plan-session-detail/plan-session-detail';
 import { PlanSessionForm } from './features/plan/pages/plan-session-form/plan-session-form';
 import { JourneyDetail } from './features/journey/pages/journey-detail/journey-detail';
+import { EditJourney } from './features/journey/pages/edit-journey/edit-journey';
 import { StorageDataPage } from './features/profile/pages/storage-data/storage-data';
 
 export const routes: Routes = [
@@ -30,6 +31,7 @@ export const routes: Routes = [
   { path: 'exercise/:id/edit', component: ExerciseEdit },
   { path: 'session/active', component: SessionActive },
   { path: 'journey/:id', component: JourneyDetail },
+  { path: 'journey/:id/edit', component: EditJourney },
   { path: 'plan/:id/session/new', component: PlanSessionForm },
   { path: 'plan/:id/session/:sessionId', component: PlanSessionDetail },
   { path: 'plan/:id/session/:sessionId/edit', component: PlanSessionForm },

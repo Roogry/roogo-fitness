@@ -17,7 +17,13 @@
       <ng-template #moreActions>
         <z-popover>
           <div class="flex flex-col items-start">
-            <button z-button zType="ghost" zShape="circle" class="w-full justify-start">
+            <button
+              z-button
+              zType="ghost"
+              zShape="circle"
+              class="w-full justify-start"
+              (click)="goToEdit()"
+            >
               <ng-icon name="lucidePencil" class="size-4"></ng-icon>
               <span>Edit <span class="hidden sm:inline">Journey</span></span>
             </button>

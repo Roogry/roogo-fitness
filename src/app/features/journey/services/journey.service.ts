@@ -37,6 +37,17 @@ export class JourneyService {
   }
 
   /**
+   * Saves or updates a logged session in the database.
+   * @param {LoggedSession} session The logged session to save.
+   * @returns {Promise<number>} A promise resolving to the ID of the saved session.
+   * @example
+   * await this.journeyService.updateLoggedSession(session);
+   */
+  async updateLoggedSession(session: LoggedSession): Promise<number> {
+    return this.dbService.saveLoggedSession(session);
+  }
+
+  /**
    * Retrieves user statistics including total sessions, current streak, and longest streak.
    *
    * @returns {Promise<any>} An object containing streak statistics and workout dates.

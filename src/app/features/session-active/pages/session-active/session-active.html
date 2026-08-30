@@ -41,6 +41,10 @@
         <app-exercise-tracker
           [trackedExercise]="tracked"
           [editable]="workoutService.sessionStartTime() !== null"
+          (addSetSubmitted)="onAddSet($event)"
+          (setUpdated)="onSetUpdate($event)"
+          (setRemoved)="onSetRemove($event)"
+          (exerciseRemoved)="onExerciseRemove($event)"
         ></app-exercise-tracker>
       }
 

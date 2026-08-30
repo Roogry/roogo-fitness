@@ -1,0 +1,85 @@
+<div class="min-h-screen bg-background text-foreground pb-8">
+  <app-header title="Edit Journey" [showBackBtn]="true">
+    <div right>
+      <button z-button zShape="circle" [disabled]="!canSave()" (click)="save()">
+        <ng-icon name="lucideCheck" class="hidden sm:inline-block"></ng-icon>
+        <span class="hidden sm:inline-block">{{ isSaving() ? 'Saving...' : 'Save' }}</span>
+      </button>
+    </div>
+  </app-header>
+
+  <main class="container mx-auto px-4 pb-6 max-w-2xl mt-4">
+    @if (isLoading()) {
+      <p class="text-center text-muted-foreground py-12">Loading...</p>
+    } @else {
+      <div class="flex flex-col gap-4">
+        <!-- Session Title -->
+        <input
+          z-input
+          type="text"
+          placeholder="Session title"
+          aria-label="Session title"
+          [value]="sessionTitle()"
+          (input)="onTitleInput($event)"
+          class="w-full font-semibold"
+        />
+
+        <!-- Stats Row -->
+        <div class="flex items-center justify-start gap-8">
+          <div class="flex flex-col gap-1">
+            <span class="text-sm text-muted-foreground">Duration</span>
+            <span>{{ sessionDuration() | durationFormat }}</span>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <span class="text-sm text-muted-foreground">Volume</span>
+            <span>{{ totalVolume() | number: '1.0-0' }} kg</span>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <span class="text-sm text-muted-foreground">Exercises</span>
+            <span>{{ exercises().length }}</span>
+          </div>
+        </div>
+
+        <!-- Exercises List -->
+        <div class="flex flex-col gap-4 mt-8">
+          @for (workout of exercises(); track workout.id) {
+            <app-exercise-tracker
+              [trackedExercise]="workout"
+              [editable]="true"
+              (addSetSubmitted)="onAddSet($event)"
+              (setUpdated)="onSetUpdate($event)"
+              (setRemoved)="onSetRemove($event)"
+              (exerciseRemoved)="onExerciseRemove($event)"
+            ></app-exercise-tracker>
+          }
+
+          @if (exercises().length === 0) {
+            <div class="text-center py-12 text-muted-foreground rounded-4xl border border-border">
+              No exercises in this session. Add one below.
+            </div>
+          }
+
+          <!-- Add Exercise -->
+          <button z-button zShape="circle" class="w-full mt-2" (click)="isAddSheetOpen.set(true)">
+            <ng-icon name="lucidePlus"></ng-icon>
+            Add Exercise
+          </button>
+        </div>
+      </div>
+    }
+  </main>
+
+  <!-- Add Exercise Sheet -->
+  <app-sheet
+    [isOpen]="isAddSheetOpen()"
+    (onOpenChange)="isAddSheetOpen.set($event)"
+    title="Add Exercise"
+    description="Search or add a custom exercise."
+  >
+    <app-exercise-autocomplete
+      (exerciseSelected)="onExerciseSelected($event)"
+    ></app-exercise-autocomplete>
+  </app-sheet>
+</div>

@@ -86,6 +86,12 @@ export class JourneyDetail implements OnInit {
     });
   }
 
+  goToEdit() {
+    const sessionId = this.loggedSession()?.id;
+    if (!sessionId) return;
+    this.router.navigate(['/journey', sessionId, 'edit']);
+  }
+
   goBack() {
     this.router.navigate(['/journey'], { queryParams: { tab: 'history' } });
   }

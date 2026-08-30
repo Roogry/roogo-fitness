@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideDumbbell, lucidePlus, lucideCheck } from '@ng-icons/lucide';
 import { WorkoutService } from '@/core/services/workout.service';
+import { LoggedSet } from '@/shared/models';
 import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-autocomplete/exercise-autocomplete';
 import { ExerciseTracker } from '@/features/exercise/components/exercise-tracker/exercise-tracker';
 import { HeaderComponent } from '@/shared/components/header/header.component';
@@ -80,6 +81,22 @@ export class SessionActive implements OnInit {
     if (!this.workoutService.sessionStartTime()) {
       this.workoutService.startSessionTimer();
     }
+  }
+
+  onAddSet(e: { exerciseId: number; weight: number; reps: number }) {
+    this.workoutService.addSet(e.exerciseId, e.weight, e.reps);
+  }
+
+  onSetUpdate(e: { exerciseId: number; setId: number; updates: Partial<LoggedSet> }) {
+    this.workoutService.updateSet(e.exerciseId, e.setId, e.updates);
+  }
+
+  onSetRemove(e: { exerciseId: number; setId: number }) {
+    this.workoutService.removeSet(e.exerciseId, e.setId);
+  }
+
+  onExerciseRemove(e: { exerciseId: number }) {
+    this.workoutService.removeTrackedExercise(e.exerciseId);
   }
 
   openFinishSheet() {
