@@ -10,6 +10,7 @@ import {
   lucideMinus,
   lucidePlus,
   lucideSave,
+  lucideFlame,
 } from '@ng-icons/lucide';
 import { DbService } from '@/core/services/db.service';
 import { PlanService } from '@/core/services/plan.service';
@@ -43,9 +44,37 @@ import { ZardDialogService } from '@/shared/components/zard/dialog';
       lucideMinus,
       lucidePlus,
       lucideSave,
+      lucideFlame,
     }),
   ],
   templateUrl: './plan-list.html',
+  styles: [
+    `
+      input[type='range']::-webkit-slider-thumb {
+        appearance: none;
+        width: 26px;
+        height: 26px;
+        border-radius: 9999px;
+        background: var(--forest);
+        border: 3px solid white;
+        outline: 1px solid var(--hairline);
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+      input[type='range']::-webkit-slider-thumb:active {
+        transform: scale(1.15);
+      }
+      input[type='range']::-moz-range-thumb {
+        width: 26px;
+        height: 26px;
+        border-radius: 9999px;
+        background: var(--forest);
+        border: 3px solid white;
+        outline: 1px solid var(--hairline);
+        cursor: pointer;
+      }
+    `,
+  ],
 })
 export class PlanList implements OnInit {
   router = inject(Router);
@@ -66,6 +95,42 @@ export class PlanList implements OnInit {
   planForm = form(this.planModel, (f) => {
     required(f.title, { message: 'Plan name is required' });
   });
+
+  sliderPercent = () => {
+    const v = this.planModel().sessionsPerWeek;
+    return ((v - 1) / 6) * 100;
+  };
+
+  scheduleDescription = () => {
+    const d = this.planModel().sessionsPerWeek;
+    const map: Record<number, string> = {
+      1: 'Easy start — recovery maximal, cocok untuk jaga konsistensi.',
+      2: 'Balanced — 2×/minggu, progres santai tanpa burn-out.',
+      3: 'Sweet spot — 3×/minggu, paling populer & mudah recover.',
+      4: 'High focus — 4×/minggu, akselerasi hasil lebih cepat.',
+      5: 'Intense — 5 hari, volume tinggi untuk push limit.',
+      6: 'Beast mode — hampir tiap hari, komitmen serius.',
+      7: 'Everyday warrior — 7/7 full commitment, recovery jadi kunci!',
+    };
+    return map[d] ?? '';
+  };
+
+  flameClass = () => {
+    const d = this.planModel().sessionsPerWeek;
+    if (d <= 2) return 'scale-[0.9] opacity-60 text-muted-foreground';
+    if (d === 3) return 'scale-100 opacity-80 text-warning';
+    if (d === 4) return 'scale-110 opacity-90 text-warning';
+    if (d === 5) return 'scale-[1.2] opacity-100 text-warning animate-pulse';
+    if (d === 6) return 'scale-[1.3] opacity-100 text-error animate-pulse';
+    return 'scale-[1.45] opacity-100 text-error animate-pulse drop-shadow-[0_0_8px_rgba(229,83,61,0.4)]';
+  };
+
+  onSliderInput(event: Event) {
+    const val = Number((event.target as HTMLInputElement).value);
+    if (val >= 1 && val <= 7) {
+      this.planModel.update((m) => ({ ...m, sessionsPerWeek: val }));
+    }
+  }
 
   myPlans = signal<WorkoutPlan[]>([]);
 

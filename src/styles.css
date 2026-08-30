@@ -30,7 +30,7 @@
   --destructive-foreground: #ffffff;
   --border: #e3e7da; /* Hairline */
   --input: #ffffff;
-  --ring: #caf85a;
+  --ring: #1b3a2a; /* Forest — high contrast focus */
   --chart-1: #2f9e5a;
   --chart-2: #e8a723;
   --chart-3: #3d7de5;
@@ -90,7 +90,7 @@
   --destructive-foreground: #ffffff;
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 12%);
-  --ring: #caf85a;
+  --ring: #eef8cf;
   --chart-1: #2f9e5a;
   --chart-2: #e8a723;
   --chart-3: #3d7de5;

@@ -66,13 +66,20 @@
         <label z-form-label for="name"> Plan Name <span class="text-destructive">*</span> </label>
         <z-form-control
           [errorMessage]="
-            planForm.title().touched() ? (planForm.title().errors()[0]?.message ?? '') : ''
+            (planForm.title().touched() || planForm.title().dirty()) && planForm.title().invalid()
+              ? (planForm.title().errors()[0]?.message ?? '')
+              : ''
           "
         >
           <input
             id="name"
             z-input
             [formField]="planForm.title"
+            [zStatus]="
+              (planForm.title().touched() || planForm.title().dirty()) && planForm.title().invalid()
+                ? 'error'
+                : undefined
+            "
             placeholder="e.g. Push Pull Legs"
             class="w-full"
           />
@@ -93,36 +100,52 @@
         </z-form-control>
       </z-form-field>
 
-      <div class="flex flex-col gap-3">
-        <label
-          class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-        >
-          Sessions Per Week
-        </label>
-        <div
-          class="flex items-center justify-between p-1 bg-muted rounded-2xl border border-border"
-        >
-          <button
-            z-button
-            zType="ghost"
-            class="w-10 h-10 rounded-xl flex items-center justify-center bg-background border border-border text-foreground hover:bg-muted disabled:opacity-50"
-            (click)="decrementSessions()"
-            [disabled]="planModel().sessionsPerWeek <= 1"
-          >
-            <ng-icon name="lucideMinus" class="w-4 h-4"></ng-icon>
-          </button>
-          <div class="flex flex-col items-center justify-center w-16">
-            <span class="text-xl font-bold">{{ planModel().sessionsPerWeek }}</span>
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <label class="text-sm font-medium leading-none">Sessions Per Week</label>
+        </div>
+
+        <div class="bg-card border border-border rounded-[20px] p-4 flex flex-col gap-3">
+          <div class="relative">
+            <input
+              type="range"
+              min="1"
+              max="7"
+              step="1"
+              [value]="planModel().sessionsPerWeek"
+              (input)="onSliderInput($event)"
+              class="w-full h-2 rounded-full appearance-none cursor-pointer border border-border"
+              [style.background]="
+                'linear-gradient(to right, var(--lime) 0%, var(--lime) ' +
+                sliderPercent() +
+                '%, var(--mist) ' +
+                sliderPercent() +
+                '%, var(--mist) 100%)'
+              "
+            />
           </div>
-          <button
-            z-button
-            zType="ghost"
-            class="w-10 h-10 rounded-xl flex items-center justify-center bg-background border border-border text-foreground hover:bg-muted disabled:opacity-50"
-            (click)="incrementSessions()"
-            [disabled]="planModel().sessionsPerWeek >= 7"
-          >
-            <ng-icon name="lucidePlus" class="w-4 h-4"></ng-icon>
-          </button>
+          <div class="flex justify-between px-1">
+            @for (n of [1, 2, 3, 4, 5, 6, 7]; track n) {
+              <span
+                class="font-mono text-[11px] w-5 text-center transition-colors"
+                [class.text-foreground]="n === planModel().sessionsPerWeek"
+                [class.font-bold]="n === planModel().sessionsPerWeek"
+                [class.text-muted-foreground]="n !== planModel().sessionsPerWeek"
+                >{{ n }}</span
+              >
+            }
+          </div>
+        </div>
+
+        <div class="bg-muted border border-border rounded-2xl px-4 py-3 flex gap-3 items-start">
+          <ng-icon
+            name="lucideFlame"
+            class="w-4 h-4 mt-0.5 shrink-0 transition-colors"
+            [class]="flameClass()"
+          ></ng-icon>
+          <p class="text-sm leading-relaxed text-muted-foreground">
+            {{ scheduleDescription() }}
+          </p>
         </div>
       </div>
     </div>
