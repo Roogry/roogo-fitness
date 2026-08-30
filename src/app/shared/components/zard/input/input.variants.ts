@@ -14,9 +14,9 @@ export const inputVariants = cva('w-full', {
       lg: 'text-base',
     },
     zStatus: {
-      error: 'border-destructive focus-visible:ring-destructive',
-      warning: 'border-yellow-500 focus-visible:ring-yellow-500',
-      success: 'border-green-500 focus-visible:ring-green-500',
+      error: 'border-error focus-visible:ring-error/50 focus-visible:border-error',
+      warning: 'border-warning focus-visible:ring-warning/50 focus-visible:border-warning',
+      success: 'border-success focus-visible:ring-success/50 focus-visible:border-success',
     },
     zBorderless: {
       true: 'flex-1 bg-transparent border-0 outline-none focus-visible:ring-0 focus-visible:ring-offset-0 p-0',

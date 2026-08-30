@@ -8,8 +8,12 @@ export const badgeVariants = cva(
         default: 'border-transparent bg-primary text-primary-foreground [a&]:hover:bg-primary/90 h-5',
         secondary: 'border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90 h-5',
         destructive:
-          'border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 h-5',
-        outline: 'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
+          'border-transparent bg-error text-white [a&]:hover:bg-error/90 focus-visible:ring-error/20 dark:focus-visible:ring-error/40 h-5',
+        outline: 'border-border bg-card text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
+        success: 'border-transparent bg-success text-white [a&]:hover:bg-success/90 h-5',
+        warning: 'border-transparent bg-warning text-warning-foreground [a&]:hover:bg-warning/90 h-5',
+        info: 'border-transparent bg-info text-white [a&]:hover:bg-info/90 h-5',
+        forest: 'border-transparent bg-forest text-forest-foreground [a&]:hover:bg-forest/90 h-5',
       },
       zShape: {
         default: 'rounded-md',

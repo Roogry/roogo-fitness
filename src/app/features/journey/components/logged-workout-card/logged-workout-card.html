@@ -1,20 +1,13 @@
-<div class="bg-secondary/50 border border-border rounded-2xl sm:rounded-4xl">
+<div class="bg-card border border-border rounded-2xl sm:rounded-[28px] overflow-hidden">
   <z-card [zLessPadding]="true">
     <div class="flex justify-between items-center">
       <div class="flex flex-col gap-2 p-3">
         <span class="font-bold text-base sm:text-lg">{{ session().session_title }}</span>
         <div class="flex items-center gap-2">
-          <z-badge
-            zType="secondary"
-            [zTooltip]="
-              (session().start_time | date: 'medium') +
-              ' until ' +
-              (session().end_time | date: 'medium')
-            "
-          >
+          <z-badge zType="secondary" class="font-mono">
             {{ session().total_duration | durationFormat }}
           </z-badge>
-          <z-badge zType="secondary">
+          <z-badge zType="secondary" class="font-mono">
             {{ session().total_weight_lifted | number: '1.0-1' }} kg
           </z-badge>
         </div>
@@ -27,7 +20,7 @@
         >
           {{ session().createdAt | timeAgo }}
         </span>
-        <div class="bg-primary/5 text-primary size-8 rounded-full flex items-center justify-center">
+        <div class="bg-accent text-foreground size-8 rounded-full flex items-center justify-center border border-border">
           <ng-icon name="lucideActivity"></ng-icon>
         </div>
       </div>
@@ -35,7 +28,7 @@
 
     <a
       [routerLink]="['/journey', session().id]"
-      class="bg-muted/50 rounded-[16px] p-3.5 flex justify-between items-center group cursor-pointer hover:bg-secondary/80 transition-colors"
+      class="bg-muted rounded-[16px] p-3.5 flex justify-between items-center group cursor-pointer hover:bg-secondary transition-colors border border-transparent hover:border-border"
     >
       <span class="text-sm font-medium text-secondary-foreground line-clamp-1 truncate mr-4">
         {{ getExerciseSummary(session()) }}

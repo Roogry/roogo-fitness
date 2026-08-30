@@ -32,9 +32,9 @@
 
     @if (displayedPlans.length === 0) {
       <div
-        class="flex flex-col items-center justify-center text-center p-10 border border-border rounded-4xl"
+        class="flex flex-col items-center justify-center text-center p-10 border border-border rounded-[28px] bg-card"
       >
-        <div class="p-4 bg-background border border-border rounded-full mb-4">
+        <div class="p-4 bg-secondary border border-border rounded-full mb-4">
           <ng-icon name="lucideDumbbell" class="w-8 h-8 text-muted-foreground"></ng-icon>
         </div>
         <h3 class="font-semibold text-lg mb-1">No Plans Yet</h3>
@@ -100,7 +100,7 @@
           Sessions Per Week
         </label>
         <div
-          class="flex items-center justify-between p-1 bg-secondary/50 rounded-2xl border border-border"
+          class="flex items-center justify-between p-1 bg-muted rounded-2xl border border-border"
         >
           <button
             z-button
@@ -127,20 +127,27 @@
       </div>
     </div>
 
-    <!-- Sheet Footer -->
-    <div app-sheet-footer>
-      <div class="mb-4">
-        <button
-          z-button
-          zShape="circle"
-          class="w-full"
-          [disabled]="planForm().invalid()"
-          (click)="savePlan()"
-        >
-          <ng-icon name="lucideSave"></ng-icon>
-          {{ planService.selectedPlanId() ? 'Save Changes' : 'Save Plan' }}
-        </button>
-      </div>
+    <!-- Sheet Footer — Batal + Simpan dark bold -->
+    <div app-sheet-footer class="flex gap-3 w-full">
+      <button
+        z-button
+        zType="ghost"
+        zShape="circle"
+        class="flex-1 font-bold text-muted-ink"
+        (click)="isOpenPlanForm.set(false)"
+      >
+        Batal
+      </button>
+      <button
+        z-button
+        zType="forest"
+        zShape="circle"
+        class="flex-1 font-bold"
+        [disabled]="planForm().invalid()"
+        (click)="savePlan()"
+      >
+        Simpan
+      </button>
     </div>
   </app-sheet>
 </div>

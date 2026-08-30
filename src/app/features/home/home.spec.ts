@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Home } from './home';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DbService } from '@/core/services/db.service';
 import { WorkoutService } from '@/core/services/workout.service';
 import { MuscleService } from '@/core/services/muscle.service';
@@ -17,10 +17,13 @@ describe('Home Component - Next Session Detection', () => {
 
   const mockDbService = {
     getWorkoutPlans: vi.fn().mockResolvedValue([]),
+    getExercises: vi.fn().mockResolvedValue([]),
+    getMuscles: vi.fn().mockResolvedValue([]),
   };
 
   const mockWorkoutService = {
     getLoggedWorkoutSessions: vi.fn().mockResolvedValue([]),
+    startSessionFlow: vi.fn(),
   };
 
   const mockMuscleService = {
@@ -31,11 +34,17 @@ describe('Home Component - Next Session Detection', () => {
     getDaysTrainedThisWeek: vi.fn().mockResolvedValue(0),
   };
 
+  const mockActivatedRoute = {
+    snapshot: { queryParams: {} },
+    queryParams: { subscribe: vi.fn() },
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Home],
       providers: [
         { provide: Router, useValue: mockRouter },
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: DbService, useValue: mockDbService },
         { provide: WorkoutService, useValue: mockWorkoutService },
         { provide: MuscleService, useValue: mockMuscleService },

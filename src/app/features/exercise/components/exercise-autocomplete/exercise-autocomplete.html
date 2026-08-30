@@ -6,7 +6,7 @@
       [value]="searchQuery()" (valueChange)="onSearchChange($event)" />
     @if (isSearching()) {
     <div class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-      <div class="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+      <div class="h-4 w-4 animate-spin rounded-full border-2 border-forest border-t-transparent"></div>
     </div>
     }
   </div>
@@ -39,13 +39,13 @@
 
     @if (!hasExactMatch() && searchQuery().trim() && !isSearching()) {
     <div
-      class="bg-primary/5 rounded-xl border border-primary/20 p-4 hover:border-primary/50 cursor-pointer flex justify-between items-center transition-all"
+      class="bg-accent rounded-xl border border-border p-4 hover:border-forest/20 cursor-pointer flex justify-between items-center transition-all"
       (click)="createNewExercise(searchQuery().trim())">
       <div class="flex flex-col">
-        <span class="font-medium text-sm text-primary">Add "{{ searchQuery().trim() }}"</span>
-        <span class="text-sm text-primary/70 mt-1">Create a new custom exercise</span>
+        <span class="font-medium text-sm text-forest">Add "{{ searchQuery().trim() }}"</span>
+        <span class="text-sm text-muted-foreground mt-1">Create a new custom exercise</span>
       </div>
-      <ng-icon name="lucidePlus" class="h-5 w-5 text-primary"></ng-icon>
+      <ng-icon name="lucidePlus" class="h-5 w-5 text-forest"></ng-icon>
     </div>
     }
   </div>

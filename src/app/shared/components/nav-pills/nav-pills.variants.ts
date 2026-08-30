@@ -5,7 +5,7 @@ export const pillVariants = cva(
   {
     variants: {
       active: {
-        true: 'bg-background text-foreground shadow-sm border-border/10',
+        true: 'bg-background text-foreground border-border/10',
         false: 'text-muted-foreground hover:text-foreground hover:bg-muted/10',
       },
     },

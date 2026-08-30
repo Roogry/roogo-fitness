@@ -1,9 +1,9 @@
 <div class="flex flex-col items-center gap-2 group">
   <div
-    class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-secondary/50 flex items-center justify-center p-2 border-2 transition-colors relative"
+    class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-card flex items-center justify-center p-2 border-2 transition-colors relative"
     [class.border-primary]="selected()"
-    [class.border-transparent]="!selected()"
-    [class.bg-primary/5]="selected()"
+    [class.border-border]="!selected()"
+    [class.bg-accent]="selected()"
   >
     @if (muscle().icon_url) {
       <img
@@ -25,9 +25,11 @@
 
   @if (muscle().name) {
     <span
-      class="text-xs font-medium text-center transition-colors"
-      [class.text-primary]="selected()"
+      class="text-xs text-center transition-colors"
+      [class.text-foreground]="selected()"
+      [class.font-semibold]="selected()"
       [class.text-muted-foreground]="!selected()"
+      [class.font-medium]="!selected()"
     >
       {{ muscle().name }}
     </span>

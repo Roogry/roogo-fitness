@@ -93,32 +93,32 @@
   @if (workoutService.sessionStartTime()) {
     <div class="fixed bottom-8 left-4 right-4 z-50 max-w-2xl mx-auto px-6">
       <div
-        class="p-4 flex items-center rounded-4xl bg-secondary/95 backdrop-blur-md shadow-lg border border-border"
+        class="p-4 flex items-center rounded-[28px] bg-forest text-forest-foreground backdrop-blur-md border border-forest"
       >
         <div class="px-4 flex-2 flex flex-col items-center justify-center text-center">
-          <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Volume</span>
-          <span class="font-medium"
+          <span class="text-[0.5rem] text-white/60 uppercase tracking-widest font-semibold">Volume</span>
+          <span class="font-mono font-bold text-white"
             >{{ workoutService.totalVolume() }}
-            <span class="text-sm font-medium text-foreground">kg</span></span
+            <span class="font-mono text-sm font-medium text-white/80">kg</span></span
           >
         </div>
 
-        <div class="h-6 w-[1px] bg-border"></div>
+        <div class="h-6 w-[1px] bg-white/15"></div>
 
         <div
           class="min-w-[120px] px-4 flex-3 flex flex-col items-center justify-center text-center"
         >
-          <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Duration</span>
-          <span class="font-medium">{{ workoutService.sessionDuration() | durationFormat }}</span>
+          <span class="text-[0.5rem] text-white/60 uppercase tracking-widest font-semibold">Duration</span>
+          <span class="font-mono font-bold text-lime">{{ workoutService.sessionDuration() | durationFormat }}</span>
         </div>
 
-        <div class="h-6 w-[1px] bg-border"></div>
+        <div class="h-6 w-[1px] bg-white/15"></div>
 
         <div class="px-4 flex-2 flex flex-col items-center justify-center text-center">
-          <span class="text-[0.5rem] text-muted-foreground uppercase tracking-wider">Sets</span>
-          <span class="font-medium"
+          <span class="text-[0.5rem] text-white/60 uppercase tracking-widest font-semibold">Sets</span>
+          <span class="font-mono font-bold text-white"
             >{{ workoutService.totalSets() }}
-            <span class="text-sm font-medium text-foreground">set</span></span
+            <span class="font-mono text-sm font-medium text-white/80">set</span></span
           >
         </div>
       </div>

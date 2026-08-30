@@ -19,7 +19,7 @@
           </div>
           <div>
             <h3
-              class="font-semibold text-base sm:text-lg text-primary group-hover:opacity-60 transition-opacity leading-tight"
+              class="font-semibold text-base sm:text-lg text-foreground group-hover:text-forest transition-colors leading-tight"
             >
               {{ exercise().name }}
             </h3>
@@ -48,7 +48,7 @@
 
     <!-- Inputs/Details Row -->
     @if (editable()) {
-      <div class="pt-4 border-t border-gray-100">
+      <div class="pt-4 border-t border-border">
         <div class="grid grid-cols-3 gap-3">
           <z-form-field>
             <label
@@ -65,7 +65,7 @@
                 type="number"
                 min="1"
                 placeholder="3"
-                class="w-full text-center"
+                class="w-full text-center font-mono"
                 [ngModel]="plannedExercise().target_sets"
                 (ngModelChange)="onSetsChange($event)"
               />
@@ -88,7 +88,7 @@
                 min="0"
                 step="0.5"
                 placeholder="0"
-                class="w-full text-center"
+                class="w-full text-center font-mono"
                 [ngModel]="plannedExercise().target_weight"
                 (ngModelChange)="onWeightChange($event)"
               />
@@ -110,7 +110,7 @@
                 type="number"
                 min="1"
                 placeholder="10"
-                class="w-full text-center"
+                class="w-full text-center font-mono"
                 [ngModel]="plannedExercise().target_reps"
                 (ngModelChange)="onRepsChange($event)"
               />
@@ -122,18 +122,18 @@
   </div>
 
   @if (!editable()) {
-    <div card-footer class="pt-4 flex w-full gap-4 border-t border-gray-100">
+    <div card-footer class="pt-4 flex w-full gap-4 border-t border-border">
       <div class="w-20 flex items-center gap-1.5">
-        <ng-icon name="lucideFlagTriangleLeft" class="text-primary size-3 sm:size-4"></ng-icon>
-        <span class="text-sm sm:text-base">{{ plannedExercise().target_sets ?? 0 }} sets</span>
+        <ng-icon name="lucideFlagTriangleLeft" class="text-forest size-3 sm:size-4"></ng-icon>
+        <span class="font-mono text-sm sm:text-base">{{ plannedExercise().target_sets ?? 0 }} sets</span>
       </div>
       <div class="w-20 flex items-center gap-1.5">
-        <ng-icon name="lucideDumbbell" class="text-primary size-3 sm:size-4"></ng-icon>
-        <span class="text-sm sm:text-base">{{ plannedExercise().target_weight ?? 0 }} kg</span>
+        <ng-icon name="lucideDumbbell" class="text-forest size-3 sm:size-4"></ng-icon>
+        <span class="font-mono text-sm sm:text-base">{{ plannedExercise().target_weight ?? 0 }} kg</span>
       </div>
       <div class="w-20 flex items-center gap-1.5">
-        <ng-icon name="lucideRepeat" class="text-primary size-3 sm:size-4"></ng-icon>
-        <span class="text-sm sm:text-base">{{ plannedExercise().target_reps ?? 0 }} reps</span>
+        <ng-icon name="lucideRepeat" class="text-forest size-3 sm:size-4"></ng-icon>
+        <span class="font-mono text-sm sm:text-base">{{ plannedExercise().target_reps ?? 0 }} reps</span>
       </div>
     </div>
   }
