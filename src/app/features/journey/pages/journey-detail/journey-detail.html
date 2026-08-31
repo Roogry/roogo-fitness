@@ -49,17 +49,17 @@
       <div class="flex items-center justify-start gap-8">
         <div class="flex flex-col gap-1">
           <span class="text-sm text-muted-foreground">Duration</span>
-          <span>{{ loggedSession()?.total_duration ?? 0 | durationFormat }}</span>
+          <span class="font-mono font-medium">{{ loggedSession()?.total_duration ?? 0 | durationFormat }}</span>
         </div>
 
         <div class="flex flex-col gap-1">
           <span class="text-sm text-muted-foreground">Volume</span>
-          <span>{{ loggedSession()?.total_weight_lifted | number: '1.0-0' }} kg</span>
+          <span class="font-mono font-medium">{{ loggedSession()?.total_weight_lifted | number: '1.0-0' }} kg</span>
         </div>
 
         <div class="flex flex-col gap-1">
           <span class="text-sm text-muted-foreground">Exercises</span>
-          <span>{{ loggedSession()?.workouts?.length }}</span>
+          <span class="font-mono font-medium">{{ loggedSession()?.workouts?.length }}</span>
         </div>
       </div>
 

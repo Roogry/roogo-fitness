@@ -3,14 +3,16 @@
   class="cursor-pointer transition-colors group overflow-hidden"
   (click)="handleToggle()"
   [ngClass]="{
-    'border-primary': isExpanded(),
-    'hover:border-primary/50': !isExpanded(),
+    'border-border': isExpanded(),
+    'hover:border-lime': !isExpanded(),
   }"
 >
   <div class="py-2 px-3 flex justify-between items-center">
     <div class="flex-1 flex flex-col">
       <h3 class="font-semibold text-lg">{{ plan().title }}</h3>
-      <p class="text-xs text-muted-foreground">{{ plan().days }} days / week</p>
+      <p class="text-xs text-muted-foreground">
+        {{ plan().days }} days · {{ plan().sessions.length }} sessions
+      </p>
     </div>
 
     <button
@@ -34,9 +36,9 @@
       zType="ghost"
       zSize="icon"
       zShape="circle"
-      class="text-secondary-foreground"
+      class="text-muted-foreground"
       [ngClass]="{
-        'rotate-90 bg-primary/5 text-primary-foreground': isExpanded(),
+        'rotate-90 bg-forest text-white': isExpanded(),
       }"
     >
       <ng-icon name="lucideChevronRight"></ng-icon>
@@ -85,13 +87,13 @@
     <div class="pt-1 flex flex-col gap-2 animate-in slide-in-from-top-2 fade-in duration-200">
       @for (session of plan().sessions; track session.id) {
         <div
-          class="p-3 rounded-xl bg-secondary/30 hover:bg-secondary/60 transition-colors cursor-pointer border border-transparent hover:border-border"
+          class="p-3 rounded-xl bg-muted hover:bg-secondary transition-colors cursor-pointer border border-border hover:border-forest/20"
           (click)="detailSession(session.id, $event)"
         >
           <div class="flex flex-col w-full">
             <div class="flex items-center gap-2 w-full">
               <div
-                class="rounded-full p-1 bg-gray-200 flex items-center justify-center flex-shrink-0 text-muted-foreground"
+                class="rounded-full p-1 bg-card border border-border flex items-center justify-center flex-shrink-0 text-muted-foreground"
               >
                 <ng-icon name="lucideDumbbell" class="w-3 h-3"></ng-icon>
               </div>

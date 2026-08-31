@@ -1,11 +1,11 @@
 <nav
-  class="w-full flex items-center justify-around bg-background border-t border-border h-[80px] pb-[env(safe-area-inset-bottom,0px)]"
+  class="w-full flex items-center justify-around bg-card border-t border-border h-[80px] pb-[env(safe-area-inset-bottom,0px)]"
 >
   <a
     routerLink="/"
-    routerLinkActive="text-primary"
+    routerLinkActive="text-foreground"
     [routerLinkActiveOptions]="{ exact: true }"
-    class="flex flex-col items-center justify-center gap-1 w-full h-full text-muted-foreground transition-colors hover:text-foreground"
+    class="flex flex-col items-center justify-center gap-1 w-full h-full text-muted-foreground transition-colors hover:text-foreground data-[active]:text-foreground"
   >
     <ng-icon name="lucideHouse" class="w-6 h-6"></ng-icon>
     <span class="text-xs font-medium">Home</span>
@@ -13,7 +13,7 @@
 
   <a
     routerLink="/journey"
-    routerLinkActive="text-primary"
+    routerLinkActive="text-foreground"
     class="flex flex-col items-center justify-center gap-1 w-full h-full text-muted-foreground transition-colors hover:text-foreground"
   >
     <ng-icon name="lucideActivity" class="w-6 h-6"></ng-icon>
@@ -22,7 +22,7 @@
 
   <a
     routerLink="/plan"
-    routerLinkActive="text-primary"
+    routerLinkActive="text-foreground"
     class="flex flex-col items-center justify-center gap-1 w-full h-full text-muted-foreground transition-colors hover:text-foreground"
   >
     <ng-icon name="lucideBookOpen" class="w-6 h-6"></ng-icon>
@@ -31,7 +31,7 @@
 
   <a
     routerLink="/profile"
-    routerLinkActive="text-primary"
+    routerLinkActive="text-foreground"
     class="flex flex-col items-center justify-center gap-1 w-full h-full text-muted-foreground transition-colors hover:text-foreground"
   >
     <ng-icon name="lucideUser" class="w-6 h-6"></ng-icon>

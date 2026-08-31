@@ -1,42 +1,53 @@
 @if (isOpen()) {
   <!-- Backdrop -->
   <div
-    class="fixed inset-0 z-100 bg-black/20 backdrop-blur-sm transition-opacity"
+    class="fixed inset-0 z-100 bg-ink/30 backdrop-blur-sm"
     (click)="close()"
   ></div>
 
-  <!-- Sheet Container -->
-  <div
-    class="fixed z-100 bg-background transition-transform bottom-0 left-0 right-0 h-[85vh] rounded-t-4xl md:top-0 md:bottom-0 md:left-auto md:right-0 md:h-full md:w-[450px] md:rounded-none md:border-l md:border-border slide-in flex flex-col"
-  >
-    <div class="pt-4 h-full flex flex-col">
-      <!-- Sheet Indicator -->
-      <div
-        class="w-12.5 h-2 mb-4 bg-gray-200 mx-auto rounded-full cursor-pointer sm:hidden shrink-0"
-        (click)="close()"
-      ></div>
+  <!-- Container: bottom sheet on mobile, centered modal on desktop -->
+  <div class="fixed inset-0 z-100 flex items-end md:items-center justify-center p-0 md:p-4 pointer-events-none">
+    <div
+      class="pointer-events-auto bg-card w-full md:max-w-[480px] md:w-full max-h-[85vh] md:max-h-[80vh] rounded-t-[32px] md:rounded-[32px] border border-border flex flex-col overflow-hidden sheet-panel"
+    >
+      <div class="flex flex-col h-full max-h-[85vh] md:max-h-[80vh]">
+        <!-- Sheet Indicator (mobile only) -->
+        <div
+          class="w-12 h-1.5 bg-border mx-auto rounded-full mt-3 mb-2 md:hidden shrink-0 cursor-pointer"
+          (click)="close()"
+        ></div>
 
-      <!-- Sheet Header -->
-      <div class="px-4 sm:px-6 flex justify-between items-center shrink-0">
-        <div class="flex flex-col gap-1">
-          <h2 class="font-semibold text-xl tracking-tight">{{ title() }}</h2>
-          @if (description()) {
-            <p class="text-sm text-muted-foreground">{{ description() }}</p>
-          }
+        <!-- Header — vertically centered -->
+        <div class="px-5 md:px-6 pt-2 md:pt-6 pb-4 flex justify-between items-center gap-4 shrink-0 border-b border-transparent">
+          <div class="flex flex-col justify-center gap-1 min-h-[36px]">
+            <h2 class="font-display font-bold text-[20px] tracking-tight leading-none flex items-center">{{ title() }}</h2>
+            @if (description()) {
+              <p class="text-sm text-muted-foreground leading-relaxed">{{ description() }}</p>
+            }
+          </div>
+          <button
+            z-button
+            zType="secondary"
+            zSize="icon-sm"
+            zShape="circle"
+            (click)="close()"
+            class="shrink-0 bg-mist border border-border text-foreground hover:bg-accent"
+          >
+            <ng-icon name="lucideX" class="w-4 h-4"></ng-icon>
+          </button>
         </div>
-        <button z-button zType="secondary" zSize="icon" zShape="circle" (click)="close()">
-          <ng-icon name="lucideX"></ng-icon>
-        </button>
-      </div>
 
-      <!-- Sheet Content -->
-      <div class="px-4 sm:px-6 pt-6 pb-4 flex-1 overflow-y-auto w-full relative">
-        <ng-content></ng-content>
-      </div>
+        <!-- Content -->
+        <div class="px-5 md:px-6 pt-4 pb-4 flex-1 overflow-y-auto w-full relative">
+          <ng-content></ng-content>
+        </div>
 
-      <!-- Optional Sheet Footer -->
-      <div class="px-4 sm:px-6">
-        <ng-content select="[app-sheet-footer]"></ng-content>
+        <!-- Footer — primary dark, bold -->
+        <div
+          class="px-5 md:px-6 pb-5 md:pb-6 pt-4 shrink-0 bg-card rounded-b-[32px] [&_button]:font-bold"
+        >
+          <ng-content select="[app-sheet-footer]"></ng-content>
+        </div>
       </div>
     </div>
   </div>

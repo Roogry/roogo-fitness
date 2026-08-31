@@ -1,30 +1,39 @@
 <div
-  class="active-session-widget cursor-pointer flex items-center justify-between p-4 rounded-full border border-primary/10 shadow-lg select-none transition-all active:scale-[0.98] bg-background/95 hover:bg-secondary dark:bg-background/95 backdrop-blur-md"
+  class="active-session-widget cursor-pointer flex items-center justify-between p-4 rounded-full border border-forest select-none transition-all active:scale-[0.98] bg-forest text-white hover:bg-forest/90 backdrop-blur-md"
   (click)="goToActiveSession()"
 >
   <!-- Left Side: Icon and Details -->
   <div class="flex items-center gap-3 min-w-0">
     <div
-      class="icon-container flex items-center justify-center size-10 rounded-full bg-primary/10 text-primary flex-shrink-0"
+      class="icon-container flex items-center justify-center size-10 rounded-full bg-primary/10 text-white flex-shrink-0"
     >
-      <ng-icon name="lucideDumbbell" class="size-5 animate-pulse"></ng-icon>
+      <ng-icon
+        name="lucideFlame"
+        color="#caf85a"
+        class="size-5 animate-pulse text-primary"
+      ></ng-icon>
     </div>
 
     <div class="flex flex-col min-w-0">
       <div class="flex items-center gap-2">
-        <span class="relative flex h-3 w-3">
-          <span
-            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
-          ></span>
-          <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-        </span>
-        <span class="text-sm font-semibold text-foreground truncate leading-tight">
+        <span class="text-lg font-semibold text-white truncate leading-tight">
           {{ workoutService.sessionTitle() || 'Workout Session' }}
         </span>
+
+        <z-badge zType="warning" class="bg-warning/15 flex items-center gap-1.5">
+          <span class="relative flex h-2 w-2">
+            <span
+              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-warning opacity-75"
+            ></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-warning"></span>
+          </span>
+
+          Unsaved
+        </z-badge>
       </div>
-      <span class="text-xs text-muted-foreground mt-0.5 leading-none">
-        {{ workoutService.completedExercises() }}/{{ workoutService.totalExercises() }} Exercises •
-        {{ workoutService.completedSets() }}/{{ workoutService.totalSets() }} Sets
+      <span class="font-mono text-xs text-white/70 mt-0.5">
+        {{ workoutService.completedSets() }}/{{ workoutService.totalSets() }} Sets •
+        {{ workoutService.totalVolume() }} kg logged
       </span>
     </div>
   </div>
@@ -32,7 +41,7 @@
   <!-- Right Side: Duration Timer -->
   <div class="flex items-center gap-2">
     <div
-      class="timer-badge flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary text-primary-foreground font-semibold text-xs tracking-wider"
+      class="timer-badge flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-lime text-ink font-mono font-bold text-xs tracking-wider"
     >
       <span>{{ workoutService.sessionDuration() | durationFormat }}</span>
     </div>

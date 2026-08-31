@@ -26,19 +26,19 @@
     </z-form-field>
 
     <!-- 2. Session Metrics Summary -->
-    <div class="flex flex-col gap-4 p-4 bg-secondary/50 rounded-xl">
+    <div class="flex flex-col gap-4 p-4 bg-muted rounded-xl border border-border">
       <div class="grid grid-cols-3 gap-4">
         <div class="flex flex-col">
           <span class="text-xs text-muted-foreground uppercase">Duration</span>
-          <span class="font-medium">{{ workoutService.sessionDuration() | durationFormat }}</span>
+          <span class="font-mono font-medium">{{ workoutService.sessionDuration() | durationFormat }}</span>
         </div>
         <div class="flex flex-col">
           <span class="text-xs text-muted-foreground uppercase">Total Volume</span>
-          <span class="font-medium">{{ workoutService.totalVolume() }} kg</span>
+          <span class="font-mono font-medium">{{ workoutService.totalVolume() }} kg</span>
         </div>
         <div class="flex flex-col">
           <span class="text-xs text-muted-foreground uppercase">Total Sets</span>
-          <span class="font-medium">{{ workoutService.totalSets() }} sets</span>
+          <span class="font-mono font-medium">{{ workoutService.totalSets() }} sets</span>
         </div>
       </div>
       <div class="flex flex-col pt-4 border-t border-border/50">
@@ -50,8 +50,8 @@
     <!-- Exceeded Target Section -->
     @if (progressedExercises().length > 0) {
       <div class="flex flex-col gap-3">
-        <h3 class="text-sm font-semibold text-primary">Exceeded Target</h3>
-        <div class="flex flex-col gap-2 p-4 bg-primary/5 rounded-xl border border-primary/10">
+        <h3 class="text-sm font-semibold text-foreground">Exceeded Target</h3>
+        <div class="flex flex-col gap-2 p-4 bg-accent rounded-xl border border-border">
           <p class="text-xs text-muted-foreground mb-1">
             You exceeded your planned targets! Select which targets you want to update in your plan.
           </p>
@@ -62,10 +62,10 @@
                 class="items-start"
               >
                 <div class="flex flex-col ml-1">
-                  <span class="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                  <span class="text-sm font-medium text-foreground group-hover:text-forest transition-colors">
                     {{ prog.exerciseName }}
                   </span>
-                  <span class="text-xs text-muted-foreground">
+                  <span class="font-mono text-xs text-muted-foreground">
                     @if (prog.newWeight > prog.oldWeight) {
                       Weight: {{ prog.oldWeight }}kg ➔ {{ prog.newWeight }}kg
                     }

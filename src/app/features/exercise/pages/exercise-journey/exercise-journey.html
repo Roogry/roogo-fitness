@@ -5,7 +5,7 @@
       <span class="text-lg font-semibold text-muted-foreground uppercase tracking-wider">
         Personal Record
       </span>
-      <span class="text-3xl font-extrabold text-primary">
+      <span class="text-3xl font-extrabold text-forest">
         {{ highestWeight() ? (highestWeight() | number: '1.0-1') + ' kg' : '-' }}
         @if (highestWeight() && highestWeightReps()) {
           <span class="text-xl font-bold text-muted-foreground">
@@ -25,7 +25,7 @@
         >
           Total <br class="inline-block sm:hidden" />Sets
         </span>
-        <span class="text-2xl font-extrabold text-primary"> {{ totalSets() || 0 }} Sets </span>
+        <span class="text-2xl font-extrabold text-forest"> {{ totalSets() || 0 }} Sets </span>
       </div>
     </z-card>
     <z-card class="p-4">
@@ -35,7 +35,7 @@
         >
           Last <br class="inline-block sm:hidden" />Active
         </span>
-        <span class="text-2xl font-extrabold text-primary">
+        <span class="text-2xl font-extrabold text-forest">
           {{ lastLogged() ? (lastLogged() | date: 'd/M/yy') : '-' }}
         </span>
       </div>

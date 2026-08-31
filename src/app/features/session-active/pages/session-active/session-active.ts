@@ -10,9 +10,9 @@ import { ExerciseTracker } from '@/features/exercise/components/exercise-tracker
 import { HeaderComponent } from '@/shared/components/header/header.component';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { RooSheetComponent } from '@/shared/components/sheet/sheet';
-import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { ActiveSessionFinishSheet } from '../../components/active-session-finish-sheet/active-session-finish-sheet';
+import { timeFormatPipe } from '@/shared/pipes/time-format-pipe';
 
 @Component({
   selector: 'app-session-active',
@@ -24,7 +24,7 @@ import { ActiveSessionFinishSheet } from '../../components/active-session-finish
     HeaderComponent,
     ZardButtonComponent,
     RooSheetComponent,
-    DurationFormatPipe,
+    timeFormatPipe,
     NgIcon,
     ActiveSessionFinishSheet,
   ],
@@ -105,7 +105,8 @@ export class SessionActive implements OnInit {
     for (const tracked of this.workoutService.trackedExercises()) {
       let targetWeight = 0;
       let targetReps = 0;
-      const completedSets: { weight: number; reps: number; volume: number; exceeded: boolean }[] = [];
+      const completedSets: { weight: number; reps: number; volume: number; exceeded: boolean }[] =
+        [];
 
       for (const s of tracked.sets) {
         const actualWeight = s.weight_lifted ?? 0;

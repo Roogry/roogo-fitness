@@ -22,6 +22,7 @@ import {
   cardVariants,
   ZardCardNoPaddingVariants,
   ZardCardRoundedVariants,
+  ZardCardVariant,
 } from './card.variants';
 
 /**
@@ -101,6 +102,7 @@ export class ZardCardComponent {
   readonly class = input<ClassValue>('');
   readonly zFooterBorder = input(false);
   readonly zHeaderBorder = input(false);
+  readonly zVariant = input<ZardCardVariant>('default');
   readonly zRounded = input<ZardCardRoundedVariants>('default');
   readonly zLessPadding = input<ZardCardNoPaddingVariants>(false);
   readonly zAction = input('');
@@ -122,6 +124,7 @@ export class ZardCardComponent {
   protected readonly classes = computed(() =>
     mergeClasses(
       cardVariants({
+        zVariant: this.zVariant(),
         zRounded: this.zRounded(),
         zLessPadding: this.zLessPadding(),
       }),

@@ -1,29 +1,33 @@
 <div
   class="group/session rounded-2xl p-4 flex justify-between items-center transition-all border h-full w-full cursor-pointer"
-  [class.bg-primary/5]="isUpNext()"
-  [class.border-primary/30]="isUpNext()"
-  [class.bg-secondary/40]="!isUpNext()"
-  [class.border-transparent]="!isUpNext()"
-  [class.hover:bg-secondary/60]="!isUpNext()"
-  [class.hover:bg-primary/10]="isUpNext()"
-  [class.hover:border-primary/50]="isUpNext()"
-  [class.hover:border-primary/20]="!isUpNext()"
+  [class.bg-primary]="isUpNext()"
+  [class.border-primary]="isUpNext()"
+  [class.text-primary-foreground]="isUpNext()"
+  [class.bg-card]="!isUpNext()"
+  [class.border-border]="!isUpNext()"
+  [class.hover:bg-accent]="!isUpNext()"
+  [class.hover:border-forest/20]="isUpNext()"
+  [class.hover:border-border]="!isUpNext()"
   (click)="goToSession()"
 >
   <div class="flex flex-col mr-4">
     @if (isUpNext()) {
-      <span class="text-xs text-primary font-medium mb-1">Up Next</span>
+      <span class="text-xs text-primary-foreground/70 font-semibold mb-1 uppercase tracking-wide">Up Next</span>
     }
-    <span class="font-semibold text-secondary-foreground text-sm whitespace-nowrap line-clamp-1">{{
-      title()
-    }}</span>
+    <span
+      class="font-semibold text-sm whitespace-nowrap line-clamp-1"
+      [class.text-primary-foreground]="isUpNext()"
+      [class.text-foreground]="!isUpNext()"
+      >{{ title() }}</span
+    >
   </div>
   <div
     class="h-10 w-10 rounded-full flex-shrink-0 flex items-center justify-center transition-colors"
-    [class.bg-primary]="isUpNext()"
-    [class.text-white]="isUpNext()"
-    [class.bg-secondary/20]="!isUpNext()"
-    [class.group-hover/session:bg-primary]="!isUpNext()"
+    [class.bg-primary-foreground]="isUpNext()"
+    [class.text-primary]="isUpNext()"
+    [class.bg-secondary]="!isUpNext()"
+    [class.text-foreground]="!isUpNext()"
+    [class.group-hover/session:bg-forest]="!isUpNext()"
     [class.group-hover/session:text-white]="!isUpNext()"
   >
     <ng-icon name="lucideChevronRight"></ng-icon>
