@@ -49,6 +49,10 @@ export class SessionActive implements OnInit {
 
   ngOnInit() {
     this.setupSessionData();
+    // Fix #61: refresh stale exercise data when returning to session
+    if (this.workoutService.trackedExercises().length > 0) {
+      this.workoutService.refreshTrackedExercises();
+    }
   }
 
   setupSessionData() {
