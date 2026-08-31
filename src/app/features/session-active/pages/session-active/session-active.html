@@ -2,12 +2,7 @@
   <!-- Header -->
   <app-header title="Log Session" [showBackBtn]="true" class="sticky top-0">
     @if (workoutService.sessionStartTime()) {
-      <button
-        right
-        z-button
-        zShape="circle"
-        (click)="openFinishSheet()"
-      >
+      <button right z-button zShape="circle" (click)="openFinishSheet()">
         <ng-icon name="lucideCheck" class="hidden sm:inline-block"></ng-icon>
         <span class="hidden sm:inline-block">Finish</span>
       </button>
@@ -50,7 +45,13 @@
 
       <div class="mt-4 flex flex-col gap-4">
         @if (workoutService.sessionStartTime()) {
-          <button z-button zShape="circle" class="w-full" (click)="isAddSheetOpen.set(true)">
+          <button
+            z-button
+            zType="dashed"
+            zShape="circle"
+            class="w-full"
+            (click)="isAddSheetOpen.set(true)"
+          >
             <ng-icon name="lucidePlus"></ng-icon>
             Add Exercise
           </button>
@@ -59,7 +60,7 @@
         @if (workoutService.sessionStartTime()) {
           <button
             z-button
-            zType="secondary"
+            zType="ghost"
             zShape="circle"
             class="text-destructive hover:bg-destructive/20 hover:text-destructive"
             (click)="openDiscardConfirm()"
@@ -96,11 +97,13 @@
         class="p-4 flex items-center rounded-[28px] bg-forest text-forest-foreground backdrop-blur-md border border-forest"
       >
         <div class="px-4 flex-2 flex flex-col items-center justify-center text-center">
-          <span class="text-[0.5rem] text-white/60 uppercase tracking-widest font-semibold">Volume</span>
-          <span class="font-mono font-bold text-white"
-            >{{ workoutService.totalVolume() }}
-            <span class="font-mono text-sm font-medium text-white/80">kg</span></span
+          <span
+            class="text-[0.5rem] text-white/60 uppercase leading-[1rem] tracking-widest font-semibold"
+            >Duration</span
           >
+          <span class="font-mono text-sm font-medium text-lime">{{
+            workoutService.sessionDuration() | timeFormat
+          }}</span>
         </div>
 
         <div class="h-6 w-[1px] bg-white/15"></div>
@@ -108,18 +111,26 @@
         <div
           class="min-w-[120px] px-4 flex-3 flex flex-col items-center justify-center text-center"
         >
-          <span class="text-[0.5rem] text-white/60 uppercase tracking-widest font-semibold">Duration</span>
-          <span class="font-mono font-bold text-lime">{{ workoutService.sessionDuration() | durationFormat }}</span>
+          <span
+            class="text-[0.5rem] text-white/60 uppercase leading-[1rem] tracking-widest font-semibold"
+            >Volume</span
+          >
+          <span class="font-mono text-sm font-medium text-white"
+            >{{ workoutService.totalVolume() }}
+            <span class="font-mono text-sm font-medium text-white/80">kg</span>
+          </span>
         </div>
 
         <div class="h-6 w-[1px] bg-white/15"></div>
 
         <div class="px-4 flex-2 flex flex-col items-center justify-center text-center">
-          <span class="text-[0.5rem] text-white/60 uppercase tracking-widest font-semibold">Sets</span>
-          <span class="font-mono font-bold text-white"
-            >{{ workoutService.totalSets() }}
-            <span class="font-mono text-sm font-medium text-white/80">set</span></span
+          <span
+            class="text-[0.5rem] text-white/60 uppercase leading-[1rem] tracking-widest font-semibold"
+            >Sets</span
           >
+          <span class="font-mono text-sm font-medium text-white"
+            >{{ workoutService.totalSets() }}
+          </span>
         </div>
       </div>
     </div>

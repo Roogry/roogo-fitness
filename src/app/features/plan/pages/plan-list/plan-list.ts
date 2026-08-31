@@ -4,14 +4,7 @@ import { Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { form, FormField, required, submit } from '@angular/forms/signals';
 import { ZardFormImports } from '@/shared/components/zard/form';
-import {
-  lucideFolderPlus,
-  lucideDumbbell,
-  lucideMinus,
-  lucidePlus,
-  lucideSave,
-  lucideFlame,
-} from '@ng-icons/lucide';
+import { lucideDumbbell, lucideMinus, lucidePlus, lucideSave, lucideFlame } from '@ng-icons/lucide';
 import { DbService } from '@/core/services/db.service';
 import { PlanService } from '@/core/services/plan.service';
 import { WorkoutPlan } from '@/shared/models';
@@ -39,7 +32,6 @@ import { ZardDialogService } from '@/shared/components/zard/dialog';
   ],
   providers: [
     provideIcons({
-      lucideFolderPlus,
       lucideDumbbell,
       lucideMinus,
       lucidePlus,

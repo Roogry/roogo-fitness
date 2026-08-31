@@ -108,6 +108,7 @@
   --forest: #14241a;
   --forest-foreground: #f7f8f2;
   --ink: #f7f8f2;
+  --ink-foreground: #ffffff;
   --canvas: #0f1f16;
   --mist: #24382b;
   --lime-tint: #24382b;
@@ -155,6 +156,7 @@
   --color-forest: var(--forest);
   --color-forest-foreground: var(--forest-foreground);
   --color-ink: var(--ink);
+  --color-ink-foreground: var(--ink-foreground);
   --color-mist: var(--mist);
   --color-lime: var(--lime);
   --color-lime-tint: var(--lime-tint);

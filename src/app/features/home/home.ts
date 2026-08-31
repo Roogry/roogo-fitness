@@ -14,13 +14,20 @@ import { DbService } from '@/core/services/db.service';
 import { MuscleService } from '@/core/services/muscle.service';
 import { JourneyService } from '@/features/journey/services/journey.service';
 import { LoggedSession, WorkoutPlan, WorkoutPlanSession, Muscle } from '@/shared/models';
+import { ZardButtonComponent } from '@/shared/components/zard/button';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, NgIcon, DecimalPipe, NgOptimizedImage],
+  imports: [CommonModule, RouterLink, NgIcon, DecimalPipe, NgOptimizedImage, ZardButtonComponent],
   providers: [
-    provideIcons({ lucideDumbbell, lucideSun, lucideChevronRight, lucideCalendar, lucideArrowRight }),
+    provideIcons({
+      lucideDumbbell,
+      lucideSun,
+      lucideChevronRight,
+      lucideCalendar,
+      lucideArrowRight,
+    }),
   ],
   templateUrl: './home.html',
   styleUrl: './home.css',
@@ -104,7 +111,9 @@ export class Home implements OnInit {
     const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMonday);
     startOfWeek.setHours(0, 0, 0, 0);
 
-    const weekly = allSessions.filter((s) => new Date(s.start_time).getTime() >= startOfWeek.getTime());
+    const weekly = allSessions.filter(
+      (s) => new Date(s.start_time).getTime() >= startOfWeek.getTime(),
+    );
     const total = weekly.reduce((acc, s) => acc + (s.total_weight_lifted ?? 0), 0);
     this.volumeThisWeek.set(Math.round(total));
 

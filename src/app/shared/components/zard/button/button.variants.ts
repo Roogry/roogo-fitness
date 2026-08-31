@@ -14,11 +14,13 @@ export const buttonVariants = cva(
     variants: {
       zType: {
         default: 'bg-primary text-primary-foreground hover:bg-primary/90 border border-primary',
-        forest: 'bg-forest text-forest-foreground hover:bg-forest/90 border border-forest',
+        forest: 'bg-ink text-ink-foreground hover:bg-forest border border-ink',
         destructive:
           'bg-error text-white hover:bg-error/90 focus-visible:ring-error/20 dark:focus-visible:ring-error/40 border border-error',
         outline:
-          'border-border bg-card hover:bg-muted hover:text-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 aria-expanded:bg-muted aria-expanded:text-foreground',
+          'border-border hover:bg-muted hover:text-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 aria-expanded:bg-muted aria-expanded:text-foreground',
+        dashed:
+          'border-2 border-ink/25 border-dashed hover:bg-muted hover:text-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 aria-expanded:bg-muted aria-expanded:text-foreground',
         secondary:
           'bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:text-secondary-foreground/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground border border-transparent',
         ghost:
