@@ -2,7 +2,8 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideDumbbell, lucidePlus, lucideCheck } from '@ng-icons/lucide';
+import { lucideDumbbell, lucidePlus, lucideCheck, lucideGripVertical } from '@ng-icons/lucide';
+import { CdkDragDrop, CdkDropList, CdkDrag, CdkDragHandle, moveItemInArray } from '@angular/cdk/drag-drop';
 import { WorkoutService } from '@/core/services/workout.service';
 import { LoggedSet } from '@/shared/models';
 import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-autocomplete/exercise-autocomplete';
@@ -27,12 +28,16 @@ import { timeFormatPipe } from '@/shared/pipes/time-format-pipe';
     timeFormatPipe,
     NgIcon,
     ActiveSessionFinishSheet,
+    CdkDropList,
+    CdkDrag,
+    CdkDragHandle,
   ],
   providers: [
     provideIcons({
       lucideDumbbell,
       lucidePlus,
       lucideCheck,
+      lucideGripVertical,
     }),
   ],
   templateUrl: './session-active.html',
@@ -97,6 +102,16 @@ export class SessionActive implements OnInit {
 
   onExerciseRemove(e: { exerciseId: number }) {
     this.workoutService.removeTrackedExercise(e.exerciseId);
+  }
+
+  onExerciseReplace(e: { oldExerciseId: number; newExercise: any }) {
+    this.workoutService.replaceTrackedExercise(e.oldExerciseId, e.newExercise);
+  }
+
+  onDrop(event: CdkDragDrop<any[]>) {
+    const current = [...this.workoutService.trackedExercises()];
+    moveItemInArray(current, event.previousIndex, event.currentIndex);
+    this.workoutService.trackedExercises.set(current);
   }
 
   openFinishSheet() {

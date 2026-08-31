@@ -3,11 +3,22 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { form, FormField, minLength, required, submit } from '@angular/forms/signals';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideTrash2, lucidePlus, lucideDumbbell } from '@ng-icons/lucide';
+import {
+  lucideTrash2,
+  lucidePlus,
+  lucideDumbbell,
+  lucideEllipsisVertical,
+  lucideRepeat2,
+} from '@ng-icons/lucide';
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardInputDirective } from '@/shared/components/zard/input';
 import { ZardBadgeComponent } from '@/shared/components/zard/badge';
+import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/zard/popover';
+import { ZardDialogService } from '@/shared/components/zard/dialog';
+import { RooSheetComponent } from '@/shared/components/sheet/sheet';
+import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-autocomplete/exercise-autocomplete';
+import { inject } from '@angular/core';
 import { LoggedExercise, LoggedSet } from '@/shared/models';
 import { ZardFormImports } from '@/shared/components/zard/form';
 
@@ -47,9 +58,21 @@ import { ZardFormImports } from '@/shared/components/zard/form';
     ZardButtonComponent,
     ZardInputDirective,
     ZardBadgeComponent,
+    ZardPopoverComponent,
+    ZardPopoverDirective,
+    RooSheetComponent,
+    ExerciseAutocomplete,
     ZardFormImports,
   ],
-  providers: [provideIcons({ lucideTrash2, lucidePlus, lucideDumbbell })],
+  providers: [
+    provideIcons({
+      lucideTrash2,
+      lucidePlus,
+      lucideDumbbell,
+      lucideEllipsisVertical,
+      lucideRepeat2,
+    }),
+  ],
   templateUrl: './exercise-tracker.html',
   styleUrl: './exercise-tracker.css',
 })
@@ -67,6 +90,11 @@ export class ExerciseTracker {
   }>();
   readonly setRemoved = output<{ exerciseId: number; setId: number }>();
   readonly exerciseRemoved = output<{ exerciseId: number }>();
+  readonly exerciseReplaced = output<{ oldExerciseId: number; newExercise: any }>();
+
+  dialogService = inject(ZardDialogService);
+  isMenuOpen = signal(false);
+  isReplaceSheetOpen = signal(false);
 
   // Local state for the "Add Set" form
   workoutSetModel = signal({
@@ -133,6 +161,29 @@ export class ExerciseTracker {
    * this.removeExercise();
    */
   removeExercise() {
-    this.exerciseRemoved.emit({ exerciseId: this.trackedExercise().exercise.id });
+    this.isMenuOpen.set(false);
+    this.dialogService.create({
+      zTitle: 'Remove Exercise?',
+      zDescription: 'Are you sure you want to remove this exercise? All sets will be lost.',
+      zOkText: 'Remove',
+      zOkDestructive: true,
+      zCancelText: 'Cancel',
+      zOnOk: () => {
+        this.exerciseRemoved.emit({ exerciseId: this.trackedExercise().exercise.id });
+      },
+    });
+  }
+
+  openReplaceSheet() {
+    this.isMenuOpen.set(false);
+    this.isReplaceSheetOpen.set(true);
+  }
+
+  onReplaceSelected(newExercise: any) {
+    this.isReplaceSheetOpen.set(false);
+    this.exerciseReplaced.emit({
+      oldExerciseId: this.trackedExercise().exercise.id,
+      newExercise,
+    });
   }
 }

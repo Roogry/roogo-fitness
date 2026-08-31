@@ -328,6 +328,17 @@ export class WorkoutService {
     );
   }
 
+  replaceTrackedExercise(oldExerciseId: number, newExercise: Exercise) {
+    this.trackedExercises.update((current) => {
+      const idx = current.findIndex((te) => te.exercise.id === oldExerciseId);
+      if (idx === -1) return current;
+      if (current.find((te) => te.exercise.id === newExercise.id)) return current;
+      const updated = [...current];
+      updated[idx] = { ...updated[idx], exercise: newExercise };
+      return updated;
+    });
+  }
+
   /**
    * Adds a new logged set to a tracked exercise.
    * @param {number} exerciseId The ID of the exercise.
