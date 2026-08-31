@@ -64,7 +64,7 @@
         <label z-form-label for="name"> Plan Name <span class="text-destructive">*</span> </label>
         <z-form-control
           [errorMessage]="
-            (planForm.title().touched() || planForm.title().dirty()) && planForm.title().invalid()
+            submitted() && planForm.title().invalid()
               ? (planForm.title().errors()[0]?.message ?? '')
               : ''
           "
@@ -73,13 +73,9 @@
             id="name"
             z-input
             [formField]="planForm.title"
-            [zStatus]="
-              (planForm.title().touched() || planForm.title().dirty()) && planForm.title().invalid()
-                ? 'error'
-                : undefined
-            "
+            [zStatus]="submitted() && planForm.title().invalid() ? 'error' : undefined"
             placeholder="e.g. Push Pull Legs"
-            class="w-full"
+            class="w-full text-base"
           />
         </z-form-control>
       </z-form-field>

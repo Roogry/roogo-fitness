@@ -1,7 +1,7 @@
 import { Component, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { form, FormField, minLength, required, submit } from '@angular/forms/signals';
+import { form, FormField, pattern, required, submit } from '@angular/forms/signals';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideTrash2, lucidePlus, lucideDumbbell } from '@ng-icons/lucide';
 import { ZardCardComponent } from '@/shared/components/zard/card';
@@ -68,6 +68,8 @@ export class ExerciseTracker {
   readonly setRemoved = output<{ exerciseId: number; setId: number }>();
   readonly exerciseRemoved = output<{ exerciseId: number }>();
 
+  submitted = signal(false);
+
   // Local state for the "Add Set" form
   workoutSetModel = signal({
     weight: '',
@@ -76,9 +78,9 @@ export class ExerciseTracker {
 
   workoutSetForm = form(this.workoutSetModel, (f) => {
     required(f.weight, { message: 'Please enter weight' });
-    minLength(f.weight, 1, { message: 'Weight must be greater than 0' });
+    pattern(f.weight, /^\d+(\.\d+)?$/, { message: 'Must be a positive number' });
     required(f.reps, { message: 'Please enter reps' });
-    minLength(f.reps, 1, { message: 'Reps must be greater than 0' });
+    pattern(f.reps, /^\d+$/, { message: 'Must be a positive number' });
   });
 
   /**
@@ -88,16 +90,31 @@ export class ExerciseTracker {
    * // Triggered on user clicking Add Set button
    * this.onAddWorkoutSetClick();
    */
+  onlyPositiveNumber(event: KeyboardEvent) {
+    const allowed = /[0-9.]|\b/;
+    // block '-', 'e', '+', ','
+    if (['-', 'e', 'E', '+', ','].includes(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  focusNext(event: Event, nextEl: HTMLElement | null | undefined) {
+    event.preventDefault();
+    nextEl?.focus();
+  }
+
   onAddWorkoutSetClick() {
+    this.submitted.set(true);
     submit(this.workoutSetForm, async (f) => {
       this.addSetSubmitted.emit({
         exerciseId: this.trackedExercise().exercise.id,
         weight: parseFloat(f.weight().value()),
         reps: parseInt(f.reps().value(), 10),
       });
-      // Keep weight but clear reps
-      this.workoutSetModel.update((m) => ({ ...m, reps: '' }));
+      // Reset weight input for next set as per #62
+      this.workoutSetModel.set({ weight: '', reps: '' });
       this.workoutSetForm().reset();
+      this.submitted.set(false);
     });
   }
 

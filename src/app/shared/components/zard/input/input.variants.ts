@@ -11,8 +11,8 @@ export const inputVariants = cva('w-full', {
         'flex pb-2 min-h-20 h-auto rounded-xl border border-border bg-input px-3 py-2 text-base placeholder:text-muted-foreground outline-none focus-visible:border-forest focus-visible:ring-forest/20 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
     },
     zSize: {
-      default: 'text-sm',
-      sm: 'text-xs',
+      default: 'text-base',
+      sm: 'text-sm',
       lg: 'text-base',
     },
     zStatus: {

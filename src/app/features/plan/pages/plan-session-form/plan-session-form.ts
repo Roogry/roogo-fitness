@@ -56,6 +56,8 @@ export class PlanSessionForm implements OnInit {
     required(f.title, { message: 'Session title is required' });
   });
 
+  submitted = signal(false);
+
   constructor() {
     effect(() => {
       const isInvalid = this.titleForm().invalid();
@@ -118,6 +120,8 @@ export class PlanSessionForm implements OnInit {
   }
 
   async onSaveSessionClick() {
+    this.submitted.set(true);
+    if (this.titleForm().invalid()) return;
     if (this.isEditMode()) {
       await this.planService.updateSession(this.editSessionId()!);
 

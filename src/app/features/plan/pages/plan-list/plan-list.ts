@@ -77,6 +77,7 @@ export class PlanList implements OnInit {
 
   isOpenPlanForm = signal(false);
   expandedPlanId = signal<number | null>(null);
+  submitted = signal(false);
 
   planModel = signal({
     title: '',
@@ -180,6 +181,7 @@ export class PlanList implements OnInit {
   openCreatePlanSheet() {
     this.planModel.set({ title: '', description: '', sessionsPerWeek: 3 });
     this.planForm().reset();
+    this.submitted.set(false);
     this.planService.selectedPlanId.set(null);
     this.isOpenPlanForm.set(true);
   }
@@ -193,6 +195,7 @@ export class PlanList implements OnInit {
       sessionsPerWeek: plan.days,
     });
     this.planForm().reset();
+    this.submitted.set(false);
     this.planService.selectedPlanId.set(plan.id);
     this.isOpenPlanForm.set(true);
   }
@@ -237,6 +240,7 @@ export class PlanList implements OnInit {
   }
 
   async savePlan() {
+    this.submitted.set(true);
     submit(this.planForm, async (f) => {
       const plans = this.myPlans();
       const titleVal = f.title().value().trim();

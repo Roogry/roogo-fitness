@@ -24,7 +24,7 @@
       <label z-form-label for="title"> Session Title </label>
       <z-form-control
         [errorMessage]="
-          titleForm.title().touched() && titleForm.title().invalid()
+          submitted() && titleForm.title().invalid()
             ? (titleForm.title().errors()[0]?.message ?? '')
             : ''
         "
@@ -33,11 +33,9 @@
           id="title"
           z-input
           placeholder="Name your session..."
-          class="w-full"
+          class="w-full text-base"
           [formField]="titleForm.title"
-          [zStatus]="
-            titleForm.title().invalid() && titleForm.title().touched() ? 'error' : undefined
-          "
+          [zStatus]="submitted() && titleForm.title().invalid() ? 'error' : undefined"
         />
       </z-form-control>
     </z-form-field>

@@ -69,11 +69,15 @@
             <input
               z-input
               zBorderless
-              type="number"
+              type="text"
+              inputmode="decimal"
+              pattern="[0-9]*"
+              enterkeyhint="next"
               [placeholder]="set.target_weight?.toString() ?? '0'"
               [value]="set.weight_lifted?.toString() ?? ''"
               (valueChange)="updateSet(set.id, { weight_lifted: $event ? +$event : undefined })"
-              [class]="'w-full text-center font-mono'"
+              (keypress)="onlyPositiveNumber($event)"
+              [class]="'w-full text-center font-mono text-base'"
             />
           } @else {
             <span class="text-center text-muted-foreground font-mono">{{ set.weight_lifted ?? '-' }}</span>
@@ -84,11 +88,15 @@
             <input
               z-input
               zBorderless
-              type="number"
+              type="text"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              enterkeyhint="next"
               [placeholder]="set.target_reps?.toString() ?? '0'"
               [value]="set.reps_completed?.toString() ?? ''"
               (valueChange)="updateSet(set.id, { reps_completed: $event ? +$event : undefined })"
-              [class]="'w-full text-center font-mono'"
+              (keypress)="onlyPositiveNumber($event)"
+              [class]="'w-full text-center font-mono text-base'"
             />
           } @else {
             <span class="text-center text-muted-foreground font-mono">{{ set.reps_completed ?? '-' }}</span>
@@ -128,20 +136,26 @@
                 class="text-sm text-muted-foreground"
                 >Weight (KG)</label
               >
-              <z-form-control>
+              <z-form-control
+                [errorMessage]="
+                  submitted() && workoutSetForm.weight().invalid()
+                    ? (workoutSetForm.weight().errors()[0]?.message ?? '')
+                    : ''
+                "
+              >
                 <input
+                  #weightInput
                   z-input
                   [id]="'weight-' + trackedExercise().exercise.id"
-                  type="number"
-                  step="0.5"
+                  type="text"
+                  inputmode="decimal"
+                  enterkeyhint="next"
                   placeholder="0"
-                  class="w-full text-center font-mono"
+                  class="w-full text-center font-mono text-base"
                   [formField]="workoutSetForm.weight"
-                  [zStatus]="
-                    workoutSetForm.weight().invalid() && workoutSetForm.weight().touched()
-                      ? 'error'
-                      : undefined
-                  "
+                  [zStatus]="submitted() && workoutSetForm.weight().invalid() ? 'error' : undefined"
+                  (keypress)="onlyPositiveNumber($event)"
+                  (keydown.enter)="focusNext($event, repsInput)"
                 />
               </z-form-control>
             </z-form-field>
@@ -153,20 +167,26 @@
                 class="text-sm text-muted-foreground"
                 >Reps</label
               >
-              <z-form-control>
+              <z-form-control
+                [errorMessage]="
+                  submitted() && workoutSetForm.reps().invalid()
+                    ? (workoutSetForm.reps().errors()[0]?.message ?? '')
+                    : ''
+                "
+              >
                 <input
+                  #repsInput
                   z-input
                   [id]="'reps-' + trackedExercise().exercise.id"
-                  type="number"
-                  step="1"
+                  type="text"
+                  inputmode="numeric"
+                  enterkeyhint="done"
                   placeholder="0"
-                  class="w-full text-center font-mono"
+                  class="w-full text-center font-mono text-base"
                   [formField]="workoutSetForm.reps"
-                  [zStatus]="
-                    workoutSetForm.reps().invalid() && workoutSetForm.reps().touched()
-                      ? 'error'
-                      : undefined
-                  "
+                  [zStatus]="submitted() && workoutSetForm.reps().invalid() ? 'error' : undefined"
+                  (keypress)="onlyPositiveNumber($event)"
+                  (keydown.enter)="$event.preventDefault(); onAddWorkoutSetClick()"
                 />
               </z-form-control>
             </z-form-field>
