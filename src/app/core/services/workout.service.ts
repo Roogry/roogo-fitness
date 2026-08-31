@@ -53,10 +53,10 @@ export class WorkoutService {
 
   totalVolume = computed(() => {
     return this.trackedExercises().reduce((acc, exercise) => {
-      const exerciseVolume = exercise.sets.reduce(
-        (setAcc, set) => setAcc + (set.weight_lifted ?? 0) * (set.reps_completed ?? 0),
-        0,
-      );
+      const exerciseVolume = exercise.sets.reduce((setAcc, set) => {
+        if (set.is_warmup) return setAcc;
+        return setAcc + (set.weight_lifted ?? 0) * (set.reps_completed ?? 0);
+      }, 0);
       return acc + exerciseVolume;
     }, 0);
   });
@@ -171,6 +171,7 @@ export class WorkoutService {
           weight_lifted: undefined,
           target_reps: pe.target_reps,
           target_weight: pe.target_weight,
+          rest_time_taken_sec: pe.target_rest_time,
         }));
 
         activeExercises.push({

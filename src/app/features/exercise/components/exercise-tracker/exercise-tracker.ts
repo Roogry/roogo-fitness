@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { form, FormField, minLength, required, submit } from '@angular/forms/signals';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideTrash2, lucidePlus, lucideDumbbell } from '@ng-icons/lucide';
+import { lucideTrash2, lucidePlus, lucideDumbbell, lucideCheck } from '@ng-icons/lucide';
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardInputDirective } from '@/shared/components/zard/input';
 import { ZardBadgeComponent } from '@/shared/components/zard/badge';
+import { ZardCheckboxComponent } from '@/shared/components/zard/checkbox';
 import { LoggedExercise, LoggedSet } from '@/shared/models';
 import { ZardFormImports } from '@/shared/components/zard/form';
 
@@ -47,9 +48,10 @@ import { ZardFormImports } from '@/shared/components/zard/form';
     ZardButtonComponent,
     ZardInputDirective,
     ZardBadgeComponent,
+    ZardCheckboxComponent,
     ZardFormImports,
   ],
-  providers: [provideIcons({ lucideTrash2, lucidePlus, lucideDumbbell })],
+  providers: [provideIcons({ lucideTrash2, lucidePlus, lucideDumbbell, lucideCheck })],
   templateUrl: './exercise-tracker.html',
   styleUrl: './exercise-tracker.css',
 })
@@ -132,6 +134,27 @@ export class ExerciseTracker {
    * @example
    * this.removeExercise();
    */
+  toggleWarmup(set: LoggedSet) {
+    const newVal = !set.is_warmup;
+    this.setUpdated.emit({
+      exerciseId: this.trackedExercise().exercise.id,
+      setId: set.id,
+      updates: { is_warmup: newVal },
+    });
+  }
+
+  toggleCompleted(set: LoggedSet) {
+    const isCompleted = !!set.completed_at;
+    const updates: Partial<LoggedSet> = isCompleted
+      ? { completed_at: undefined }
+      : { completed_at: new Date().toISOString() };
+    this.setUpdated.emit({
+      exerciseId: this.trackedExercise().exercise.id,
+      setId: set.id,
+      updates,
+    });
+  }
+
   removeExercise() {
     this.exerciseRemoved.emit({ exerciseId: this.trackedExercise().exercise.id });
   }

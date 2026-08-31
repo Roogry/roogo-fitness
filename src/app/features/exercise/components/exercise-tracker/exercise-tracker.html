@@ -60,11 +60,56 @@
 
     @for (set of trackedExercise().sets; track set.id) {
       <div
-        class="grid grid-cols-12 gap-1 md:gap-2 items-center bg-muted/50 rounded-xl border border-transparent"
-        [class]="editable() ? 'transition-colors hover:bg-muted hover:border-border group' : ''"
+        class="grid grid-cols-12 gap-1 md:gap-2 items-center rounded-xl border border-transparent"
+        [class.bg-warning]="false"
+        [class]="
+          set.is_warmup
+            ? 'bg-warning/15 border-warning/20 opacity-60'
+            : set.completed_at
+              ? 'bg-muted opacity-60'
+              : 'bg-muted/50 hover:bg-muted hover:border-border group'
+        "
       >
-        <div class="col-span-2 md:col-span-1 text-center font-mono font-medium">{{ set.set_number }}</div>
-        <div class="col-span-4 md:col-span-3 flex justify-center font-mono">
+        <div class="col-span-2 md:col-span-1 flex justify-center">
+          @if (editable()) {
+            <button
+              type="button"
+              (click)="toggleWarmup(set)"
+              class="cursor-pointer rounded-full px-2.5 py-1 text-xs font-semibold font-mono flex items-center gap-1.5 transition-colors"
+              [class]="
+                set.is_warmup
+                  ? 'bg-warning/15 text-warning border border-warning/20 rounded-full'
+                  : 'bg-card border border-border text-foreground'
+              "
+              [class.opacity-60]="set.completed_at"
+              [class.line-through]="!!set.completed_at"
+            >
+              @if (set.is_warmup) {
+                <span class="w-2 h-2 rounded-full bg-warning inline-block"></span>
+                Warm-up
+              } @else {
+                {{ set.set_number }}
+              }
+            </button>
+          } @else {
+            @if (set.is_warmup) {
+              <span
+                class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold bg-warning/15 text-warning border border-warning/20"
+              >
+                <span class="w-2 h-2 rounded-full bg-warning inline-block"></span>Warm-up
+              </span>
+            } @else {
+              <span
+                class="text-center font-mono font-medium"
+                [class.opacity-60]="!!set.completed_at"
+                [class.line-through]="!!set.completed_at"
+                [class.text-muted-foreground]="!!set.completed_at"
+                >{{ set.set_number }}</span
+              >
+            }
+          }
+        </div>
+        <div class="col-span-3 md:col-span-3 flex justify-center font-mono">
           @if (editable()) {
             <input
               z-input
@@ -73,13 +118,22 @@
               [placeholder]="set.target_weight?.toString() ?? '0'"
               [value]="set.weight_lifted?.toString() ?? ''"
               (valueChange)="updateSet(set.id, { weight_lifted: $event ? +$event : undefined })"
-              [class]="'w-full text-center font-mono'"
+              [class]="
+                'w-full text-center font-mono ' +
+                (set.completed_at ? 'opacity-60 line-through text-muted-foreground' : '')
+              "
             />
           } @else {
-            <span class="text-center text-muted-foreground font-mono">{{ set.weight_lifted ?? '-' }}</span>
+            <span
+              class="text-center font-mono"
+              [class.opacity-60]="!!set.completed_at"
+              [class.line-through]="!!set.completed_at"
+              [class.text-muted-foreground]="!!set.completed_at"
+              >{{ set.weight_lifted ?? '-' }}</span
+            >
           }
         </div>
-        <div class="col-span-4 md:col-span-3 flex justify-center font-mono">
+        <div class="col-span-3 md:col-span-3 flex justify-center font-mono">
           @if (editable()) {
             <input
               z-input
@@ -88,22 +142,33 @@
               [placeholder]="set.target_reps?.toString() ?? '0'"
               [value]="set.reps_completed?.toString() ?? ''"
               (valueChange)="updateSet(set.id, { reps_completed: $event ? +$event : undefined })"
-              [class]="'w-full text-center font-mono'"
+              [class]="
+                'w-full text-center font-mono ' +
+                (set.completed_at ? 'opacity-60 line-through text-muted-foreground' : '')
+              "
             />
           } @else {
-            <span class="text-center text-muted-foreground font-mono">{{ set.reps_completed ?? '-' }}</span>
+            <span
+              class="text-center font-mono"
+              [class.opacity-60]="!!set.completed_at"
+              [class.line-through]="!!set.completed_at"
+              [class.text-muted-foreground]="!!set.completed_at"
+              >{{ set.reps_completed ?? '-' }}</span
+            >
           }
         </div>
-        <div
-          class="col-span-2 md:col-span-5 px-0 md:px-2 flex justify-end opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
-        >
+        <div class="col-span-4 md:col-span-5 px-0 md:px-2 flex justify-end items-center gap-1">
           @if (editable()) {
+            <label class="w-11 h-11 min-w-11 min-h-11 flex items-center justify-center cursor-pointer touch-manipulation select-none rounded-lg border transition-colors" [class.bg-success]="!!set.completed_at" [class.border-success]="!!set.completed_at" [class.bg-card]="!set.completed_at" [class.border-border]="!set.completed_at">
+              <input type="checkbox" class="sr-only" [checked]="!!set.completed_at" (change)="toggleCompleted(set)" />
+              <ng-icon name="lucideCheck" class="w-5 h-5" [class.text-white]="!!set.completed_at" [class.text-muted-foreground]="!set.completed_at" [class.opacity-100]="!!set.completed_at" [class.opacity-0]="!set.completed_at"></ng-icon>
+            </label>
             <button
               z-button
               zType="ghost"
               zSize="icon"
               zShape="circle"
-              class="text-destructive hover:bg-destructive/10"
+              class="text-destructive hover:bg-destructive/10 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
               (click)="removeSet(set.id)"
             >
               <ng-icon name="lucideTrash2"></ng-icon>

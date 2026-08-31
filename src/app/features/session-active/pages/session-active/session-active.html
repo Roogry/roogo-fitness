@@ -135,4 +135,22 @@
       </div>
     </div>
   }
+
+  <!-- Rest Timer -->
+  @if (isRestActive() && remainingSeconds() !== null) {
+    <div class="fixed bottom-0 inset-x-0 bg-forest text-forest-foreground border-t border-border shadow-none rounded-t-lg p-6 flex items-center justify-between z-50 max-w-[720px] mx-auto">
+      <div class="flex items-center gap-3">
+        <ng-icon name="lucideTimer" class="w-5 h-5 text-forest-foreground"></ng-icon>
+        <span class="text-sm font-medium text-forest-foreground/80">Rest</span>
+        <span class="font-mono tabular-nums text-3xl leading-9 font-bold tracking-tight text-white">{{ restTimerFormatted }}</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button z-button zType="ghost" class="text-forest-foreground/70 hover:text-forest-foreground" (click)="addRestTime(15)">+15s</button>
+        <button z-button zType="default" class="bg-primary text-foreground rounded-full" (click)="skipRestTimer()">
+          <ng-icon name="lucideSkipForward" class="w-4 h-4"></ng-icon>
+          Skip
+        </button>
+      </div>
+    </div>
+  }
 </div>
