@@ -2,7 +2,8 @@ import { Component, inject, OnInit, signal, effect, computed } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideDumbbell, lucidePlus, lucideCheck } from '@ng-icons/lucide';
+import { lucideDumbbell, lucidePlus, lucideCheck, lucideGripVertical } from '@ng-icons/lucide';
+import { CdkDragDrop, CdkDropList, CdkDrag, CdkDragHandle, moveItemInArray } from '@angular/cdk/drag-drop';
 import { PlanService } from '@/core/services/plan.service';
 import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-autocomplete/exercise-autocomplete';
 import { PlanExerciseCardComponent } from '../../components/plan-exercise-card/plan-exercise-card';
@@ -11,7 +12,7 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { RooSheetComponent } from '@/shared/components/sheet';
 import { ZardInputDirective } from '@/shared/components/zard/input';
 import { ExerciseService } from '@/core/services/exercise.service';
-import { Exercise, WorkoutPlanSession } from '@/shared/models';
+import { Exercise, WorkoutPlanSession, WorkoutPlanExercise } from '@/shared/models';
 import { form, FormField, required } from '@angular/forms/signals';
 import { ZardFormImports } from '@/shared/components/zard/form';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
@@ -30,8 +31,11 @@ import { ZardDialogService } from '@/shared/components/zard/dialog';
     NgIcon,
     FormField,
     ZardFormImports,
+    CdkDropList,
+    CdkDrag,
+    CdkDragHandle,
   ],
-  providers: [provideIcons({ lucideDumbbell, lucidePlus, lucideCheck })],
+  providers: [provideIcons({ lucideDumbbell, lucidePlus, lucideCheck, lucideGripVertical })],
   templateUrl: './plan-session-form.html',
 })
 export class PlanSessionForm implements OnInit {
@@ -115,6 +119,14 @@ export class PlanSessionForm implements OnInit {
 
   onRemoveExercise(exerciseId: number) {
     this.planService.removePlannedExercise(exerciseId);
+  }
+
+  onDrop(event: CdkDragDrop<WorkoutPlanExercise[]>) {
+    const current = [...this.planService.plannedExercises()];
+    moveItemInArray(current, event.previousIndex, event.currentIndex);
+    // Update order indices
+    const reordered = current.map((pe, idx) => ({ ...pe, exercise_order: idx }));
+    this.planService.plannedExercises.set(reordered);
   }
 
   async onSaveSessionClick() {

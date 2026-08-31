@@ -32,16 +32,31 @@
         </div>
       }
 
-      @for (tracked of workoutService.trackedExercises(); track tracked.exercise.id) {
-        <app-exercise-tracker
-          [trackedExercise]="tracked"
-          [editable]="workoutService.sessionStartTime() !== null"
-          (addSetSubmitted)="onAddSet($event)"
-          (setUpdated)="onSetUpdate($event)"
-          (setRemoved)="onSetRemove($event)"
-          (exerciseRemoved)="onExerciseRemove($event)"
-        ></app-exercise-tracker>
-      }
+      <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="flex flex-col gap-4">
+        @for (tracked of workoutService.trackedExercises(); track tracked.exercise.id) {
+          <div cdkDrag class="bg-card border border-border rounded-sm shadow-none opacity-90">
+            <div class="flex justify-end p-2">
+              <button
+                cdkDragHandle
+                type="button"
+                class="size-11 rounded-sm bg-muted hover:bg-accent text-muted-foreground touch-none flex items-center justify-center cursor-grab active:cursor-grabbing"
+                aria-label="Drag to reorder"
+              >
+                <ng-icon name="lucideGripVertical" class="w-4 h-4"></ng-icon>
+              </button>
+            </div>
+            <app-exercise-tracker
+              [trackedExercise]="tracked"
+              [editable]="workoutService.sessionStartTime() !== null"
+              (addSetSubmitted)="onAddSet($event)"
+              (setUpdated)="onSetUpdate($event)"
+              (setRemoved)="onSetRemove($event)"
+              (exerciseRemoved)="onExerciseRemove($event)"
+              (exerciseReplaced)="onExerciseReplace($event)"
+            ></app-exercise-tracker>
+          </div>
+        }
+      </div>
 
       <div class="mt-4 flex flex-col gap-4">
         @if (workoutService.sessionStartTime()) {
