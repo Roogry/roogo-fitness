@@ -23,11 +23,13 @@
             >
               {{ trackedExercise().exercise.name }}
             </h3>
-            <div class="flex items-center gap-2 mt-1">
-              <z-badge zType="secondary">
-                {{ trackedExercise().exercise.primary_muscle?.name }}
-              </z-badge>
-            </div>
+            @if (trackedExercise().exercise.primary_muscle?.name) {
+              <div class="flex items-center gap-2 mt-1">
+                <z-badge zType="secondary">
+                  {{ trackedExercise().exercise.primary_muscle?.name }}
+                </z-badge>
+              </div>
+            }
           </div>
         </div>
       </a>

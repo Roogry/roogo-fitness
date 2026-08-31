@@ -28,7 +28,7 @@
         <h3 class="font-semibold text-lg mb-1">No Plans Yet</h3>
         <p class="text-sm text-muted-foreground">Create your first workout plan to get started.</p>
 
-        <button z-button class="mt-4" (click)="openCreatePlanSheet()">
+        <button z-button type="button" class="mt-4 touch-manipulation select-none" (click)="openCreatePlanSheet()">
           <ng-icon name="lucidePlus"></ng-icon>
           <div><span class="hidden sm:inline-block">Create</span> Plan</div>
         </button>
@@ -44,7 +44,7 @@
         ></app-plan-card>
       }
 
-      <button z-button zType="dashed" zSize="lg" class="font-bold" (click)="openCreatePlanSheet()">
+      <button z-button zType="dashed" zSize="lg" type="button" class="font-bold touch-manipulation select-none" (click)="openCreatePlanSheet()">
         <ng-icon name="lucidePlus" size="24"></ng-icon>
         <div><span class="hidden sm:inline-block">Create</span> New Plan</div>
       </button>
