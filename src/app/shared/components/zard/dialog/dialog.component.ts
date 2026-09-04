@@ -55,7 +55,7 @@ export class ZardDialogOptions<T, U> {
 
 /**
  * A dialog component that presents content in a modal layer, blocking interaction with the rest of the application.
- * 
+ *
  * @example
  * // Normally invoked programmatically via DialogService
  * this.dialogService.open(MyComponent, { zTitle: 'Dialog Title' });
@@ -64,29 +64,35 @@ export class ZardDialogOptions<T, U> {
   selector: 'z-dialog',
   imports: [OverlayModule, PortalModule, ZardButtonComponent, NgIcon],
   template: `
-    @if (config.zClosable || config.zClosable === undefined) {
-      <button
-        type="button"
-        data-testid="z-close-header-button"
-        z-button
-        zType="ghost"
-        zSize="sm"
-        class="absolute top-1 right-1"
-        (click)="onCloseClick()"
-      >
-        <ng-icon name="lucideX" class="size-4!" />
-      </button>
-    }
-
     @if (config.zTitle || config.zDescription) {
       <header class="flex flex-col space-y-1.5 text-center sm:text-left">
-        @if (config.zTitle) {
-          <h4 data-testid="z-title" class="text-lg leading-none font-semibold tracking-tight">{{ config.zTitle }}</h4>
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            @if (config.zTitle) {
+              <h4 data-testid="z-title" class="text-2xl leading-none font-bold tracking-tight">
+                {{ config.zTitle }}
+              </h4>
+            }
+
+            @if (config.zClosable || config.zClosable === undefined) {
+              <button
+                z-button
+                zType="secondary"
+                type="button"
+                data-testid="z-close-header-button"
+                (click)="onCloseClick()"
+              >
+                <ng-icon name="lucideX" />
+              </button>
+            }
+          </div>
 
           @if (config.zDescription) {
-            <p data-testid="z-description" class="text-muted-foreground text-sm">{{ config.zDescription }}</p>
+            <p data-testid="z-description" class="text-start text-muted-foreground text-sm">
+              {{ config.zDescription }}
+            </p>
           }
-        }
+        </div>
       </header>
     }
 
@@ -99,9 +105,16 @@ export class ZardDialogOptions<T, U> {
     </main>
 
     @if (!config.zHideFooter) {
-      <footer class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-0 sm:space-x-2">
+      <footer class="flex flex-row gap-2 sm:gap-0 sm:space-x-2">
         @if (config.zCancelText !== null) {
-          <button type="button" data-testid="z-cancel-button" z-button zType="outline" (click)="onCloseClick()">
+          <button
+            z-button
+            zType="ghost"
+            type="button"
+            class="flex-1"
+            data-testid="z-cancel-button"
+            (click)="onCloseClick()"
+          >
             @if (config.zCancelIcon) {
               <ng-icon [svg]="config.zCancelIcon" class="size-4!" />
             }
@@ -112,10 +125,11 @@ export class ZardDialogOptions<T, U> {
 
         @if (config.zOkText !== null) {
           <button
-            type="button"
-            data-testid="z-ok-button"
             z-button
             [zType]="config.zOkDestructive ? 'destructive' : 'default'"
+            type="button"
+            data-testid="z-ok-button"
+            class="flex-1"
             [zDisabled]="config.zOkDisabled"
             (click)="onOkClick()"
           >
@@ -167,7 +181,9 @@ export class ZardDialogComponent<T, U> extends BasePortalOutlet {
   private readonly host = inject(ElementRef<HTMLElement>);
   protected readonly config = inject(ZardDialogOptions<T, U>);
 
-  protected readonly classes = computed(() => mergeClasses(dialogVariants(), this.config.zCustomClasses));
+  protected readonly classes = computed(() =>
+    mergeClasses(dialogVariants(), this.config.zCustomClasses),
+  );
   dialogRef?: ZardDialogRef<T>;
 
   protected readonly isStringContent = typeof this.config.zContent === 'string';
