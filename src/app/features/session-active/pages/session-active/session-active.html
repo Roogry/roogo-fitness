@@ -32,10 +32,12 @@
         </div>
       }
 
-      @for (tracked of workoutService.trackedExercises(); track tracked.exercise.id) {
+      @for (tracked of workoutService.trackedExercises(); track tracked.exercise.id; let i = $index, total = $count) {
         <app-exercise-tracker
           [trackedExercise]="tracked"
           [editable]="workoutService.sessionStartTime() !== null"
+          [exerciseIndex]="i + 1"
+          [totalExercises]="total"
           (addSetSubmitted)="onAddSet($event)"
           (setUpdated)="onSetUpdate($event)"
           (setRemoved)="onSetRemove($event)"

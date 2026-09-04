@@ -67,10 +67,12 @@
       <div class="flex flex-col gap-4 mt-8">
         <h2 class="font-semibold text-lg">Exercises</h2>
 
-        @for (workout of loggedSession()?.workouts; track workout.id) {
+        @for (workout of loggedSession()?.workouts; track workout.id; let i = $index) {
           <app-exercise-tracker
             [trackedExercise]="workout"
             [editable]="false"
+            [exerciseIndex]="i + 1"
+            [totalExercises]="loggedSession()?.workouts?.length"
           ></app-exercise-tracker>
         }
 

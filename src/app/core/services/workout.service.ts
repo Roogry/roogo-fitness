@@ -167,8 +167,8 @@ export class WorkoutService {
         const sets: LoggedSet[] = Array.from({ length: pe.target_sets || 0 }).map((_, i) => ({
           id: Date.now() + Math.floor(Math.random() * 10000) + i,
           set_number: i + 1,
-          reps_completed: undefined,
-          weight_lifted: undefined,
+          reps_completed: pe.target_reps,
+          weight_lifted: pe.target_weight,
           target_reps: pe.target_reps,
           target_weight: pe.target_weight,
           rest_time_taken_sec: pe.target_rest_time,
