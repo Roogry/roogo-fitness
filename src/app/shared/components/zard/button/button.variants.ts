@@ -6,15 +6,15 @@ export const buttonVariants = cva(
   mergeClasses(
     'focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
     'aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-lg border border-transparent bg-clip-padding',
-    "text-base font-medium focus-visible:ring-3 aria-invalid:ring-3 [&_svg:not([class*='size-'])]:size-5 inline-flex items-center",
+    "text-base font-bold focus-visible:ring-3 aria-invalid:ring-3 [&_svg:not([class*='size-'])]:size-5 inline-flex items-center",
     'justify-center whitespace-nowrap transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none',
     'shrink-0 [&_svg]:shrink-0 outline-none group/button select-none cursor-pointer',
   ),
   {
     variants: {
       zType: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90 border border-primary',
-        forest: 'bg-ink text-ink-foreground hover:bg-forest border border-ink',
+        default: 'bg-ink text-ink-foreground hover:bg-forest border border-ink',
+        lime: 'bg-primary text-primary-foreground hover:bg-lime-600 border-primary',
         destructive:
           'bg-error text-white hover:bg-error/90 focus-visible:ring-error/20 dark:focus-visible:ring-error/40 border border-error',
         outline:

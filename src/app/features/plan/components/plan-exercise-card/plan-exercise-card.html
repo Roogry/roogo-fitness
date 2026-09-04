@@ -32,6 +32,20 @@
         </div>
       </a>
 
+      @if (!editable()) {
+        <div class="flex gap-1 flex-col text-sm font-mono">
+          <p class="text-end font-bold">
+            {{ plannedExercise().target_weight ?? 0 }} kg x {{ plannedExercise().target_reps ?? 0 }}
+          </p>
+          <p class="text-end text-muted-foreground">
+            {{ plannedExercise().target_sets ?? 0 }} sets
+            @if (plannedExercise().target_rest_time) {
+              · {{ plannedExercise().target_rest_time }}s rest
+            }
+          </p>
+        </div>
+      }
+
       @if (editable()) {
         <button
           z-button
@@ -117,24 +131,30 @@
             </z-form-control>
           </z-form-field>
         </div>
+        <div class="grid grid-cols-1 gap-3 mt-3">
+          <z-form-field>
+            <label
+              [attr.for]="'rest-' + exercise().id"
+              z-form-label
+              class="text-xs text-muted-foreground"
+            >
+              Rest Time (seconds)
+            </label>
+            <z-form-control>
+              <input
+                z-input
+                [id]="'rest-' + exercise().id"
+                type="number"
+                min="0"
+                placeholder="60"
+                class="w-full text-center font-mono"
+                [ngModel]="plannedExercise().target_rest_time"
+                (ngModelChange)="onRestChange($event)"
+              />
+            </z-form-control>
+          </z-form-field>
+        </div>
       </div>
     }
   </div>
-
-  @if (!editable()) {
-    <div card-footer class="pt-4 flex w-full gap-4 border-t border-border">
-      <div class="w-20 flex items-center gap-1.5">
-        <ng-icon name="lucideFlagTriangleLeft" class="text-forest size-3 sm:size-4"></ng-icon>
-        <span class="font-mono text-sm sm:text-base">{{ plannedExercise().target_sets ?? 0 }} sets</span>
-      </div>
-      <div class="w-20 flex items-center gap-1.5">
-        <ng-icon name="lucideDumbbell" class="text-forest size-3 sm:size-4"></ng-icon>
-        <span class="font-mono text-sm sm:text-base">{{ plannedExercise().target_weight ?? 0 }} kg</span>
-      </div>
-      <div class="w-20 flex items-center gap-1.5">
-        <ng-icon name="lucideRepeat" class="text-forest size-3 sm:size-4"></ng-icon>
-        <span class="font-mono text-sm sm:text-base">{{ plannedExercise().target_reps ?? 0 }} reps</span>
-      </div>
-    </div>
-  }
 </z-card>

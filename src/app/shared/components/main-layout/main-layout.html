@@ -1,6 +1,6 @@
 <div class="h-dvh overflow-hidden relative">
   <div class="relative w-full h-[calc(100dvh-80px)] overflow-y-auto overscroll-contain">
-    <div class="pb-8">
+    <div class="pb-8" [class.pb-32]="workoutService.sessionStartTime() !== null">
       <router-outlet />
     </div>
   </div>
