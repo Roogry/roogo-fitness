@@ -58,35 +58,36 @@ export class ExerciseTracker {
   readonly invalidSetIds = signal<Set<number>>(new Set());
 
   /**
-   * Computes the formatted target summary line shown below the exercise title,
+   * Computes the formatted target summary line shown below the exercise title
+   * using the plan-level targets from WorkoutPlanExercise.
    * e.g. "target 80 kg × 8 · 3 sets".
+   * Returns null when the session was not started from a plan.
    */
   readonly targetSummary = computed(() => {
-    const exercise = this.trackedExercise();
-    const sets = exercise?.sets || [];
-    if (sets.length === 0) return null;
+    const planned = this.trackedExercise()?.plannedExercise;
+    if (!planned) return null;
 
-    const workSets = sets.filter((s) => !s.is_warmup);
-    const refSet =
-      workSets.find((s) => s.target_weight !== undefined || s.target_reps !== undefined) ??
-      sets.find((s) => s.target_weight !== undefined || s.target_reps !== undefined) ??
-      sets[0];
+    const weight = planned.target_weight;
+    const reps = planned.target_reps;
+    const sets = planned.target_sets;
+    const setUnit = sets === 1 ? 'set' : 'sets';
 
-    const weight = refSet?.target_weight ?? refSet?.weight_lifted;
-    const reps = refSet?.target_reps ?? refSet?.reps_completed;
-    const setCount = workSets.length > 0 ? workSets.length : sets.length;
-    const setUnit = setCount === 1 ? 'set' : 'sets';
-
+    if (weight !== undefined && reps !== undefined && sets !== undefined) {
+      return `target ${weight} kg × ${reps} · ${sets} ${setUnit}`;
+    }
     if (weight !== undefined && reps !== undefined) {
-      return `target ${weight} kg × ${reps} · ${setCount} ${setUnit}`;
+      return `target ${weight} kg × ${reps}`;
     }
-    if (reps !== undefined) {
-      return `target ${reps} reps · ${setCount} ${setUnit}`;
+    if (reps !== undefined && sets !== undefined) {
+      return `target ${reps} reps · ${sets} ${setUnit}`;
     }
-    if (weight !== undefined) {
-      return `target ${weight} kg · ${setCount} ${setUnit}`;
+    if (weight !== undefined && sets !== undefined) {
+      return `target ${weight} kg · ${sets} ${setUnit}`;
     }
-    return `${setCount} ${setUnit}`;
+    if (reps !== undefined) return `target ${reps} reps`;
+    if (weight !== undefined) return `target ${weight} kg`;
+    if (sets !== undefined) return `${sets} ${setUnit}`;
+    return null;
   });
 
   /**

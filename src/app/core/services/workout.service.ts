@@ -177,6 +177,7 @@ export class WorkoutService {
         activeExercises.push({
           id: Date.now() + Math.floor(Math.random() * 1000) + pe.id,
           exercise: exercise,
+          plannedExercise: pe,
           sets: sets,
         });
       }
