@@ -1,5 +1,5 @@
 <z-card [zLessPadding]="true">
-  <div class="pt-4 px-4 flex flex-col gap-1">
+  <div class="pt-4 px-4 flex flex-col gap-1" [class.pb-4]="!editable()">
     <!-- Header -->
     <div class="flex items-start gap-4 pb-2">
       <div
@@ -66,7 +66,9 @@
         <div class="text-center pl-1">SET</div>
         <div class="text-center">WEIGHT</div>
         <div class="text-center">REPS</div>
-        <div class="text-end pr-14 sm:pr-14.5">DONE</div>
+        @if (editable()) {
+          <div class="text-end pr-14 sm:pr-14.5">DONE</div>
+        }
       </div>
     }
 
@@ -164,8 +166,8 @@
           </div>
 
           <!-- DONE column -->
-          <div class="flex gap-2 justify-end items-center relative">
-            @if (editable()) {
+          @if (editable()) {
+            <div class="flex gap-2 justify-end items-center relative">
               <button
                 type="button"
                 (click)="toggleCompleted(set)"
@@ -192,31 +194,19 @@
               >
                 <ng-icon name="lucideTrash2"></ng-icon>
               </button>
-            } @else {
-              <div
-                class="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center select-none"
-                [class]="
-                  set.completed_at
-                    ? 'border-2 border-neutral-900 dark:border-white bg-[#BEF264] text-neutral-900'
-                    : 'border-2 border-neutral-200 dark:border-neutral-800 bg-muted/40 text-muted-foreground/40'
-                "
-              >
-                <ng-icon name="lucideCheck" class="size-5 stroke-[2.5]"></ng-icon>
-              </div>
-            }
-          </div>
+            </div>
+          }
         </div>
       }
     </div>
   </div>
 
-  <div card-footer class="w-full pt-2 border-t-1 border-border">
-    <!-- Add Set Button -->
-    @if (editable()) {
+  @if (editable()) {
+    <div card-footer class="w-full pt-2 border-t-1 border-border">
       <button z-button zType="ghost" [zFull]="true" type="button" (click)="onQuickAddSet()">
         <ng-icon name="lucidePlus" size="24"></ng-icon>
         <span>Add set</span>
       </button>
-    }
-  </div>
+    </div>
+  }
 </z-card>
