@@ -99,80 +99,70 @@
 
   @if (workoutService.sessionStartTime()) {
     <div class="fixed bottom-8 left-4 right-4 z-50 max-w-2xl mx-auto px-6">
-      <div
-        class="p-4 flex items-center rounded-[28px] bg-forest text-forest-foreground backdrop-blur-md border border-forest"
-      >
-        <div class="px-4 flex-2 flex flex-col items-center justify-center text-center">
-          <span
-            class="text-[0.5rem] text-white/60 uppercase leading-[1rem] tracking-widest font-semibold"
-            >Duration</span
+      <div class="flex flex-col rounded-4xl bg-forest text-forest-foreground backdrop-blur-md">
+        <!-- Rest Timer -->
+        @if (isRestActive() && remainingSeconds() !== null) {
+          <div
+            class="px-4 sm:px-6 py-4 flex items-center justify-between border-b-1 border-forest-foreground/15"
           >
-          <span class="font-mono text-sm font-medium text-lime">{{
-            workoutService.sessionDuration() | timeFormat
-          }}</span>
-        </div>
+            <div class="flex items-center gap-3">
+              <ng-icon name="lucideTimer" size="24" class="text-forest-foreground" />
+              <span class="hidden sm:inline text-sm font-medium text-forest-foreground/80"
+                >Rest</span
+              >
+              <span
+                class="font-mono tabular-nums text-lg sm:text-3xl leading-9 font-bold tracking-tight text-white"
+                >{{ restTimerFormatted }}</span
+              >
+            </div>
+            <div class="flex items-center gap-2">
+              <button z-button zType="ghost" zSize="sm" (click)="addRestTime(15)">+15s</button>
+              <button z-button zType="lime" zSize="sm" (click)="skipRestTimer()">
+                <ng-icon name="lucideSkipForward" class="w-4 h-4"></ng-icon>
+                <span class="hidden sm:inline">Skip</span>
+              </button>
+            </div>
+          </div>
+        }
 
-        <div class="h-6 w-[1px] bg-white/15"></div>
-
-        <div
-          class="min-w-[120px] px-4 flex-3 flex flex-col items-center justify-center text-center"
-        >
-          <span
-            class="text-[0.5rem] text-white/60 uppercase leading-[1rem] tracking-widest font-semibold"
-            >Volume</span
+        <div class="p-4 flex items-center">
+          <div
+            class="px-4 flex-2 flex flex-col gap-0 sm:gap-1 items-center justify-center text-center"
           >
-          <span class="font-mono text-sm font-medium text-white"
-            >{{ workoutService.totalVolume() }}
-            <span class="font-mono text-sm font-medium text-white/80">kg</span>
-          </span>
-        </div>
+            <span class="text-[0.5rem] sm:text-[0.75rem] text-white/60 uppercase font-semibold"
+              >Duration</span
+            >
+            <span class="font-mono text-sm sm:text-xl font-medium text-lime">{{
+              workoutService.sessionDuration() | timeFormat
+            }}</span>
+          </div>
 
-        <div class="h-6 w-[1px] bg-white/15"></div>
+          <div class="h-6 w-[1px] bg-white/15"></div>
 
-        <div class="px-4 flex-2 flex flex-col items-center justify-center text-center">
-          <span
-            class="text-[0.5rem] text-white/60 uppercase leading-[1rem] tracking-widest font-semibold"
-            >Sets</span
+          <div
+            class="min-w-[120px] px-4 flex-3 flex flex-col gap-0 sm:gap-1 items-center justify-center text-center"
           >
-          <span class="font-mono text-sm font-medium text-white"
-            >{{ workoutService.totalSets() }}
-          </span>
-        </div>
-      </div>
-    </div>
-  }
+            <span class="text-[0.5rem] sm:text-[0.75rem] text-white/60 uppercase font-semibold"
+              >Volume (kg)</span
+            >
+            <span class="font-mono text-sm sm:text-xl font-medium text-white">
+              {{ workoutService.totalVolume() }}
+            </span>
+          </div>
 
-  <!-- Rest Timer -->
-  @if (isRestActive() && remainingSeconds() !== null) {
-    <div
-      class="fixed bottom-0 inset-x-0 bg-forest text-forest-foreground border-t border-border shadow-none rounded-t-lg p-6 flex items-center justify-between z-50 max-w-[720px] mx-auto"
-    >
-      <div class="flex items-center gap-3">
-        <ng-icon name="lucideTimer" class="w-5 h-5 text-forest-foreground"></ng-icon>
-        <span class="text-sm font-medium text-forest-foreground/80">Rest</span>
-        <span
-          class="font-mono tabular-nums text-3xl leading-9 font-bold tracking-tight text-white"
-          >{{ restTimerFormatted }}</span
-        >
-      </div>
-      <div class="flex items-center gap-2">
-        <button
-          z-button
-          zType="ghost"
-          class="text-forest-foreground/70 hover:text-forest-foreground"
-          (click)="addRestTime(15)"
-        >
-          +15s
-        </button>
-        <button
-          z-button
-          zType="default"
-          class="bg-primary text-foreground rounded-full"
-          (click)="skipRestTimer()"
-        >
-          <ng-icon name="lucideSkipForward" class="w-4 h-4"></ng-icon>
-          Skip
-        </button>
+          <div class="h-6 w-[1px] bg-white/15"></div>
+
+          <div
+            class="px-4 flex-2 flex flex-col gap-0 sm:gap-1 items-center justify-center text-center"
+          >
+            <span class="text-[0.5rem] sm:text-[0.75rem] text-white/60 uppercase font-semibold"
+              >Sets</span
+            >
+            <span class="font-mono text-sm sm:text-xl font-medium text-white"
+              >{{ workoutService.totalSets() }}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   }
