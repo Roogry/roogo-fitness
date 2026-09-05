@@ -3,9 +3,11 @@
 
   <div class="pb-6 flex flex-col items-center text-center">
     <div class="flex flex-wrap items-center justify-center gap-2">
-      <z-badge zType="secondary" zShape="pill">
-        {{ exercise().primary_muscle?.name }}
-      </z-badge>
+      @if (exercise().primary_muscle?.name) {
+        <z-badge zType="secondary" zShape="pill">
+          {{ exercise().primary_muscle?.name }}
+        </z-badge>
+      }
       @if (exercise().secondary_muscles; as secondary) {
         @for (sec of secondary; track sec.id) {
           <z-badge zType="outline" zShape="pill"> Secondary: {{ sec.name }} </z-badge>

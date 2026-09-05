@@ -28,9 +28,11 @@
         </div>
         <div class="flex flex-col gap-2">
           <p class="font-medium text-sm">{{ exercise.name }}</p>
-          <z-badge zType="secondary">
-            {{ exercise.primary_muscle?.name }}
-          </z-badge>
+          @if (exercise.primary_muscle?.name) {
+            <z-badge zType="secondary">
+              {{ exercise.primary_muscle?.name }}
+            </z-badge>
+          }
         </div>
       </div>
       <ng-icon name="lucidePlus" class="h-6 w-6 mr-4 text-muted-foreground opacity-80"></ng-icon>
