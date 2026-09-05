@@ -23,6 +23,7 @@ import {
   lucideGripVertical,
 } from '@ng-icons/lucide';
 import { ExerciseService } from '@/core/services/exercise.service';
+import { WorkoutService } from '@/core/services/workout.service';
 import { Exercise, ExerciseMedia, Muscle } from '@/shared/models';
 import { ExerciseInstructionList } from '../../components/exercise-instruction-list/exercise-instruction-list';
 import { ExerciseMediaManagement } from '../../components/exercise-media-management/exercise-media-management';
@@ -65,6 +66,7 @@ export class ExerciseEdit implements OnInit {
   private router = inject(Router);
   private exerciseService = inject(ExerciseService);
   private muscleService = inject(MuscleService);
+  private workoutService = inject(WorkoutService);
 
   isLoading = signal(true);
   isSaving = signal(false);
@@ -235,7 +237,7 @@ export class ExerciseEdit implements OnInit {
         .filter(Boolean);
       const tips = f.tips().value().trim();
 
-      this.exerciseService.updateExercise(this.selectedExercise()!, {
+      await this.exerciseService.updateExercise(this.selectedExercise()!, {
         name: name,
         short_description: shortDescription,
         primary_muscle: primaryMuscle,
@@ -244,8 +246,12 @@ export class ExerciseEdit implements OnInit {
         instructions: instructions,
         tips: tips,
       });
+      // Sync active session if running (fixes #61 stale data)
+      if (this.workoutService.trackedExercises().length > 0) {
+        await this.workoutService.refreshTrackedExercises();
+      }
       this.isSaving.set(false);
-      this.router.navigate(['/exercise', this.selectedExercise()?.id]);
+      this.router.navigate(['/exercise', this.selectedExercise()?.id], { replaceUrl: true });
     });
   }
 }

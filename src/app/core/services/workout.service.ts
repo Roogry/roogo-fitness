@@ -476,6 +476,25 @@ export class WorkoutService {
   }
 
   /**
+   * Refreshes exercise metadata in active session from DB (fixes stale primaryMuscle after edit).
+   * Called after ExerciseEdit or on view enter.
+   */
+  async refreshTrackedExercises() {
+    const current = this.trackedExercises();
+    if (current.length === 0) return;
+    const refreshed: LoggedExercise[] = [];
+    for (const te of current) {
+      const fresh = await this.getExerciseById(te.exercise.id);
+      if (fresh) {
+        refreshed.push({ ...te, exercise: fresh });
+      } else {
+        refreshed.push(te);
+      }
+    }
+    this.trackedExercises.set(refreshed);
+  }
+
+  /**
    * Updates target values of specific exercises in the workout plan.
    * @param {number} planId The ID of the plan.
    * @param {number} sessionId The ID of the session.

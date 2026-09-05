@@ -96,8 +96,8 @@ export class ExerciseService {
    * @example
    * this.exerciseService.updateExercise(exercise, { name: 'Updated Name' });
    */
-  updateExercise(current: Exercise, updates: Partial<Exercise>) {
-    this.dbService.saveExercise({ ...current, ...updates });
+  async updateExercise(current: Exercise, updates: Partial<Exercise>) {
+    await this.dbService.saveExercise({ ...current, ...updates });
   }
 
   /**
