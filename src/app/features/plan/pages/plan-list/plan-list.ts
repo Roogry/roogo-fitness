@@ -49,7 +49,7 @@ import { ZardDialogService } from '@/shared/components/zard/dialog';
         border-radius: 9999px;
         background: var(--forest);
         border: 3px solid white;
-        outline: 1px solid var(--hairline);
+        outline: 1px solid var(--border);
         cursor: pointer;
         transition: transform 0.2s ease;
       }
@@ -62,7 +62,7 @@ import { ZardDialogService } from '@/shared/components/zard/dialog';
         border-radius: 9999px;
         background: var(--forest);
         border: 3px solid white;
-        outline: 1px solid var(--hairline);
+        outline: 1px solid var(--border);
         cursor: pointer;
       }
     `,

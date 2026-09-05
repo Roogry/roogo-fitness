@@ -92,6 +92,11 @@ export class PlanExerciseCardComponent {
     this.updateTarget.emit({ target_reps: isNaN(reps) ? 0 : reps });
   }
 
+  onRestChange(val: string) {
+    const rest = parseInt(val, 10);
+    this.updateTarget.emit({ target_rest_time: isNaN(rest) ? 0 : rest });
+  }
+
   onRemoveClick() {
     this.remove.emit();
   }

@@ -154,14 +154,13 @@
         z-button
         zType="ghost"
         zShape="circle"
-        class="flex-1 font-bold text-muted-ink"
+        class="flex-1 font-bold text-muted-foreground"
         (click)="isOpenPlanForm.set(false)"
       >
         Batal
       </button>
       <button
         z-button
-        zType="forest"
         zShape="circle"
         class="flex-1 font-bold"
         [disabled]="planForm().invalid()"
