@@ -1,8 +1,8 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideDumbbell, lucidePlus, lucideCheck } from '@ng-icons/lucide';
+import { lucideDumbbell, lucidePlus, lucideCheck, lucideSkipForward, lucideTimer } from '@ng-icons/lucide';
 import { WorkoutService } from '@/core/services/workout.service';
 import { LoggedSet } from '@/shared/models';
 import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-autocomplete/exercise-autocomplete';
@@ -33,11 +33,13 @@ import { timeFormatPipe } from '@/shared/pipes/time-format-pipe';
       lucideDumbbell,
       lucidePlus,
       lucideCheck,
+      lucideSkipForward,
+      lucideTimer,
     }),
   ],
   templateUrl: './session-active.html',
 })
-export class SessionActive implements OnInit {
+export class SessionActive implements OnInit, OnDestroy {
   workoutService = inject(WorkoutService);
   router = inject(Router);
   route = inject(ActivatedRoute);
@@ -47,12 +49,21 @@ export class SessionActive implements OnInit {
   isFinishSheetOpen = signal(false);
   progressedExercises = signal<any[]>([]);
 
+  // Rest timer state
+  remainingSeconds = signal<number | null>(null);
+  isRestActive = signal(false);
+  private restInterval: ReturnType<typeof setInterval> | null = null;
+
   ngOnInit() {
     this.setupSessionData();
     // Fix #61: refresh stale exercise data when returning to session
     if (this.workoutService.trackedExercises().length > 0) {
       this.workoutService.refreshTrackedExercises();
     }
+  }
+
+  ngOnDestroy() {
+    this.clearRestTimer();
   }
 
   setupSessionData() {
@@ -93,6 +104,16 @@ export class SessionActive implements OnInit {
 
   onSetUpdate(e: { exerciseId: number; setId: number; updates: Partial<LoggedSet> }) {
     this.workoutService.updateSet(e.exerciseId, e.setId, e.updates);
+    // Rest timer auto-start on completed
+    if (e.updates.completed_at) {
+      const tracked = this.workoutService.trackedExercises().find((t) => t.exercise.id === e.exerciseId);
+      let restSec = 60;
+      if (tracked?.sets && tracked.sets.length > 0) {
+        const first = tracked.sets[0] as any;
+        restSec = first.rest_time_taken_sec ?? first.target_rest_time ?? 60;
+      }
+      if (restSec > 0) this.startRestTimer(restSec);
+    }
   }
 
   onSetRemove(e: { exerciseId: number; setId: number }) {
@@ -162,6 +183,46 @@ export class SessionActive implements OnInit {
     this.isFinishSheetOpen.set(true);
   }
 
+  startRestTimer(seconds: number) {
+    this.clearRestTimer();
+    if (!seconds || seconds <= 0) return;
+    this.remainingSeconds.set(seconds);
+    this.isRestActive.set(true);
+    this.restInterval = setInterval(() => {
+      const curr = this.remainingSeconds();
+      if (curr === null || curr <= 1) {
+        this.clearRestTimer();
+      } else {
+        this.remainingSeconds.set(curr - 1);
+      }
+    }, 1000);
+  }
+
+  skipRestTimer() {
+    this.clearRestTimer();
+  }
+
+  addRestTime(seconds: number) {
+    const curr = this.remainingSeconds();
+    if (curr !== null) this.remainingSeconds.set(curr + seconds);
+  }
+
+  clearRestTimer() {
+    if (this.restInterval) {
+      clearInterval(this.restInterval);
+      this.restInterval = null;
+    }
+    this.remainingSeconds.set(null);
+    this.isRestActive.set(false);
+  }
+
+  get restTimerFormatted(): string {
+    const s = this.remainingSeconds() ?? 0;
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+  }
+
   openDiscardConfirm() {
     this.dialogService.create({
       zWidth: '400px',
@@ -173,6 +234,7 @@ export class SessionActive implements OnInit {
       zCancelText: 'Cancel',
       zOnOk: () => {
         this.workoutService.clearSession();
+        this.clearRestTimer();
         this.router.navigate(['/']);
       },
     });
