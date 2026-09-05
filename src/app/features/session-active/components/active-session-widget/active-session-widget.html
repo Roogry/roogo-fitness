@@ -5,22 +5,18 @@
   <!-- Left Side: Icon and Details -->
   <div class="flex items-center gap-3 min-w-0">
     <div
-      class="icon-container flex items-center justify-center size-10 rounded-full bg-primary/10 text-white flex-shrink-0"
+      class="flex icon-container items-center justify-center size-8 sm:size-12 rounded-full bg-primary/10 text-white flex-shrink-0"
     >
-      <ng-icon
-        name="lucideFlame"
-        color="#caf85a"
-        class="size-5 animate-pulse text-primary"
-      ></ng-icon>
+      <ng-icon name="lucideFlame" color="#caf85a" class="animate-pulse text-primary" />
     </div>
 
-    <div class="flex flex-col min-w-0">
+    <div class="flex flex-col sm:gap-1 min-w-0">
       <div class="flex items-center gap-2">
-        <span class="text-lg font-semibold text-white truncate leading-tight">
+        <span class="text-sm sm:text-lg font-semibold text-white truncate leading-tight">
           {{ workoutService.sessionTitle() || 'Workout Session' }}
         </span>
 
-        <z-badge zType="warning" class="bg-warning/15 flex items-center gap-1.5">
+        <z-badge zType="warning" class="hidden sm:flex bg-warning/15 flex items-center gap-1.5">
           <span class="relative flex h-2 w-2">
             <span
               class="animate-ping absolute inline-flex h-full w-full rounded-full bg-warning opacity-75"
@@ -31,10 +27,13 @@
           Unsaved
         </z-badge>
       </div>
-      <span class="font-mono text-xs text-white/70 mt-0.5">
-        {{ workoutService.completedSets() }}/{{ workoutService.totalSets() }} Sets •
-        {{ workoutService.totalVolume() }} kg logged
-      </span>
+      <div class="flex items-center gap-2 mt-0.5">
+        <span class="text-xs font-mono text-white/70">
+          {{ workoutService.completedSets() }}/{{ workoutService.totalSets() }} Sets •
+          {{ workoutService.totalVolume() }} kg
+        </span>
+        <span class="hidden sm:inline-block text-xs font-mono text-white/70">logged</span>
+      </div>
     </div>
   </div>
 
@@ -43,7 +42,12 @@
     <div
       class="timer-badge flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-lime text-ink font-mono font-bold text-xs tracking-wider"
     >
-      <span>{{ workoutService.sessionDuration() | durationFormat }}</span>
+      <span class="hidden sm:inline-block">
+        {{ workoutService.sessionDuration() | durationFormat }}
+      </span>
+      <span class="inline-block sm:hidden">
+        {{ workoutService.sessionDuration() | timeFormat: true }}
+      </span>
     </div>
   </div>
 </div>

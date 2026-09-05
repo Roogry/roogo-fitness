@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="flex items-center gap-4 pb-2">
       <div
-        class="h-12 w-12 rounded-full overflow-hidden bg-muted flex items-center justify-center flex-shrink-0 group-hover:opacity-60 transition-opacity"
+        class="hidden sm:flex h-12 w-12 rounded-full overflow-hidden bg-muted flex items-center justify-center flex-shrink-0 group-hover:opacity-60 transition-opacity"
       >
         @if (trackedExercise().exercise.media && trackedExercise().exercise.media.length > 0) {
           <img
@@ -24,6 +24,7 @@
             {{ trackedExercise().exercise.name }}
           </h3>
         </a>
+
         @if (targetSummary(); as summary) {
           <p
             class="text-xs sm:text-sm font-mono text-muted-foreground mt-1 lowercase tracking-tight"
@@ -35,13 +36,6 @@
 
       <!-- Right action group: index badge to the left of delete icon -->
       <div class="flex items-center gap-1.5 flex-shrink-0">
-        @if (exerciseIndex() && totalExercises()) {
-          <span
-            class="px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-muted text-muted-foreground select-none"
-          >
-            {{ exerciseIndex() }}/{{ totalExercises() }}
-          </span>
-        }
         @if (editable()) {
           <button
             z-button

@@ -6,6 +6,7 @@ import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideDumbbell, lucideFlame } from '@ng-icons/lucide';
 import { ZardBadgeComponent } from '@/shared/components/zard/badge';
+import { timeFormatPipe } from '../../../../shared/pipes/time-format-pipe';
 
 /**
  * A floating widget component displaying the user's currently active workout session timer and status.
@@ -16,7 +17,7 @@ import { ZardBadgeComponent } from '@/shared/components/zard/badge';
 @Component({
   selector: 'app-active-session-widget',
   standalone: true,
-  imports: [CommonModule, DurationFormatPipe, NgIcon, ZardBadgeComponent],
+  imports: [CommonModule, DurationFormatPipe, NgIcon, ZardBadgeComponent, timeFormatPipe],
   providers: [provideIcons({ lucideDumbbell, lucideFlame })],
   templateUrl: './active-session-widget.html',
   styleUrl: './active-session-widget.css',
