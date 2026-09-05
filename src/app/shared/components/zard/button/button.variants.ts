@@ -22,7 +22,7 @@ export const buttonVariants = cva(
         dashed:
           'border-2 border-ink/25 border-dashed hover:bg-muted hover:text-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 aria-expanded:bg-muted aria-expanded:text-foreground',
         secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:text-secondary-foreground/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground border border-transparent',
+          'bg-secondary text-secondary-foreground hover:bg-accent hover:text-secondary-foreground/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground border border-transparent',
         ghost:
           'hover:bg-muted hover:text-foreground dark:hover:bg-muted/50 aria-expanded:bg-muted aria-expanded:text-foreground border border-transparent',
         link: 'text-primary underline-offset-4 hover:underline border-transparent',

@@ -27,7 +27,6 @@
       [zVisible]="isOpenPlanActions()"
       (zVisibleChange)="isOpenPlanActions.set($event)"
       (click)="openPlanActionsSheet($event)"
-      class="touch-manipulation select-none"
     >
       <ng-icon name="lucideEllipsisVertical"></ng-icon>
       <span class="sr-only">More</span>
@@ -36,13 +35,10 @@
     <button
       type="button"
       z-button
-      zType="ghost"
+      [zType]="isExpanded() ? 'secondary' : 'ghost'"
       zSize="icon"
       zShape="circle"
-      class="text-muted-foreground touch-manipulation select-none"
-      [ngClass]="{
-        'rotate-90 bg-forest text-white': isExpanded(),
-      }"
+      [class.rotate-90]="isExpanded()"
     >
       <ng-icon name="lucideChevronRight"></ng-icon>
     </button>
