@@ -26,10 +26,17 @@
             >
               Exercise Name <span class="text-destructive">*</span>
             </label>
-            <z-form-control [errorMessage]="exerciseForm.name().errors()[0]?.message ?? ''">
+            <z-form-control
+              [errorMessage]="
+                submitted() && exerciseForm.name().invalid()
+                  ? (exerciseForm.name().errors()[0]?.message ?? '')
+                  : ''
+              "
+            >
               <input
                 id="name"
                 z-input
+                [zStatus]="submitted() && exerciseForm.name().invalid() ? 'error' : undefined"
                 [formField]="exerciseForm.name"
                 placeholder="e.g. Barbell Bench Press"
                 class="w-full"
@@ -38,11 +45,7 @@
           </z-form-field>
 
           <z-form-field class="flex flex-col gap-3">
-            <label
-              z-form-label
-              for="short_description"
-              class="text-sm font-medium leading-none"
-            >
+            <label z-form-label for="short_description" class="text-sm font-medium leading-none">
               Short Description
             </label>
             <z-form-control>
@@ -65,7 +68,13 @@
             >
               Primary Muscle <span class="text-destructive">*</span>
             </label>
-            <z-form-control [errorMessage]="exerciseForm.primaryGroup().errors()[0]?.message ?? ''">
+            <z-form-control
+              [errorMessage]="
+                submitted() && exerciseForm.primaryGroup().invalid()
+                  ? (exerciseForm.primaryGroup().errors()[0]?.message ?? '')
+                  : ''
+              "
+            >
               <z-select
                 id="muscle"
                 name="muscle"

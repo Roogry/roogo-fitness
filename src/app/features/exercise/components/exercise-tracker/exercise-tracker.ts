@@ -26,13 +26,7 @@ import { LoggedExercise, LoggedSet } from '@/shared/models';
 @Component({
   selector: 'app-exercise-tracker',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    NgIcon,
-    ZardCardComponent,
-    ZardButtonComponent,
-  ],
+  imports: [CommonModule, RouterModule, NgIcon, ZardCardComponent, ZardButtonComponent],
   providers: [provideIcons({ lucideTrash2, lucidePlus, lucideDumbbell, lucideCheck })],
   templateUrl: './exercise-tracker.html',
   styleUrl: './exercise-tracker.css',
@@ -117,7 +111,7 @@ export class ExerciseTracker {
   getWeightValue(set: LoggedSet): string | number {
     return set.weight_lifted !== undefined && set.weight_lifted !== null
       ? set.weight_lifted
-      : set.target_weight ?? '';
+      : (set.target_weight ?? '');
   }
 
   /**
@@ -126,7 +120,7 @@ export class ExerciseTracker {
   getRepsValue(set: LoggedSet): string | number {
     return set.reps_completed !== undefined && set.reps_completed !== null
       ? set.reps_completed
-      : set.target_reps ?? '';
+      : (set.target_reps ?? '');
   }
 
   /**
@@ -240,8 +234,7 @@ export class ExerciseTracker {
 
     const hasValidWeight =
       effectiveWeight !== undefined && !isNaN(effectiveWeight) && effectiveWeight > 0;
-    const hasValidReps =
-      effectiveReps !== undefined && !isNaN(effectiveReps) && effectiveReps > 0;
+    const hasValidReps = effectiveReps !== undefined && !isNaN(effectiveReps) && effectiveReps > 0;
 
     if (!hasValidWeight || !hasValidReps) {
       this.invalidSetIds.update((setIds) => {
@@ -280,5 +273,11 @@ export class ExerciseTracker {
 
   removeExercise() {
     this.exerciseRemoved.emit({ exerciseId: this.trackedExercise().exercise.id });
+  }
+
+  onlyPositiveNumber(event: KeyboardEvent) {
+    if (['-', 'e', 'E', '+', '.'].includes(event.key)) {
+      event.preventDefault();
+    }
   }
 }

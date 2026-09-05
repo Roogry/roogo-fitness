@@ -70,6 +70,7 @@ export class ExerciseEdit implements OnInit {
 
   isLoading = signal(true);
   isSaving = signal(false);
+  submitted = signal(false);
   selectedExercise = signal<Exercise | null>(null);
 
   // Form Fields
@@ -217,6 +218,7 @@ export class ExerciseEdit implements OnInit {
   }
 
   save() {
+    this.submitted.set(true);
     submit(this.exerciseForm, async (f) => {
       if (!this.selectedExercise()) return;
 

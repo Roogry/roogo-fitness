@@ -118,12 +118,15 @@
           <div class="flex flex-col items-center justify-center">
             @if (editable()) {
               <input
-                type="number"
-                step="any"
+                type="text"
+                pattern="[0-9]*"
+                inputmode="numeric"
+                enterkeyhint="next"
                 [value]="getWeightValue(set)"
                 (input)="onWeightInput(set, $event)"
+                (keypress)="onlyPositiveNumber($event)"
                 [placeholder]="set.target_weight?.toString() ?? '0'"
-                class="w-full text-center font-mono font-bold text-base sm:text-lg bg-transparent transition-colors leading-tight focus:outline-none"
+                class="w-full text-center font-mono font-bold text-base sm:text-lg transition-colors leading-tight focus:outline-none"
                 [class.text-destructive!]="
                   isSetInvalid(set.id) &&
                   (!getEffectiveWeight(set) || getEffectiveWeight(set)! <= 0)
@@ -144,10 +147,12 @@
           <div class="flex flex-col items-center justify-center">
             @if (editable()) {
               <input
-                type="number"
-                step="1"
+                type="text"
+                inputmode="numeric"
+                pattern="[0-9]*"
                 [value]="getRepsValue(set)"
                 (input)="onRepsInput(set, $event)"
+                (keypress)="onlyPositiveNumber($event)"
                 [placeholder]="set.target_reps?.toString() ?? '0'"
                 class="w-full text-center font-mono font-bold text-base sm:text-lg bg-transparent transition-colors leading-tight focus:outline-none"
                 [class.text-destructive!]="
