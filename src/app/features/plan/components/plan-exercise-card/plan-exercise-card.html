@@ -78,8 +78,10 @@
               <input
                 z-input
                 [id]="'sets-' + exercise().id"
-                type="number"
-                min="1"
+                type="text"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                enterkeyhint="next"
                 placeholder="3"
                 class="w-full text-center font-mono"
                 [ngModel]="plannedExercise().target_sets"
@@ -100,9 +102,10 @@
               <input
                 z-input
                 [id]="'weight-' + exercise().id"
-                type="number"
-                min="0"
-                step="0.5"
+                type="text"
+                pattern="[0-9]*"
+                inputmode="numeric"
+                enterkeyhint="next"
                 placeholder="0"
                 class="w-full text-center font-mono"
                 [ngModel]="plannedExercise().target_weight"
@@ -123,9 +126,11 @@
               <input
                 z-input
                 [id]="'reps-' + exercise().id"
-                type="number"
-                min="1"
-                placeholder="10"
+                type="text"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                enterkeyhint="next"
+                placeholder="8-12"
                 class="w-full text-center font-mono"
                 [ngModel]="plannedExercise().target_reps"
                 (ngModelChange)="onRepsChange($event)"
@@ -146,8 +151,10 @@
               <input
                 z-input
                 [id]="'rest-' + exercise().id"
-                type="number"
-                min="0"
+                type="text"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                enterkeyhint="done"
                 placeholder="60"
                 class="w-full text-center font-mono"
                 [ngModel]="plannedExercise().target_rest_time"
