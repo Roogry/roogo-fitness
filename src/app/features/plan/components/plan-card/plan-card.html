@@ -16,6 +16,7 @@
     </div>
 
     <button
+      type="button"
       z-button
       zPopover
       zType="ghost"
@@ -32,14 +33,12 @@
     </button>
 
     <button
+      type="button"
       z-button
-      zType="ghost"
+      [zType]="isExpanded() ? 'secondary' : 'ghost'"
       zSize="icon"
       zShape="circle"
-      class="text-muted-foreground"
-      [ngClass]="{
-        'rotate-90 bg-forest text-white': isExpanded(),
-      }"
+      [class.rotate-90]="isExpanded()"
     >
       <ng-icon name="lucideChevronRight"></ng-icon>
     </button>

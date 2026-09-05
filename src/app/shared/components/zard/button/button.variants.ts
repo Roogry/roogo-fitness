@@ -8,7 +8,7 @@ export const buttonVariants = cva(
     'aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-lg border border-transparent bg-clip-padding',
     "text-base font-bold focus-visible:ring-3 aria-invalid:ring-3 [&_svg:not([class*='size-'])]:size-5 inline-flex items-center",
     'justify-center whitespace-nowrap transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none',
-    'shrink-0 [&_svg]:shrink-0 outline-none group/button select-none cursor-pointer',
+    'shrink-0 [&_svg]:shrink-0 outline-none group/button select-none cursor-pointer touch-manipulation select-none',
   ),
   {
     variants: {
@@ -22,7 +22,7 @@ export const buttonVariants = cva(
         dashed:
           'border-2 border-ink/25 border-dashed hover:bg-muted hover:text-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 aria-expanded:bg-muted aria-expanded:text-foreground',
         secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:text-secondary-foreground/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground border border-transparent',
+          'bg-secondary text-secondary-foreground hover:bg-accent hover:text-secondary-foreground/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground border border-transparent',
         ghost:
           'hover:bg-muted hover:text-foreground dark:hover:bg-muted/50 aria-expanded:bg-muted aria-expanded:text-foreground border border-transparent',
         link: 'text-primary underline-offset-4 hover:underline border-transparent',
