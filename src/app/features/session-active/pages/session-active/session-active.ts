@@ -48,6 +48,8 @@ export class SessionActive implements OnInit, OnDestroy {
   isAddSheetOpen = signal(false);
   isFinishSheetOpen = signal(false);
   progressedExercises = signal<any[]>([]);
+  /** Bottom-bar Duration control swaps to the session start time until tapped again. */
+  showStartTime = signal(false);
 
   // Rest timer state
   remainingSeconds = signal<number | null>(null);
@@ -122,6 +124,10 @@ export class SessionActive implements OnInit, OnDestroy {
 
   onExerciseRemove(e: { exerciseId: number }) {
     this.workoutService.removeTrackedExercise(e.exerciseId);
+  }
+
+  onDurationClick() {
+    this.showStartTime.update((showing) => !showing);
   }
 
   openFinishSheet() {
