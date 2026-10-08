@@ -38,6 +38,7 @@
         let i = $index, total = $count
       ) {
         <app-exercise-tracker
+          [attr.data-exercise-id]="tracked.exercise.id"
           [trackedExercise]="tracked"
           [editable]="workoutService.sessionStartTime() !== null"
           [exerciseIndex]="i + 1"
