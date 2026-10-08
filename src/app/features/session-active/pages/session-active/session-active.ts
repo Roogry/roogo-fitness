@@ -2,7 +2,13 @@ import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideDumbbell, lucidePlus, lucideCheck, lucideSkipForward, lucideTimer } from '@ng-icons/lucide';
+import {
+  lucideDumbbell,
+  lucidePlus,
+  lucideCheck,
+  lucideSkipForward,
+  lucideTimer,
+} from '@ng-icons/lucide';
 import { WorkoutService } from '@/core/services/workout.service';
 import { LoggedSet } from '@/shared/models';
 import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-autocomplete/exercise-autocomplete';
@@ -108,7 +114,9 @@ export class SessionActive implements OnInit, OnDestroy {
     this.workoutService.updateSet(e.exerciseId, e.setId, e.updates);
     // Rest timer auto-start on completed
     if (e.updates.completed_at) {
-      const tracked = this.workoutService.trackedExercises().find((t) => t.exercise.id === e.exerciseId);
+      const tracked = this.workoutService
+        .trackedExercises()
+        .find((t) => t.exercise.id === e.exerciseId);
       let restSec = 60;
       if (tracked?.sets && tracked.sets.length > 0) {
         const first = tracked.sets[0] as any;
