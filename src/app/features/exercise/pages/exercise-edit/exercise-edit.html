@@ -1,4 +1,9 @@
-<app-header title="Edit Exercise" [showBackBtn]="true" (onBackClick)="cancel()"> </app-header>
+<app-header
+  title="Edit Exercise"
+  [showBackBtn]="true"
+  [backLink]="headerBackLink()"
+  [backReplaceUrl]="true"
+></app-header>
 <main class="container mx-auto px-4 pb-8 max-w-2xl">
   @if (isLoading()) {
     <div class="flex justify-center py-12 text-muted-foreground">
