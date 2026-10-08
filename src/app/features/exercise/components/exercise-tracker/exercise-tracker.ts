@@ -1,4 +1,12 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  ElementRef,
+  input,
+  output,
+  signal,
+  viewChildren,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -50,6 +58,9 @@ export class ExerciseTracker {
 
   // Track set IDs that failed validation when marking as done
   readonly invalidSetIds = signal<Set<number>>(new Set());
+
+  /** Reps inputs for each editable set, used to move focus from weight on Enter/Next. */
+  private readonly repsInputs = viewChildren<ElementRef<HTMLInputElement>>('repsInput');
 
   /**
    * Computes the formatted target summary line shown below the exercise title
@@ -139,6 +150,18 @@ export class ExerciseTracker {
     return set.reps_completed !== undefined && set.reps_completed !== null
       ? set.reps_completed
       : set.target_reps;
+  }
+
+  /**
+   * Moves focus from a set's weight field to that same set's reps field.
+   * Enter / the mobile keyboard Next key should not submit or validate the set.
+   */
+  onWeightEnter(set: LoggedSet, event: Event) {
+    event.preventDefault();
+    const repsInput = this.repsInputs().find(
+      (input) => Number(input.nativeElement.dataset['setId']) === set.id,
+    );
+    repsInput?.nativeElement.focus();
   }
 
   /**
