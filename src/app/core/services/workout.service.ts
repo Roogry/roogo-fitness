@@ -26,8 +26,16 @@ export class WorkoutService {
   trackedExercises = signal<LoggedExercise[]>([]);
   sessionStartTime = signal<number | null>(null);
   sessionDuration = signal<number>(0);
+  /**
+   * Epoch milliseconds when the current rest countdown finishes.
+   * Stored instead of "seconds left" so rest survives navigation and refresh,
+   * the same way `sessionStartTime` keeps workout duration accurate.
+   */
+  restEndsAt = signal<number | null>(null);
+  restRemainingSeconds = signal<number | null>(null);
 
   private durationInterval: any;
+  private restInterval: ReturnType<typeof setInterval> | undefined;
   private isRestoring = false;
 
   constructor() {
@@ -37,6 +45,7 @@ export class WorkoutService {
       this.sessionTitle();
       this.trackedExercises();
       this.sessionStartTime();
+      this.restEndsAt();
 
       const timeoutId = setTimeout(() => {
         this.saveStateToLocalStorage();
@@ -87,6 +96,19 @@ export class WorkoutService {
     }).length;
   });
 
+  isRestActive = computed(() => {
+    const remaining = this.restRemainingSeconds();
+    return remaining !== null && remaining > 0;
+  });
+
+  /** Rest countdown as zero-padded `MM:SS`. */
+  restTimerFormatted = computed(() => {
+    const total = this.restRemainingSeconds() ?? 0;
+    const minutes = Math.floor(total / 60);
+    const seconds = total % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  });
+
   private saveStateToLocalStorage() {
     if (this.isRestoring) return;
 
@@ -97,6 +119,7 @@ export class WorkoutService {
       trackedExercises: this.trackedExercises(),
       sessionStartTime: this.sessionStartTime(),
       sessionDuration: this.sessionDuration(),
+      restEndsAt: this.restEndsAt(),
     };
 
     localStorage.setItem(ACTIVE_SESSION_STORAGE_KEY, JSON.stringify(stateToSave));
@@ -119,6 +142,13 @@ export class WorkoutService {
           this.sessionDuration.set(parsed.sessionDuration ?? 0);
 
           this.startSessionTimer();
+        }
+
+        const restEndsAt = typeof parsed.restEndsAt === 'number' ? parsed.restEndsAt : null;
+        if (restEndsAt !== null && restEndsAt > Date.now()) {
+          this.restEndsAt.set(restEndsAt);
+          this.syncRestRemaining();
+          this.ensureRestInterval();
         }
       } catch (error) {
         console.error('Gagal me-restore session dari local storage', error);
@@ -278,6 +308,90 @@ export class WorkoutService {
   }
 
   /**
+   * Starts (or restarts) rest for the given duration.
+   * A new call replaces any in-progress rest, matching set-completion behavior.
+   * @param {number} seconds Rest length in seconds.
+   * @returns {void}
+   * @example
+   * this.workoutService.startRestTimer(90);
+   */
+  startRestTimer(seconds: number) {
+    if (!seconds || seconds <= 0) return;
+
+    this.restEndsAt.set(Date.now() + seconds * 1000);
+    this.syncRestRemaining();
+    this.ensureRestInterval();
+  }
+
+  /**
+   * Extends the current rest countdown. No-op when rest is not active.
+   * @param {number} seconds Seconds to add.
+   * @returns {void}
+   * @example
+   * this.workoutService.addRestTime(15);
+   */
+  addRestTime(seconds: number) {
+    const end = this.restEndsAt();
+    if (end === null || end <= Date.now() || !seconds) return;
+
+    this.restEndsAt.set(end + seconds * 1000);
+    this.syncRestRemaining();
+  }
+
+  /**
+   * Ends rest immediately.
+   * @returns {void}
+   * @example
+   * this.workoutService.skipRestTimer();
+   */
+  skipRestTimer() {
+    this.clearRestTimer();
+  }
+
+  /**
+   * Stops the rest countdown and clears persisted rest state.
+   * @returns {void}
+   * @example
+   * this.workoutService.clearRestTimer();
+   */
+  clearRestTimer() {
+    if (this.restInterval) {
+      clearInterval(this.restInterval);
+      this.restInterval = undefined;
+    }
+    this.restEndsAt.set(null);
+    this.restRemainingSeconds.set(null);
+  }
+
+  /** Writes `restRemainingSeconds` from `restEndsAt`. Returns false when rest is over. */
+  private syncRestRemaining(): boolean {
+    const end = this.restEndsAt();
+    if (end === null) {
+      this.restRemainingSeconds.set(null);
+      return false;
+    }
+
+    const remaining = Math.ceil((end - Date.now()) / 1000);
+    if (remaining <= 0) {
+      this.restRemainingSeconds.set(null);
+      return false;
+    }
+
+    this.restRemainingSeconds.set(remaining);
+    return true;
+  }
+
+  private ensureRestInterval() {
+    if (this.restInterval) return;
+
+    this.restInterval = setInterval(() => {
+      if (!this.syncRestRemaining()) {
+        this.clearRestTimer();
+      }
+    }, 1000);
+  }
+
+  /**
    * Retrieves all completed workout sessions.
    * @returns {Promise<LoggedSession[]>} A promise resolving to the logged sessions.
    * @example
@@ -424,6 +538,7 @@ export class WorkoutService {
    */
   stopSession() {
     this.stopSessionTimer();
+    this.clearRestTimer();
     this.trackedExercises.set([]);
     this.sessionStartTime.set(null);
     this.sessionDuration.set(0);

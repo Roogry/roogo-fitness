@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { WorkoutService } from '@/core/services/workout.service';
 import { DurationFormatPipe } from '@/shared/pipes/duration-format-pipe';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideDumbbell, lucideFlame } from '@ng-icons/lucide';
+import { lucideDumbbell, lucideFlame, lucideTimer } from '@ng-icons/lucide';
 import { ZardBadgeComponent } from '@/shared/components/zard/badge';
 import { timeFormatPipe } from '../../../../shared/pipes/time-format-pipe';
 
@@ -18,7 +18,7 @@ import { timeFormatPipe } from '../../../../shared/pipes/time-format-pipe';
   selector: 'app-active-session-widget',
   standalone: true,
   imports: [CommonModule, DurationFormatPipe, NgIcon, ZardBadgeComponent, timeFormatPipe],
-  providers: [provideIcons({ lucideDumbbell, lucideFlame })],
+  providers: [provideIcons({ lucideDumbbell, lucideFlame, lucideTimer })],
   templateUrl: './active-session-widget.html',
   styleUrl: './active-session-widget.css',
 })
