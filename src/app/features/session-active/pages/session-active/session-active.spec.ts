@@ -32,6 +32,7 @@ describe('SessionActive duration control', () => {
     totalVolume: signal(0),
     totalSets: signal(0),
     startSessionTimer: vi.fn(),
+    isRestActive: () => false,
     clearSession: vi.fn(),
     refreshTrackedExercises: vi.fn(),
     setupSessionFromPlan: vi.fn(),
