@@ -2,13 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import {
-  lucideDumbbell,
-  lucidePlus,
-  lucideCheck,
-  lucideSkipForward,
-  lucideTimer,
-} from '@ng-icons/lucide';
+import { lucideCheck, lucideDumbbell, lucidePlus } from '@ng-icons/lucide';
 import { WorkoutService } from '@/core/services/workout.service';
 import { LoggedSet } from '@/shared/models';
 import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-autocomplete/exercise-autocomplete';
@@ -18,6 +12,7 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { RooSheetComponent } from '@/shared/components/sheet/sheet';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { ActiveSessionFinishSheet } from '../../components/active-session-finish-sheet/active-session-finish-sheet';
+import { RestTimerBar } from '../../components/rest-timer-bar/rest-timer-bar';
 import { timeFormatPipe } from '@/shared/pipes/time-format-pipe';
 
 @Component({
@@ -33,14 +28,13 @@ import { timeFormatPipe } from '@/shared/pipes/time-format-pipe';
     timeFormatPipe,
     NgIcon,
     ActiveSessionFinishSheet,
+    RestTimerBar,
   ],
   providers: [
     provideIcons({
       lucideDumbbell,
       lucidePlus,
       lucideCheck,
-      lucideSkipForward,
-      lucideTimer,
     }),
   ],
   templateUrl: './session-active.html',
