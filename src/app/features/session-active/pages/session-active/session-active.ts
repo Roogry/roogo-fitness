@@ -1,22 +1,8 @@
-import {
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  afterNextRender,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, ElementRef, OnInit, afterNextRender, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import {
-  lucideDumbbell,
-  lucidePlus,
-  lucideCheck,
-  lucideSkipForward,
-  lucideTimer,
-} from '@ng-icons/lucide';
+import { lucideCheck, lucideDumbbell, lucidePlus } from '@ng-icons/lucide';
 import { WorkoutService } from '@/core/services/workout.service';
 import { LoggedExercise, LoggedSet } from '@/shared/models';
 import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-autocomplete/exercise-autocomplete';
@@ -26,6 +12,7 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { RooSheetComponent } from '@/shared/components/sheet/sheet';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { ActiveSessionFinishSheet } from '../../components/active-session-finish-sheet/active-session-finish-sheet';
+import { RestTimerBar } from '../../components/rest-timer-bar/rest-timer-bar';
 import { timeFormatPipe } from '@/shared/pipes/time-format-pipe';
 
 @Component({
@@ -41,19 +28,18 @@ import { timeFormatPipe } from '@/shared/pipes/time-format-pipe';
     timeFormatPipe,
     NgIcon,
     ActiveSessionFinishSheet,
+    RestTimerBar,
   ],
   providers: [
     provideIcons({
       lucideDumbbell,
       lucidePlus,
       lucideCheck,
-      lucideSkipForward,
-      lucideTimer,
     }),
   ],
   templateUrl: './session-active.html',
 })
-export class SessionActive implements OnInit, OnDestroy {
+export class SessionActive implements OnInit {
   workoutService = inject(WorkoutService);
   router = inject(Router);
   route = inject(ActivatedRoute);
@@ -62,11 +48,6 @@ export class SessionActive implements OnInit, OnDestroy {
   isAddSheetOpen = signal(false);
   isFinishSheetOpen = signal(false);
   progressedExercises = signal<any[]>([]);
-
-  // Rest timer state
-  remainingSeconds = signal<number | null>(null);
-  isRestActive = signal(false);
-  private restInterval: ReturnType<typeof setInterval> | null = null;
 
   private readonly host = inject(ElementRef<HTMLElement>);
   /** Set after the enter-page scroll attempt so later set toggles do not move the viewport. */
@@ -87,10 +68,6 @@ export class SessionActive implements OnInit, OnDestroy {
     if (this.workoutService.trackedExercises().length > 0) {
       this.workoutService.refreshTrackedExercises();
     }
-  }
-
-  ngOnDestroy() {
-    this.clearRestTimer();
   }
 
   /**
@@ -168,7 +145,7 @@ export class SessionActive implements OnInit, OnDestroy {
         const first = tracked.sets[0] as any;
         restSec = first.rest_time_taken_sec ?? first.target_rest_time ?? 60;
       }
-      if (restSec > 0) this.startRestTimer(restSec);
+      if (restSec > 0) this.workoutService.startRestTimer(restSec);
     }
   }
 
@@ -239,46 +216,6 @@ export class SessionActive implements OnInit, OnDestroy {
     this.isFinishSheetOpen.set(true);
   }
 
-  startRestTimer(seconds: number) {
-    this.clearRestTimer();
-    if (!seconds || seconds <= 0) return;
-    this.remainingSeconds.set(seconds);
-    this.isRestActive.set(true);
-    this.restInterval = setInterval(() => {
-      const curr = this.remainingSeconds();
-      if (curr === null || curr <= 1) {
-        this.clearRestTimer();
-      } else {
-        this.remainingSeconds.set(curr - 1);
-      }
-    }, 1000);
-  }
-
-  skipRestTimer() {
-    this.clearRestTimer();
-  }
-
-  addRestTime(seconds: number) {
-    const curr = this.remainingSeconds();
-    if (curr !== null) this.remainingSeconds.set(curr + seconds);
-  }
-
-  clearRestTimer() {
-    if (this.restInterval) {
-      clearInterval(this.restInterval);
-      this.restInterval = null;
-    }
-    this.remainingSeconds.set(null);
-    this.isRestActive.set(false);
-  }
-
-  get restTimerFormatted(): string {
-    const s = this.remainingSeconds() ?? 0;
-    const m = Math.floor(s / 60);
-    const sec = s % 60;
-    return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-  }
-
   openDiscardConfirm() {
     this.dialogService.create({
       zWidth: '400px',
@@ -290,7 +227,6 @@ export class SessionActive implements OnInit, OnDestroy {
       zCancelText: 'Cancel',
       zOnOk: () => {
         this.workoutService.clearSession();
-        this.clearRestTimer();
         this.router.navigate(['/']);
       },
     });

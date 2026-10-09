@@ -79,6 +79,7 @@ describe('SessionActive resume scroll', () => {
       sessionDuration: signal(90),
       totalVolume: signal(0),
       totalSets: signal(0),
+      isRestActive: signal(false),
       selectedPlanId: signal<number | null>(null),
       selectedSessionId: signal<number | null>(null),
       sessionTitle: signal('Workout Session'),

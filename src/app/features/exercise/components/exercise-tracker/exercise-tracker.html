@@ -117,6 +117,7 @@
                 inputmode="decimal"
                 enterkeyhint="next"
                 [value]="getWeightValue(set)"
+                (keydown.enter)="onWeightEnter(set, $event)"
                 (input)="onWeightInput(set, $event)"
                 (keypress)="onlyPositiveNumber($event)"
                 [placeholder]="set.target_weight?.toString() ?? '0'"
@@ -141,9 +142,12 @@
           <div class="flex flex-col items-center justify-center">
             @if (editable()) {
               <input
+                #repsInput
                 type="text"
                 inputmode="numeric"
                 pattern="[0-9]*"
+                enterkeyhint="done"
+                [attr.data-set-id]="set.id"
                 [value]="getRepsValue(set)"
                 (input)="onRepsInput(set, $event)"
                 (keypress)="onlyPositiveNumber($event)"
