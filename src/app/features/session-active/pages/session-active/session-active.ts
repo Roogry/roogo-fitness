@@ -1,10 +1,10 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, OnInit, afterNextRender, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCheck, lucideDumbbell, lucidePlus } from '@ng-icons/lucide';
 import { WorkoutService } from '@/core/services/workout.service';
-import { LoggedSet } from '@/shared/models';
+import { LoggedExercise, LoggedSet } from '@/shared/models';
 import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-autocomplete/exercise-autocomplete';
 import { ExerciseTracker } from '@/features/exercise/components/exercise-tracker/exercise-tracker';
 import { HeaderComponent } from '@/shared/components/header/header.component';
@@ -49,12 +49,52 @@ export class SessionActive implements OnInit {
   isFinishSheetOpen = signal(false);
   progressedExercises = signal<any[]>([]);
 
+  private readonly host = inject(ElementRef<HTMLElement>);
+  /** Set after the enter-page scroll attempt so later set toggles do not move the viewport. */
+  private resumeScrollHandled = false;
+
+  constructor() {
+    // Once per visit, after the exercise list has been rendered.
+    afterNextRender({
+      mixedReadWrite: () => {
+        this.scrollToLastCompletedExercise();
+      },
+    });
+  }
+
   ngOnInit() {
     this.setupSessionData();
     // Fix #61: refresh stale exercise data when returning to session
     if (this.workoutService.trackedExercises().length > 0) {
       this.workoutService.refreshTrackedExercises();
     }
+  }
+
+  /**
+   * Brings the last exercise that already has a checked set into view.
+   * Stays put when the session is not running or no set has `completed_at`.
+   */
+  private scrollToLastCompletedExercise(): void {
+    if (this.resumeScrollHandled) {
+      return;
+    }
+    this.resumeScrollHandled = true;
+
+    if (!this.workoutService.sessionStartTime()) {
+      return;
+    }
+
+    const exerciseId = lastExerciseIdWithCompletedSet(this.workoutService.trackedExercises());
+    if (exerciseId === null) {
+      return;
+    }
+
+    const target = this.host.nativeElement.querySelector(`[data-exercise-id="${exerciseId}"]`);
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+
+    target.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' });
   }
 
   setupSessionData() {
@@ -191,4 +231,20 @@ export class SessionActive implements OnInit {
       },
     });
   }
+}
+
+/**
+ * Highest-index exercise that has at least one set with `completed_at`.
+ * List order is the session order, so the last match is where logging left off.
+ */
+export function lastExerciseIdWithCompletedSet(
+  exercises: readonly LoggedExercise[],
+): number | null {
+  for (let index = exercises.length - 1; index >= 0; index--) {
+    const tracked = exercises[index];
+    if (tracked.sets.some((set) => !!set.completed_at)) {
+      return tracked.exercise.id;
+    }
+  }
+  return null;
 }
