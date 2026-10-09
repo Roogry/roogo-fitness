@@ -100,29 +100,8 @@
   @if (workoutService.sessionStartTime()) {
     <div class="fixed bottom-8 left-4 right-4 z-50 max-w-2xl mx-auto px-6">
       <div class="flex flex-col rounded-4xl bg-forest text-forest-foreground backdrop-blur-md">
-        <!-- Rest Timer -->
-        @if (isRestActive() && remainingSeconds() !== null) {
-          <div
-            class="px-4 sm:px-6 py-4 flex items-center justify-between border-b-1 border-forest-foreground/15"
-          >
-            <div class="flex items-center gap-3">
-              <ng-icon name="lucideTimer" size="24" class="text-forest-foreground" />
-              <span class="hidden sm:inline text-sm font-medium text-forest-foreground/80"
-                >Rest</span
-              >
-              <span
-                class="font-mono tabular-nums text-lg sm:text-3xl leading-9 font-bold tracking-tight text-white"
-                >{{ restTimerFormatted }}</span
-              >
-            </div>
-            <div class="flex items-center gap-2">
-              <button z-button zType="ghost" zSize="sm" (click)="addRestTime(15)">+15s</button>
-              <button z-button zType="lime" zSize="sm" (click)="skipRestTimer()">
-                <ng-icon name="lucideSkipForward" class="w-4 h-4"></ng-icon>
-                <span class="hidden sm:inline">Skip</span>
-              </button>
-            </div>
-          </div>
+        @if (workoutService.isRestActive()) {
+          <app-rest-timer-bar />
         }
 
         <div class="p-4 flex items-center">

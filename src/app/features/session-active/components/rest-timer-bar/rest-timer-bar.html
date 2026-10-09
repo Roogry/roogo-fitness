@@ -1,0 +1,19 @@
+<div
+  class="flex items-center justify-between border-b-1 border-forest-foreground/15 px-4 py-4 sm:px-6"
+>
+  <div class="flex items-center gap-3">
+    <ng-icon name="lucideTimer" size="24" class="text-forest-foreground" />
+    <span class="hidden text-sm font-medium text-forest-foreground/80 sm:inline">Rest</span>
+    <span
+      class="font-mono text-lg leading-9 font-bold tracking-tight text-white tabular-nums sm:text-3xl"
+      >{{ workoutService.restTimerFormatted() }}</span
+    >
+  </div>
+  <div class="flex items-center gap-2">
+    <button z-button zType="ghost" zSize="sm" (click)="addRestTime($event)">+15s</button>
+    <button z-button zType="lime" zSize="sm" (click)="skipRest($event)">
+      <ng-icon name="lucideSkipForward" class="h-4 w-4"></ng-icon>
+      <span class="hidden sm:inline">Skip</span>
+    </button>
+  </div>
+</div>
