@@ -138,7 +138,7 @@
             >
             <span class="font-mono text-sm sm:text-xl font-medium text-lime" aria-live="polite">
               @if (showStartTime()) {
-                {{ workoutService.sessionStartTime() | date: 'shortTime' }}
+                {{ workoutService.sessionStartTime() | date: 'HH:mm' }}
               } @else {
                 {{ workoutService.sessionDuration() | timeFormat }}
               }

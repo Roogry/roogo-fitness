@@ -81,10 +81,13 @@ describe('SessionActive duration control', () => {
     button.click();
     fixture.detectChanges();
 
-    const startedAt = new DatePipe('en-US').transform(sessionStart, 'shortTime');
+    const startedAt = new DatePipe('en-US').transform(sessionStart, 'HH:mm');
+    expect(startedAt).toBe('18:41');
     expect(button.getAttribute('aria-pressed')).toBe('true');
     expect(button.textContent).toContain('Started');
     expect(button.textContent).toContain(startedAt);
+    expect(button.textContent).not.toContain('PM');
+    expect(button.textContent).not.toContain('AM');
     expect(fixture.componentInstance.showStartTime()).toBe(true);
 
     button.click();
