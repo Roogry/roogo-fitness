@@ -6,13 +6,25 @@ import { Component, input, output } from '@angular/core';
   standalone: true,
   host: {
     'data-testid': 'keyboard-helper-bar',
-    class: 'fixed inset-x-0 z-[1000] px-3 py-2 pointer-events-none motion-reduce:animate-none',
+    class: 'fixed inset-x-0 z-[1000] isolate px-3 py-2 pointer-events-none motion-reduce:animate-none',
     '[style.bottom.px]': 'bottom()',
     'animate.leave': 'helper-leave',
   },
   template: `
+    <!-- Progressive blur: invisible at the top, gradually hides content behind the chips toward the keyboard. -->
+    <div
+      aria-hidden="true"
+      data-testid="helper-backdrop"
+      class="absolute inset-x-0 -top-8 -z-10 backdrop-blur-md"
+      style="
+        bottom: -100lvh;
+        background: linear-gradient(to bottom, transparent 0px, color-mix(in srgb, var(--background) 70%, transparent) 40px, var(--background) 72px);
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0px, black 40px);
+        mask-image: linear-gradient(to bottom, transparent 0px, black 40px);
+      "
+    ></div>
     <!-- Both modes stay mounted so a field switch crossfades instead of leave/enter. -->
-    <div class="grid">
+    <div class="grid relative">
       <div
         data-testid="weight-chips"
         class="col-start-1 row-start-1 self-center flex gap-2 justify-center transition-opacity duration-100 ease-out motion-reduce:transition-none"
