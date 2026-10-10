@@ -14,6 +14,7 @@ import { RooSheetComponent } from '@/shared/components/sheet/sheet';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { ActiveSessionFinishSheet } from '../../components/active-session-finish-sheet/active-session-finish-sheet';
 import { RestTimerBar } from '../../components/rest-timer-bar/rest-timer-bar';
+import { DismissKeyboardOnScroll } from '@/shared/directives/dismiss-keyboard-on-scroll.directive';
 import { timeFormatPipe } from '@/shared/pipes/time-format-pipe';
 
 @Component({
@@ -30,6 +31,7 @@ import { timeFormatPipe } from '@/shared/pipes/time-format-pipe';
     NgIcon,
     ActiveSessionFinishSheet,
     RestTimerBar,
+    DismissKeyboardOnScroll,
   ],
   providers: [
     provideIcons({
