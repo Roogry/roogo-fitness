@@ -1,3 +1,5 @@
+import { FloatingBlurComponent } from '@/shared/components/floating-blur/floating-blur';
+import { VisualViewportService } from '@/core/services/visual-viewport.service';
 import { Component, ElementRef, OnInit, afterNextRender, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,12 +15,14 @@ import { RooSheetComponent } from '@/shared/components/sheet/sheet';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { ActiveSessionFinishSheet } from '../../components/active-session-finish-sheet/active-session-finish-sheet';
 import { RestTimerBar } from '../../components/rest-timer-bar/rest-timer-bar';
+import { DismissKeyboardOnScroll } from '@/shared/directives/dismiss-keyboard-on-scroll.directive';
 import { timeFormatPipe } from '@/shared/pipes/time-format-pipe';
 
 @Component({
   selector: 'app-session-active',
   standalone: true,
   imports: [
+    FloatingBlurComponent,
     CommonModule,
     ExerciseAutocomplete,
     ExerciseTracker,
@@ -29,6 +33,7 @@ import { timeFormatPipe } from '@/shared/pipes/time-format-pipe';
     NgIcon,
     ActiveSessionFinishSheet,
     RestTimerBar,
+    DismissKeyboardOnScroll,
   ],
   providers: [
     provideIcons({
@@ -52,6 +57,8 @@ export class SessionActive implements OnInit {
   showStartTime = signal(false);
 
   private readonly host = inject(ElementRef<HTMLElement>);
+  /** Hides the bottom session bar + rest timer while the keyboard is open so they don't overlap the input helper (#75). */
+  readonly viewport = inject(VisualViewportService);
   /** Set after the enter-page scroll attempt so later set toggles do not move the viewport. */
   private resumeScrollHandled = false;
 

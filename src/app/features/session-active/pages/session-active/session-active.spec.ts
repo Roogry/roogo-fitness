@@ -5,6 +5,7 @@ import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/route
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 import { ExerciseService } from '@/core/services/exercise.service';
+import { VisualViewportService } from '@/core/services/visual-viewport.service';
 import { WorkoutService } from '@/core/services/workout.service';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { Exercise, LoggedExercise } from '@/shared/models';
@@ -277,5 +278,32 @@ describe('SessionActive duration control', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('button[aria-pressed]')).toBeNull();
+  });
+
+  it('slides the session bar down while the keyboard is open', () => {
+    const fixture = TestBed.createComponent(SessionActive);
+    fixture.detectChanges();
+    const bar = fixture.nativeElement.querySelector('[data-testid="session-bar"]') as HTMLElement;
+
+    expect(bar.className).toContain('transition-[opacity,transform]');
+    expect(bar.className).toContain('duration-200');
+    expect(bar.className).toContain('motion-reduce:transition-none');
+    expect(bar.classList.contains('opacity-0')).toBe(false);
+    expect(bar.classList.contains('translate-y-2')).toBe(false);
+
+    TestBed.inject(VisualViewportService).keyboardOffset.set(320);
+    fixture.detectChanges();
+
+    expect(bar.classList.contains('opacity-0')).toBe(true);
+    expect(bar.classList.contains('translate-y-2')).toBe(true);
+    expect(bar.classList.contains('pointer-events-none')).toBe(true);
+    expect(bar.getAttribute('aria-hidden')).toBe('true');
+
+    TestBed.inject(VisualViewportService).keyboardOffset.set(0);
+    fixture.detectChanges();
+
+    expect(bar.classList.contains('opacity-0')).toBe(false);
+    expect(bar.classList.contains('translate-y-2')).toBe(false);
+    expect(bar.hasAttribute('aria-hidden')).toBe(false);
   });
 });
