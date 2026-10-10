@@ -135,6 +135,23 @@ Use tokens from `src/styles.css` (`@theme inline` maps them to Tailwind):
 - Mist `--secondary` (`#eef1e6`), card `--card`, hairline `--border`, muted text `--muted-foreground`, error `--destructive`.
 - Display: Bricolage Grotesque (`font-display` on headings). Body: Inter. Numbers: JetBrains Mono (`font-mono`).
 
+Use Tailwind's scale, not arbitrary brackets. `p-2` not `p-[8px]`, `gap-3` not `gap-[12px]`, `rounded-xl` not `rounded-[12px]`, `text-sm` not `text-[14px]`. Colors come from theme tokens (`bg-lime`, `bg-forest`, `text-ink`), not hex (`bg-[#BEF264]`). An arbitrary value is only for something no scale step or token can express, such as `calc(...)` or `env(safe-area-inset-*)`. If that custom value shows up twice, add it under `@theme` in `src/styles.css` instead of repeating the bracket.
+
+```html
+<!-- Don't -->
+<div class="flex gap-[12px] rounded-[12px] bg-[#BEF264] p-[8px] text-[14px]">
+
+<!-- Do -->
+<div class="flex gap-3 rounded-xl bg-lime p-2 text-sm">
+```
+
+Known cleanup — already in the tree. Do not copy these, and do not replace them in passing:
+
+- Hex: `bg-[#BEF264]` in `keyboard-helper-bar.ts` (the spec asserts that class) and `exercise-tracker.html`; tracker also uses `bg-[#FEF3C7]` and `text-[#D97706]`. `home.html` uses `bg-[#eaffb0]`, `bg-[#d9f99a]`, `bg-[#e9f5e9]`, and `border-[#c8e6c9]`. `storage-data.html` uses `text-[#8ec0ff]`. None of these match `--lime` (`#caf85a`).
+- Pixel or rem brackets a scale class already covers: `home.html` (`text-[10px]` through `text-[32px]`, `rounded-[6px]` / `rounded-[24px]` / `rounded-[32px]`, `h-[56px]`, `max-w-[640px]`, `gap-[6px]`, `w-[8px]`, `w-[64px]`, `min-w-[72px]`, `opacity-[0.07]`); `upcoming-session-card` `min-w-[240px]` and `explore-plan-card` `min-w-[320px]`; `storage-data.html` (`rounded-[24px]` / `rounded-[28px]`, `h-[44px]` / `h-[48px]`, `text-[15px]` / `text-[18px]` / `text-[32px]`); `plan-list.html` `rounded-[20px]` / `rounded-[28px]`; `plan-session-detail.html` `pb-[120px]`; `sheet.html` `rounded-[32px]`, `text-[20px]`, `min-h-[36px]`, `md:max-w-[480px]`; `session-active.html` `text-[0.5rem]`, `w-[1px]`, `min-w-[120px]`; `exercise-tracker.html` `text-[11px]` and `grid-cols-[48px_56px_56px_1fr]`; `exercise-edit.html` `min-h-[80px]`; header `min-h-[56px]` / `min-h-[80px]`; `bottom-nav` `h-[80px]`; `main-layout` `bottom-[100px]`; `nav-pills` `max-w-[200px]`; `zard/card` and `logged-workout-card` `rounded-[16px]` / `rounded-[24px]` / `rounded-[28px]` / `rounded-[32px]`; checkbox `rounded-[4px]`.
+
+Leave these alone — no scale step fits: `pb-[env(safe-area-inset-bottom,0px)]` on `app-bottom-nav`, `h-[calc(100dvh-80px)]` on `app-main-layout`, `max-w-[calc(100%-2rem)]` on `z-dialog`, `rounded-[min(var(--radius-md),12px)]` on `z-button`, `-inset-x-[100vw]` on `app-floating-blur`.
+
 - Chips size to their label (`shrink-0`, `min-w-14`, `rounded-full`), like the helper chips. Do not stretch them with `w-full`. Full-width actions are `z-button` with `zFull` (Start Session, Add set).
 - Shell radius: `rounded-full` for pills, the widget at rest, and icon buttons. `rounded-4xl` for the session bar and for the widget while rest is showing.
 - Floating bottom UI uses `app-floating-blur` (gradient fade, `pointer-events-none` on the fade layers). Do not add `backdrop-blur` or `backdrop-filter`. Leftovers to avoid copying: `backdrop-blur-md` on the forest session card and widget, `backdrop-blur-sm` on the sheet scrim, `backdrop-blur` on exercise-media controls.
