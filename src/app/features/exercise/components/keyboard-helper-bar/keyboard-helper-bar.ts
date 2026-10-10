@@ -1,30 +1,23 @@
 import { Component, input, output } from '@angular/core';
+import { FloatingBlurComponent } from '@/shared/components/floating-blur/floating-blur';
 
 /** Presentational helper bar pinned above the mobile keyboard. */
 @Component({
   selector: 'app-keyboard-helper-bar',
   standalone: true,
+  imports: [FloatingBlurComponent],
   host: {
     'data-testid': 'keyboard-helper-bar',
-    class: 'fixed inset-x-0 z-[1000] isolate px-3 py-2 pointer-events-none motion-reduce:animate-none',
-    '[style.bottom.px]': 'bottom()',
+    class: 'fixed inset-x-0 z-[1000] px-3 py-2 pointer-events-none motion-reduce:animate-none',
+    '[style.bottom.px]': 'top() === null ? bottom() : null',
+    '[style.top.px]': 'top()',
+    '[class.-translate-y-full]': 'top() !== null',
     'animate.leave': 'helper-leave',
   },
   template: `
-    <!-- Progressive blur: invisible at the top, gradually hides content behind the chips toward the keyboard. -->
-    <div
-      aria-hidden="true"
-      data-testid="helper-backdrop"
-      class="absolute inset-x-0 -top-8 -z-10 backdrop-blur-md"
-      style="
-        bottom: -100lvh;
-        background: linear-gradient(to bottom, transparent 0px, color-mix(in srgb, var(--background) 70%, transparent) 40px, var(--background) 72px);
-        -webkit-mask-image: linear-gradient(to bottom, transparent 0px, black 40px);
-        mask-image: linear-gradient(to bottom, transparent 0px, black 40px);
-      "
-    ></div>
     <!-- Both modes stay mounted so a field switch crossfades instead of leave/enter. -->
-    <div class="grid relative">
+    <app-floating-blur extendBottom="-100lvh">
+    <div class="grid">
       <div
         data-testid="weight-chips"
         class="col-start-1 row-start-1 self-center flex gap-2 justify-center transition-opacity duration-100 ease-out motion-reduce:transition-none"
@@ -34,36 +27,24 @@ import { Component, input, output } from '@angular/core';
         [attr.inert]="mode() !== 'weight' ? '' : null"
         [attr.aria-hidden]="mode() !== 'weight' ? 'true' : null"
       >
-        <span
-          animate.enter="helper-chip-in"
-          class="flex flex-1 max-w-40"
-          style="animation-delay: 0ms"
-        >
-          <button
-            type="button"
-            data-testid="weight-minus"
-            class="w-full h-10 rounded-full bg-white text-neutral-900 border border-neutral-200 shadow-md font-mono font-bold text-base active:scale-95"
-            (pointerdown)="tap($event, -5)"
-            (mousedown)="$event.preventDefault()"
+        @for (step of weightSteps; track step; let i = $index) {
+          <span
+            animate.enter="helper-chip-in"
+            class="flex shrink-0"
+            [style.animation-delay.ms]="i * 20"
           >
-            −5
-          </button>
-        </span>
-        <span
-          animate.enter="helper-chip-in"
-          class="flex flex-1 max-w-40"
-          style="animation-delay: 20ms"
-        >
-          <button
-            type="button"
-            data-testid="weight-plus"
-            class="w-full h-10 rounded-full bg-[#BEF264] text-neutral-900 shadow-md font-mono font-bold text-base active:scale-95"
-            (pointerdown)="tap($event, 5)"
-            (mousedown)="$event.preventDefault()"
-          >
-            +5
-          </button>
-        </span>
+            <button
+              type="button"
+              [attr.data-testid]="weightTestId(step)"
+              class="min-w-14 h-10 px-4 rounded-full shadow-md font-mono font-bold text-base active:scale-95"
+              [class]="step < 0 ? 'bg-white text-neutral-900 border border-neutral-200' : 'bg-[#BEF264] text-neutral-900'"
+              (pointerdown)="tap($event, step)"
+              (mousedown)="$event.preventDefault()"
+            >
+              {{ step < 0 ? '−' + -step : '+' + step }}
+            </button>
+          </span>
+        }
       </div>
       <div
         data-testid="reps-chips"
@@ -94,6 +75,7 @@ import { Component, input, output } from '@angular/core';
         }
       </div>
     </div>
+    </app-floating-blur>
   `,
   styles: `
     .no-scrollbar {
@@ -148,7 +130,17 @@ export class KeyboardHelperBar {
   mode = input.required<'weight' | 'reps'>();
   chips = input<number[]>([]);
   current = input<number | undefined>();
+  /** Weight adjust steps shown left to right. */
+  readonly weightSteps = [-10, -5, 5, 10] as const;
+
+  weightTestId(step: number): string {
+    const base = step < 0 ? 'weight-minus' : 'weight-plus';
+    return Math.abs(step) === 5 ? base : `${base}-${Math.abs(step)}`;
+  }
+
   bottom = input(0);
+  /** When set, pins the bar's bottom edge to this Y (visual viewport bottom) using top + translateY(-100%). */
+  top = input<number | null>(null);
   /** Weight mode: emits delta (±5). Reps mode: emits chip value. */
   readonly picked = output<number>();
 

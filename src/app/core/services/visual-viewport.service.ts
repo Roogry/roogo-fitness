@@ -7,6 +7,12 @@ import { Injectable, computed, signal } from '@angular/core';
 @Injectable({ providedIn: 'root' })
 export class VisualViewportService {
   readonly keyboardOffset = signal(0);
+  /**
+   * Y (px, layout-viewport coordinates) of the visible bottom edge, i.e. the top of the keyboard.
+   * Used with `position: fixed; top` so the bar stays glued to the keyboard even when iOS pans
+   * the layout viewport (e.g. focusing the last input at the bottom of the page).
+   */
+  readonly visualBottom = signal(typeof window !== 'undefined' ? window.innerHeight : 0);
   /** True while a text-entry field has focus (soft keyboard is likely open on touch devices). */
   readonly textInputFocused = signal(false);
   /** True when the soft keyboard is (likely) open; used to hide bottom chrome that would overlap the helper bar. */
@@ -31,10 +37,26 @@ export class VisualViewportService {
     }
     const vv = typeof window !== 'undefined' ? window.visualViewport : null;
     if (!vv) return;
-    const update = () => this.keyboardOffset.set(computeKeyboardOffset(window.innerHeight, vv));
+    let raf = 0;
+    const apply = () => {
+      raf = 0;
+      this.keyboardOffset.set(computeKeyboardOffset(window.innerHeight, vv));
+      this.visualBottom.set(Math.round(vv.offsetTop + vv.height));
+    };
+    const update = () => {
+      if (!raf) raf = requestAnimationFrame(apply);
+    };
     vv.addEventListener('resize', update);
     vv.addEventListener('scroll', update);
-    update();
+    window.addEventListener('scroll', update, { passive: true });
+    // iOS animates the keyboard and page pan after focus; re-measure once it settles.
+    document.addEventListener('focusin', () => {
+      update();
+      setTimeout(update, 100);
+      setTimeout(update, 350);
+      setTimeout(update, 600);
+    });
+    apply();
   }
 }
 

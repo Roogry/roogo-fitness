@@ -1,3 +1,4 @@
+import { FloatingBlurComponent } from '@/shared/components/floating-blur/floating-blur';
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { BottomNav } from '../bottom-nav/bottom-nav';
@@ -12,7 +13,7 @@ import { ActiveSessionWidgetComponent } from '@/features/session-active/componen
  */
 @Component({
   selector: 'app-main-layout',
-  imports: [RouterOutlet, BottomNav, ActiveSessionWidgetComponent],
+  imports: [RouterOutlet, BottomNav, ActiveSessionWidgetComponent, FloatingBlurComponent],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css',
 })

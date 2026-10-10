@@ -1,3 +1,4 @@
+import { FloatingBlurComponent } from '@/shared/components/floating-blur/floating-blur';
 import { VisualViewportService } from '@/core/services/visual-viewport.service';
 import { Component, ElementRef, OnInit, afterNextRender, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -21,6 +22,7 @@ import { timeFormatPipe } from '@/shared/pipes/time-format-pipe';
   selector: 'app-session-active',
   standalone: true,
   imports: [
+    FloatingBlurComponent,
     CommonModule,
     ExerciseAutocomplete,
     ExerciseTracker,

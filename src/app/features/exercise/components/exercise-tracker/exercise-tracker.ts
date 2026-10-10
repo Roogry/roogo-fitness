@@ -79,6 +79,7 @@ export class ExerciseTracker implements OnDestroy {
 
   private readonly viewport = inject(VisualViewportService);
   readonly keyboardOffset = this.viewport.keyboardOffset;
+  readonly visualBottom = this.viewport.visualBottom;
 
   /** Currently focused input (drives the keyboard helper bar). */
   readonly focusedField = signal<{

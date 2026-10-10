@@ -101,24 +101,14 @@
   @if (workoutService.sessionStartTime()) {
     <div
       data-testid="session-bar"
-      class="fixed bottom-8 left-4 right-4 z-50 isolate max-w-2xl mx-auto px-6 transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none"
+      class="fixed bottom-8 left-4 right-4 z-50 max-w-2xl mx-auto px-6 transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none"
       [class.opacity-0]="viewport.keyboardOpen()"
       [class.translate-y-2]="viewport.keyboardOpen()"
       [class.pointer-events-none]="viewport.keyboardOpen()"
       [attr.aria-hidden]="viewport.keyboardOpen() ? 'true' : null"
     >
-      <!-- Progressive blur behind the session bar: clear at the top, hides content down to the screen bottom. -->
-      <div
-        aria-hidden="true"
-        data-testid="session-bar-backdrop"
-        class="pointer-events-none absolute -inset-x-[100vw] -top-12 -bottom-8 -z-10 backdrop-blur-md"
-        style="
-          background: linear-gradient(to bottom, transparent 0px, color-mix(in srgb, var(--background) 45%, transparent) 48px, var(--background) 60%);
-          -webkit-mask-image: linear-gradient(to bottom, transparent 0px, black 48px);
-          mask-image: linear-gradient(to bottom, transparent 0px, black 48px);
-        "
-      ></div>
-      <div class="relative flex flex-col rounded-4xl bg-forest text-forest-foreground backdrop-blur-md">
+      <app-floating-blur extendBottom="-2rem">
+      <div class="flex flex-col rounded-4xl bg-forest text-forest-foreground backdrop-blur-md">
         @if (workoutService.isRestActive()) {
           <app-rest-timer-bar />
         }
@@ -172,6 +162,7 @@
           </div>
         </div>
       </div>
+      </app-floating-blur>
     </div>
   }
 </div>

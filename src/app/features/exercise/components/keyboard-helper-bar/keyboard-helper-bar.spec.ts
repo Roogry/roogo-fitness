@@ -36,7 +36,7 @@ describe('ExerciseTracker keyboard helper bar', () => {
         provideRouter([]),
         {
           provide: VisualViewportService,
-          useValue: { keyboardOffset: signal(300), isTouch: true },
+          useValue: { keyboardOffset: signal(300), visualBottom: signal(500), isTouch: true },
         },
       ],
     });
@@ -123,13 +123,18 @@ describe('ExerciseTracker keyboard helper bar', () => {
     expect(weightLayer.className).not.toContain('opacity-0');
     expect(repsLayer.className).toContain('opacity-0');
     expect(
-      (document.querySelector('[data-testid="weight-minus"]')!.parentElement as HTMLElement).style
+      (document.querySelector('[data-testid="weight-minus-10"]')!.parentElement as HTMLElement).style
         .animationDelay,
     ).toBe('0ms');
     expect(
-      (document.querySelector('[data-testid="weight-plus"]')!.parentElement as HTMLElement).style
+      (document.querySelector('[data-testid="weight-minus"]')!.parentElement as HTMLElement).style
         .animationDelay,
     ).toBe('20ms');
+    expect(
+      (document.querySelector('[data-testid="weight-plus"]')!.parentElement as HTMLElement).style
+        .animationDelay,
+    ).toBe('40ms');
+    expect(document.querySelectorAll('[data-testid="weight-chips"] button').length).toBe(4);
 
     reps.focus();
     await Promise.resolve();
