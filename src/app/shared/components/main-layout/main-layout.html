@@ -11,7 +11,18 @@
 
   <!-- Floating Widget (Hanya muncul jika session berjalan) -->
   @if (workoutService.sessionStartTime() !== null) {
-    <div class="absolute bottom-[100px] left-0 right-0 pb-2 z-50 max-w-2xl mx-auto px-6">
+    <div class="absolute bottom-[100px] left-0 right-0 pb-2 z-50 isolate max-w-2xl mx-auto px-6">
+      <!-- Progressive blur behind the floating widget: clear at the top, hides content down to the bottom nav. -->
+      <div
+        aria-hidden="true"
+        data-testid="session-widget-backdrop"
+        class="pointer-events-none absolute -inset-x-[100vw] -top-12 -bottom-5 -z-10 backdrop-blur-md"
+        style="
+          background: linear-gradient(to bottom, transparent 0px, color-mix(in srgb, var(--background) 45%, transparent) 48px, var(--background) 60%);
+          -webkit-mask-image: linear-gradient(to bottom, transparent 0px, black 48px);
+          mask-image: linear-gradient(to bottom, transparent 0px, black 48px);
+        "
+      ></div>
       <app-active-session-widget />
     </div>
   }
