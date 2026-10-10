@@ -34,7 +34,10 @@ describe('ExerciseTracker keyboard helper bar', () => {
       imports: [ExerciseTracker],
       providers: [
         provideRouter([]),
-        { provide: VisualViewportService, useValue: { keyboardOffset: signal(300), isTouch: true } },
+        {
+          provide: VisualViewportService,
+          useValue: { keyboardOffset: signal(300), isTouch: true },
+        },
       ],
     });
     const fixture = TestBed.createComponent(ExerciseTracker);
@@ -52,6 +55,14 @@ describe('ExerciseTracker keyboard helper bar', () => {
   const press = (el: Element) =>
     el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
 
+  /** Blur clears focus on a microtask, and animate.leave finishes on the next frame when no CSS animation is running. */
+  async function settleHide(fixture: { detectChanges(): void }) {
+    await Promise.resolve();
+    fixture.detectChanges();
+    await new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)));
+    fixture.detectChanges();
+  }
+
   it('weight +5 updates via setUpdated and keeps focus', () => {
     const { fixture, weight, bar, updates } = setup([{ id: 10, set_number: 1, target_weight: 40 }]);
     document.body.appendChild(fixture.nativeElement);
@@ -68,7 +79,7 @@ describe('ExerciseTracker keyboard helper bar', () => {
     fixture.nativeElement.remove();
   });
 
-  it('reps chips switch at >50 kg, highlight current, and hide on blur', () => {
+  it('reps chips switch at >50 kg, highlight current, and hide on blur', async () => {
     const { fixture, reps, bar, updates } = setup([
       { id: 10, set_number: 1, weight_lifted: 60, target_reps: 8 },
     ]);
@@ -77,13 +88,65 @@ describe('ExerciseTracker keyboard helper bar', () => {
     fixture.detectChanges();
     const chips = () => Array.from(document.querySelectorAll('[data-testid="reps-chip"]'));
     expect(chips().map((c) => c.textContent!.trim())).toEqual(['6', '7', '8', '9', '10']);
+    expect(chips().map((c) => (c.parentElement as HTMLElement).style.animationDelay)).toEqual([
+      '0ms',
+      '20ms',
+      '40ms',
+      '60ms',
+      '80ms',
+    ]);
     expect(chips()[2].className).toContain('bg-[#BEF264]');
-    press(chips()[4]);
+    const chip = chips()[4];
+    const ev = new PointerEvent('pointerdown', { bubbles: true, cancelable: true });
+    chip.dispatchEvent(ev);
+    expect(ev.defaultPrevented).toBe(true);
     expect(reps.value).toBe('10');
     expect(updates.at(-1).updates).toEqual({ reps_completed: 10 });
+    expect(document.activeElement).toBe(reps);
     reps.blur();
-    fixture.detectChanges();
+    await settleHide(fixture);
     expect(bar()).toBeNull();
+    fixture.nativeElement.remove();
+  });
+
+  it('crossfades in place when focus moves between weight and reps', async () => {
+    const { fixture, weight, reps, bar } = setup([
+      { id: 10, set_number: 1, target_weight: 40, target_reps: 8 },
+    ]);
+    document.body.appendChild(fixture.nativeElement);
+    weight.focus();
+    fixture.detectChanges();
+    const mounted = bar();
+    const weightLayer = document.querySelector('[data-testid="weight-chips"]') as HTMLElement;
+    const repsLayer = document.querySelector('[data-testid="reps-chips"]') as HTMLElement;
+    expect(mounted).toBeTruthy();
+    expect(weightLayer.className).not.toContain('opacity-0');
+    expect(repsLayer.className).toContain('opacity-0');
+    expect(
+      (document.querySelector('[data-testid="weight-minus"]')!.parentElement as HTMLElement).style
+        .animationDelay,
+    ).toBe('0ms');
+    expect(
+      (document.querySelector('[data-testid="weight-plus"]')!.parentElement as HTMLElement).style
+        .animationDelay,
+    ).toBe('20ms');
+
+    reps.focus();
+    await Promise.resolve();
+    fixture.detectChanges();
+
+    expect(bar()).toBe(mounted);
+    expect(repsLayer.className).not.toContain('opacity-0');
+    expect(weightLayer.className).toContain('opacity-0');
+    expect(weightLayer.hasAttribute('inert')).toBe(true);
+    expect(document.activeElement).toBe(reps);
+
+    weight.focus();
+    await Promise.resolve();
+    fixture.detectChanges();
+    expect(bar()).toBe(mounted);
+    expect(weightLayer.className).not.toContain('opacity-0');
+    expect(repsLayer.className).toContain('opacity-0');
     fixture.nativeElement.remove();
   });
 

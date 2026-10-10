@@ -3,6 +3,7 @@ import {
   computed,
   ElementRef,
   input,
+  OnDestroy,
   output,
   signal,
   inject,
@@ -53,7 +54,7 @@ import {
   templateUrl: './exercise-tracker.html',
   styleUrl: './exercise-tracker.css',
 })
-export class ExerciseTracker {
+export class ExerciseTracker implements OnDestroy {
   // The exercise data passed from the parent
   trackedExercise = input.required<LoggedExercise>();
   editable = input<boolean>(false);
@@ -114,12 +115,28 @@ export class ExerciseTracker {
     return isNaN(n) ? undefined : n;
   });
 
+  /** Set once the tracker is destroyed so a queued blur cannot write focus state afterward. */
+  private destroyed = false;
+
+  ngOnDestroy() {
+    this.destroyed = true;
+  }
+
   onFieldFocus(set: LoggedSet, field: 'weight' | 'reps', event: Event) {
     this.focusedField.set({ setId: set.id, field, el: event.target as HTMLInputElement });
   }
 
+  /**
+   * Clear on the next microtask. Moving between the weight and reps inputs fires blur
+   * then focus in the same turn; waiting lets the new field replace this one so the
+   * helper stays mounted and crossfades instead of replaying leave/enter.
+   */
   onFieldBlur() {
-    this.focusedField.set(null);
+    const token = this.focusedField();
+    queueMicrotask(() => {
+      if (this.destroyed || this.focusedField() !== token) return;
+      this.focusedField.set(null);
+    });
   }
 
   /** Applies a helper bar tap through the normal input handlers. */

@@ -100,8 +100,10 @@
 
   @if (workoutService.sessionStartTime()) {
     <div
-      class="fixed bottom-8 left-4 right-4 z-50 max-w-2xl mx-auto px-6 transition-opacity duration-150"
+      data-testid="session-bar"
+      class="fixed bottom-8 left-4 right-4 z-50 max-w-2xl mx-auto px-6 transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none"
       [class.opacity-0]="viewport.keyboardOpen()"
+      [class.translate-y-2]="viewport.keyboardOpen()"
       [class.pointer-events-none]="viewport.keyboardOpen()"
       [attr.aria-hidden]="viewport.keyboardOpen() ? 'true' : null"
     >
