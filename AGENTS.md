@@ -154,12 +154,37 @@ No HTTP API. `DbService` opens IndexedDB `RoogoFitnessDB` through `idb` (plans, 
 
 Do not keep a ticking "seconds left" only inside a component. Start, add, and skip rest through `WorkoutService`.
 
+## Readability and comments
+
+Write so a junior developer can follow the change without asking what a name means.
+
+- Names reveal intent. No cryptic abbreviations (`dur`, `vv`, `el` for domain values). Booleans read as questions: `isRestActive`, `hasExercise`, `shouldUpdateTarget`. Handlers are `onX` (`onDurationClick`). Methods are verbs (`startRestTimer`, `adjustWeight`). Outputs stay without the `on` prefix (`saveClick`).
+- Keep functions small and single-purpose. Prefer an early return over nested branches. Name constants instead of magic numbers: `DISMISS_DRAG_PX` is 10 in `appDismissKeyboardOnScroll`. Do not bury another `10` or `40` inline.
+- Avoid clever one-liners. If a line has to be unpacked to be understood, split it.
+- The code explains the what. Comment only crucial or non-obvious logic, and only the why. Good comments in this repo: `VisualViewportService` re-measures after focus because iOS animates the keyboard and pans the page; the dismiss directive listens for touch drags, not `scroll`, because iOS scrolls on its own while a field is focused.
+- JSDoc is optional. Use it only where a public API is genuinely non-obvious. Do not add it to every public service method.
+
+```typescript
+// Don't — abbreviation, magic number, comment that restates the line
+const ko = Math.max(0, ih - (vv.height + vv.offsetTop)); // keyboard offset
+if (ko > 40) hideBar();
+
+// Do — named steps, early return, comment only the iOS why
+const KEYBOARD_OPEN_OFFSET_PX = 40;
+
+function keyboardOffsetPx(layoutHeight: number, viewport: VisualViewport): number {
+  return Math.max(0, Math.round(layoutHeight - (viewport.height + viewport.offsetTop)));
+}
+
+// iOS animates the keyboard after focus; a single read is still mid-animation.
+if (keyboardOffsetPx(window.innerHeight, viewport) <= KEYBOARD_OPEN_OFFSET_PX) return;
+```
+
 ## Quality
 
 - Specs sit next to the code (`*.spec.ts`) and use Vitest (`describe`, `it`, `expect`, `vi`). Extend the nearest spec (`workout.service.spec.ts`, `keyboard-helper-bar.spec.ts`, `session-active.spec.ts`, and so on).
 - `ng test` and `ng build` must pass before pushing.
 - Strict TypeScript is on. No new `any`. Use a real type or `unknown`.
-- JSDoc on public service methods, matching `WorkoutService`: summary, `@param`, `@returns`, `@example`.
 - Keep components small. Logic goes in a service or a pure function. Pages coordinate; they do not reimplement timers, the keyboard, or IndexedDB.
 
 ## Git
