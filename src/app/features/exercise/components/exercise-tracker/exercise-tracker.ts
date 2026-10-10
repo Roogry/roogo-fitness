@@ -3,8 +3,10 @@ import {
   computed,
   ElementRef,
   input,
+  OnDestroy,
   output,
   signal,
+  inject,
   viewChildren,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -14,6 +16,12 @@ import { lucideTrash2, lucidePlus, lucideDumbbell, lucideCheck } from '@ng-icons
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { LoggedExercise, LoggedSet } from '@/shared/models';
+import { VisualViewportService } from '@/core/services/visual-viewport.service';
+import {
+  KeyboardHelperBar,
+  adjustWeight,
+  repsChips,
+} from '../keyboard-helper-bar/keyboard-helper-bar';
 
 /**
  * A component that tracks an active exercise session, allowing the user to log sets, weight, and reps.
@@ -34,12 +42,19 @@ import { LoggedExercise, LoggedSet } from '@/shared/models';
 @Component({
   selector: 'app-exercise-tracker',
   standalone: true,
-  imports: [CommonModule, RouterModule, NgIcon, ZardCardComponent, ZardButtonComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    NgIcon,
+    ZardCardComponent,
+    ZardButtonComponent,
+    KeyboardHelperBar,
+  ],
   providers: [provideIcons({ lucideTrash2, lucidePlus, lucideDumbbell, lucideCheck })],
   templateUrl: './exercise-tracker.html',
   styleUrl: './exercise-tracker.css',
 })
-export class ExerciseTracker {
+export class ExerciseTracker implements OnDestroy {
   // The exercise data passed from the parent
   trackedExercise = input.required<LoggedExercise>();
   editable = input<boolean>(false);
@@ -61,6 +76,83 @@ export class ExerciseTracker {
 
   /** Reps inputs for each editable set, used to move focus from weight on Enter/Next. */
   private readonly repsInputs = viewChildren<ElementRef<HTMLInputElement>>('repsInput');
+
+  private readonly viewport = inject(VisualViewportService);
+  readonly keyboardOffset = this.viewport.keyboardOffset;
+
+  /** Currently focused input (drives the keyboard helper bar). */
+  readonly focusedField = signal<{
+    setId: number;
+    field: 'weight' | 'reps';
+    el: HTMLInputElement;
+  } | null>(null);
+  /** Bumped on every value change so computed chip highlighting re-evaluates. */
+  private readonly valueTick = signal(0);
+
+  readonly focusedSet = computed(() => {
+    const f = this.focusedField();
+    return f ? (this.trackedExercise()?.sets.find((s) => s.id === f.setId) ?? null) : null;
+  });
+
+  /** Show when a field is focused, the set isn't done, and a keyboard is open (or on touch). */
+  readonly showHelperBar = computed(() => {
+    const set = this.focusedSet();
+    if (!set || set.completed_at) return false;
+    return this.keyboardOffset() > 40 || this.viewport.isTouch;
+  });
+
+  readonly helperChips = computed(() => {
+    this.valueTick();
+    const set = this.focusedSet();
+    return set ? repsChips(this.getEffectiveWeight(set)) : [];
+  });
+
+  readonly helperCurrent = computed(() => {
+    this.valueTick();
+    const f = this.focusedField();
+    if (!f || f.el.value === '') return undefined;
+    const n = Number(f.el.value);
+    return isNaN(n) ? undefined : n;
+  });
+
+  /** Set once the tracker is destroyed so a queued blur cannot write focus state afterward. */
+  private destroyed = false;
+
+  ngOnDestroy() {
+    this.destroyed = true;
+  }
+
+  onFieldFocus(set: LoggedSet, field: 'weight' | 'reps', event: Event) {
+    this.focusedField.set({ setId: set.id, field, el: event.target as HTMLInputElement });
+  }
+
+  /**
+   * Clear on the next microtask. Moving between the weight and reps inputs fires blur
+   * then focus in the same turn; waiting lets the new field replace this one so the
+   * helper stays mounted and crossfades instead of replaying leave/enter.
+   */
+  onFieldBlur() {
+    const token = this.focusedField();
+    queueMicrotask(() => {
+      if (this.destroyed || this.focusedField() !== token) return;
+      this.focusedField.set(null);
+    });
+  }
+
+  /** Applies a helper bar tap through the normal input handlers. */
+  onHelperPicked(value: number) {
+    const f = this.focusedField();
+    const set = this.focusedSet();
+    if (!f || !set) return;
+    if (f.field === 'weight') {
+      f.el.value = String(adjustWeight(f.el.value, set.target_weight, value));
+      this.onWeightInput(set, { target: f.el } as unknown as Event);
+    } else {
+      f.el.value = String(value);
+      this.onRepsInput(set, { target: f.el } as unknown as Event);
+    }
+    this.valueTick.update((v) => v + 1);
+  }
 
   /**
    * Computes the formatted target summary line shown below the exercise title
@@ -172,6 +264,7 @@ export class ExerciseTracker {
     const num = val === '' ? undefined : parseFloat(val);
     this.clearValidationError(set.id);
     this.updateSet(set.id, { weight_lifted: num });
+    this.valueTick.update((v) => v + 1);
   }
 
   /**
@@ -182,6 +275,7 @@ export class ExerciseTracker {
     const num = val === '' ? undefined : parseInt(val, 10);
     this.clearValidationError(set.id);
     this.updateSet(set.id, { reps_completed: num });
+    this.valueTick.update((v) => v + 1);
   }
 
   /**

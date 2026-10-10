@@ -1,3 +1,4 @@
+import { VisualViewportService } from '@/core/services/visual-viewport.service';
 import { Component, ElementRef, OnInit, afterNextRender, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -52,6 +53,8 @@ export class SessionActive implements OnInit {
   showStartTime = signal(false);
 
   private readonly host = inject(ElementRef<HTMLElement>);
+  /** Hides the bottom session bar + rest timer while the keyboard is open so they don't overlap the input helper (#75). */
+  readonly viewport = inject(VisualViewportService);
   /** Set after the enter-page scroll attempt so later set toggles do not move the viewport. */
   private resumeScrollHandled = false;
 

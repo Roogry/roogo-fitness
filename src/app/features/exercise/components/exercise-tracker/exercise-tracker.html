@@ -119,6 +119,8 @@
                 [value]="getWeightValue(set)"
                 (keydown.enter)="onWeightEnter(set, $event)"
                 (input)="onWeightInput(set, $event)"
+                (focus)="onFieldFocus(set, 'weight', $event)"
+                (blur)="onFieldBlur()"
                 (keypress)="onlyPositiveNumber($event)"
                 [placeholder]="set.target_weight?.toString() ?? '0'"
                 class="w-full text-center font-mono font-bold text-base sm:text-lg transition-colors leading-tight focus:outline-none"
@@ -150,6 +152,8 @@
                 [attr.data-set-id]="set.id"
                 [value]="getRepsValue(set)"
                 (input)="onRepsInput(set, $event)"
+                (focus)="onFieldFocus(set, 'reps', $event)"
+                (blur)="onFieldBlur()"
                 (keypress)="onlyPositiveNumber($event)"
                 [placeholder]="set.target_reps?.toString() ?? '0'"
                 class="w-full text-center font-mono font-bold text-base sm:text-lg bg-transparent transition-colors leading-tight focus:outline-none"
@@ -213,3 +217,13 @@
     </div>
   }
 </z-card>
+
+@if (showHelperBar() && focusedField(); as f) {
+  <app-keyboard-helper-bar
+    [mode]="f.field"
+    [chips]="helperChips()"
+    [current]="helperCurrent()"
+    [bottom]="keyboardOffset()"
+    (picked)="onHelperPicked($event)"
+  />
+}
