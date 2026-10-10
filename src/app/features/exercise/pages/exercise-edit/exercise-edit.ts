@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { HeaderComponent } from '@/shared/components/header/header.component';
@@ -92,6 +92,21 @@ export class ExerciseEdit implements OnInit {
 
   availableMuscles = signal<Muscle[]>([]);
 
+  /**
+   * Detail replaced itself with this edit page, so leaving edit must replace
+   * this entry (not push) or Back from detail returns to the form.
+   * While the exercise is still loading, the route id is enough to return to detail.
+   */
+  readonly headerBackLink = computed<any[]>(() => {
+    if (!this.isLoading()) {
+      const id = this.selectedExercise()?.id;
+      return id ? ['/exercise', id] : ['/'];
+    }
+
+    const id = this.route.snapshot.paramMap.get('id');
+    return id ? ['/exercise', id] : ['/'];
+  });
+
   ngOnInit() {
     this.route.paramMap.subscribe(async (params) => {
       const idParam = params.get('id');
@@ -136,12 +151,7 @@ export class ExerciseEdit implements OnInit {
   }
 
   cancel() {
-    if (this.selectedExercise()?.id) {
-      this.router.navigate(['/exercise', this.selectedExercise()?.id]);
-      return;
-    }
-
-    this.router.navigate(['/']);
+    this.router.navigate(this.headerBackLink(), { replaceUrl: true });
   }
 
   addMedia(url: string) {
@@ -253,6 +263,7 @@ export class ExerciseEdit implements OnInit {
         await this.workoutService.refreshTrackedExercises();
       }
       this.isSaving.set(false);
+      // Edit replaced detail, so replace edit too. History is `… → Detail` once.
       this.router.navigate(['/exercise', this.selectedExercise()?.id], { replaceUrl: true });
     });
   }

@@ -25,6 +25,7 @@ import { headerVariants } from './header.variants';
  * @property {boolean} transparent - Whether the header background is transparent.
  * @property {boolean} showBackBtn - Whether to show the back navigation button.
  * @property {any[] | null} backLink - Optional specific router link array for back navigation.
+ * @property {boolean} backReplaceUrl - When `backLink` is set, replace the current history entry instead of pushing.
  * @property {ClassValue} class - Additional CSS classes for styling.
  * @property {void} onBackClick - Event emitted when the back button is clicked.
  *
@@ -52,6 +53,7 @@ export class HeaderComponent implements AfterViewInit {
   readonly transparent = input<boolean>(false);
   readonly showBackBtn = input<boolean>(false);
   readonly backLink = input<any[] | null>(null);
+  readonly backReplaceUrl = input<boolean>(false);
   readonly class = input<ClassValue>('');
 
   readonly onBackClick = output<void>();
@@ -79,7 +81,7 @@ export class HeaderComponent implements AfterViewInit {
    */
   goBack() {
     if (this.backLink()) {
-      this.router.navigate(this.backLink()!);
+      this.router.navigate(this.backLink()!, { replaceUrl: this.backReplaceUrl() });
     } else {
       this.location.back();
     }
