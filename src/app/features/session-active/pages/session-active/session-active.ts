@@ -48,6 +48,8 @@ export class SessionActive implements OnInit {
   isAddSheetOpen = signal(false);
   isFinishSheetOpen = signal(false);
   progressedExercises = signal<any[]>([]);
+  /** Bottom-bar Duration control swaps to the session start time until tapped again. */
+  showStartTime = signal(false);
 
   private readonly host = inject(ElementRef<HTMLElement>);
   /** Set after the enter-page scroll attempt so later set toggles do not move the viewport. */
@@ -155,6 +157,10 @@ export class SessionActive implements OnInit {
 
   onExerciseRemove(e: { exerciseId: number }) {
     this.workoutService.removeTrackedExercise(e.exerciseId);
+  }
+
+  onDurationClick() {
+    this.showStartTime.update((showing) => !showing);
   }
 
   openFinishSheet() {

@@ -106,17 +106,24 @@
         }
 
         <div class="p-4 flex items-center">
-          <div
-            class="px-4 flex-2 flex flex-col gap-1 sm:gap-1 items-center justify-center text-center"
+          <button
+            type="button"
+            class="m-0 px-4 py-1 flex-2 flex flex-col gap-1 sm:gap-1 items-center justify-center text-center bg-transparent border-0 rounded-2xl cursor-pointer transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime"
+            (click)="onDurationClick()"
+            [attr.aria-pressed]="showStartTime()"
           >
             <span
               class="text-[0.5rem] sm:text-[0.75rem] leading-2 text-white/60 uppercase font-semibold"
-              >Duration</span
+              >{{ showStartTime() ? 'Started' : 'Duration' }}</span
             >
-            <span class="font-mono text-sm sm:text-xl font-medium text-lime">{{
-              workoutService.sessionDuration() | timeFormat
-            }}</span>
-          </div>
+            <span class="font-mono text-sm sm:text-xl font-medium text-lime" aria-live="polite">
+              @if (showStartTime()) {
+                {{ workoutService.sessionStartTime() | date: 'HH:mm' }}
+              } @else {
+                {{ workoutService.sessionDuration() | timeFormat }}
+              }
+            </span>
+          </button>
 
           <div class="h-6 w-[1px] bg-white/15"></div>
 
