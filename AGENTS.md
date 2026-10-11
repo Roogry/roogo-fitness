@@ -127,6 +127,8 @@ Past calls:
 
 ## UI
 
+For UI reviews, follow the `web-design-guidelines` skill (`.agents/skills/web-design-guidelines`).
+
 Mobile first. iPhone / iOS Safari, installed as a PWA, is the target. `index.html` locks the viewport (`maximum-scale=1`, `user-scalable=no`).
 
 Use tokens from `src/styles.css` (`@theme inline` maps them to Tailwind):
