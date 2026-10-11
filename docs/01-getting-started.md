@@ -4,7 +4,7 @@ This guide will help you set up the Roogo Fitness project on your local machine 
 
 ## Prerequisites
 
-- **Node.js**: Ensure you have Node.js installed (v18.19.0 or higher is recommended for Angular v21).
+- **Node.js**: 24.21.0 (Active LTS, Krypton). Angular 21 supports `^20.19.0 || ^22.12.0 || ^24.0.0`. This repo pins that version in `.nvmrc` and `.node-version`.
 - **Package Manager**: This project strictly uses `pnpm` (v11+).
 
 ## Installation
