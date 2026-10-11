@@ -3,6 +3,12 @@ import { Router } from '@angular/router';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { DbService } from './db.service';
 import { Exercise, LoggedSession, LoggedExercise, LoggedSet } from '@/shared/models';
+import {
+  findSavedExerciseTargets,
+  nextPlannedExercise,
+  ReplacementTargets,
+  setsAfterExerciseReplace,
+} from './replace-tracked-exercise';
 
 const ACTIVE_SESSION_STORAGE_KEY = 'roogo_active_session';
 
@@ -442,6 +448,44 @@ export class WorkoutService {
     this.trackedExercises.update((current) =>
       current.filter((te) => te.exercise.id !== exerciseId),
     );
+  }
+
+  /**
+   * Swaps one tracked exercise for another in the same position.
+   * Logged weight, reps, and completed state move with the sets.
+   * Does not touch the routine, the rest timer, or the session clock.
+   */
+  replaceTrackedExercise(
+    exerciseId: number,
+    replacement: Exercise,
+    savedTargets: ReplacementTargets | null = null,
+  ): boolean {
+    const current = this.trackedExercises();
+    const index = current.findIndex((tracked) => tracked.exercise.id === exerciseId);
+    if (index === -1) return false;
+    if (replacement.id === exerciseId) return false;
+    if (current.some((tracked) => tracked.exercise.id === replacement.id)) return false;
+
+    const tracked = current[index];
+    const sets = setsAfterExerciseReplace(tracked.sets, savedTargets);
+    const next: LoggedExercise = {
+      ...tracked,
+      exercise: replacement,
+      sets,
+      plannedExercise: nextPlannedExercise(savedTargets, replacement.id, index, sets.length),
+    };
+    const updated = current.slice();
+    updated[index] = next;
+    this.trackedExercises.set(updated);
+    return true;
+  }
+
+  /** Plan targets for an exercise, if the running routine has any. Does not save the plan. */
+  async savedTargetsForExercise(exerciseId: number): Promise<ReplacementTargets | null> {
+    const planId = this.selectedPlanId();
+    if (planId === null) return null;
+    const plan = await this.dbService.getWorkoutPlan(planId);
+    return findSavedExerciseTargets(plan, exerciseId, this.selectedSessionId());
   }
 
   /**

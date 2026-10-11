@@ -1,5 +1,8 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { PointerModeService } from '@/core/services/pointer-mode.service';
+import { provideZard } from '@/core/provider/providezard';
 import { Exercise, LoggedExercise, LoggedSet } from '@/shared/models';
 import { ExerciseTracker } from './exercise-tracker';
 
@@ -139,5 +142,60 @@ describe('ExerciseTracker weight Enter focus', () => {
     expect(updates[0].updates.weight_lifted).toBe(40);
     expect(updates[0].updates.reps_completed).toBe(8);
     expect(updates[0].updates.completed_at).toEqual(expect.any(String));
+  });
+});
+
+describe('ExerciseTracker session actions', () => {
+  afterEach(() => {
+    TestBed.resetTestingModule();
+  });
+
+  function render(sessionActions: boolean, desktop: boolean) {
+    TestBed.configureTestingModule({
+      imports: [ExerciseTracker],
+      providers: [
+        provideRouter([]),
+        provideZard(),
+        { provide: PointerModeService, useValue: { isDesktop: signal(desktop) } },
+      ],
+    });
+
+    const fixture = TestBed.createComponent(ExerciseTracker);
+    fixture.componentRef.setInput('trackedExercise', trackedExercise([makeSet(10, 1)]));
+    fixture.componentRef.setInput('editable', true);
+    fixture.componentRef.setInput('sessionActions', sessionActions);
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  it('shows a menu button on a fine pointer and hides the trash icon', () => {
+    const fixture = render(true, true);
+    const root = fixture.nativeElement as HTMLElement;
+
+    expect(root.querySelector('button[aria-label="Exercise actions"]')).not.toBeNull();
+    expect(root.querySelector('.sr-only')).toBeNull();
+    expect(root.querySelector('button[title="Remove exercise"]')).toBeNull();
+    expect(root.textContent).not.toContain('Replace');
+  });
+
+  it('hides the menu button on touch and keeps a screen-reader action plus swipe buttons', () => {
+    const fixture = render(true, false);
+    const root = fixture.nativeElement as HTMLElement;
+    const screenReader = root.querySelector('.sr-only');
+
+    expect(screenReader?.textContent).toContain('Exercise actions');
+    expect(root.querySelector('button[aria-label="Exercise actions"]')).toBeNull();
+    expect(root.querySelector('button[title="Remove exercise"]')).toBeNull();
+    expect(root.textContent).toContain('Replace');
+    expect(root.textContent).toContain('Delete');
+  });
+
+  it('keeps the trash button when the card is only editing a logged session', () => {
+    const fixture = render(false, false);
+    const root = fixture.nativeElement as HTMLElement;
+
+    expect(root.querySelector('button[title="Remove exercise"]')).not.toBeNull();
+    expect(root.querySelector('[data-testid="exercise-actions"]')).toBeNull();
+    expect(root.textContent).not.toContain('Replace');
   });
 });

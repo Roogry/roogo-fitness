@@ -5,8 +5,16 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCheck, lucideDumbbell, lucidePlus } from '@ng-icons/lucide';
+import { ExerciseService } from '@/core/services/exercise.service';
 import { WorkoutService } from '@/core/services/workout.service';
-import { LoggedExercise, LoggedSet } from '@/shared/models';
+import { ReplaceExercisePicker } from '@/features/session-active/components/replace-exercise-picker/replace-exercise-picker';
+import {
+  completedSetCount,
+  replaceLoggedSetsMessage,
+  sortReplacementCandidates,
+} from '@/features/session-active/replace-exercise';
+import { Exercise, LoggedExercise, LoggedSet } from '@/shared/models';
+import { SwipeActionsGroup } from '@/shared/directives/swipe-actions';
 import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-autocomplete/exercise-autocomplete';
 import { ExerciseTracker } from '@/features/exercise/components/exercise-tracker/exercise-tracker';
 import { HeaderComponent } from '@/shared/components/header/header.component';
@@ -26,6 +34,7 @@ import { timeFormatPipe } from '@/shared/pipes/time-format-pipe';
     CommonModule,
     ExerciseAutocomplete,
     ExerciseTracker,
+    ReplaceExercisePicker,
     HeaderComponent,
     ZardButtonComponent,
     RooSheetComponent,
@@ -36,6 +45,7 @@ import { timeFormatPipe } from '@/shared/pipes/time-format-pipe';
     DismissKeyboardOnScroll,
   ],
   providers: [
+    SwipeActionsGroup,
     provideIcons({
       lucideDumbbell,
       lucidePlus,
@@ -46,11 +56,16 @@ import { timeFormatPipe } from '@/shared/pipes/time-format-pipe';
 })
 export class SessionActive implements OnInit {
   workoutService = inject(WorkoutService);
+  private readonly exerciseService = inject(ExerciseService);
+  private readonly swipeGroup = inject(SwipeActionsGroup);
   router = inject(Router);
   route = inject(ActivatedRoute);
   dialogService = inject(ZardDialogService);
 
   isAddSheetOpen = signal(false);
+  isReplaceSheetOpen = signal(false);
+  replaceCandidates = signal<Exercise[]>([]);
+  private readonly replacingExerciseId = signal<number | null>(null);
   isFinishSheetOpen = signal(false);
   progressedExercises = signal<any[]>([]);
   /** Bottom-bar Duration control swaps to the session start time until tapped again. */
@@ -163,7 +178,62 @@ export class SessionActive implements OnInit {
   }
 
   onExerciseRemove(e: { exerciseId: number }) {
+    this.swipeGroup.closeAll();
     this.workoutService.removeTrackedExercise(e.exerciseId);
+  }
+
+  onExerciseReplace(event: { exerciseId: number }): Promise<void> | void {
+    const tracked = this.workoutService
+      .trackedExercises()
+      .find((item) => item.exercise.id === event.exerciseId);
+    if (!tracked) return;
+
+    this.swipeGroup.closeAll();
+
+    const completed = completedSetCount(tracked.sets);
+    if (completed === 0) {
+      return this.openReplacePicker(tracked);
+    }
+
+    this.dialogService.create({
+      zWidth: '400px',
+      zTitle: 'Replace exercise?',
+      zDescription: replaceLoggedSetsMessage(completed),
+      zOkText: 'Continue',
+      zCancelText: 'Cancel',
+      zOnOk: () => this.openReplacePicker(tracked),
+    });
+  }
+
+  onReplaceSheetOpenChange(isOpen: boolean) {
+    this.isReplaceSheetOpen.set(isOpen);
+    if (!isOpen) this.replacingExerciseId.set(null);
+  }
+
+  async onReplacementPicked(exercise: Exercise) {
+    const currentId = this.replacingExerciseId();
+    if (currentId === null) return;
+
+    const savedTargets = await this.workoutService.savedTargetsForExercise(exercise.id);
+    const didReplace = this.workoutService.replaceTrackedExercise(
+      currentId,
+      exercise,
+      savedTargets,
+    );
+    if (!didReplace) return;
+
+    this.isReplaceSheetOpen.set(false);
+    this.replacingExerciseId.set(null);
+  }
+
+  private async openReplacePicker(tracked: LoggedExercise) {
+    this.replacingExerciseId.set(tracked.exercise.id);
+    const catalog = await this.exerciseService.getExercises('');
+    const excludedIds = new Set(
+      this.workoutService.trackedExercises().map((item) => item.exercise.id),
+    );
+    this.replaceCandidates.set(sortReplacementCandidates(catalog, tracked.exercise, excludedIds));
+    this.isReplaceSheetOpen.set(true);
   }
 
   onDurationClick() {

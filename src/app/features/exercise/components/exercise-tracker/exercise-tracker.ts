@@ -12,9 +12,20 @@ import {
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideTrash2, lucidePlus, lucideDumbbell, lucideCheck } from '@ng-icons/lucide';
+import {
+  lucideTrash2,
+  lucidePlus,
+  lucideDumbbell,
+  lucideCheck,
+  lucideEllipsisVertical,
+  lucideArrowLeftRight,
+} from '@ng-icons/lucide';
+import { PointerModeService } from '@/core/services/pointer-mode.service';
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
+import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/zard/popover';
+import { LongPressDirective } from '@/shared/directives/long-press.directive';
+import { SwipeActions } from '@/shared/directives/swipe-actions';
 import { LoggedExercise, LoggedSet } from '@/shared/models';
 import { VisualViewportService } from '@/core/services/visual-viewport.service';
 import {
@@ -48,9 +59,22 @@ import {
     NgIcon,
     ZardCardComponent,
     ZardButtonComponent,
+    ZardPopoverComponent,
+    ZardPopoverDirective,
     KeyboardHelperBar,
+    SwipeActions,
+    LongPressDirective,
   ],
-  providers: [provideIcons({ lucideTrash2, lucidePlus, lucideDumbbell, lucideCheck })],
+  providers: [
+    provideIcons({
+      lucideTrash2,
+      lucidePlus,
+      lucideDumbbell,
+      lucideCheck,
+      lucideEllipsisVertical,
+      lucideArrowLeftRight,
+    }),
+  ],
   templateUrl: './exercise-tracker.html',
   styleUrl: './exercise-tracker.css',
 })
@@ -58,6 +82,8 @@ export class ExerciseTracker implements OnDestroy {
   // The exercise data passed from the parent
   trackedExercise = input.required<LoggedExercise>();
   editable = input<boolean>(false);
+  /** Active session: replace + delete. Logged-session edit keeps the trash button. */
+  sessionActions = input(false);
   exerciseIndex = input<number>();
   totalExercises = input<number>();
 
@@ -70,6 +96,7 @@ export class ExerciseTracker implements OnDestroy {
   }>();
   readonly setRemoved = output<{ exerciseId: number; setId: number }>();
   readonly exerciseRemoved = output<{ exerciseId: number }>();
+  readonly exerciseReplace = output<{ exerciseId: number }>();
 
   // Track set IDs that failed validation when marking as done
   readonly invalidSetIds = signal<Set<number>>(new Set());
@@ -78,6 +105,14 @@ export class ExerciseTracker implements OnDestroy {
   private readonly repsInputs = viewChildren<ElementRef<HTMLInputElement>>('repsInput');
 
   private readonly viewport = inject(VisualViewportService);
+  private readonly pointerMode = inject(PointerModeService);
+  readonly isDesktopPointer = this.pointerMode.isDesktop;
+  readonly actionsMenuOpen = signal(false);
+
+  /** Touch session cards reveal actions by swipe. Desktop keeps the visible menu. */
+  readonly swipeEnabled = computed(
+    () => this.editable() && this.sessionActions() && !this.isDesktopPointer(),
+  );
   readonly keyboardOffset = this.viewport.keyboardOffset;
   readonly visualBottom = this.viewport.visualBottom;
 
@@ -391,6 +426,20 @@ export class ExerciseTracker implements OnDestroy {
 
   removeExercise() {
     this.exerciseRemoved.emit({ exerciseId: this.trackedExercise().exercise.id });
+  }
+
+  onActionsLongPress() {
+    this.actionsMenuOpen.set(true);
+  }
+
+  onReplaceClick() {
+    this.actionsMenuOpen.set(false);
+    this.exerciseReplace.emit({ exerciseId: this.trackedExercise().exercise.id });
+  }
+
+  onDeleteClick() {
+    this.actionsMenuOpen.set(false);
+    this.removeExercise();
   }
 
   onlyPositiveNumber(event: KeyboardEvent) {

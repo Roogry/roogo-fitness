@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
+import { provideZard } from '@/core/provider/providezard';
 import { ExerciseService } from '@/core/services/exercise.service';
 import { VisualViewportService } from '@/core/services/visual-viewport.service';
 import { WorkoutService } from '@/core/services/workout.service';
@@ -95,6 +96,7 @@ describe('SessionActive resume scroll', () => {
       imports: [SessionActive],
       providers: [
         provideRouter([]),
+        provideZard(),
         {
           provide: ActivatedRoute,
           useValue: { queryParamMap: of(convertToParamMap({})) },
@@ -305,5 +307,167 @@ describe('SessionActive duration control', () => {
     expect(bar.classList.contains('opacity-0')).toBe(false);
     expect(bar.classList.contains('translate-y-2')).toBe(false);
     expect(bar.hasAttribute('aria-hidden')).toBe(false);
+  });
+});
+
+describe('SessionActive replace exercise', () => {
+  const trackedExercises = signal<LoggedExercise[]>([]);
+  const dialog = { create: vi.fn() };
+  const getExercises = vi.fn();
+  const replaceTrackedExercise = vi.fn().mockReturnValue(true);
+  const savedTargetsForExercise = vi.fn().mockResolvedValue(null);
+
+  const chest = { id: 10, name: 'Chest' };
+  const bench: Exercise = { id: 1, name: 'Bench Press', media: [], primary_muscle: chest };
+  const incline: Exercise = { id: 2, name: 'Incline Press', media: [], primary_muscle: chest };
+  const fly: Exercise = {
+    id: 4,
+    name: 'Fly',
+    media: [],
+    primary_muscle: { id: 30, name: 'Shoulders' },
+    secondary_muscles: [chest],
+  };
+  const squat: Exercise = {
+    id: 3,
+    name: 'Squat',
+    media: [],
+    primary_muscle: { id: 20, name: 'Quads' },
+  };
+
+  beforeEach(async () => {
+    trackedExercises.set([]);
+    dialog.create.mockReset();
+    getExercises.mockReset();
+    replaceTrackedExercise.mockReset();
+    replaceTrackedExercise.mockReturnValue(true);
+    savedTargetsForExercise.mockReset();
+    savedTargetsForExercise.mockResolvedValue(null);
+    getExercises.mockResolvedValue([bench, squat, fly, incline]);
+
+    await TestBed.configureTestingModule({
+      imports: [SessionActive],
+      providers: [
+        provideRouter([]),
+        provideZard(),
+        {
+          provide: ActivatedRoute,
+          useValue: { queryParamMap: of(convertToParamMap({})) },
+        },
+        {
+          provide: WorkoutService,
+          useValue: {
+            trackedExercises,
+            sessionStartTime: signal(1_000),
+            sessionDuration: signal(30),
+            totalVolume: signal(0),
+            totalSets: signal(0),
+            isRestActive: signal(false),
+            selectedPlanId: signal<number | null>(null),
+            selectedSessionId: signal<number | null>(null),
+            sessionTitle: signal('Workout Session'),
+            refreshTrackedExercises: vi.fn().mockResolvedValue(undefined),
+            clearSession: vi.fn(),
+            startSessionTimer: vi.fn(),
+            setupSessionFromPlan: vi.fn().mockResolvedValue(undefined),
+            replaceTrackedExercise,
+            savedTargetsForExercise,
+          },
+        },
+        { provide: ZardDialogService, useValue: dialog },
+        { provide: ExerciseService, useValue: { getExercises } },
+      ],
+    }).compileComponents();
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
+  });
+
+  function logged(exercise: Exercise, completedAt?: string): LoggedExercise {
+    return {
+      id: exercise.id,
+      exercise,
+      sets: [
+        {
+          id: exercise.id * 10,
+          set_number: 1,
+          weight_lifted: 40,
+          reps_completed: 8,
+          completed_at: completedAt,
+        },
+      ],
+    };
+  }
+
+  async function render(): Promise<ComponentFixture<SessionActive>> {
+    const fixture = TestBed.createComponent(SessionActive);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    return fixture;
+  }
+
+  it('asks before replacing when sets are already logged', async () => {
+    trackedExercises.set([logged(bench, '2026-10-11T00:00:00.000Z')]);
+    const fixture = await render();
+
+    fixture.componentInstance.onExerciseReplace({ exerciseId: bench.id });
+
+    expect(dialog.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        zTitle: 'Replace exercise?',
+        zOkText: 'Continue',
+        zCancelText: 'Cancel',
+        zDescription: "You've logged 1 set. Their weight and reps will move to the new exercise.",
+      }),
+    );
+    expect(fixture.componentInstance.isReplaceSheetOpen()).toBe(false);
+    expect(getExercises).not.toHaveBeenCalled();
+  });
+
+  it('opens the picker directly, same muscle first, when nothing is logged', async () => {
+    trackedExercises.set([logged(bench)]);
+    const fixture = await render();
+
+    await fixture.componentInstance.onExerciseReplace({ exerciseId: bench.id });
+    fixture.detectChanges();
+
+    expect(dialog.create).not.toHaveBeenCalled();
+    expect(fixture.componentInstance.isReplaceSheetOpen()).toBe(true);
+    expect(fixture.componentInstance.replaceCandidates().map((item) => item.id)).toEqual([
+      incline.id,
+      fly.id,
+      squat.id,
+    ]);
+  });
+
+  it('opens the picker after Continue and swaps in the picked exercise', async () => {
+    trackedExercises.set([logged(bench, '2026-10-11T00:00:00.000Z'), logged(squat)]);
+    savedTargetsForExercise.mockResolvedValue({
+      target_sets: 3,
+      target_weight: 50,
+      target_reps: 6,
+    });
+    const fixture = await render();
+
+    fixture.componentInstance.onExerciseReplace({ exerciseId: bench.id });
+    const onContinue = dialog.create.mock.calls[0][0].zOnOk as () => Promise<void>;
+    await onContinue();
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.isReplaceSheetOpen()).toBe(true);
+    expect(fixture.componentInstance.replaceCandidates().map((item) => item.id)).toEqual([
+      incline.id,
+      fly.id,
+    ]);
+
+    await fixture.componentInstance.onReplacementPicked(incline);
+
+    expect(savedTargetsForExercise).toHaveBeenCalledWith(incline.id);
+    expect(replaceTrackedExercise).toHaveBeenCalledWith(bench.id, incline, {
+      target_sets: 3,
+      target_weight: 50,
+      target_reps: 6,
+    });
+    expect(fixture.componentInstance.isReplaceSheetOpen()).toBe(false);
   });
 });

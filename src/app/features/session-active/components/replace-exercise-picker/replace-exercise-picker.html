@@ -1,0 +1,51 @@
+<div class="flex flex-col gap-3 pb-4">
+  <div class="relative">
+    <ng-icon
+      name="lucideSearch"
+      class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+    ></ng-icon>
+    <input
+      z-input
+      type="text"
+      class="w-full pl-9"
+      placeholder="Search exercises"
+      aria-label="Search exercises"
+      [value]="query()"
+      (valueChange)="onQueryChange($event)"
+    />
+  </div>
+
+  @if (visibleExercises().length === 0) {
+    <p class="py-8 text-center text-sm text-muted-foreground">No other exercises to swap in.</p>
+  } @else {
+    <div class="flex flex-col gap-3">
+      @for (exercise of visibleExercises(); track exercise.id) {
+        <button
+          type="button"
+          class="flex w-full items-center gap-3 rounded-2xl border border-border bg-card p-2 text-left"
+          (click)="onPick(exercise)"
+        >
+          <div
+            class="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-muted"
+          >
+            @if (exercise.media.length > 0) {
+              <img
+                [src]="exercise.media[0].media_url"
+                [alt]="exercise.name"
+                class="size-full object-cover"
+              />
+            } @else {
+              <ng-icon name="lucideDumbbell" class="size-6 text-muted-foreground"></ng-icon>
+            }
+          </div>
+          <div class="flex min-w-0 flex-col gap-2">
+            <p class="truncate text-sm font-medium">{{ exercise.name }}</p>
+            @if (exercise.primary_muscle?.name) {
+              <z-badge zType="secondary">{{ exercise.primary_muscle?.name }}</z-badge>
+            }
+          </div>
+        </button>
+      }
+    </div>
+  }
+</div>
