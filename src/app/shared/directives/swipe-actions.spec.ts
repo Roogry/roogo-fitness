@@ -37,6 +37,9 @@ describe('swipe gesture math', () => {
     expect(shouldSnapSwipeOpen(-30, 160, -0.6)).toBe(true);
     expect(shouldSnapSwipeOpen(-120, 160, 0.6)).toBe(false);
     expect(shouldSnapSwipeOpen(-120, 0, -1)).toBe(false);
+    // Two size-12 actions, the gap, and padding (w-44) open at 88px.
+    expect(shouldSnapSwipeOpen(-87, 176, 0)).toBe(false);
+    expect(shouldSnapSwipeOpen(-88, 176, 0)).toBe(true);
   });
 });
 
@@ -61,17 +64,31 @@ describe('swipe gesture math', () => {
 })
 class Host {}
 
+/** Laid-out width of the session reveal: w-44. */
+const REVEAL_PX = 176;
+
 describe('SwipeActions', () => {
   let fixture: ComponentFixture<Host>;
 
   beforeEach(() => {
+    let now = 0;
+    // A slow clock so these drags are decided by distance, not a same-turn flick.
+    vi.spyOn(Date, 'now').mockImplementation(() => {
+      now += 250;
+      return now;
+    });
+
     TestBed.configureTestingModule({ imports: [Host] });
     fixture = TestBed.createComponent(Host);
     fixture.detectChanges();
 
     for (const tray of trays()) {
-      Object.defineProperty(tray, 'offsetWidth', { configurable: true, value: 160 });
+      Object.defineProperty(tray, 'offsetWidth', { configurable: true, value: REVEAL_PX });
     }
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   function trays(): HTMLElement[] {
@@ -148,7 +165,7 @@ describe('SwipeActions', () => {
     touch('touchend', body, 80, 42);
     flush();
 
-    expect(pane.style.transform).toBe('translate3d(-160px, 0, 0)');
+    expect(pane.style.transform).toBe('translate3d(-176px, 0, 0)');
     expect(trays()[0].hasAttribute('inert')).toBe(false);
     expect(pane.className).toContain('motion-reduce:transition-none');
   });
@@ -164,7 +181,7 @@ describe('SwipeActions', () => {
     touch('touchmove', firstBody, 40, 12);
     touch('touchend', firstBody, 40, 12);
     flush();
-    expect(firstPane.style.transform).toBe('translate3d(-160px, 0, 0)');
+    expect(firstPane.style.transform).toBe('translate3d(-176px, 0, 0)');
 
     touch('touchstart', secondBody, 200, 10);
     touch('touchmove', secondBody, 40, 12);
@@ -172,7 +189,7 @@ describe('SwipeActions', () => {
     flush();
 
     expect(firstPane.style.transform).toBe('translate3d(0px, 0, 0)');
-    expect(secondPane.style.transform).toBe('translate3d(-160px, 0, 0)');
+    expect(secondPane.style.transform).toBe('translate3d(-176px, 0, 0)');
 
     const outside = document.createElement('div');
     document.body.appendChild(outside);

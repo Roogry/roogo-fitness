@@ -1,23 +1,36 @@
 <app-swipe-actions [enabled]="swipeEnabled()">
   @if (swipeEnabled()) {
-    <ng-container swipe-actions>
-      <button
-        type="button"
-        class="flex h-full w-20 shrink-0 touch-manipulation flex-col items-center justify-center gap-1 bg-forest px-2 text-xs font-semibold text-forest-foreground"
-        (click)="onReplaceClick()"
-      >
-        <ng-icon name="lucideArrowLeftRight" class="size-5"></ng-icon>
-        Replace
-      </button>
-      <button
-        type="button"
-        class="flex h-full w-20 shrink-0 touch-manipulation flex-col items-center justify-center gap-1 bg-destructive px-2 text-xs font-semibold text-destructive-foreground"
-        (click)="onDeleteClick()"
-      >
-        <ng-icon name="lucideTrash2" class="size-5"></ng-icon>
-        Delete
-      </button>
-    </ng-container>
+    <!-- w-44 is two w-16 captions, the gap, and side padding. Snap uses this measured width. -->
+    <div swipe-actions class="flex w-44 items-center justify-center gap-4 px-4">
+      <div class="flex w-16 flex-col items-center gap-1">
+        <button
+          type="button"
+          z-button
+          zType="lime"
+          zSize="icon"
+          zShape="circle"
+          aria-label="Replace"
+          (click)="onReplaceClick()"
+        >
+          <ng-icon name="lucideArrowLeftRight" class="size-5"></ng-icon>
+        </button>
+        <span class="text-xs font-medium leading-none text-foreground">Replace</span>
+      </div>
+      <div class="flex w-16 flex-col items-center gap-1">
+        <button
+          type="button"
+          z-button
+          zType="destructive"
+          zSize="icon"
+          zShape="circle"
+          aria-label="Delete"
+          (click)="onDeleteClick()"
+        >
+          <ng-icon name="lucideTrash2" class="size-5"></ng-icon>
+        </button>
+        <span class="text-xs font-medium leading-none text-foreground">Delete</span>
+      </div>
+    </div>
   }
   <z-card [zLessPadding]="true">
     <div class="pt-4 px-2 flex flex-col gap-1" [class.pb-4]="!editable()">

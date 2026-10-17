@@ -186,8 +186,25 @@ describe('ExerciseTracker session actions', () => {
     expect(screenReader?.textContent).toContain('Exercise actions');
     expect(root.querySelector('button[aria-label="Exercise actions"]')).toBeNull();
     expect(root.querySelector('button[title="Remove exercise"]')).toBeNull();
-    expect(root.textContent).toContain('Replace');
-    expect(root.textContent).toContain('Delete');
+
+    const reveal = root.querySelector(
+      '[data-testid="swipe-actions"] [swipe-actions]',
+    ) as HTMLElement;
+    const buttons = Array.from(reveal.querySelectorAll('button'));
+    expect(reveal.className).toContain('w-44');
+    expect(buttons.map((button) => button.getAttribute('aria-label'))).toEqual([
+      'Replace',
+      'Delete',
+    ]);
+    for (const button of buttons) {
+      expect(button.className).toContain('size-12');
+      expect(button.className).toContain('rounded-full');
+      expect(button.className).not.toContain('h-full');
+    }
+    expect(buttons[0].className).toContain('bg-primary');
+    expect(buttons[1].className).toContain('bg-error');
+    expect(reveal.textContent).toContain('Replace');
+    expect(reveal.textContent).toContain('Delete');
   });
 
   it('keeps the trash button when the card is only editing a logged session', () => {

@@ -105,7 +105,7 @@ export class SwipeActionsGroup {
       <div
         #actions
         data-testid="swipe-actions"
-        class="absolute inset-y-0 right-0 z-0 flex"
+        class="absolute inset-y-0 right-0 z-0 flex items-center"
         [class.hidden]="!enabled()"
         [attr.inert]="open() ? null : ''"
         [attr.aria-hidden]="open() ? null : 'true'"
