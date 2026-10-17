@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import {
   AXIS_LOCK_PX,
@@ -221,5 +221,43 @@ describe('SwipeActions', () => {
     const click = new MouseEvent('click', { bubbles: true, cancelable: true });
     title.dispatchEvent(click);
     expect(click.defaultPrevented).toBe(true);
+  });
+});
+
+@Component({
+  imports: [SwipeActions],
+  template: `
+    <app-swipe-actions [enabled]="true" [clip]="isClipped()">
+      <button swipe-actions type="button">Delete</button>
+      <div>Card</div>
+    </app-swipe-actions>
+  `,
+})
+class ClipHost {
+  readonly isClipped = signal(true);
+}
+
+describe('SwipeActions clip', () => {
+  beforeEach(() => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({ imports: [ClipHost] });
+  });
+
+  it('hides the tray and stops clipping while the card is lifted', () => {
+    const fixture = TestBed.createComponent(ClipHost);
+    fixture.detectChanges();
+
+    const frame = fixture.nativeElement.querySelector('.relative') as HTMLElement;
+    const tray = fixture.nativeElement.querySelector(
+      '[data-testid="swipe-actions"]',
+    ) as HTMLElement;
+    expect(frame.classList.contains('overflow-hidden')).toBe(true);
+    expect(tray.classList.contains('invisible')).toBe(false);
+
+    fixture.componentInstance.isClipped.set(false);
+    fixture.detectChanges();
+
+    expect(frame.classList.contains('overflow-hidden')).toBe(false);
+    expect(tray.classList.contains('invisible')).toBe(true);
   });
 });

@@ -34,6 +34,9 @@ import {
   repsChips,
 } from '../keyboard-helper-bar/keyboard-helper-bar';
 
+/** Matches `--duration-spring` in styles.css. */
+const CARD_POP_MS = 300;
+
 /**
  * A component that tracks an active exercise session, allowing the user to log sets, weight, and reps.
  *
@@ -108,11 +111,39 @@ export class ExerciseTracker implements OnDestroy {
   private readonly pointerMode = inject(PointerModeService);
   readonly isDesktopPointer = this.pointerMode.isDesktop;
   readonly actionsMenuOpen = signal(false);
+  private readonly isCardPressed = signal(false);
+  private readonly isCardPopping = signal(false);
+  private cardPopTimer: ReturnType<typeof setTimeout> | undefined;
+
+  /**
+   * Keeps the touch menu clear of the session bar. The keyboard offset is added when
+   * the visual viewport has already shrunk, so the menu flips above instead of under it.
+   */
+  private readonly contextMenuClearancePx = 96;
 
   /** Touch session cards reveal actions by swipe. Desktop keeps the visible menu. */
   readonly swipeEnabled = computed(
     () => this.editable() && this.sessionActions() && !this.isDesktopPointer(),
   );
+  readonly menuViewportMargin = computed(
+    () => this.contextMenuClearancePx + Math.max(0, this.keyboardOffset()),
+  );
+  /** Press, pop, or an open touch menu. The swipe frame lets the card draw past its box. */
+  readonly cardIsLifted = computed(
+    () =>
+      this.isCardPressed() ||
+      this.isCardPopping() ||
+      (this.swipeEnabled() && this.actionsMenuOpen()),
+  );
+  readonly cardMotionClass = computed(() => {
+    const classes: string[] = [];
+    if (this.isCardPressed()) classes.push('long-press-squeeze');
+    if (this.isCardPopping()) classes.push('long-press-pop');
+    if (this.swipeEnabled() && this.actionsMenuOpen()) {
+      classes.push('border-2', 'border-lime', 'ring-2', 'ring-lime');
+    }
+    return classes.join(' ');
+  });
   readonly keyboardOffset = this.viewport.keyboardOffset;
   readonly visualBottom = this.viewport.visualBottom;
 
@@ -156,6 +187,7 @@ export class ExerciseTracker implements OnDestroy {
 
   ngOnDestroy() {
     this.destroyed = true;
+    if (this.cardPopTimer !== undefined) clearTimeout(this.cardPopTimer);
   }
 
   onFieldFocus(set: LoggedSet, field: 'weight' | 'reps', event: Event) {
@@ -428,8 +460,21 @@ export class ExerciseTracker implements OnDestroy {
     this.exerciseRemoved.emit({ exerciseId: this.trackedExercise().exercise.id });
   }
 
+  onCardPressing(isPressed: boolean) {
+    this.isCardPressed.set(isPressed);
+  }
+
+  onTouchMenuVisibleChange(isOpen: boolean) {
+    if (!this.swipeEnabled()) return;
+    this.actionsMenuOpen.set(isOpen);
+  }
+
   onActionsLongPress() {
+    this.isCardPressed.set(false);
+    this.isCardPopping.set(true);
     this.actionsMenuOpen.set(true);
+    if (this.cardPopTimer !== undefined) clearTimeout(this.cardPopTimer);
+    this.cardPopTimer = setTimeout(() => this.isCardPopping.set(false), CARD_POP_MS);
   }
 
   onReplaceClick() {

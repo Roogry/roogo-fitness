@@ -1,8 +1,10 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { vi } from 'vitest';
 import { PointerModeService } from '@/core/services/pointer-mode.service';
 import { provideZard } from '@/core/provider/providezard';
+import { LONG_PRESS_MS } from '@/shared/directives/long-press.directive';
 import { Exercise, LoggedExercise, LoggedSet } from '@/shared/models';
 import { ExerciseTracker } from './exercise-tracker';
 
@@ -219,6 +221,45 @@ describe('ExerciseTracker session actions', () => {
     fixture.componentInstance.onDeleteClick();
 
     expect(removed).toEqual([{ exerciseId: exercise.id }, { exerciseId: exercise.id }]);
+  });
+
+  function touch(target: HTMLElement, type: 'touchstart' | 'touchend', x: number, y: number) {
+    const event = new Event(type, { bubbles: true, cancelable: true });
+    Object.defineProperty(event, 'touches', { value: [{ clientX: x, clientY: y }] });
+    target.dispatchEvent(event);
+  }
+
+  it('squeezes the card while held, then pops it and outlines it when the menu opens', () => {
+    const fixture = render(true, false);
+    vi.useFakeTimers();
+    try {
+      const header = fixture.nativeElement.querySelector(
+        '[data-testid="exercise-card-header"]',
+      ) as HTMLElement;
+      const card = fixture.nativeElement.querySelector(
+        '[data-testid="exercise-card"]',
+      ) as HTMLElement;
+
+      touch(header, 'touchstart', 40, 20);
+      fixture.detectChanges();
+      expect(card.className).toContain('long-press-squeeze');
+      expect(card.className).not.toContain('border-lime');
+
+      vi.advanceTimersByTime(LONG_PRESS_MS);
+      fixture.detectChanges();
+
+      expect(card.className).toContain('long-press-pop');
+      expect(card.className).not.toContain('long-press-squeeze');
+      expect(card.className).toContain('border-lime');
+      expect(card.className).toContain('ring-2');
+      expect(card.className).toContain('ring-lime');
+
+      fixture.componentInstance.actionsMenuOpen.set(false);
+      fixture.detectChanges();
+      expect(card.className).not.toContain('border-lime');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('keeps the trash button when the card is only editing a logged session', () => {

@@ -16,9 +16,9 @@
   --lime-600: #b5e83f;
   --lime-foreground: var(--ink);
   --lime-50: #f5fbe4;
-  --forest: #0F3B29;
+  --forest: #0f3b29;
   --forest-foreground: #ffffff;
-  --ink: #0D2519;
+  --ink: #0d2519;
   --ink-foreground: #ffffff;
   --ink-700: #24382b;
   --mist: var(--secondary);
@@ -220,6 +220,135 @@
 }
 .font-body {
   font-family: var(--font-body) !important;
+}
+
+:root {
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --scale-press: 0.97;
+  --scale-overshoot: 1.03;
+  --scale-menu-start: 0.9;
+  --scale-menu-overshoot: 1.02;
+  --duration-spring: 300ms;
+  --duration-menu-out: 160ms;
+  /* Same 8px gap the spring menu asks the overlay for. The keyframes keep it. */
+  --menu-offset: 0.5rem;
+}
+
+.menu-shift-down {
+  --menu-shift: var(--menu-offset);
+}
+
+.menu-shift-up {
+  --menu-shift: calc(var(--menu-offset) * -1);
+}
+
+/* Press the card in, then spring past rest and settle. The menu uses the same curve. */
+.long-press-squeeze {
+  transform: scale(var(--scale-press));
+  transition: transform var(--duration-spring) var(--ease-spring);
+}
+
+.long-press-pop {
+  animation: long-press-pop var(--duration-spring) var(--ease-spring) both;
+}
+
+.menu-origin-top {
+  transform-origin: top center;
+}
+
+.menu-origin-bottom {
+  transform-origin: bottom center;
+}
+
+.menu-pop-in {
+  animation: menu-pop-in var(--duration-spring) var(--ease-spring) both;
+}
+
+.menu-pop-out {
+  animation: menu-pop-out var(--duration-menu-out) ease-out both;
+}
+
+/* The pane plays the spring. The popover's own enter/leave zoom would fight it. */
+.menu-pop-in .animate-in,
+.menu-pop-in .animate-out,
+.menu-pop-out .animate-in,
+.menu-pop-out .animate-out {
+  animation: none;
+}
+
+@keyframes long-press-pop {
+  0% {
+    transform: scale(var(--scale-press));
+  }
+  55% {
+    transform: scale(var(--scale-overshoot));
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* The scale lives on the overlay pane, so it has to keep the gap translate.
+   A transform animation would otherwise replace the overlay's own translate. */
+@keyframes menu-pop-in {
+  0% {
+    opacity: 0;
+    transform: translateY(var(--menu-shift, var(--menu-offset))) scale(var(--scale-menu-start));
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(var(--menu-shift, var(--menu-offset))) scale(var(--scale-menu-overshoot));
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(var(--menu-shift, var(--menu-offset))) scale(1);
+  }
+}
+
+@keyframes menu-pop-out {
+  0% {
+    opacity: 1;
+    transform: translateY(var(--menu-shift, var(--menu-offset))) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(var(--menu-shift, var(--menu-offset))) scale(var(--scale-menu-start));
+  }
+}
+
+@keyframes menu-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes menu-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .long-press-squeeze,
+  .long-press-pop {
+    transform: none;
+    animation: none;
+    transition: none;
+  }
+
+  .menu-pop-in {
+    animation: menu-fade-in var(--duration-menu-out) ease-out both;
+  }
+
+  .menu-pop-out {
+    animation: menu-fade-out var(--duration-menu-out) ease-out both;
+  }
 }
 
 ::-webkit-scrollbar {

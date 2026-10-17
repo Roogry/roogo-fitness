@@ -28,11 +28,14 @@ export class LongPressDirective implements OnDestroy {
 
   readonly enabled = input(true, { alias: 'appLongPress', transform: booleanAttribute });
   readonly longPress = output<void>();
+  /** True from touch-down until the press fires or is cancelled. */
+  readonly pressingChange = output<boolean>();
 
   private timer: ReturnType<typeof setTimeout> | undefined;
   private startX = 0;
   private startY = 0;
   private suppressClick = false;
+  private pressing = false;
 
   private readonly onTouchStart = (event: TouchEvent) => {
     if (!this.enabled() || event.touches.length !== 1) return;
@@ -41,6 +44,8 @@ export class LongPressDirective implements OnDestroy {
     this.startX = event.touches[0].clientX;
     this.startY = event.touches[0].clientY;
     this.clearTimer();
+    this.pressing = true;
+    this.pressingChange.emit(true);
     this.timer = setTimeout(() => this.fire(), LONG_PRESS_MS);
   };
 
@@ -95,6 +100,7 @@ export class LongPressDirective implements OnDestroy {
   private fire() {
     this.timer = undefined;
     this.suppressClick = true;
+    this.endPress();
     pulseHaptic();
     this.longPress.emit();
   }
@@ -103,6 +109,13 @@ export class LongPressDirective implements OnDestroy {
     if (this.timer === undefined) return;
     clearTimeout(this.timer);
     this.timer = undefined;
+    this.endPress();
+  }
+
+  private endPress() {
+    if (!this.pressing) return;
+    this.pressing = false;
+    this.pressingChange.emit(false);
   }
 }
 

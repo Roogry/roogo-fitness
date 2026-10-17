@@ -1,4 +1,11 @@
-import { type ConnectedPosition, Overlay, OverlayPositionBuilder, type OverlayRef } from '@angular/cdk/overlay';
+import {
+  type ConnectedPosition,
+  type FlexibleConnectedPositionStrategy,
+  Overlay,
+  OverlayPositionBuilder,
+  type OverlayRef,
+  type ViewportMargin,
+} from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { isPlatformBrowser } from '@angular/common';
 import {
@@ -29,6 +36,45 @@ import { popoverVariants } from './popover.variants';
 
 export type ZardPopoverTrigger = 'click' | 'hover' | null;
 export type ZardPopoverPlacement = 'top' | 'bottom' | 'left' | 'right' | 'bottomLeft';
+export type ZardPopoverMotion = 'default' | 'spring';
+
+/** Matches `--duration-menu-out` in styles.css. The pane stays up while the leave animation runs. */
+export const MENU_LEAVE_MS = 160;
+
+/** The menu's edge that touches the card is the scale origin. `bottom` means the menu flipped above. */
+export function menuSpringOrigin(overlayY: string): 'menu-origin-top' | 'menu-origin-bottom' {
+  return overlayY === 'bottom' ? 'menu-origin-bottom' : 'menu-origin-top';
+}
+
+/** Gap direction that matches the overlay offset. Above the card, the menu shifts up. */
+export function menuSpringShift(overlayY: string): 'menu-shift-up' | 'menu-shift-down' {
+  return overlayY === 'bottom' ? 'menu-shift-up' : 'menu-shift-down';
+}
+
+/** Side gap for a spring menu. The large clearance stays on the bottom only. */
+const SPRING_EDGE_MARGIN_PX = 8;
+
+/**
+ * Below the card, then above it. Side fallbacks are omitted: a context menu should
+ * flip vertically, not dock beside the card when the bottom is blocked.
+ */
+export function springMenuPositions(): ConnectedPosition[] {
+  return [POPOVER_POSITIONS_MAP['bottom'], POPOVER_POSITIONS_MAP['top']];
+}
+
+/**
+ * `bottomClearance` is the session bar, keyboard, or other chrome under the card.
+ * CDK treats a single margin as every edge, which makes a phone-width menu look
+ * like it does not fit and falls through to a side position.
+ */
+export function springViewportMargin(bottomClearance: number): ViewportMargin {
+  return {
+    top: SPRING_EDGE_MARGIN_PX,
+    bottom: bottomClearance,
+    start: SPRING_EDGE_MARGIN_PX,
+    end: SPRING_EDGE_MARGIN_PX,
+  };
+}
 
 const POPOVER_POSITIONS_MAP: { [key: string]: ConnectedPosition } = {
   top: {
@@ -75,7 +121,7 @@ const POPOVER_POSITIONS_MAP: { [key: string]: ConnectedPosition } = {
 
 /**
  * A directive to display content in a popover overlaid on the UI.
- * 
+ *
  * @example
  * <button [zPopover]="myPopover" zTrigger="click">Open Popover</button>
  * <ng-template #myPopover>Popover Content</ng-template>
@@ -95,8 +141,11 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
   private readonly platformId = inject(PLATFORM_ID);
 
   private overlayRef?: OverlayRef;
+  private positionStrategy?: FlexibleConnectedPositionStrategy;
   private overlayRefSubscription?: Subscription;
   private listeners: (() => void)[] = [];
+  private leaveTimer: ReturnType<typeof setTimeout> | undefined;
+  private removeEscapeListener: (() => void) | undefined;
 
   readonly zTrigger = input<ZardPopoverTrigger>('click');
   readonly zContent = input.required<TemplateRef<unknown>>();
@@ -104,6 +153,10 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
   readonly zOrigin = input<ElementRef>();
   readonly zVisible = input<boolean>(false);
   readonly zOverlayClickable = input<boolean>(true);
+  /** Spring scale from the card edge. `default` keeps the popover's own enter animation. */
+  readonly zMotion = input<ZardPopoverMotion>('default');
+  /** Extra space the spring menu keeps clear, so it flips above the session bar or keyboard. */
+  readonly zViewportMargin = input(8);
   readonly zVisibleChange = output<boolean>();
 
   private readonly isVisible = signal(false);
@@ -115,7 +168,7 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
   constructor() {
     toObservable(this.zVisible)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(visible => {
+      .subscribe((visible) => {
         const currentlyVisible = this.isVisible();
         if (visible && !currentlyVisible) {
           this.show();
@@ -126,14 +179,14 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
 
     toObservable(this.zTrigger)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(trigger => {
+      .subscribe((trigger) => {
         if (this.listeners.length) {
           this.unlistenAll();
         }
         this.setupTriggers();
         this.overlayRefSubscription?.unsubscribe();
         this.overlayRefSubscription = undefined;
-        if (trigger === 'click') {
+        if (trigger === 'click' || this.zMotion() === 'spring') {
           this.subscribeToOverlayRef();
         }
       });
@@ -144,6 +197,8 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.cancelLeave();
+    this.removeEscapeListener?.();
     this.unlistenAll();
     this.overlayRefSubscription?.unsubscribe();
     this.overlayRef?.dispose();
@@ -154,12 +209,19 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
       return;
     }
 
+    this.cancelLeave();
+
     if (!this.overlayRef) {
       this.createOverlay();
     }
 
+    // The keyboard can open after the overlay was created. Refresh before the next attach.
+    this.syncSpringPosition();
+
     const templatePortal = new TemplatePortal(this.zContent(), this.viewContainerRef);
     this.overlayRef?.attach(templatePortal);
+    this.playSpringEnter();
+    this.listenForEscape();
     this.isVisible.set(true);
     this.zVisibleChange.emit(true);
   }
@@ -169,9 +231,32 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
       return;
     }
 
-    this.overlayRef?.detach();
     this.isVisible.set(false);
     this.zVisibleChange.emit(false);
+    this.removeEscapeListener?.();
+    this.removeEscapeListener = undefined;
+
+    const pane = this.overlayRef?.overlayElement;
+    if (this.zMotion() !== 'spring' || !pane) {
+      this.overlayRef?.detach();
+      return;
+    }
+
+    pane.classList.remove('menu-pop-in');
+    pane.classList.add('menu-pop-out');
+    this.leaveTimer = setTimeout(() => {
+      this.leaveTimer = undefined;
+      pane.classList.remove(
+        'menu-pop-out',
+        'menu-origin-top',
+        'menu-origin-bottom',
+        'menu-shift-up',
+        'menu-shift-down',
+      );
+      if (this.overlayRef?.hasAttached()) {
+        this.overlayRef.detach();
+      }
+    }, MENU_LEAVE_MS);
   }
 
   toggle() {
@@ -189,7 +274,17 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
         .withPositions(this.getPositions())
         .withPush(false)
         .withFlexibleDimensions(false)
-        .withViewportMargin(8);
+        .withViewportMargin(this.viewportMargin());
+
+      this.positionStrategy = positionStrategy;
+
+      if (this.zMotion() === 'spring') {
+        positionStrategy.positionChanges
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe((change) => {
+            this.applySpringOrigin(change.connectionPair.overlayY);
+          });
+      }
 
       this.overlayRef = this.overlay.create({
         positionStrategy,
@@ -200,15 +295,16 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
   }
 
   private subscribeToOverlayRef(): void {
+    const closesOnOutside = this.zTrigger() === 'click' || this.zMotion() === 'spring';
     if (
       this.zOverlayClickable() &&
-      this.zTrigger() === 'click' &&
+      closesOnOutside &&
       isPlatformBrowser(this.platformId) &&
       this.overlayRef
     ) {
       this.overlayRefSubscription = this.overlayRef
         .outsidePointerEvents()
-        .pipe(filter(event => !this.nativeElement.contains(event.target)))
+        .pipe(filter((event) => !this.nativeElement.contains(event.target)))
         .subscribe(() => this.hide());
     }
   }
@@ -220,11 +316,17 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
     }
 
     if (trigger === 'click') {
-      this.listeners.push(this.renderer.listen(this.nativeElement, 'click.stop', () => this.toggle()));
+      this.listeners.push(
+        this.renderer.listen(this.nativeElement, 'click.stop', () => this.toggle()),
+      );
     } else if (trigger === 'hover') {
-      this.listeners.push(this.renderer.listen(this.nativeElement, 'mouseenter', () => this.show()));
+      this.listeners.push(
+        this.renderer.listen(this.nativeElement, 'mouseenter', () => this.show()),
+      );
 
-      this.listeners.push(this.renderer.listen(this.nativeElement, 'mouseleave', () => this.hide()));
+      this.listeners.push(
+        this.renderer.listen(this.nativeElement, 'mouseleave', () => this.hide()),
+      );
     }
   }
 
@@ -235,7 +337,62 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
     this.listeners = [];
   }
 
+  private cancelLeave() {
+    if (this.leaveTimer === undefined) return;
+    clearTimeout(this.leaveTimer);
+    this.leaveTimer = undefined;
+  }
+
+  private syncSpringPosition() {
+    if (this.zMotion() !== 'spring' || !this.positionStrategy) return;
+    this.positionStrategy
+      .withPositions(springMenuPositions())
+      .withViewportMargin(springViewportMargin(this.zViewportMargin()));
+  }
+
+  private viewportMargin(): ViewportMargin {
+    if (this.zMotion() !== 'spring') return 8;
+    return springViewportMargin(this.zViewportMargin());
+  }
+
+  private playSpringEnter() {
+    if (this.zMotion() !== 'spring') return;
+    const pane = this.overlayRef?.overlayElement;
+    if (!pane) return;
+    pane.classList.remove('menu-pop-out');
+    pane.classList.add('menu-pop-in', 'menu-origin-top', 'menu-shift-down');
+  }
+
+  private applySpringOrigin(overlayY: string) {
+    const pane = this.overlayRef?.overlayElement;
+    if (!pane) return;
+    pane.classList.remove(
+      'menu-origin-top',
+      'menu-origin-bottom',
+      'menu-shift-up',
+      'menu-shift-down',
+    );
+    pane.classList.add(menuSpringOrigin(overlayY), menuSpringShift(overlayY));
+  }
+
+  private listenForEscape() {
+    if (this.zMotion() !== 'spring' || !isPlatformBrowser(this.platformId)) return;
+    this.removeEscapeListener?.();
+    this.removeEscapeListener = this.renderer.listen(
+      document,
+      'keydown',
+      (event: KeyboardEvent) => {
+        if (event.key !== 'Escape' || !this.isVisible()) return;
+        this.hide();
+      },
+    );
+  }
+
   private getPositions(): ConnectedPosition[] {
+    if (this.zMotion() === 'spring') {
+      return springMenuPositions();
+    }
+
     const placement = this.zPlacement();
     const positions: ConnectedPosition[] = [];
 
@@ -411,9 +568,7 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
   selector: 'z-popover',
   imports: [],
   standalone: true,
-  template: `
-    <ng-content />
-  `,
+  template: ` <ng-content /> `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'classes()',

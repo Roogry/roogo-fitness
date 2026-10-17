@@ -6,7 +6,7 @@ import { LONG_PRESS_CANCEL_PX, LONG_PRESS_MS, LongPressDirective } from './long-
 @Component({
   imports: [LongPressDirective],
   template: `
-    <div appLongPress (longPress)="fires = fires + 1">
+    <div appLongPress (longPress)="fires = fires + 1" (pressingChange)="presses.push($event)">
       <a data-testid="title" href="/exercise/1">Bench</a>
       <input data-testid="weight" />
       <div data-testid="handle" data-drag-handle>handle</div>
@@ -18,6 +18,7 @@ import { LONG_PRESS_CANCEL_PX, LONG_PRESS_MS, LongPressDirective } from './long-
 })
 class Host {
   fires = 0;
+  presses: boolean[] = [];
 }
 
 describe('LongPressDirective', () => {
@@ -62,6 +63,7 @@ describe('LongPressDirective', () => {
 
     vi.advanceTimersByTime(1);
     expect(fixture.componentInstance.fires).toBe(1);
+    expect(fixture.componentInstance.presses).toEqual([true, false]);
     expect(vibrate).toHaveBeenCalledWith(10);
 
     const click = new MouseEvent('click', { bubbles: true, cancelable: true });
@@ -71,9 +73,11 @@ describe('LongPressDirective', () => {
 
   it('cancels when the finger moves, or when the press starts on an input or drag handle', () => {
     touch('touchstart', title(), 20, 20);
+    expect(fixture.componentInstance.presses).toEqual([true]);
     touch('touchmove', title(), 20 + LONG_PRESS_CANCEL_PX + 1, 20);
     vi.advanceTimersByTime(LONG_PRESS_MS);
     expect(fixture.componentInstance.fires).toBe(0);
+    expect(fixture.componentInstance.presses).toEqual([true, false]);
 
     const weight = fixture.nativeElement.querySelector('[data-testid="weight"]') as HTMLElement;
     touch('touchstart', weight, 20, 20);
