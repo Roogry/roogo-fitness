@@ -1,10 +1,5 @@
 import { Exercise } from '@/shared/models';
-import {
-  completedSetCount,
-  filterExercisesByName,
-  replaceLoggedSetsMessage,
-  sortReplacementCandidates,
-} from './replace-exercise';
+import { filterExercisesByName, sortReplacementCandidates } from './replace-exercise';
 
 function exercise(
   id: number,
@@ -74,25 +69,5 @@ describe('sortReplacementCandidates', () => {
       'Incline Press',
     ]);
     expect(filterExercisesByName(sorted, '  ').map((item) => item.id)).toEqual([2, 4, 3]);
-  });
-});
-
-describe('replace confirm copy', () => {
-  it('counts only sets that were marked done', () => {
-    expect(
-      completedSetCount([{ completed_at: '2026-10-11T00:00:00.000Z' }, {}, { completed_at: '' }]),
-    ).toBe(1);
-  });
-
-  it('uses the singular when one set is logged', () => {
-    expect(replaceLoggedSetsMessage(1)).toBe(
-      "You've logged 1 set. Their weight and reps will move to the new exercise.",
-    );
-  });
-
-  it('uses the plural when more than one set is logged', () => {
-    expect(replaceLoggedSetsMessage(2)).toBe(
-      "You've logged 2 sets. Their weight and reps will move to the new exercise.",
-    );
   });
 });

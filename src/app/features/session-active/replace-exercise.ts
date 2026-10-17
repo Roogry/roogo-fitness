@@ -1,17 +1,8 @@
-import { Exercise, LoggedSet } from '@/shared/models';
+import { Exercise } from '@/shared/models';
 
 const PRIMARY_MUSCLE_RANK = 0;
 const SECONDARY_MUSCLE_RANK = 1;
 const OTHER_MUSCLE_RANK = 2;
-
-export function completedSetCount(sets: readonly Pick<LoggedSet, 'completed_at'>[]): number {
-  return sets.filter((set) => !!set.completed_at).length;
-}
-
-export function replaceLoggedSetsMessage(completedSets: number): string {
-  const setLabel = completedSets === 1 ? '1 set' : `${completedSets} sets`;
-  return `You've logged ${setLabel}. Their weight and reps will move to the new exercise.`;
-}
 
 /**
  * Same primary muscle, then a secondary muscle that matches that primary, then the rest.

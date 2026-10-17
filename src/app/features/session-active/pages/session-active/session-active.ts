@@ -10,9 +10,11 @@ import { WorkoutService } from '@/core/services/workout.service';
 import { ReplaceExercisePicker } from '@/features/session-active/components/replace-exercise-picker/replace-exercise-picker';
 import {
   completedSetCount,
+  deleteLoggedSetsMessage,
+  loggedSetsConfirmOptions,
   replaceLoggedSetsMessage,
-  sortReplacementCandidates,
-} from '@/features/session-active/replace-exercise';
+} from '@/features/session-active/logged-sets-confirm';
+import { sortReplacementCandidates } from '@/features/session-active/replace-exercise';
 import { Exercise, LoggedExercise, LoggedSet } from '@/shared/models';
 import { SwipeActionsGroup } from '@/shared/directives/swipe-actions';
 import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-autocomplete/exercise-autocomplete';
@@ -177,9 +179,32 @@ export class SessionActive implements OnInit {
     this.workoutService.removeSet(e.exerciseId, e.setId);
   }
 
-  onExerciseRemove(e: { exerciseId: number }) {
+  onExerciseRemove(event: { exerciseId: number }) {
+    const tracked = this.workoutService
+      .trackedExercises()
+      .find((item) => item.exercise.id === event.exerciseId);
+    if (!tracked) return;
+
+    const completed = completedSetCount(tracked.sets);
+    if (completed === 0) {
+      this.deleteTrackedExercise(event.exerciseId);
+      return;
+    }
+
+    // Swipe, long-press, and the desktop menu all emit this. Close on cancel so the row
+    // does not stay open, and close as the dialog opens because Escape and the backdrop
+    // dismiss it without running the cancel callback.
     this.swipeGroup.closeAll();
-    this.workoutService.removeTrackedExercise(e.exerciseId);
+    this.dialogService.create(
+      loggedSetsConfirmOptions({
+        title: 'Delete exercise?',
+        description: deleteLoggedSetsMessage(completed),
+        okText: 'Delete',
+        destructive: true,
+        onOk: () => this.deleteTrackedExercise(event.exerciseId),
+        onCancel: () => this.swipeGroup.closeAll(),
+      }),
+    );
   }
 
   onExerciseReplace(event: { exerciseId: number }): Promise<void> | void {
@@ -195,14 +220,21 @@ export class SessionActive implements OnInit {
       return this.openReplacePicker(tracked);
     }
 
-    this.dialogService.create({
-      zWidth: '400px',
-      zTitle: 'Replace exercise?',
-      zDescription: replaceLoggedSetsMessage(completed),
-      zOkText: 'Continue',
-      zCancelText: 'Cancel',
-      zOnOk: () => this.openReplacePicker(tracked),
-    });
+    this.dialogService.create(
+      loggedSetsConfirmOptions({
+        title: 'Replace exercise?',
+        description: replaceLoggedSetsMessage(completed),
+        okText: 'Continue',
+        onOk: () => {
+          void this.openReplacePicker(tracked);
+        },
+      }),
+    );
+  }
+
+  private deleteTrackedExercise(exerciseId: number) {
+    this.swipeGroup.closeAll();
+    this.workoutService.removeTrackedExercise(exerciseId);
   }
 
   onReplaceSheetOpenChange(isOpen: boolean) {

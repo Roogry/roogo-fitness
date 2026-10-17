@@ -8,6 +8,7 @@ import { provideZard } from '@/core/provider/providezard';
 import { ExerciseService } from '@/core/services/exercise.service';
 import { VisualViewportService } from '@/core/services/visual-viewport.service';
 import { WorkoutService } from '@/core/services/workout.service';
+import { SwipeActionsGroup } from '@/shared/directives/swipe-actions';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { Exercise, LoggedExercise } from '@/shared/models';
 import { SessionActive, lastExerciseIdWithCompletedSet } from './session-active';
@@ -315,6 +316,7 @@ describe('SessionActive replace exercise', () => {
   const dialog = { create: vi.fn() };
   const getExercises = vi.fn();
   const replaceTrackedExercise = vi.fn().mockReturnValue(true);
+  const removeTrackedExercise = vi.fn();
   const savedTargetsForExercise = vi.fn().mockResolvedValue(null);
 
   const chest = { id: 10, name: 'Chest' };
@@ -340,6 +342,7 @@ describe('SessionActive replace exercise', () => {
     getExercises.mockReset();
     replaceTrackedExercise.mockReset();
     replaceTrackedExercise.mockReturnValue(true);
+    removeTrackedExercise.mockReset();
     savedTargetsForExercise.mockReset();
     savedTargetsForExercise.mockResolvedValue(null);
     getExercises.mockResolvedValue([bench, squat, fly, incline]);
@@ -370,6 +373,7 @@ describe('SessionActive replace exercise', () => {
             startSessionTimer: vi.fn(),
             setupSessionFromPlan: vi.fn().mockResolvedValue(undefined),
             replaceTrackedExercise,
+            removeTrackedExercise,
             savedTargetsForExercise,
           },
         },
@@ -469,5 +473,55 @@ describe('SessionActive replace exercise', () => {
       target_reps: 6,
     });
     expect(fixture.componentInstance.isReplaceSheetOpen()).toBe(false);
+  });
+
+  it('asks before deleting logged sets and closes the swipe on cancel', async () => {
+    trackedExercises.set([logged(bench, '2026-10-11T00:00:00.000Z')]);
+    const fixture = await render();
+    const closeAll = vi.spyOn(fixture.debugElement.injector.get(SwipeActionsGroup), 'closeAll');
+
+    fixture.componentInstance.onExerciseRemove({ exerciseId: bench.id });
+
+    expect(dialog.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        zTitle: 'Delete exercise?',
+        zDescription: "You've logged 1 set. They'll be removed from this session.",
+        zOkText: 'Delete',
+        zCancelText: 'Cancel',
+        zOkDestructive: true,
+      }),
+    );
+    expect(removeTrackedExercise).not.toHaveBeenCalled();
+    expect(closeAll).toHaveBeenCalledOnce();
+
+    const onCancel = dialog.create.mock.calls[0][0].zOnCancel as () => void;
+    onCancel();
+
+    expect(closeAll).toHaveBeenCalledTimes(2);
+    expect(removeTrackedExercise).not.toHaveBeenCalled();
+  });
+
+  it('deletes the exercise when the confirm is accepted', async () => {
+    trackedExercises.set([logged(bench, '2026-10-11T00:00:00.000Z'), logged(squat, '2026-10-11')]);
+    const fixture = await render();
+
+    fixture.componentInstance.onExerciseRemove({ exerciseId: bench.id });
+    const onDelete = dialog.create.mock.calls[0][0].zOnOk as () => void;
+    onDelete();
+
+    expect(removeTrackedExercise).toHaveBeenCalledOnce();
+    expect(removeTrackedExercise).toHaveBeenCalledWith(bench.id);
+  });
+
+  it('deletes immediately when nothing is logged', async () => {
+    trackedExercises.set([logged(bench)]);
+    const fixture = await render();
+    const closeAll = vi.spyOn(fixture.debugElement.injector.get(SwipeActionsGroup), 'closeAll');
+
+    fixture.componentInstance.onExerciseRemove({ exerciseId: bench.id });
+
+    expect(dialog.create).not.toHaveBeenCalled();
+    expect(removeTrackedExercise).toHaveBeenCalledWith(bench.id);
+    expect(closeAll).toHaveBeenCalledOnce();
   });
 });

@@ -207,6 +207,20 @@ describe('ExerciseTracker session actions', () => {
     expect(reveal.textContent).toContain('Delete');
   });
 
+  it('emits delete from the swipe button and from the shared actions menu', () => {
+    const fixture = render(true, false);
+    const removed: { exerciseId: number }[] = [];
+    fixture.componentInstance.exerciseRemoved.subscribe((event) => removed.push(event));
+
+    const swipeDelete = fixture.nativeElement.querySelector(
+      '[data-testid="swipe-actions"] button[aria-label="Delete"]',
+    ) as HTMLButtonElement;
+    swipeDelete.click();
+    fixture.componentInstance.onDeleteClick();
+
+    expect(removed).toEqual([{ exerciseId: exercise.id }, { exerciseId: exercise.id }]);
+  });
+
   it('keeps the trash button when the card is only editing a logged session', () => {
     const fixture = render(false, false);
     const root = fixture.nativeElement as HTMLElement;
