@@ -50,6 +50,7 @@
           class="pl-2 flex items-center gap-4 pb-2"
           data-testid="exercise-card-header"
           [class.select-none]="swipeEnabled()"
+          [class.no-touch-callout]="swipeEnabled()"
           [appLongPress]="swipeEnabled()"
           (pressingChange)="onCardPressing($event)"
           (longPress)="onActionsLongPress()"
@@ -69,13 +70,33 @@
           </div>
 
           <div class="flex-1 flex flex-col min-w-0">
-            <a [routerLink]="['/exercise', trackedExercise().exercise.id]" class="group/title">
-              <h3
-                class="font-bold text-lg sm:text-xl text-foreground group-hover/title:text-forest transition-colors leading-tight truncate"
-              >
-                {{ trackedExercise().exercise.name }}
+            @if (swipeEnabled()) {
+              <!-- Not an anchor: iOS previews links on long-press and steals the gesture. -->
+              <h3 class="font-bold text-lg sm:text-xl text-foreground leading-tight truncate">
+                <span
+                  role="link"
+                  tabindex="0"
+                  data-testid="exercise-name"
+                  class="no-touch-callout"
+                  (click)="onExerciseNameClick()"
+                  (keydown)="onExerciseNameKeydown($event)"
+                >
+                  {{ trackedExercise().exercise.name }}
+                </span>
               </h3>
-            </a>
+            } @else {
+              <a
+                [routerLink]="['/exercise', trackedExercise().exercise.id]"
+                class="group/title"
+                data-testid="exercise-name"
+              >
+                <h3
+                  class="font-bold text-lg sm:text-xl text-foreground group-hover/title:text-forest transition-colors leading-tight truncate"
+                >
+                  {{ trackedExercise().exercise.name }}
+                </h3>
+              </a>
+            }
 
             @if (targetSummary(); as summary) {
               <p

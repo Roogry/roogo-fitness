@@ -1,6 +1,6 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { vi } from 'vitest';
 import { PointerModeService } from '@/core/services/pointer-mode.service';
 import { provideZard } from '@/core/provider/providezard';
@@ -223,7 +223,12 @@ describe('ExerciseTracker session actions', () => {
     expect(removed).toEqual([{ exerciseId: exercise.id }, { exerciseId: exercise.id }]);
   });
 
-  function touch(target: HTMLElement, type: 'touchstart' | 'touchend', x: number, y: number) {
+  function touch(
+    target: HTMLElement,
+    type: 'touchstart' | 'touchmove' | 'touchend',
+    x: number,
+    y: number,
+  ) {
     const event = new Event(type, { bubbles: true, cancelable: true });
     Object.defineProperty(event, 'touches', { value: [{ clientX: x, clientY: y }] });
     target.dispatchEvent(event);
@@ -269,5 +274,61 @@ describe('ExerciseTracker session actions', () => {
     expect(root.querySelector('button[title="Remove exercise"]')).not.toBeNull();
     expect(root.querySelector('[data-testid="exercise-actions"]')).toBeNull();
     expect(root.textContent).not.toContain('Replace');
+    expect(root.querySelector('a[data-testid="exercise-name"]')).not.toBeNull();
+  });
+
+  it('keeps the exercise name as a link on a desktop pointer', () => {
+    const fixture = render(true, true);
+    const link = fixture.nativeElement.querySelector(
+      'a[data-testid="exercise-name"]',
+    ) as HTMLAnchorElement;
+
+    expect(link).not.toBeNull();
+    expect(link.getAttribute('href')).toBe('/exercise/7');
+    expect(link.querySelector('h3')?.textContent).toContain('Bench Press');
+  });
+
+  it('opens the exercise from a tap or Enter, and not from a long-press or swipe', () => {
+    const fixture = render(true, false);
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const root = fixture.nativeElement as HTMLElement;
+    const name = root.querySelector('[data-testid="exercise-name"]') as HTMLElement;
+    const header = root.querySelector('[data-testid="exercise-card-header"]') as HTMLElement;
+
+    expect(name.tagName).not.toBe('A');
+    expect(name.getAttribute('role')).toBe('link');
+    expect(name.tabIndex).toBe(0);
+    expect(header.className).toContain('select-none');
+    expect(header.className).toContain('no-touch-callout');
+    expect(root.querySelector('a[data-testid="exercise-name"]')).toBeNull();
+
+    name.click();
+    expect(navigate).toHaveBeenCalledWith(['/exercise', 7]);
+
+    navigate.mockClear();
+    name.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }),
+    );
+    expect(navigate).toHaveBeenCalledWith(['/exercise', 7]);
+
+    navigate.mockClear();
+    vi.useFakeTimers();
+    try {
+      touch(name, 'touchstart', 40, 20);
+      vi.advanceTimersByTime(LONG_PRESS_MS);
+      name.click();
+      expect(navigate).not.toHaveBeenCalled();
+    } finally {
+      vi.useRealTimers();
+    }
+
+    navigate.mockClear();
+    const tray = root.querySelector('[data-testid="swipe-actions"]') as HTMLElement;
+    Object.defineProperty(tray, 'offsetWidth', { configurable: true, value: 176 });
+    touch(name, 'touchstart', 180, 20);
+    touch(name, 'touchmove', 40, 20);
+    touch(name, 'touchend', 40, 20);
+    name.click();
+    expect(navigate).not.toHaveBeenCalled();
   });
 });

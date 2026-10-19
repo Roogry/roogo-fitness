@@ -10,7 +10,7 @@ import {
   viewChildren,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideTrash2,
@@ -109,6 +109,7 @@ export class ExerciseTracker implements OnDestroy {
 
   private readonly viewport = inject(VisualViewportService);
   private readonly pointerMode = inject(PointerModeService);
+  private readonly router = inject(Router);
   readonly isDesktopPointer = this.pointerMode.isDesktop;
   readonly actionsMenuOpen = signal(false);
   private readonly isCardPressed = signal(false);
@@ -467,6 +468,16 @@ export class ExerciseTracker implements OnDestroy {
   onTouchMenuVisibleChange(isOpen: boolean) {
     if (!this.swipeEnabled()) return;
     this.actionsMenuOpen.set(isOpen);
+  }
+
+  onExerciseNameClick() {
+    void this.router.navigate(['/exercise', this.trackedExercise().exercise.id]);
+  }
+
+  onExerciseNameKeydown(event: KeyboardEvent) {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    this.onExerciseNameClick();
   }
 
   onActionsLongPress() {
