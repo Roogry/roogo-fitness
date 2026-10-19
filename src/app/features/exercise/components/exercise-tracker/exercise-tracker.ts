@@ -7,6 +7,7 @@ import {
   output,
   signal,
   inject,
+  viewChild,
   viewChildren,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -21,6 +22,7 @@ import {
   lucideArrowLeftRight,
 } from '@ng-icons/lucide';
 import { PointerModeService } from '@/core/services/pointer-mode.service';
+import { ExerciseContextMenuService } from '@/features/exercise/services/exercise-context-menu.service';
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/zard/popover';
@@ -33,9 +35,6 @@ import {
   adjustWeight,
   repsChips,
 } from '../keyboard-helper-bar/keyboard-helper-bar';
-
-/** Matches `--duration-spring` in styles.css. */
-const CARD_POP_MS = 300;
 
 /**
  * A component that tracks an active exercise session, allowing the user to log sets, weight, and reps.
@@ -110,41 +109,23 @@ export class ExerciseTracker implements OnDestroy {
   private readonly viewport = inject(VisualViewportService);
   private readonly pointerMode = inject(PointerModeService);
   private readonly router = inject(Router);
+  private readonly contextMenu = inject(ExerciseContextMenuService);
+  private readonly exerciseCard = viewChild(ZardCardComponent, { read: ElementRef });
   readonly isDesktopPointer = this.pointerMode.isDesktop;
+  /** Desktop kebab only. The touch menu lives in ExerciseContextMenuService. */
   readonly actionsMenuOpen = signal(false);
-  private readonly isCardPressed = signal(false);
-  private readonly isCardPopping = signal(false);
-  private cardPopTimer: ReturnType<typeof setTimeout> | undefined;
-
-  /**
-   * Keeps the touch menu clear of the session bar. The keyboard offset is added when
-   * the visual viewport has already shrunk, so the menu flips above instead of under it.
-   */
-  private readonly contextMenuClearancePx = 96;
 
   /** Touch session cards reveal actions by swipe. Desktop keeps the visible menu. */
   readonly swipeEnabled = computed(
     () => this.editable() && this.sessionActions() && !this.isDesktopPointer(),
   );
-  readonly menuViewportMargin = computed(
-    () => this.contextMenuClearancePx + Math.max(0, this.keyboardOffset()),
-  );
-  /** Press, pop, or an open touch menu. The swipe frame lets the card draw past its box. */
-  readonly cardIsLifted = computed(
-    () =>
-      this.isCardPressed() ||
-      this.isCardPopping() ||
-      (this.swipeEnabled() && this.actionsMenuOpen()),
-  );
-  readonly cardMotionClass = computed(() => {
-    const classes: string[] = [];
-    if (this.isCardPressed()) classes.push('long-press-squeeze');
-    if (this.isCardPopping()) classes.push('long-press-pop');
-    if (this.swipeEnabled() && this.actionsMenuOpen()) {
-      classes.push('border-2', 'border-lime', 'ring-2', 'ring-lime');
-    }
-    return classes.join(' ');
+  readonly longPressEnabled = computed(() => {
+    if (!this.swipeEnabled()) return false;
+    return this.contextMenu.canPress(this.trackedExercise().exercise.id);
   });
+  readonly isCardPressed = computed(
+    () => this.contextMenu.pressedExerciseId() === this.trackedExercise().exercise.id,
+  );
   readonly keyboardOffset = this.viewport.keyboardOffset;
   readonly visualBottom = this.viewport.visualBottom;
 
@@ -188,7 +169,9 @@ export class ExerciseTracker implements OnDestroy {
 
   ngOnDestroy() {
     this.destroyed = true;
-    if (this.cardPopTimer !== undefined) clearTimeout(this.cardPopTimer);
+    const exerciseId = this.trackedExercise().exercise.id;
+    this.contextMenu.release(exerciseId);
+    if (this.contextMenu.openExerciseId() === exerciseId) this.contextMenu.close();
   }
 
   onFieldFocus(set: LoggedSet, field: 'weight' | 'reps', event: Event) {
@@ -462,12 +445,13 @@ export class ExerciseTracker implements OnDestroy {
   }
 
   onCardPressing(isPressed: boolean) {
-    this.isCardPressed.set(isPressed);
+    const exerciseId = this.trackedExercise().exercise.id;
+    if (isPressed) this.contextMenu.press(exerciseId);
+    else this.contextMenu.release(exerciseId);
   }
 
-  onTouchMenuVisibleChange(isOpen: boolean) {
-    if (!this.swipeEnabled()) return;
-    this.actionsMenuOpen.set(isOpen);
+  onSwipeStart() {
+    this.contextMenu.close();
   }
 
   onExerciseNameClick() {
@@ -481,11 +465,14 @@ export class ExerciseTracker implements OnDestroy {
   }
 
   onActionsLongPress() {
-    this.isCardPressed.set(false);
-    this.isCardPopping.set(true);
-    this.actionsMenuOpen.set(true);
-    if (this.cardPopTimer !== undefined) clearTimeout(this.cardPopTimer);
-    this.cardPopTimer = setTimeout(() => this.isCardPopping.set(false), CARD_POP_MS);
+    const card = this.exerciseCard()?.nativeElement as HTMLElement | undefined;
+    if (!card) return;
+    this.contextMenu.open({
+      exerciseId: this.trackedExercise().exercise.id,
+      card,
+      onReplace: () => this.onReplaceClick(),
+      onDelete: () => this.onDeleteClick(),
+    });
   }
 
   onReplaceClick() {

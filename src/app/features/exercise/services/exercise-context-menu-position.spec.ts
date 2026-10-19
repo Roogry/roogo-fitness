@@ -3,7 +3,7 @@ import {
   menuSpringShift,
   springMenuPositions,
   springViewportMargin,
-} from './popover.component';
+} from './exercise-context-menu-position';
 
 describe('menuSpringOrigin', () => {
   it('scales from the edge that touches the card', () => {

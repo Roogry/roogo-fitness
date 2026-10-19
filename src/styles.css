@@ -268,6 +268,24 @@
   animation: menu-pop-out var(--duration-menu-out) ease-out both;
 }
 
+/* Dim only. A backdrop blur on this layer stutters iPhone scrolling. */
+.cdk-overlay-backdrop.exercise-context-backdrop {
+  background-color: color-mix(in srgb, var(--ink) 40%, transparent);
+  transition-duration: var(--duration-menu-out);
+}
+
+.exercise-context-stage {
+  overflow: visible;
+}
+
+.context-card-enter {
+  animation: long-press-pop var(--duration-spring) var(--ease-spring) both;
+}
+
+.context-menu-leave {
+  animation: context-menu-leave var(--duration-menu-out) ease-out both;
+}
+
 /* The pane plays the spring. The popover's own enter/leave zoom would fight it. */
 .menu-pop-in .animate-in,
 .menu-pop-in .animate-out,
@@ -334,6 +352,17 @@
   }
 }
 
+@keyframes context-menu-leave {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(var(--scale-menu-start));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .long-press-squeeze,
   .long-press-pop {
@@ -348,6 +377,18 @@
 
   .menu-pop-out {
     animation: menu-fade-out var(--duration-menu-out) ease-out both;
+  }
+
+  .context-card-enter {
+    animation: menu-fade-in var(--duration-menu-out) ease-out both;
+  }
+
+  .context-menu-leave {
+    animation: menu-fade-out var(--duration-menu-out) ease-out both;
+  }
+
+  .cdk-overlay-backdrop.exercise-context-backdrop {
+    transition: none;
   }
 }
 

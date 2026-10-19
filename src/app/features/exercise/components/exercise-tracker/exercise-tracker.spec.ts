@@ -1,4 +1,4 @@
-import { signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { vi } from 'vitest';
@@ -6,6 +6,10 @@ import { PointerModeService } from '@/core/services/pointer-mode.service';
 import { provideZard } from '@/core/provider/providezard';
 import { LONG_PRESS_MS } from '@/shared/directives/long-press.directive';
 import { Exercise, LoggedExercise, LoggedSet } from '@/shared/models';
+import {
+  ExerciseContextMenuService,
+  MENU_LEAVE_MS,
+} from '../../services/exercise-context-menu.service';
 import { ExerciseTracker } from './exercise-tracker';
 
 const exercise: Exercise = {
@@ -148,7 +152,13 @@ describe('ExerciseTracker weight Enter focus', () => {
 });
 
 describe('ExerciseTracker session actions', () => {
-  afterEach(() => {
+  afterEach(async () => {
+    TestBed.inject(ExerciseContextMenuService).close();
+    await new Promise((resolve) => setTimeout(resolve, MENU_LEAVE_MS + 40));
+    document.querySelector('.cdk-overlay-container')?.remove();
+    document.documentElement.classList.remove('cdk-global-scrollblock');
+    document.documentElement.style.top = '';
+    document.documentElement.style.left = '';
     TestBed.resetTestingModule();
   });
 
@@ -209,7 +219,7 @@ describe('ExerciseTracker session actions', () => {
     expect(reveal.textContent).toContain('Delete');
   });
 
-  it('emits delete from the swipe button and from the shared actions menu', () => {
+  it('emits delete from the swipe button and from the long-press menu', () => {
     const fixture = render(true, false);
     const removed: { exerciseId: number }[] = [];
     fixture.componentInstance.exerciseRemoved.subscribe((event) => removed.push(event));
@@ -218,7 +228,16 @@ describe('ExerciseTracker session actions', () => {
       '[data-testid="swipe-actions"] button[aria-label="Delete"]',
     ) as HTMLButtonElement;
     swipeDelete.click();
-    fixture.componentInstance.onDeleteClick();
+
+    const actions = fixture.nativeElement.querySelector(
+      '[data-testid="exercise-actions"]',
+    ) as HTMLButtonElement;
+    actions.click();
+    fixture.detectChanges();
+    const menuDelete = document.querySelector(
+      '[data-testid="exercise-context-delete"]',
+    ) as HTMLButtonElement;
+    menuDelete.click();
 
     expect(removed).toEqual([{ exerciseId: exercise.id }, { exerciseId: exercise.id }]);
   });
@@ -234,7 +253,7 @@ describe('ExerciseTracker session actions', () => {
     target.dispatchEvent(event);
   }
 
-  it('squeezes the card while held, then pops it and outlines it when the menu opens', () => {
+  it('squeezes the card while held, then lifts a copy above a backdrop', () => {
     const fixture = render(true, false);
     vi.useFakeTimers();
     try {
@@ -253,14 +272,22 @@ describe('ExerciseTracker session actions', () => {
       vi.advanceTimersByTime(LONG_PRESS_MS);
       fixture.detectChanges();
 
-      expect(card.className).toContain('long-press-pop');
       expect(card.className).not.toContain('long-press-squeeze');
-      expect(card.className).toContain('border-lime');
-      expect(card.className).toContain('ring-2');
-      expect(card.className).toContain('ring-lime');
+      expect(card.className).not.toContain('long-press-pop');
+      expect(card.className).not.toContain('border-lime');
 
-      fixture.componentInstance.actionsMenuOpen.set(false);
-      fixture.detectChanges();
+      const lifted = document.querySelector('[data-testid="exercise-context-card"]') as HTMLElement;
+      expect(lifted.className).toContain('context-card-enter');
+      expect(lifted.className).toContain('border-lime');
+      expect(lifted.className).toContain('ring-2');
+      expect(lifted.className).toContain('ring-lime');
+      expect(document.querySelector('[data-testid="exercise-context-menu"]')).not.toBeNull();
+      expect(document.querySelectorAll('.exercise-context-backdrop')).toHaveLength(1);
+
+      (document.querySelector('.exercise-context-backdrop') as HTMLElement).click();
+      expect(TestBed.inject(ExerciseContextMenuService).openExerciseId()).toBeNull();
+      vi.advanceTimersByTime(MENU_LEAVE_MS);
+      expect(document.querySelector('[data-testid="exercise-context-card"]')).toBeNull();
       expect(card.className).not.toContain('border-lime');
     } finally {
       vi.useRealTimers();
@@ -331,4 +358,99 @@ describe('ExerciseTracker session actions', () => {
     name.click();
     expect(navigate).not.toHaveBeenCalled();
   });
+
+  it('presses one card at a time and closes that menu when a swipe starts', () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [TwoCards],
+      providers: [
+        provideRouter([]),
+        provideZard(),
+        { provide: PointerModeService, useValue: { isDesktop: signal(false) } },
+      ],
+    });
+    const fixture = TestBed.createComponent(TwoCards);
+    fixture.detectChanges();
+    vi.useFakeTimers();
+    try {
+      const headers = fixture.nativeElement.querySelectorAll(
+        '[data-testid="exercise-card-header"]',
+      ) as NodeListOf<HTMLElement>;
+      const cards = fixture.nativeElement.querySelectorAll(
+        '[data-testid="exercise-card"]',
+      ) as NodeListOf<HTMLElement>;
+      const menu = TestBed.inject(ExerciseContextMenuService);
+
+      touch(headers[0], 'touchstart', 40, 20);
+      fixture.detectChanges();
+      expect(menu.pressedExerciseId()).toBe(7);
+      expect(cards[0].className).toContain('long-press-squeeze');
+
+      touch(headers[1], 'touchstart', 40, 80);
+      fixture.detectChanges();
+      expect(menu.pressedExerciseId()).toBe(7);
+      expect(cards[1].className).not.toContain('long-press-squeeze');
+      expect(menu.canPress(8)).toBe(false);
+
+      vi.advanceTimersByTime(LONG_PRESS_MS);
+      fixture.detectChanges();
+      expect(menu.openExerciseId()).toBe(7);
+      expect(document.querySelectorAll('.exercise-context-backdrop')).toHaveLength(1);
+
+      const secondActions = fixture.nativeElement.querySelectorAll(
+        '[data-testid="exercise-actions"]',
+      )[1] as HTMLButtonElement;
+      secondActions.click();
+      fixture.detectChanges();
+      expect(menu.openExerciseId()).toBe(8);
+      expect(document.querySelectorAll('.exercise-context-backdrop')).toHaveLength(1);
+
+      const underClicks = { count: 0 };
+      const under = fixture.nativeElement.querySelector(
+        '[data-testid="under"]',
+      ) as HTMLButtonElement;
+      under.addEventListener('click', () => {
+        underClicks.count += 1;
+      });
+      (document.querySelector('.exercise-context-backdrop') as HTMLElement).click();
+      expect(underClicks.count).toBe(0);
+      expect(menu.openExerciseId()).toBeNull();
+
+      vi.advanceTimersByTime(MENU_LEAVE_MS);
+      for (const tray of fixture.nativeElement.querySelectorAll('[data-testid="swipe-actions"]')) {
+        Object.defineProperty(tray, 'offsetWidth', { configurable: true, value: 176 });
+      }
+      secondActions.click();
+      fixture.detectChanges();
+      expect(menu.openExerciseId()).toBe(8);
+
+      touch(headers[1], 'touchstart', 180, 20);
+      touch(headers[1], 'touchmove', 40, 20);
+      fixture.detectChanges();
+      expect(menu.openExerciseId()).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });
+
+@Component({
+  imports: [ExerciseTracker],
+  template: `
+    <app-exercise-tracker [trackedExercise]="first" [editable]="true" [sessionActions]="true" />
+    <app-exercise-tracker [trackedExercise]="second" [editable]="true" [sessionActions]="true" />
+    <button type="button" data-testid="under">Under</button>
+  `,
+})
+class TwoCards {
+  readonly first: LoggedExercise = {
+    id: 7,
+    exercise: { id: 7, name: 'Bench Press', media: [] },
+    sets: [makeSet(10, 1)],
+  };
+  readonly second: LoggedExercise = {
+    id: 8,
+    exercise: { id: 8, name: 'Row', media: [] },
+    sets: [makeSet(20, 1)],
+  };
+}

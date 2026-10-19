@@ -1,6 +1,7 @@
 import {
   booleanAttribute,
   Directive,
+  effect,
   ElementRef,
   inject,
   input,
@@ -77,6 +78,12 @@ export class LongPressDirective implements OnDestroy {
   };
 
   constructor() {
+    // Another card taking the press disables this one. Drop the timer so it cannot still fire.
+    effect(() => {
+      if (this.enabled()) return;
+      this.clearTimer();
+    });
+
     const element = this.host.nativeElement;
     element.addEventListener('touchstart', this.onTouchStart, { passive: true });
     element.addEventListener('touchmove', this.onTouchMove, { passive: true });

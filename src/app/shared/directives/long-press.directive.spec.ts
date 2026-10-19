@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { LONG_PRESS_CANCEL_PX, LONG_PRESS_MS, LongPressDirective } from './long-press.directive';
@@ -97,4 +97,39 @@ describe('LongPressDirective', () => {
     expect(fixture.componentInstance.fires).toBe(0);
     expect(vibrate).not.toHaveBeenCalled();
   });
+
+  it('cancels a press that is still waiting when it becomes disabled', () => {
+    TestBed.resetTestingModule();
+    const toggle = TestBed.createComponent(ToggleHost);
+    toggle.detectChanges();
+    const title = toggle.nativeElement.querySelector('[data-testid="title"]') as HTMLElement;
+
+    touch('touchstart', title, 20, 20);
+    expect(toggle.componentInstance.presses).toEqual([true]);
+
+    toggle.componentInstance.on.set(false);
+    toggle.detectChanges();
+    vi.advanceTimersByTime(LONG_PRESS_MS);
+
+    expect(toggle.componentInstance.fires).toBe(0);
+    expect(toggle.componentInstance.presses).toEqual([true, false]);
+  });
 });
+
+@Component({
+  imports: [LongPressDirective],
+  template: `
+    <div
+      [appLongPress]="on()"
+      (longPress)="fires = fires + 1"
+      (pressingChange)="presses.push($event)"
+    >
+      <span data-testid="title">Bench</span>
+    </div>
+  `,
+})
+class ToggleHost {
+  readonly on = signal(true);
+  fires = 0;
+  presses: boolean[] = [];
+}

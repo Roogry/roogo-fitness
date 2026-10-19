@@ -9,6 +9,7 @@ import {
   Injectable,
   input,
   OnDestroy,
+  output,
   signal,
   viewChild,
 } from '@angular/core';
@@ -101,17 +102,12 @@ export class SwipeActionsGroup {
     class: 'block',
   },
   template: `
-    <div
-      class="relative"
-      [class.overflow-hidden]="enabled() && clip()"
-      [class.rounded-2xl]="enabled()"
-    >
+    <div class="relative" [class.overflow-hidden]="enabled()" [class.rounded-2xl]="enabled()">
       <div
         #actions
         data-testid="swipe-actions"
         class="absolute inset-y-0 right-0 z-0 flex items-center"
         [class.hidden]="!enabled()"
-        [class.invisible]="enabled() && !clip() && !open()"
         [attr.inert]="open() ? null : ''"
         [attr.aria-hidden]="open() ? null : 'true'"
         (click)="close()"
@@ -140,8 +136,8 @@ export class SwipeActions implements OnDestroy {
   private readonly actions = viewChild<ElementRef<HTMLElement>>('actions');
 
   readonly enabled = input(false, { transform: booleanAttribute });
-  /** False while the card scales for a long-press, so the bounce and ring are not clipped. */
-  readonly clip = input(true);
+  /** The drag has locked horizontal, before it snaps open or closed. */
+  readonly swipeStart = output<void>();
 
   readonly open = signal(false);
   readonly dragging = signal(false);
@@ -274,6 +270,7 @@ export class SwipeActions implements OnDestroy {
       this.axis = nextSwipeAxis(dx, dy);
       if (this.axis !== 'horizontal') return;
       this.dragging.set(true);
+      this.swipeStart.emit();
     }
 
     if (this.axis !== 'horizontal') return;

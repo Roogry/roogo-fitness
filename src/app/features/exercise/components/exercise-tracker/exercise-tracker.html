@@ -1,4 +1,4 @@
-<app-swipe-actions [enabled]="swipeEnabled()" [clip]="!cardIsLifted()">
+<app-swipe-actions [enabled]="swipeEnabled()" (swipeStart)="onSwipeStart()">
   @if (swipeEnabled()) {
     <!-- w-44 is two w-16 captions, the gap, and side padding. Snap uses this measured width. -->
     <div swipe-actions class="flex w-44 items-center justify-center gap-4 px-4">
@@ -32,300 +32,291 @@
       </div>
     </div>
   }
-  <!-- The wrapper is the menu anchor. Scaling the card must not move that box. -->
-  <div
-    zPopover
-    [zTrigger]="null"
-    zPlacement="bottom"
-    zMotion="spring"
-    [zViewportMargin]="menuViewportMargin()"
-    [zContent]="exerciseActionsMenu"
-    [zVisible]="swipeEnabled() && actionsMenuOpen()"
-    (zVisibleChange)="onTouchMenuVisibleChange($event)"
+  <z-card
+    data-testid="exercise-card"
+    [zLessPadding]="true"
+    [class.long-press-squeeze]="isCardPressed()"
   >
-    <z-card data-testid="exercise-card" [zLessPadding]="true" [class]="cardMotionClass()">
-      <div class="pt-4 px-2 flex flex-col gap-1" [class.pb-4]="!editable()">
-        <!-- Header -->
+    <div class="pt-4 px-2 flex flex-col gap-1" [class.pb-4]="!editable()">
+      <!-- Header -->
+      <div
+        class="pl-2 flex items-center gap-4 pb-2"
+        data-testid="exercise-card-header"
+        [class.select-none]="swipeEnabled()"
+        [class.no-touch-callout]="swipeEnabled()"
+        [appLongPress]="longPressEnabled()"
+        (pressingChange)="onCardPressing($event)"
+        (longPress)="onActionsLongPress()"
+      >
         <div
-          class="pl-2 flex items-center gap-4 pb-2"
-          data-testid="exercise-card-header"
-          [class.select-none]="swipeEnabled()"
-          [class.no-touch-callout]="swipeEnabled()"
-          [appLongPress]="swipeEnabled()"
-          (pressingChange)="onCardPressing($event)"
-          (longPress)="onActionsLongPress()"
+          class="hidden sm:flex h-12 w-12 rounded-full overflow-hidden bg-muted flex items-center justify-center flex-shrink-0 group-hover:opacity-60 transition-opacity"
         >
-          <div
-            class="hidden sm:flex h-12 w-12 rounded-full overflow-hidden bg-muted flex items-center justify-center flex-shrink-0 group-hover:opacity-60 transition-opacity"
-          >
-            @if (trackedExercise().exercise.media && trackedExercise().exercise.media.length > 0) {
-              <img
-                [src]="trackedExercise().exercise.media[0].media_url"
-                [alt]="trackedExercise().exercise.name"
-                class="h-full w-full object-cover"
-              />
-            } @else {
-              <ng-icon name="lucideDumbbell" class="h-6 w-6 text-muted-foreground"></ng-icon>
-            }
-          </div>
+          @if (trackedExercise().exercise.media && trackedExercise().exercise.media.length > 0) {
+            <img
+              [src]="trackedExercise().exercise.media[0].media_url"
+              [alt]="trackedExercise().exercise.name"
+              class="h-full w-full object-cover"
+            />
+          } @else {
+            <ng-icon name="lucideDumbbell" class="h-6 w-6 text-muted-foreground"></ng-icon>
+          }
+        </div>
 
-          <div class="flex-1 flex flex-col min-w-0">
-            @if (swipeEnabled()) {
-              <!-- Not an anchor: iOS previews links on long-press and steals the gesture. -->
-              <h3 class="font-bold text-lg sm:text-xl text-foreground leading-tight truncate">
-                <span
-                  role="link"
-                  tabindex="0"
-                  data-testid="exercise-name"
-                  class="no-touch-callout"
-                  (click)="onExerciseNameClick()"
-                  (keydown)="onExerciseNameKeydown($event)"
-                >
-                  {{ trackedExercise().exercise.name }}
-                </span>
-              </h3>
-            } @else {
-              <a
-                [routerLink]="['/exercise', trackedExercise().exercise.id]"
-                class="group/title"
+        <div class="flex-1 flex flex-col min-w-0">
+          @if (swipeEnabled()) {
+            <!-- Not an anchor: iOS previews links on long-press and steals the gesture. -->
+            <h3 class="font-bold text-lg sm:text-xl text-foreground leading-tight truncate">
+              <span
+                role="link"
+                tabindex="0"
                 data-testid="exercise-name"
+                class="no-touch-callout"
+                (click)="onExerciseNameClick()"
+                (keydown)="onExerciseNameKeydown($event)"
               >
-                <h3
-                  class="font-bold text-lg sm:text-xl text-foreground group-hover/title:text-forest transition-colors leading-tight truncate"
-                >
-                  {{ trackedExercise().exercise.name }}
-                </h3>
-              </a>
-            }
-
-            @if (targetSummary(); as summary) {
-              <p
-                class="text-xs sm:text-sm font-mono text-muted-foreground mt-1 lowercase tracking-tight"
+                {{ trackedExercise().exercise.name }}
+              </span>
+            </h3>
+          } @else {
+            <a
+              [routerLink]="['/exercise', trackedExercise().exercise.id]"
+              class="group/title"
+              data-testid="exercise-name"
+            >
+              <h3
+                class="font-bold text-lg sm:text-xl text-foreground group-hover/title:text-forest transition-colors leading-tight truncate"
               >
-                {{ summary }}
-              </p>
-            }
-          </div>
+                {{ trackedExercise().exercise.name }}
+              </h3>
+            </a>
+          }
 
-          <div class="flex items-center gap-1.5 flex-shrink-0">
-            @if (editable() && sessionActions()) {
-              @if (isDesktopPointer()) {
-                <button
-                  type="button"
-                  z-button
-                  zType="ghost"
-                  zSize="icon"
-                  zShape="circle"
-                  zPopover
-                  zPlacement="bottomLeft"
-                  [zContent]="exerciseActionsMenu"
-                  [zVisible]="actionsMenuOpen()"
-                  (zVisibleChange)="actionsMenuOpen.set($event)"
-                  data-testid="exercise-actions"
-                  aria-haspopup="menu"
-                  aria-label="Exercise actions"
-                  class="text-muted-foreground"
-                >
-                  <ng-icon name="lucideEllipsisVertical" class="size-5"></ng-icon>
-                </button>
-              } @else {
-                <button
-                  type="button"
-                  class="sr-only"
-                  data-testid="exercise-actions"
-                  aria-haspopup="menu"
-                  (click)="onActionsLongPress()"
-                >
-                  Exercise actions
-                </button>
-              }
-            } @else if (editable()) {
+          @if (targetSummary(); as summary) {
+            <p
+              class="text-xs sm:text-sm font-mono text-muted-foreground mt-1 lowercase tracking-tight"
+            >
+              {{ summary }}
+            </p>
+          }
+        </div>
+
+        <div class="flex items-center gap-1.5 flex-shrink-0">
+          @if (editable() && sessionActions()) {
+            @if (isDesktopPointer()) {
               <button
+                type="button"
                 z-button
                 zType="ghost"
                 zSize="icon"
                 zShape="circle"
-                (click)="removeExercise()"
-                class="text-muted-foreground/60 hover:text-destructive hover:bg-destructive/10 transition-colors"
-                title="Remove exercise"
+                zPopover
+                zPlacement="bottomLeft"
+                [zContent]="exerciseActionsMenu"
+                [zVisible]="actionsMenuOpen()"
+                (zVisibleChange)="actionsMenuOpen.set($event)"
+                data-testid="exercise-actions"
+                aria-haspopup="menu"
+                aria-label="Exercise actions"
+                class="text-muted-foreground"
               >
-                <ng-icon name="lucideTrash2" class="size-4"></ng-icon>
+                <ng-icon name="lucideEllipsisVertical" class="size-5"></ng-icon>
+              </button>
+            } @else {
+              <button
+                type="button"
+                class="sr-only"
+                data-testid="exercise-actions"
+                aria-haspopup="menu"
+                (click)="onActionsLongPress()"
+              >
+                Exercise actions
               </button>
             }
-          </div>
-        </div>
-
-        <!-- Sets List Header -->
-        @if (trackedExercise().sets.length > 0) {
-          <div
-            class="grid grid-cols-[48px_56px_56px_1fr] sm:grid-cols-[56px_80px_80px_1fr] items-center gap-2 py-1 text-[11px] font-semibold text-muted-foreground/80 uppercase tracking-widest select-none"
-          >
-            <div class="text-center pl-1">SET</div>
-            <div class="text-center">WEIGHT</div>
-            <div class="text-center">REPS</div>
-            @if (editable()) {
-              <div class="text-end pr-14 sm:pr-14.5">DONE</div>
-            }
-          </div>
-        }
-
-        <!-- Sets List Rows -->
-        <div class="flex flex-col gap-2">
-          @for (set of trackedExercise().sets; track set.id) {
-            <div
-              class="group grid grid-cols-[48px_56px_56px_1fr] sm:grid-cols-[56px_80px_80px_1fr] items-center gap-2 py-1 rounded-2xl transition-all relative border"
-              [class.bg-lime-50/80]="!!set.completed_at"
-              [class.border-lime-200/50]="!!set.completed_at"
-              [class.dark:bg-lime-950/25]="!!set.completed_at"
-              [class.dark:border-lime-900/40]="!!set.completed_at"
-              [class.border-transparent]="!set.completed_at"
-              [class.hover:bg-muted/30]="!set.completed_at"
+          } @else if (editable()) {
+            <button
+              z-button
+              zType="ghost"
+              zSize="icon"
+              zShape="circle"
+              (click)="removeExercise()"
+              class="text-muted-foreground/60 hover:text-destructive hover:bg-destructive/10 transition-colors"
+              title="Remove exercise"
             >
-              <!-- SET column -->
-              <div class="flex justify-center items-center">
-                @if (editable()) {
-                  <button
-                    type="button"
-                    (click)="toggleWarmup(set)"
-                    title="Tap to toggle Warm-up (W) / Working set"
-                    class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm transition-transform active:scale-95 cursor-pointer select-none"
-                    [class]="
-                      set.is_warmup
-                        ? 'bg-[#FEF3C7] text-[#D97706] dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300/50'
-                        : 'bg-muted/80 text-foreground/80 dark:bg-neutral-800 dark:text-neutral-200 border border-border/40'
-                    "
-                  >
-                    {{ getSetBadgeLabel(set) }}
-                  </button>
-                } @else {
-                  <span
-                    class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm select-none"
-                    [class]="
-                      set.is_warmup
-                        ? 'bg-[#FEF3C7] text-[#D97706] dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300/50'
-                        : 'bg-muted/80 text-foreground/80 dark:bg-neutral-800 dark:text-neutral-200 border border-border/40'
-                    "
-                  >
-                    {{ getSetBadgeLabel(set) }}
-                  </span>
-                }
-              </div>
-
-              <!-- WEIGHT column -->
-              <div class="flex flex-col items-center justify-center">
-                @if (editable()) {
-                  <input
-                    type="text"
-                    pattern="[0-9]*"
-                    inputmode="decimal"
-                    enterkeyhint="next"
-                    [value]="getWeightValue(set)"
-                    (keydown.enter)="onWeightEnter(set, $event)"
-                    (input)="onWeightInput(set, $event)"
-                    (focus)="onFieldFocus(set, 'weight', $event)"
-                    (blur)="onFieldBlur()"
-                    (keypress)="onlyPositiveNumber($event)"
-                    [placeholder]="set.target_weight?.toString() ?? '0'"
-                    class="w-full text-center font-mono font-bold text-base sm:text-lg transition-colors leading-tight focus:outline-none"
-                    [class.text-destructive!]="
-                      isSetInvalid(set.id) &&
-                      (!getEffectiveWeight(set) || getEffectiveWeight(set)! <= 0)
-                    "
-                  />
-                } @else {
-                  <span
-                    class="font-mono font-bold text-base sm:text-lg text-foreground leading-tight"
-                  >
-                    {{ set.weight_lifted ?? set.target_weight ?? '-' }}
-                  </span>
-                }
-                <span
-                  class="text-[11px] font-medium text-muted-foreground leading-none mt-0.5 select-none"
-                  >kg</span
-                >
-              </div>
-
-              <!-- REPS column -->
-              <div class="flex flex-col items-center justify-center">
-                @if (editable()) {
-                  <input
-                    #repsInput
-                    type="text"
-                    inputmode="numeric"
-                    pattern="[0-9]*"
-                    enterkeyhint="done"
-                    [attr.data-set-id]="set.id"
-                    [value]="getRepsValue(set)"
-                    (input)="onRepsInput(set, $event)"
-                    (focus)="onFieldFocus(set, 'reps', $event)"
-                    (blur)="onFieldBlur()"
-                    (keypress)="onlyPositiveNumber($event)"
-                    [placeholder]="set.target_reps?.toString() ?? '0'"
-                    class="w-full text-center font-mono font-bold text-base sm:text-lg bg-transparent transition-colors leading-tight focus:outline-none"
-                    [class.text-destructive!]="
-                      isSetInvalid(set.id) &&
-                      (!getEffectiveReps(set) || getEffectiveReps(set)! <= 0)
-                    "
-                  />
-                } @else {
-                  <span
-                    class="font-mono font-bold text-base sm:text-lg text-foreground leading-tight"
-                  >
-                    {{ set.reps_completed ?? set.target_reps ?? '-' }}
-                  </span>
-                }
-                <span
-                  class="text-[11px] font-medium text-muted-foreground leading-none mt-0.5 select-none"
-                  >reps</span
-                >
-              </div>
-
-              <!-- DONE column -->
-              @if (editable()) {
-                <div class="flex gap-2 justify-end items-center relative">
-                  <button
-                    type="button"
-                    (click)="toggleCompleted(set)"
-                    class="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all active:scale-95 cursor-pointer select-none"
-                    [class]="
-                      set.completed_at
-                        ? 'border-2 border-neutral-900 dark:border-white bg-[#BEF264] text-neutral-900 shadow-sm'
-                        : isSetInvalid(set.id)
-                          ? 'border-2 border-destructive bg-destructive/10 text-destructive'
-                          : 'border-2 border-neutral-300 dark:border-neutral-700 bg-card hover:border-neutral-400 text-neutral-400 dark:text-neutral-500'
-                    "
-                    [title]="set.completed_at ? 'Completed! Tap to undo' : 'Tap to mark as done'"
-                  >
-                    <ng-icon name="lucideCheck" class="size-5 stroke-[2.5]"></ng-icon>
-                  </button>
-
-                  <button
-                    z-button
-                    zType="ghost"
-                    zSize="icon"
-                    zShape="circle"
-                    class="text-destructive hover:bg-destructive/10 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
-                    (click)="removeSet(set.id)"
-                  >
-                    <ng-icon name="lucideTrash2"></ng-icon>
-                  </button>
-                </div>
-              }
-            </div>
+              <ng-icon name="lucideTrash2" class="size-4"></ng-icon>
+            </button>
           }
         </div>
       </div>
 
-      @if (editable()) {
-        <div card-footer class="w-full pt-2 border-t-1 border-border">
-          <button z-button zType="ghost" [zFull]="true" type="button" (click)="onQuickAddSet()">
-            <ng-icon name="lucidePlus" size="24"></ng-icon>
-            <span>Add set</span>
-          </button>
+      <!-- Sets List Header -->
+      @if (trackedExercise().sets.length > 0) {
+        <div
+          class="grid grid-cols-[48px_56px_56px_1fr] sm:grid-cols-[56px_80px_80px_1fr] items-center gap-2 py-1 text-[11px] font-semibold text-muted-foreground/80 uppercase tracking-widest select-none"
+        >
+          <div class="text-center pl-1">SET</div>
+          <div class="text-center">WEIGHT</div>
+          <div class="text-center">REPS</div>
+          @if (editable()) {
+            <div class="text-end pr-14 sm:pr-14.5">DONE</div>
+          }
         </div>
       }
-    </z-card>
-  </div>
+
+      <!-- Sets List Rows -->
+      <div class="flex flex-col gap-2">
+        @for (set of trackedExercise().sets; track set.id) {
+          <div
+            class="group grid grid-cols-[48px_56px_56px_1fr] sm:grid-cols-[56px_80px_80px_1fr] items-center gap-2 py-1 rounded-2xl transition-all relative border"
+            [class.bg-lime-50/80]="!!set.completed_at"
+            [class.border-lime-200/50]="!!set.completed_at"
+            [class.dark:bg-lime-950/25]="!!set.completed_at"
+            [class.dark:border-lime-900/40]="!!set.completed_at"
+            [class.border-transparent]="!set.completed_at"
+            [class.hover:bg-muted/30]="!set.completed_at"
+          >
+            <!-- SET column -->
+            <div class="flex justify-center items-center">
+              @if (editable()) {
+                <button
+                  type="button"
+                  (click)="toggleWarmup(set)"
+                  title="Tap to toggle Warm-up (W) / Working set"
+                  class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm transition-transform active:scale-95 cursor-pointer select-none"
+                  [class]="
+                    set.is_warmup
+                      ? 'bg-[#FEF3C7] text-[#D97706] dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300/50'
+                      : 'bg-muted/80 text-foreground/80 dark:bg-neutral-800 dark:text-neutral-200 border border-border/40'
+                  "
+                >
+                  {{ getSetBadgeLabel(set) }}
+                </button>
+              } @else {
+                <span
+                  class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm select-none"
+                  [class]="
+                    set.is_warmup
+                      ? 'bg-[#FEF3C7] text-[#D97706] dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300/50'
+                      : 'bg-muted/80 text-foreground/80 dark:bg-neutral-800 dark:text-neutral-200 border border-border/40'
+                  "
+                >
+                  {{ getSetBadgeLabel(set) }}
+                </span>
+              }
+            </div>
+
+            <!-- WEIGHT column -->
+            <div class="flex flex-col items-center justify-center">
+              @if (editable()) {
+                <input
+                  type="text"
+                  pattern="[0-9]*"
+                  inputmode="decimal"
+                  enterkeyhint="next"
+                  [value]="getWeightValue(set)"
+                  (keydown.enter)="onWeightEnter(set, $event)"
+                  (input)="onWeightInput(set, $event)"
+                  (focus)="onFieldFocus(set, 'weight', $event)"
+                  (blur)="onFieldBlur()"
+                  (keypress)="onlyPositiveNumber($event)"
+                  [placeholder]="set.target_weight?.toString() ?? '0'"
+                  class="w-full text-center font-mono font-bold text-base sm:text-lg transition-colors leading-tight focus:outline-none"
+                  [class.text-destructive!]="
+                    isSetInvalid(set.id) &&
+                    (!getEffectiveWeight(set) || getEffectiveWeight(set)! <= 0)
+                  "
+                />
+              } @else {
+                <span
+                  class="font-mono font-bold text-base sm:text-lg text-foreground leading-tight"
+                >
+                  {{ set.weight_lifted ?? set.target_weight ?? '-' }}
+                </span>
+              }
+              <span
+                class="text-[11px] font-medium text-muted-foreground leading-none mt-0.5 select-none"
+                >kg</span
+              >
+            </div>
+
+            <!-- REPS column -->
+            <div class="flex flex-col items-center justify-center">
+              @if (editable()) {
+                <input
+                  #repsInput
+                  type="text"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  enterkeyhint="done"
+                  [attr.data-set-id]="set.id"
+                  [value]="getRepsValue(set)"
+                  (input)="onRepsInput(set, $event)"
+                  (focus)="onFieldFocus(set, 'reps', $event)"
+                  (blur)="onFieldBlur()"
+                  (keypress)="onlyPositiveNumber($event)"
+                  [placeholder]="set.target_reps?.toString() ?? '0'"
+                  class="w-full text-center font-mono font-bold text-base sm:text-lg bg-transparent transition-colors leading-tight focus:outline-none"
+                  [class.text-destructive!]="
+                    isSetInvalid(set.id) && (!getEffectiveReps(set) || getEffectiveReps(set)! <= 0)
+                  "
+                />
+              } @else {
+                <span
+                  class="font-mono font-bold text-base sm:text-lg text-foreground leading-tight"
+                >
+                  {{ set.reps_completed ?? set.target_reps ?? '-' }}
+                </span>
+              }
+              <span
+                class="text-[11px] font-medium text-muted-foreground leading-none mt-0.5 select-none"
+                >reps</span
+              >
+            </div>
+
+            <!-- DONE column -->
+            @if (editable()) {
+              <div class="flex gap-2 justify-end items-center relative">
+                <button
+                  type="button"
+                  (click)="toggleCompleted(set)"
+                  class="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all active:scale-95 cursor-pointer select-none"
+                  [class]="
+                    set.completed_at
+                      ? 'border-2 border-neutral-900 dark:border-white bg-[#BEF264] text-neutral-900 shadow-sm'
+                      : isSetInvalid(set.id)
+                        ? 'border-2 border-destructive bg-destructive/10 text-destructive'
+                        : 'border-2 border-neutral-300 dark:border-neutral-700 bg-card hover:border-neutral-400 text-neutral-400 dark:text-neutral-500'
+                  "
+                  [title]="set.completed_at ? 'Completed! Tap to undo' : 'Tap to mark as done'"
+                >
+                  <ng-icon name="lucideCheck" class="size-5 stroke-[2.5]"></ng-icon>
+                </button>
+
+                <button
+                  z-button
+                  zType="ghost"
+                  zSize="icon"
+                  zShape="circle"
+                  class="text-destructive hover:bg-destructive/10 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+                  (click)="removeSet(set.id)"
+                >
+                  <ng-icon name="lucideTrash2"></ng-icon>
+                </button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (editable()) {
+      <div card-footer class="w-full pt-2 border-t-1 border-border">
+        <button z-button zType="ghost" [zFull]="true" type="button" (click)="onQuickAddSet()">
+          <ng-icon name="lucidePlus" size="24"></ng-icon>
+          <span>Add set</span>
+        </button>
+      </div>
+    }
+  </z-card>
 </app-swipe-actions>
 
 <ng-template #exerciseActionsMenu>
