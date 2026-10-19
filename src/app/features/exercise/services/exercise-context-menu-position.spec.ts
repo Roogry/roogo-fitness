@@ -1,8 +1,7 @@
 import {
+  fixedOriginFromVisualRect,
   menuSpringOrigin,
-  menuSpringShift,
-  springMenuPositions,
-  springViewportMargin,
+  placeContextMenu,
 } from './exercise-context-menu-position';
 
 describe('menuSpringOrigin', () => {
@@ -13,25 +12,64 @@ describe('menuSpringOrigin', () => {
   });
 });
 
-describe('menuSpringShift', () => {
-  it('points the gap away from the card', () => {
-    expect(menuSpringShift('top')).toBe('menu-shift-down');
-    expect(menuSpringShift('bottom')).toBe('menu-shift-up');
+describe('fixedOriginFromVisualRect', () => {
+  it('adds the visual viewport offset so a fixed box matches the card', () => {
+    expect(
+      fixedOriginFromVisualRect({ top: 420, left: 16 }, { offsetTop: 47, offsetLeft: 0 }),
+    ).toEqual({ top: 467, left: 16 });
   });
 });
 
-describe('springMenuPositions', () => {
-  it('opens under the card, then flips above, and never docks to the side', () => {
-    const positions = springMenuPositions();
+describe('placeContextMenu', () => {
+  it('opens one gap under the card', () => {
+    const placement = placeContextMenu({
+      cardTop: 420,
+      cardLeft: 16,
+      cardWidth: 358,
+      cardHeight: 180,
+      menuWidth: 200,
+      menuHeight: 96,
+      viewportWidth: 390,
+      viewportHeight: 800,
+      bottomClearance: 96,
+    });
 
-    expect(positions).toHaveLength(2);
-    expect(positions[0]).toMatchObject({ originY: 'bottom', overlayY: 'top', offsetY: 8 });
-    expect(positions[1]).toMatchObject({ originY: 'top', overlayY: 'bottom', offsetY: -8 });
+    expect(placement.placedAbove).toBe(false);
+    expect(placement.top).toBe(608);
+    expect(placement.left).toBe(95);
   });
-});
 
-describe('springViewportMargin', () => {
-  it('keeps the large clearance on the bottom edge only', () => {
-    expect(springViewportMargin(96)).toEqual({ top: 8, bottom: 96, start: 8, end: 8 });
+  it('flips above the card when the session bar leaves no room below', () => {
+    const placement = placeContextMenu({
+      cardTop: 700,
+      cardLeft: 16,
+      cardWidth: 358,
+      cardHeight: 120,
+      menuWidth: 200,
+      menuHeight: 96,
+      viewportWidth: 390,
+      viewportHeight: 844,
+      bottomClearance: 96,
+    });
+
+    expect(placement.placedAbove).toBe(true);
+    expect(placement.top).toBe(596);
+  });
+
+  it('keeps the menu on screen horizontally', () => {
+    const placement = placeContextMenu({
+      cardTop: 100,
+      cardLeft: 300,
+      cardWidth: 80,
+      cardHeight: 40,
+      menuWidth: 200,
+      menuHeight: 40,
+      viewportWidth: 390,
+      viewportHeight: 800,
+      bottomClearance: 96,
+    });
+
+    expect(placement.left).toBe(182);
+    expect(placement.placedAbove).toBe(false);
   });
 });

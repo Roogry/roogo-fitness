@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
+import { fixedOriginFromVisualRect, placeContextMenu } from './exercise-context-menu-position';
 import { ExerciseContextMenuService, MENU_LEAVE_MS } from './exercise-context-menu.service';
 
 @Component({ template: '' })
@@ -144,6 +145,69 @@ describe('ExerciseContextMenuService', () => {
     expect(deleted).toEqual([4]);
   });
 
+  it('places the lifted card on the measured rect when the page is scrolled', async () => {
+    const viewport = fakeVisualViewport();
+    viewport.offsetTop = 47;
+    viewport.offsetLeft = 0;
+    viewport.width = 390;
+    viewport.height = 800;
+    const previousScrollY = window.scrollY;
+    Object.defineProperty(window, 'scrollY', { configurable: true, value: 640 });
+
+    const element = card('Bench');
+    const rect = { top: 420, left: 16, width: 358, height: 180 };
+    element.getBoundingClientRect = () => domRect(rect);
+
+    try {
+      service.open(request(4, element));
+
+      const pane = document.querySelector('.exercise-context-stage') as HTMLElement;
+      expect(pane.style.position).toBe('fixed');
+      expect(pane.style.top).toBe('467px');
+      expect(pane.style.left).toBe('16px');
+      expect(Number.parseFloat(pane.style.top) - viewport.offsetTop).toBe(rect.top);
+      expect(element.style.visibility).toBe('hidden');
+
+      const menuPane = document.querySelector('.exercise-context-menu-pane') as HTMLElement;
+      const menuBox = document.querySelector(
+        '[data-testid="exercise-context-menu"]',
+      ) as HTMLElement;
+      const placement = placeContextMenu({
+        cardTop: rect.top,
+        cardLeft: rect.left,
+        cardWidth: rect.width,
+        cardHeight: rect.height,
+        menuWidth: menuBox.offsetWidth,
+        menuHeight: menuBox.offsetHeight,
+        viewportWidth: viewport.width,
+        viewportHeight: viewport.height,
+        bottomClearance: 96,
+      });
+      const menuFixed = fixedOriginFromVisualRect(placement, viewport);
+      expect(menuPane.style.position).toBe('fixed');
+      expect(menuPane.style.top).toBe(`${menuFixed.top}px`);
+      expect(menuPane.style.left).toBe(`${menuFixed.left}px`);
+      expect(Number.parseFloat(menuPane.style.top) - viewport.offsetTop).toBe(placement.top);
+      expect(menuPane.style.transform).toBe('none');
+      expect(menuPane.className).not.toContain('menu-pop-in');
+      expect(menuPane.style.transition).toBe('none');
+
+      const topBeforeFrame = pane.style.top;
+      const leftBeforeFrame = pane.style.left;
+      await waitForFrame();
+      expect(pane.style.top).toBe(topBeforeFrame);
+      expect(pane.style.left).toBe(leftBeforeFrame);
+      expect(menuBox).not.toBeNull();
+
+      service.close();
+      await wait(MENU_LEAVE_MS + 40);
+      expect(element.style.visibility).toBe('');
+    } finally {
+      Object.defineProperty(window, 'scrollY', { configurable: true, value: previousScrollY });
+      viewport.remove();
+    }
+  });
+
   it('closes when the window or visual viewport actually changes', async () => {
     const viewport = fakeVisualViewport();
     service.open(request(4, card('Bench')));
@@ -184,6 +248,22 @@ function card(name: string): HTMLElement {
   return element;
 }
 
+function domRect(rect: { top: number; left: number; width: number; height: number }): DOMRect {
+  return {
+    top: rect.top,
+    left: rect.left,
+    width: rect.width,
+    height: rect.height,
+    bottom: rect.top + rect.height,
+    right: rect.left + rect.width,
+    x: rect.left,
+    y: rect.top,
+    toJSON() {
+      return {};
+    },
+  } as DOMRect;
+}
+
 function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -199,6 +279,7 @@ function fakeVisualViewport() {
     width: 390,
     height: 800,
     offsetTop: 0,
+    offsetLeft: 0,
     addEventListener(type: string, listener: () => void) {
       const group = listeners.get(type) ?? new Set();
       group.add(listener);

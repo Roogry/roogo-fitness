@@ -7,6 +7,7 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 @Component({
   selector: 'app-exercise-context-menu',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'block w-fit' },
   imports: [NgIcon, ZardButtonComponent],
   providers: [provideIcons({ lucideArrowLeftRight, lucideTrash2 })],
   template: `

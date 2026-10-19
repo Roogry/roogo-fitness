@@ -230,16 +230,6 @@
   --scale-menu-overshoot: 1.02;
   --duration-spring: 300ms;
   --duration-menu-out: 160ms;
-  /* Same 8px gap the spring menu asks the overlay for. The keyframes keep it. */
-  --menu-offset: 0.5rem;
-}
-
-.menu-shift-down {
-  --menu-shift: var(--menu-offset);
-}
-
-.menu-shift-up {
-  --menu-shift: calc(var(--menu-offset) * -1);
 }
 
 /* Press the card in, then spring past rest and settle. The menu uses the same curve. */
@@ -249,6 +239,7 @@
 }
 
 .long-press-pop {
+  transform-origin: center;
   animation: long-press-pop var(--duration-spring) var(--ease-spring) both;
 }
 
@@ -260,38 +251,30 @@
   transform-origin: bottom center;
 }
 
-.menu-pop-in {
-  animation: menu-pop-in var(--duration-spring) var(--ease-spring) both;
-}
-
-.menu-pop-out {
-  animation: menu-pop-out var(--duration-menu-out) ease-out both;
-}
-
 /* Dim only. A backdrop blur on this layer stutters iPhone scrolling. */
 .cdk-overlay-backdrop.exercise-context-backdrop {
   background-color: color-mix(in srgb, var(--ink) 40%, transparent);
   transition-duration: var(--duration-menu-out);
 }
 
-.exercise-context-stage {
+.exercise-context-stage,
+.exercise-context-menu-pane {
   overflow: visible;
+  animation: none;
+  transition: none;
 }
 
 .context-card-enter {
+  transform-origin: center;
   animation: long-press-pop var(--duration-spring) var(--ease-spring) both;
+}
+
+.context-menu-pop {
+  animation: context-menu-pop var(--duration-spring) var(--ease-spring) both;
 }
 
 .context-menu-leave {
   animation: context-menu-leave var(--duration-menu-out) ease-out both;
-}
-
-/* The pane plays the spring. The popover's own enter/leave zoom would fight it. */
-.menu-pop-in .animate-in,
-.menu-pop-in .animate-out,
-.menu-pop-out .animate-in,
-.menu-pop-out .animate-out {
-  animation: none;
 }
 
 @keyframes long-press-pop {
@@ -306,31 +289,18 @@
   }
 }
 
-/* The scale lives on the overlay pane, so it has to keep the gap translate.
-   A transform animation would otherwise replace the overlay's own translate. */
-@keyframes menu-pop-in {
+@keyframes context-menu-pop {
   0% {
     opacity: 0;
-    transform: translateY(var(--menu-shift, var(--menu-offset))) scale(var(--scale-menu-start));
+    transform: scale(var(--scale-menu-start));
   }
   70% {
     opacity: 1;
-    transform: translateY(var(--menu-shift, var(--menu-offset))) scale(var(--scale-menu-overshoot));
+    transform: scale(var(--scale-menu-overshoot));
   }
   100% {
     opacity: 1;
-    transform: translateY(var(--menu-shift, var(--menu-offset))) scale(1);
-  }
-}
-
-@keyframes menu-pop-out {
-  0% {
-    opacity: 1;
-    transform: translateY(var(--menu-shift, var(--menu-offset))) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(var(--menu-shift, var(--menu-offset))) scale(var(--scale-menu-start));
+    transform: scale(1);
   }
 }
 
@@ -371,12 +341,8 @@
     transition: none;
   }
 
-  .menu-pop-in {
+  .context-menu-pop {
     animation: menu-fade-in var(--duration-menu-out) ease-out both;
-  }
-
-  .menu-pop-out {
-    animation: menu-fade-out var(--duration-menu-out) ease-out both;
   }
 
   .context-card-enter {

@@ -1,4 +1,9 @@
-import { Overlay, type OverlayRef } from '@angular/cdk/overlay';
+import {
+  Overlay,
+  type OverlayRef,
+  type PositionStrategy,
+  type ScrollStrategy,
+} from '@angular/cdk/overlay';
 import { ComponentPortal, DomPortal } from '@angular/cdk/portal';
 import { Injectable, Injector, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -7,10 +12,11 @@ import { filter, Subscription } from 'rxjs';
 import { VisualViewportService } from '@/core/services/visual-viewport.service';
 import { ExerciseContextMenu } from '../components/exercise-context-menu/exercise-context-menu';
 import {
+  fixedOriginFromVisualRect,
   menuSpringOrigin,
-  menuSpringShift,
-  springMenuPositions,
-  springViewportMargin,
+  placeContextMenu,
+  visualViewportOffset,
+  type VisualViewportOffset,
 } from './exercise-context-menu-position';
 
 /** Matches `--duration-menu-out`. The lifted card stays up while the leave animation runs. */
@@ -48,7 +54,16 @@ export class ExerciseContextMenuService {
 
   private stageRef: OverlayRef | undefined;
   private menuRef: OverlayRef | undefined;
+  private stageStrategy: FrozenBoxStrategy | undefined;
+  private menuStrategy: FrozenBoxStrategy | undefined;
+  private scrollLock: ScrollStrategy | undefined;
   private liftHost: HTMLElement | undefined;
+  private menuHost: HTMLElement | undefined;
+  private sourceCard: HTMLElement | undefined;
+  private sourceCardVisibility = '';
+  private cardVisual: { top: number; left: number; width: number; height: number } | undefined;
+  private menuVisual: { top: number; left: number } | undefined;
+  private viewportOffset: VisualViewportOffset | undefined;
   private focusTarget: HTMLElement | null = null;
   private onReplace: (() => void) | undefined;
   private onDelete: (() => void) | undefined;
@@ -57,7 +72,6 @@ export class ExerciseContextMenuService {
   private leaveTimer: ReturnType<typeof setTimeout> | undefined;
   private backdropSub: Subscription | undefined;
   private menuSub: Subscription | undefined;
-  private positionSub: Subscription | undefined;
   private dismissArmed = false;
   private armFrame = 0;
   private windowWidth = 0;
@@ -126,6 +140,7 @@ export class ExerciseContextMenuService {
     this.openId.set(request.exerciseId);
     this.liftCard(request.card);
     this.attachMenu();
+    this.engageScrollLock();
     this.armDismissListeners();
   }
 
@@ -158,15 +173,22 @@ export class ExerciseContextMenuService {
   /**
    * The stage pane is only the card's rectangle. A full-screen pane would sit above
    * the backdrop and steal the outside tap. The copy scales inside the pane so the
-   * menu can measure an untransformed box.
+   * positioned box itself never transforms.
+   *
+   * The rect is read before the scroll lock. Block-scroll sets `html` to
+   * `position: fixed`, and on iOS that shifts the fixed origin by the collapsed
+   * URL bar. Positioning after that lock is what painted the copy a toolbar-height
+   * too low, then slid it up during the bounce.
    */
   private liftCard(card: HTMLElement) {
     const rect = restingCardRect(card);
-    const positionStrategy = this.overlay
-      .position()
-      .global()
-      .left(`${rect.left}px`)
-      .top(`${rect.top}px`);
+    const offset = this.captureViewport(rect);
+    const fixed = fixedOriginFromVisualRect(rect, offset);
+    const positionStrategy = new FrozenBoxStrategy(fixed.top, fixed.left, {
+      width: rect.width,
+      height: rect.height,
+    });
+    this.stageStrategy = positionStrategy;
 
     this.stageRef = this.overlay.create({
       positionStrategy,
@@ -174,9 +196,10 @@ export class ExerciseContextMenuService {
       height: rect.height,
       hasBackdrop: true,
       backdropClass: 'exercise-context-backdrop',
-      scrollStrategy: this.overlay.scrollStrategies.block(),
+      scrollStrategy: this.overlay.scrollStrategies.noop(),
       panelClass: 'exercise-context-stage',
       disposeOnNavigation: false,
+      usePopover: false,
     });
 
     const host = document.createElement('div');
@@ -193,61 +216,132 @@ export class ExerciseContextMenuService {
     // DomPortal only moves a node that already has a parent.
     document.body.append(host);
     this.stageRef.attach(new DomPortal(host));
+    // Attach defers positioning until after paint. Apply now, before the scroll lock.
+    this.stageRef.updatePosition();
+    this.hideSourceCard(card);
     document.addEventListener('keydown', this.onEscape);
     this.backdropSub = this.stageRef.backdropClick().subscribe(() => this.close());
   }
 
   private attachMenu() {
-    const stagePane = this.stageRef?.overlayElement;
-    if (!stagePane) return;
+    if (!this.cardVisual || !this.viewportOffset) return;
 
-    const clearance = SESSION_BAR_CLEARANCE_PX + Math.max(0, this.viewport.keyboardOffset());
-    const positionStrategy = this.overlay
-      .position()
-      .flexibleConnectedTo(stagePane)
-      .withPositions(springMenuPositions())
-      .withPush(false)
-      .withFlexibleDimensions(false)
-      .withViewportMargin(springViewportMargin(clearance));
-
-    this.positionSub = positionStrategy.positionChanges.subscribe((change) => {
-      this.applyMenuOrigin(change.connectionPair.overlayY);
-    });
-
+    const positionStrategy = new FrozenBoxStrategy(0, 0);
+    this.menuStrategy = positionStrategy;
     this.menuRef = this.overlay.create({
       positionStrategy,
       hasBackdrop: false,
       scrollStrategy: this.overlay.scrollStrategies.noop(),
-      panelClass: ['menu-pop-in', 'menu-origin-top', 'menu-shift-down'],
+      panelClass: 'exercise-context-menu-pane',
       disposeOnNavigation: false,
+      usePopover: false,
     });
 
     const portal = new ComponentPortal(ExerciseContextMenu, null, this.injector);
     const menu = this.menuRef.attach(portal);
+    // Zoneless attach can leave the host empty until a check, which would place a 0px menu.
+    menu.changeDetectorRef.detectChanges();
+    const menuHost = menu.location.nativeElement as HTMLElement;
+    this.menuHost = menuHost;
+    const menuBox = menuHost.querySelector<HTMLElement>('[data-testid="exercise-context-menu"]');
+    const clearance = SESSION_BAR_CLEARANCE_PX + Math.max(0, this.viewport.keyboardOffset());
+    const placement = placeContextMenu({
+      cardTop: this.cardVisual.top,
+      cardLeft: this.cardVisual.left,
+      cardWidth: this.cardVisual.width,
+      cardHeight: this.cardVisual.height,
+      menuWidth: menuBox?.offsetWidth ?? 0,
+      menuHeight: menuBox?.offsetHeight ?? 0,
+      viewportWidth: this.viewportOffset.width,
+      viewportHeight: this.viewportOffset.height,
+      bottomClearance: clearance,
+    });
+    this.menuVisual = placement;
+    const fixed = fixedOriginFromVisualRect(placement, this.viewportOffset);
+    positionStrategy.moveTo(fixed.top, fixed.left);
+    this.menuRef.updatePosition();
+    menuHost.classList.add(
+      'context-menu-pop',
+      menuSpringOrigin(placement.placedAbove ? 'bottom' : 'top'),
+    );
+
     this.menuSub = new Subscription();
     this.menuSub.add(menu.instance.replaceClick.subscribe(() => this.choose('replace')));
     this.menuSub.add(menu.instance.deleteClick.subscribe(() => this.choose('delete')));
   }
 
-  private applyMenuOrigin(overlayY: string) {
-    const pane = this.menuRef?.overlayElement;
-    if (!pane) return;
-    pane.classList.remove(
-      'menu-origin-top',
-      'menu-origin-bottom',
-      'menu-shift-up',
-      'menu-shift-down',
-    );
-    pane.classList.add(menuSpringOrigin(overlayY), menuSpringShift(overlayY));
+  /** Read once, before scroll lock, so a later toolbar shift cannot rewrite the rect. */
+  private captureViewport(rect: DOMRect): VisualViewportOffset {
+    const offset = visualViewportOffset(window.visualViewport, {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+    this.viewportOffset = offset;
+    this.cardVisual = { top: rect.top, left: rect.left, width: rect.width, height: rect.height };
+    return offset;
+  }
+
+  private hideSourceCard(card: HTMLElement) {
+    this.sourceCard = card;
+    this.sourceCardVisibility = card.style.visibility;
+    card.style.visibility = 'hidden';
+  }
+
+  private restoreSourceCard() {
+    if (!this.sourceCard) return;
+    this.sourceCard.style.visibility = this.sourceCardVisibility;
+    this.sourceCard = undefined;
+    this.sourceCardVisibility = '';
+  }
+
+  /**
+   * Scroll lock runs only after both boxes have their fixed coordinates.
+   * If enabling it changes `offsetTop` before paint, retarget those same visual
+   * points once. Nothing subscribes to move them again.
+   */
+  private engageScrollLock() {
+    const offsetBefore = this.viewportOffset;
+    this.scrollLock = this.overlay.scrollStrategies.block();
+    this.scrollLock.enable();
+    if (!offsetBefore) return;
+
+    const offsetAfter = visualViewportOffset(window.visualViewport, {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+    const offsetChanged =
+      offsetAfter.offsetTop !== offsetBefore.offsetTop ||
+      offsetAfter.offsetLeft !== offsetBefore.offsetLeft;
+    if (!offsetChanged) return;
+
+    this.viewportOffset = offsetAfter;
+    this.pinToViewport(offsetAfter);
+  }
+
+  private pinToViewport(offset: VisualViewportOffset) {
+    if (this.cardVisual && this.stageStrategy) {
+      const fixed = fixedOriginFromVisualRect(this.cardVisual, offset);
+      this.stageStrategy.moveTo(fixed.top, fixed.left);
+      this.stageRef?.updatePosition();
+    }
+    if (this.menuVisual && this.menuStrategy) {
+      const fixed = fixedOriginFromVisualRect(this.menuVisual, offset);
+      this.menuStrategy.moveTo(fixed.top, fixed.left);
+      this.menuRef?.updatePosition();
+    }
+  }
+
+  private releaseScrollLock() {
+    this.scrollLock?.disable();
+    this.scrollLock = undefined;
   }
 
   private playLeave() {
     this.liftHost?.classList.remove('context-card-enter');
     this.liftHost?.classList.add('context-menu-leave');
 
-    const pane = this.menuRef?.overlayElement;
-    pane?.classList.remove('menu-pop-in');
-    pane?.classList.add('menu-pop-out');
+    this.menuHost?.classList.remove('context-menu-pop');
+    this.menuHost?.classList.add('context-menu-leave');
 
     this.stageRef?.backdropElement?.classList.remove('cdk-overlay-backdrop-showing');
   }
@@ -302,15 +396,21 @@ export class ExerciseContextMenuService {
     this.backdropSub = undefined;
     this.menuSub?.unsubscribe();
     this.menuSub = undefined;
-    this.positionSub?.unsubscribe();
-    this.positionSub = undefined;
 
     const menu = this.menuRef;
     const stage = this.stageRef;
     const liftHost = this.liftHost;
     this.menuRef = undefined;
     this.stageRef = undefined;
+    this.stageStrategy = undefined;
+    this.menuStrategy = undefined;
     this.liftHost = undefined;
+    this.menuHost = undefined;
+    this.cardVisual = undefined;
+    this.menuVisual = undefined;
+    this.viewportOffset = undefined;
+    this.releaseScrollLock();
+    this.restoreSourceCard();
     menu?.dispose();
     stage?.dispose();
     liftHost?.remove();
@@ -338,6 +438,52 @@ function restingCardRect(card: HTMLElement): DOMRect {
   const rect = card.getBoundingClientRect();
   card.style.transition = previousTransition;
   return rect;
+}
+
+/**
+ * Writes the same top/left on every apply, including the deferred one CDK runs
+ * after the next render. The bounce must not have a second position to slide to.
+ */
+class FrozenBoxStrategy implements PositionStrategy {
+  private overlayRef: OverlayRef | undefined;
+
+  constructor(
+    private top: number,
+    private left: number,
+    private readonly size?: { width: number; height: number },
+  ) {}
+
+  attach(overlayRef: OverlayRef) {
+    this.overlayRef = overlayRef;
+  }
+
+  moveTo(top: number, left: number) {
+    this.top = top;
+    this.left = left;
+  }
+
+  apply() {
+    const pane = this.overlayRef?.overlayElement;
+    if (!pane) return;
+    const style = pane.style;
+    style.position = 'fixed';
+    style.top = `${this.top}px`;
+    style.left = `${this.left}px`;
+    style.right = 'auto';
+    style.bottom = 'auto';
+    style.margin = '0';
+    style.transform = 'none';
+    style.transition = 'none';
+    style.maxWidth = 'none';
+    style.maxHeight = 'none';
+    if (!this.size) return;
+    style.width = `${this.size.width}px`;
+    style.height = `${this.size.height}px`;
+  }
+
+  dispose() {
+    this.overlayRef = undefined;
+  }
 }
 
 function stripCloneMarkers(root: HTMLElement) {
