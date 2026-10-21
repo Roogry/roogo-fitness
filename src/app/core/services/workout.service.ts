@@ -365,7 +365,7 @@ export class WorkoutService {
 
   /**
    * Swaps one tracked exercise for another in the same position.
-   * Logged weight, reps, and completed state move with the sets.
+   * Only completed sets keep their logged weight, reps, and completed state.
    * Does not touch the routine, the rest timer, or the session clock.
    */
   replaceTrackedExercise(

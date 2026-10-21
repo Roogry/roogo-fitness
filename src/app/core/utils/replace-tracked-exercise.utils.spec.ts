@@ -11,7 +11,7 @@ function loggedSet(partial: Partial<LoggedSet> & Pick<LoggedSet, 'id' | 'set_num
 describe('setsAfterExerciseReplace', () => {
   const createId = (index: number) => 800 + index;
 
-  it('keeps logged weight, reps, and completed state and clears targets when nothing is saved', () => {
+  it('keeps logged weight, reps, and completed state on completed sets', () => {
     const oldSets = [
       loggedSet({
         id: 1,
@@ -24,19 +24,11 @@ describe('setsAfterExerciseReplace', () => {
         is_warmup: false,
         rest_time_taken_sec: 90,
       }),
-      loggedSet({
-        id: 2,
-        set_number: 2,
-        weight_lifted: 42,
-        reps_completed: 6,
-        target_weight: 30,
-        target_reps: 10,
-      }),
     ];
 
     const sets = setsAfterExerciseReplace(oldSets, null, createId);
 
-    expect(sets).toHaveLength(2);
+    expect(sets).toHaveLength(1);
     expect(sets[0]).toMatchObject({
       id: 1,
       set_number: 1,
@@ -48,13 +40,76 @@ describe('setsAfterExerciseReplace', () => {
     });
     expect(sets[0].target_weight).toBeUndefined();
     expect(sets[0].target_reps).toBeUndefined();
+    expect(oldSets[0].target_weight).toBe(30);
+  });
+
+  it('resets unfinished pre-filled sets to the new exercise targets', () => {
+    const oldSets = [
+      loggedSet({
+        id: 1,
+        set_number: 1,
+        weight_lifted: 80,
+        reps_completed: 8,
+        target_weight: 80,
+        target_reps: 8,
+        rest_time_taken_sec: 90,
+        is_warmup: true,
+      }),
+    ];
+
+    const sets = setsAfterExerciseReplace(
+      oldSets,
+      { target_sets: 1, target_weight: 12, target_reps: 15, target_rest_time: 60 },
+      createId,
+    );
+
+    expect(sets).toEqual([
+      {
+        id: 1,
+        set_number: 1,
+        weight_lifted: 12,
+        reps_completed: 15,
+        target_weight: 12,
+        target_reps: 15,
+        rest_time_taken_sec: 60,
+      },
+    ]);
+  });
+
+  it('clears unfinished sets when the new exercise has no saved targets', () => {
+    const oldSets = [
+      loggedSet({
+        id: 1,
+        set_number: 1,
+        weight_lifted: 80,
+        reps_completed: 8,
+        target_weight: 80,
+        target_reps: 8,
+        rest_time_taken_sec: 90,
+      }),
+      loggedSet({
+        id: 2,
+        set_number: 2,
+        weight_lifted: 80,
+        reps_completed: 8,
+        completed_at: '2026-10-11T00:00:00.000Z',
+        target_weight: 80,
+        target_reps: 8,
+      }),
+    ];
+
+    const sets = setsAfterExerciseReplace(oldSets, null, createId);
+
+    expect(sets).toHaveLength(2);
+    expect(sets[0]).toEqual({ id: 1, set_number: 1 });
     expect(sets[1]).toMatchObject({
       id: 2,
-      weight_lifted: 42,
-      reps_completed: 6,
+      weight_lifted: 80,
+      reps_completed: 8,
+      completed_at: '2026-10-11T00:00:00.000Z',
     });
     expect(sets[1].target_weight).toBeUndefined();
-    expect(oldSets[0].target_weight).toBe(30);
+    expect(sets[1].target_reps).toBeUndefined();
   });
 
   it('fills targets from the new exercise and adds sets up to the saved count', () => {
@@ -88,25 +143,49 @@ describe('setsAfterExerciseReplace', () => {
     expect(sets[1]).toEqual({
       id: 801,
       set_number: 2,
+      weight_lifted: 60,
+      reps_completed: 8,
       target_weight: 60,
       target_reps: 8,
       rest_time_taken_sec: 120,
     });
-    expect(sets[2].set_number).toBe(3);
-    expect(sets[2].weight_lifted).toBeUndefined();
+    expect(sets[2]).toMatchObject({
+      set_number: 3,
+      weight_lifted: 60,
+      reps_completed: 8,
+    });
+    expect(sets[2].completed_at).toBeUndefined();
   });
 
-  it('does not drop logged sets when the saved set count is smaller', () => {
+  it('does not drop sets when the saved set count is smaller', () => {
     const oldSets = [
-      loggedSet({ id: 1, set_number: 1, weight_lifted: 20, reps_completed: 10 }),
-      loggedSet({ id: 2, set_number: 2, weight_lifted: 20, reps_completed: 10 }),
+      loggedSet({
+        id: 1,
+        set_number: 1,
+        weight_lifted: 20,
+        reps_completed: 10,
+        completed_at: '2026-10-11T00:00:00.000Z',
+      }),
+      loggedSet({ id: 2, set_number: 2, weight_lifted: 80, reps_completed: 8 }),
     ];
 
-    const sets = setsAfterExerciseReplace(oldSets, { target_sets: 1, target_weight: 15 }, createId);
+    const sets = setsAfterExerciseReplace(
+      oldSets,
+      { target_sets: 1, target_weight: 15, target_reps: 12 },
+      createId,
+    );
 
     expect(sets).toHaveLength(2);
-    expect(sets[1].weight_lifted).toBe(20);
-    expect(sets[1].target_weight).toBe(15);
+    expect(sets[0].weight_lifted).toBe(20);
+    expect(sets[0].completed_at).toBe('2026-10-11T00:00:00.000Z');
+    expect(sets[1]).toMatchObject({
+      id: 2,
+      weight_lifted: 15,
+      reps_completed: 12,
+      target_weight: 15,
+      target_reps: 12,
+    });
+    expect(sets[1].completed_at).toBeUndefined();
   });
 });
 

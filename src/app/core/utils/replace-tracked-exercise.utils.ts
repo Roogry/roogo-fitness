@@ -13,10 +13,12 @@ export function hasSavedTargets(
 }
 
 /**
- * Logged weight, reps, and completed state stay on the set they came from,
- * so they still win over the new exercise's targets in the inputs.
- * Saved targets fill target weight and reps, and add sets up to that count.
- * With no saved targets, the old set count is kept and the target fields are cleared.
+ * Starting a session copies the plan weight and reps onto every set before it is completed.
+ * Copying those fields onto a replacement would leave the old exercise's numbers in the inputs.
+ * Only a set with `completed_at` keeps the weight, reps, and completed state that were logged.
+ * Saved targets still fill target fields, pre-fill each unfinished set the same way a session
+ * starts, and add sets up to that count. With no saved targets, the old set count is kept and
+ * unfinished weight and reps are left empty.
  */
 export function setsAfterExerciseReplace(
   oldSets: readonly LoggedSet[],
@@ -30,9 +32,11 @@ export function setsAfterExerciseReplace(
 
   for (let index = 0; index < setCount; index++) {
     const previous = oldSets[index];
-    const set: LoggedSet = previous
-      ? { ...previous, set_number: index + 1 }
-      : { id: createId(index), set_number: index + 1 };
+    const completed = !!previous?.completed_at;
+    const set: LoggedSet =
+      previous && completed
+        ? { ...previous, set_number: index + 1 }
+        : { id: previous?.id ?? createId(index), set_number: index + 1 };
 
     if (saved) {
       set.target_weight = saved.target_weight;
@@ -40,7 +44,11 @@ export function setsAfterExerciseReplace(
       if (saved.target_rest_time !== undefined) {
         set.rest_time_taken_sec = saved.target_rest_time;
       }
-    } else if (previous) {
+      if (!completed) {
+        set.weight_lifted = saved.target_weight;
+        set.reps_completed = saved.target_reps;
+      }
+    } else if (completed) {
       set.target_weight = undefined;
       set.target_reps = undefined;
     }
