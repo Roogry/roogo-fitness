@@ -3,12 +3,12 @@ import { Router } from '@angular/router';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { DbService } from './db.service';
 import { Exercise, LoggedSession, LoggedExercise, LoggedSet } from '@/shared/models';
+import type { ReplacementTargets } from '@/core/utils/replace-tracked-exercise.types';
 import {
   findSavedExerciseTargets,
   nextPlannedExercise,
-  ReplacementTargets,
   setsAfterExerciseReplace,
-} from './replace-tracked-exercise';
+} from '@/core/utils/replace-tracked-exercise.utils';
 
 const ACTIVE_SESSION_STORAGE_KEY = 'roogo_active_session';
 

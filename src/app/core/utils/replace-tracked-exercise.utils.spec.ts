@@ -1,5 +1,8 @@
 import { LoggedSet, WorkoutPlan } from '@/shared/models';
-import { findSavedExerciseTargets, setsAfterExerciseReplace } from './replace-tracked-exercise';
+import {
+  findSavedExerciseTargets,
+  setsAfterExerciseReplace,
+} from './replace-tracked-exercise.utils';
 
 function loggedSet(partial: Partial<LoggedSet> & Pick<LoggedSet, 'id' | 'set_number'>): LoggedSet {
   return partial;

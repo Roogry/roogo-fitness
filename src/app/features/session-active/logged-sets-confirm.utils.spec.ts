@@ -3,7 +3,7 @@ import {
   deleteLoggedSetsMessage,
   loggedSetsConfirmOptions,
   replaceLoggedSetsMessage,
-} from './logged-sets-confirm';
+} from './logged-sets-confirm.utils';
 
 describe('logged sets confirm', () => {
   it('counts only sets that were marked done', () => {

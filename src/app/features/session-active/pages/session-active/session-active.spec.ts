@@ -9,7 +9,7 @@ import { ExerciseService } from '@/core/services/exercise.service';
 import { PointerModeService } from '@/core/services/pointer-mode.service';
 import { VisualViewportService } from '@/core/services/visual-viewport.service';
 import { WorkoutService } from '@/core/services/workout.service';
-import { SwipeActionsGroup } from '@/shared/directives/swipe-actions';
+import { SwipeActionsGroup } from '@/shared/directives/swipe-actions.service';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { Exercise, LoggedExercise } from '@/shared/models';
 import { SessionActive, lastExerciseIdWithCompletedSet } from './session-active';

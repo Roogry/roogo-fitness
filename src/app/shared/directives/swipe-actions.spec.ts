@@ -1,13 +1,9 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  AXIS_LOCK_PX,
-  rubberBandOffset,
-  shouldSnapSwipeOpen,
-  SwipeActions,
-  SwipeActionsGroup,
-  nextSwipeAxis,
-} from './swipe-actions';
+import { AXIS_LOCK_PX } from './swipe-actions.constants';
+import { SwipeActionsGroup } from './swipe-actions.service';
+import { nextSwipeAxis, rubberBandOffset, shouldSnapSwipeOpen } from './swipe-actions.utils';
+import { SwipeActions } from './swipe-actions';
 
 describe('swipe gesture math', () => {
   it('stays undecided until the movement clears the axis threshold', () => {
@@ -37,7 +33,7 @@ describe('swipe gesture math', () => {
     expect(shouldSnapSwipeOpen(-30, 160, -0.6)).toBe(true);
     expect(shouldSnapSwipeOpen(-120, 160, 0.6)).toBe(false);
     expect(shouldSnapSwipeOpen(-120, 0, -1)).toBe(false);
-    // Two size-12 actions, the gap, and padding (w-44) open at 88px.
+    /** Two size-12 actions, the gap, and padding (w-44) open at 88px. */
     expect(shouldSnapSwipeOpen(-87, 176, 0)).toBe(false);
     expect(shouldSnapSwipeOpen(-88, 176, 0)).toBe(true);
   });
@@ -72,7 +68,7 @@ describe('SwipeActions', () => {
 
   beforeEach(() => {
     let now = 0;
-    // A slow clock so these drags are decided by distance, not a same-turn flick.
+    /** A slow clock so these drags are decided by distance, not a same-turn flick. */
     vi.spyOn(Date, 'now').mockImplementation(() => {
       now += 250;
       return now;

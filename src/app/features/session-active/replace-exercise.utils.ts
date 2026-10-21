@@ -1,8 +1,9 @@
 import { Exercise } from '@/shared/models';
-
-const PRIMARY_MUSCLE_RANK = 0;
-const SECONDARY_MUSCLE_RANK = 1;
-const OTHER_MUSCLE_RANK = 2;
+import {
+  OTHER_MUSCLE_RANK,
+  PRIMARY_MUSCLE_RANK,
+  SECONDARY_MUSCLE_RANK,
+} from './replace-exercise.constants';
 
 /**
  * Same primary muscle, then a secondary muscle that matches that primary, then the rest.

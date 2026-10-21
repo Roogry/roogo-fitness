@@ -6,89 +6,19 @@ import {
   effect,
   ElementRef,
   inject,
-  Injectable,
   input,
   OnDestroy,
   signal,
   viewChild,
 } from '@angular/core';
-
-/** Travel before the gesture commits to horizontal or vertical. */
-export const AXIS_LOCK_PX = 10;
-/** Past this fraction of the actions, a release stays open. */
-export const SNAP_OPEN_RATIO = 0.5;
-/** A quick flick wins over the halfway rule. px per ms. */
-export const FLICK_VELOCITY_PX_PER_MS = 0.5;
-const RUBBER_BAND_CONSTANT = 0.55;
-
-const SWIPE_IGNORE_SELECTOR =
-  'input, textarea, select, button, [cdkDragHandle], [data-drag-handle]';
-
-export type SwipeAxis = 'pending' | 'horizontal' | 'vertical';
-
-export function nextSwipeAxis(dx: number, dy: number): SwipeAxis {
-  if (Math.abs(dx) < AXIS_LOCK_PX && Math.abs(dy) < AXIS_LOCK_PX) return 'pending';
-  // A vertical move wins ties so the page scroll, not the card, takes the gesture.
-  if (Math.abs(dx) > Math.abs(dy)) return 'horizontal';
-  return 'vertical';
-}
-
-/**
- * Follows the finger between closed and fully open.
- * Past either end the card resists, the way iOS Mail does, instead of tracking 1:1.
- */
-export function rubberBandOffset(rawPx: number, actionWidthPx: number): number {
-  if (actionWidthPx <= 0) return 0;
-  if (rawPx < -actionWidthPx) {
-    const extra = -rawPx - actionWidthPx;
-    return -actionWidthPx - rubberBandPast(extra, actionWidthPx);
-  }
-  if (rawPx > 0) return rubberBandPast(rawPx, actionWidthPx);
-  return rawPx;
-}
-
-export function shouldSnapSwipeOpen(
-  offsetPx: number,
-  actionWidthPx: number,
-  velocityXPxPerMs: number,
-): boolean {
-  if (actionWidthPx <= 0) return false;
-  if (velocityXPxPerMs <= -FLICK_VELOCITY_PX_PER_MS && offsetPx < 0) return true;
-  if (velocityXPxPerMs >= FLICK_VELOCITY_PX_PER_MS) return false;
-  return offsetPx <= -actionWidthPx * SNAP_OPEN_RATIO;
-}
-
-function rubberBandPast(overscrollPx: number, dimensionPx: number): number {
-  if (overscrollPx <= 0 || dimensionPx <= 0) return 0;
-  const resisted =
-    (1 - 1 / ((overscrollPx * RUBBER_BAND_CONSTANT) / dimensionPx + 1)) * dimensionPx;
-  return resisted;
-}
-
-function isSwipeIgnoredTarget(target: EventTarget | null): boolean {
-  return target instanceof Element && !!target.closest(SWIPE_IGNORE_SELECTOR);
-}
-
-/** One revealed card at a time. Provide it on the list that hosts the cards. */
-@Injectable()
-export class SwipeActionsGroup {
-  private current: SwipeActions | null = null;
-
-  opened(actions: SwipeActions) {
-    if (this.current === actions) return;
-    const previous = this.current;
-    this.current = actions;
-    previous?.close();
-  }
-
-  closed(actions: SwipeActions) {
-    if (this.current === actions) this.current = null;
-  }
-
-  closeAll() {
-    this.current?.close();
-  }
-}
+import { SwipeActionsGroup } from './swipe-actions.service';
+import type { SwipeAxis } from './swipe-actions.types';
+import {
+  isSwipeIgnoredTarget,
+  nextSwipeAxis,
+  rubberBandOffset,
+  shouldSnapSwipeOpen,
+} from './swipe-actions.utils';
 
 /**
  * Slides its default content left to reveal `[swipe-actions]` buttons.

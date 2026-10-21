@@ -1,5 +1,5 @@
 import { Exercise } from '@/shared/models';
-import { filterExercisesByName, sortReplacementCandidates } from './replace-exercise';
+import { filterExercisesByName, sortReplacementCandidates } from './replace-exercise.utils';
 
 function exercise(
   id: number,

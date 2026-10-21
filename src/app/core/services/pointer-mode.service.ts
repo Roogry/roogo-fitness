@@ -1,12 +1,6 @@
 import { Injectable, signal } from '@angular/core';
-
-/** Fine pointer with hover gets a visible menu. Touch uses swipe. */
-export const DESKTOP_POINTER_QUERY = '(hover: hover) and (pointer: fine)';
-
-export function isDesktopPointer(): boolean {
-  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
-  return window.matchMedia(DESKTOP_POINTER_QUERY).matches;
-}
+import { DESKTOP_POINTER_QUERY } from '@/core/utils/pointer-mode.constants';
+import { isDesktopPointer } from '@/core/utils/pointer-mode.utils';
 
 @Injectable({ providedIn: 'root' })
 export class PointerModeService {

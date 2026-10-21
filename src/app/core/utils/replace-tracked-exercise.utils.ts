@@ -1,15 +1,5 @@
 import { LoggedSet, WorkoutPlan, WorkoutPlanExercise } from '@/shared/models';
-
-/**
- * Targets copied from a routine onto the replacement.
- * Reading these must not write the routine back.
- */
-export interface ReplacementTargets {
-  target_sets?: number;
-  target_weight?: number;
-  target_reps?: number;
-  target_rest_time?: number;
-}
+import type { ReplacementTargets } from './replace-tracked-exercise.types';
 
 export function hasSavedTargets(
   targets: ReplacementTargets | null | undefined,
@@ -23,8 +13,6 @@ export function hasSavedTargets(
 }
 
 /**
- * Sets for an exercise swapped into the current session.
- *
  * Logged weight, reps, and completed state stay on the set they came from,
  * so they still win over the new exercise's targets in the inputs.
  * Saved targets fill target weight and reps, and add sets up to that count.
@@ -63,7 +51,7 @@ export function setsAfterExerciseReplace(
   return sets;
 }
 
-/** Session-only target line. Undefined when the new exercise has nothing saved. */
+/** Undefined when the new exercise has nothing saved, so the session does not invent a plan line. */
 export function nextPlannedExercise(
   savedTargets: ReplacementTargets | null,
   exerciseId: number,

@@ -9,14 +9,20 @@ import { ExerciseService } from '@/core/services/exercise.service';
 import { WorkoutService } from '@/core/services/workout.service';
 import { ReplaceExercisePicker } from '@/features/session-active/components/replace-exercise-picker/replace-exercise-picker';
 import {
+  DELETE_EXERCISE_OK,
+  DELETE_EXERCISE_TITLE,
+  REPLACE_EXERCISE_OK,
+  REPLACE_EXERCISE_TITLE,
+} from '@/features/session-active/logged-sets-confirm.constants';
+import {
   completedSetCount,
   deleteLoggedSetsMessage,
   loggedSetsConfirmOptions,
   replaceLoggedSetsMessage,
-} from '@/features/session-active/logged-sets-confirm';
-import { sortReplacementCandidates } from '@/features/session-active/replace-exercise';
+} from '@/features/session-active/logged-sets-confirm.utils';
+import { sortReplacementCandidates } from '@/features/session-active/replace-exercise.utils';
 import { Exercise, LoggedExercise, LoggedSet } from '@/shared/models';
-import { SwipeActionsGroup } from '@/shared/directives/swipe-actions';
+import { SwipeActionsGroup } from '@/shared/directives/swipe-actions.service';
 import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-autocomplete/exercise-autocomplete';
 import { ExerciseTracker } from '@/features/exercise/components/exercise-tracker/exercise-tracker';
 import { HeaderComponent } from '@/shared/components/header/header.component';
@@ -191,15 +197,17 @@ export class SessionActive implements OnInit {
       return;
     }
 
-    // Swipe and the desktop menu both emit this. Close on cancel so the row
-    // does not stay open, and close as the dialog opens because Escape and the backdrop
-    // dismiss it without running the cancel callback.
+    /**
+     * Swipe and the desktop menu both emit this. Close on cancel so the row
+     * does not stay open, and close as the dialog opens because Escape and the backdrop
+     * dismiss it without running the cancel callback.
+     */
     this.swipeGroup.closeAll();
     this.dialogService.create(
       loggedSetsConfirmOptions({
-        title: 'Delete exercise?',
+        title: DELETE_EXERCISE_TITLE,
         description: deleteLoggedSetsMessage(completed),
-        okText: 'Delete',
+        okText: DELETE_EXERCISE_OK,
         destructive: true,
         onOk: () => this.deleteTrackedExercise(event.exerciseId),
         onCancel: () => this.swipeGroup.closeAll(),
@@ -222,9 +230,9 @@ export class SessionActive implements OnInit {
 
     this.dialogService.create(
       loggedSetsConfirmOptions({
-        title: 'Replace exercise?',
+        title: REPLACE_EXERCISE_TITLE,
         description: replaceLoggedSetsMessage(completed),
-        okText: 'Continue',
+        okText: REPLACE_EXERCISE_OK,
         onOk: () => {
           void this.openReplacePicker(tracked);
         },

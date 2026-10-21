@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideDumbbell, lucideSearch } from '@ng-icons/lucide';
-import { filterExercisesByName } from '@/features/session-active/replace-exercise';
+import { filterExercisesByName } from '@/features/session-active/replace-exercise.utils';
 import { ZardBadgeComponent } from '@/shared/components/zard/badge';
 import { ZardInputDirective } from '@/shared/components/zard/input';
 import { Exercise } from '@/shared/models';
