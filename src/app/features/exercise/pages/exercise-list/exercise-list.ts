@@ -13,7 +13,13 @@ import { HeaderComponent } from '@/shared/components/header/header.component';
 import { RooSheetComponent } from '@/shared/components/sheet/sheet';
 import { CircleMuscleCardComponent } from '@/shared/components/circle-muscle-card/circle-muscle-card';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideSearch, lucideFilter, lucideX, lucideChevronDown, lucideCheck } from '@ng-icons/lucide';
+import {
+  lucideSearch,
+  lucideFilter,
+  lucideX,
+  lucideChevronDown,
+  lucideCheck,
+} from '@ng-icons/lucide';
 import { formatRange } from '@/shared/utils';
 
 @Component({
@@ -51,31 +57,25 @@ export class ExerciseList implements OnInit {
 
   queryParams = toSignal(this.route.queryParams);
 
-  // Helper to parse parameter as array of strings
   private parseParamAsArray = (val: any): string[] => {
     if (!val) return [];
     return Array.isArray(val) ? val.map(String) : [String(val)];
   };
 
-  // UI state for muscles list
   muscles = signal<Muscle[]>([]);
 
-  // State signals
   allExercises = signal<Exercise[]>([]);
 
   selectedPrimaryMuscles = linkedSignal<string[]>(() =>
-    this.parseParamAsArray(this.queryParams()?.['primary'])
+    this.parseParamAsArray(this.queryParams()?.['primary']),
   );
 
   selectedSecondaryMuscles = linkedSignal<string[]>(() =>
-    this.parseParamAsArray(this.queryParams()?.['secondary'])
+    this.parseParamAsArray(this.queryParams()?.['secondary']),
   );
 
-  searchQuery = linkedSignal<string>(() =>
-    this.queryParams()?.['query'] || ''
-  );
+  searchQuery = linkedSignal<string>(() => this.queryParams()?.['query'] || '');
 
-  // Sheet filter states
   isPrimarySheetOpen = signal(false);
   isSecondarySheetOpen = signal(false);
   stagedPrimaryMuscles = signal<string[]>([]);
@@ -93,13 +93,13 @@ export class ExerciseList implements OnInit {
 
   toggleStagedPrimary(id: string) {
     this.stagedPrimaryMuscles.update((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
   }
 
   toggleStagedSecondary(id: string) {
     this.stagedSecondaryMuscles.update((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
   }
 
@@ -127,7 +127,9 @@ export class ExerciseList implements OnInit {
         relativeTo: this.route,
         queryParams: {
           primary: this.selectedPrimaryMuscles().length ? this.selectedPrimaryMuscles() : null,
-          secondary: this.selectedSecondaryMuscles().length ? this.selectedSecondaryMuscles() : null,
+          secondary: this.selectedSecondaryMuscles().length
+            ? this.selectedSecondaryMuscles()
+            : null,
           query: this.searchQuery() || null,
         },
         queryParamsHandling: 'merge',
@@ -163,19 +165,15 @@ export class ExerciseList implements OnInit {
     const secondaryIds = this.selectedSecondaryMuscles().map(Number);
 
     return exercises.filter((exercise) => {
-      // 1. Search Logic
       const matchesSearch =
         !query ||
         exercise.name.toLowerCase().includes(query) ||
-        (exercise.short_description &&
-          exercise.short_description.toLowerCase().includes(query));
+        (exercise.short_description && exercise.short_description.toLowerCase().includes(query));
 
-      // 2. Primary Muscle Logic
       const matchesPrimary =
         primaryIds.length === 0 ||
         (exercise.primary_muscle && primaryIds.includes(exercise.primary_muscle.id));
 
-      // 3. Secondary Muscle Logic
       const matchesSecondary =
         secondaryIds.length === 0 ||
         (exercise.secondary_muscles &&

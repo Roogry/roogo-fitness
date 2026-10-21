@@ -73,7 +73,6 @@ export class ExerciseEdit implements OnInit {
   submitted = signal(false);
   selectedExercise = signal<Exercise | null>(null);
 
-  // Form Fields
   exerciseModel = signal({
     name: '',
     primaryGroup: '',
@@ -92,11 +91,6 @@ export class ExerciseEdit implements OnInit {
 
   availableMuscles = signal<Muscle[]>([]);
 
-  /**
-   * Detail replaced itself with this edit page, so leaving edit must replace
-   * this entry (not push) or Back from detail returns to the form.
-   * While the exercise is still loading, the route id is enough to return to detail.
-   */
   readonly headerBackLink = computed<any[]>(() => {
     if (!this.isLoading()) {
       const id = this.selectedExercise()?.id;
@@ -116,7 +110,7 @@ export class ExerciseEdit implements OnInit {
 
         if (!idParam) throw new Error('Failed to load exercise');
 
-        // Load muscles in parallel with exercise
+        /** Load muscles in parallel with exercise */
         const id = parseInt(idParam, 10);
         const [exercise, muscles] = await Promise.all([
           this.exerciseService.getExerciseById(id),
@@ -258,12 +252,12 @@ export class ExerciseEdit implements OnInit {
         instructions: instructions,
         tips: tips,
       });
-      // Sync active session if running (fixes #61 stale data)
+      /** Sync active session if running (fixes #61 stale data) */
       if (this.workoutService.trackedExercises().length > 0) {
         await this.workoutService.refreshTrackedExercises();
       }
       this.isSaving.set(false);
-      // Edit replaced detail, so replace edit too. History is `… → Detail` once.
+      /** Edit replaced detail, so replace edit too. History is `… → Detail` once. */
       this.router.navigate(['/exercise', this.selectedExercise()?.id], { replaceUrl: true });
     });
   }

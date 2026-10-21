@@ -8,11 +8,7 @@
           @if (m.media_type === 'youtube' || m.media_type === 'video') {
             <ng-icon name="lucideVideo" class="h-5 w-5 text-muted-foreground"></ng-icon>
           } @else {
-            <img
-              [src]="m.media_url"
-              class="h-full w-full object-cover text-[8px]"
-              alt="media"
-            />
+            <img [src]="m.media_url" class="h-full w-full object-cover text-[8px]" alt="media" />
           }
         </div>
         <div class="flex flex-col flex-1 overflow-hidden">

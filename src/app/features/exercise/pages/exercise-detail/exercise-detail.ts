@@ -46,10 +46,8 @@ export class ExerciseDetail implements OnInit {
   recommendedExercises = signal<Exercise[]>([]);
   isLoading = signal<boolean>(true);
 
-  // Tab state
   activeTab = signal<'overview' | 'journey'>('overview');
 
-  // Journey data
   highestWeight = signal<number>(0);
   highestWeightReps = signal<number>(0);
   totalSets = signal<number>(0);
@@ -70,7 +68,6 @@ export class ExerciseDetail implements OnInit {
           const detail = await this.workoutService.getExerciseById(id);
           this.exercise.set(detail);
 
-          // Fetch recommendations
           if (detail && detail.primary_muscle) {
             const recommendations = await this.exerciseService.getExercisesByMuscle(
               detail.primary_muscle.id,
@@ -80,7 +77,6 @@ export class ExerciseDetail implements OnInit {
             this.recommendedExercises.set([]);
           }
 
-          // Fetch journey stats
           if (detail) {
             const stats = await this.exerciseService.getExerciseJourneyStats(id);
             this.highestWeight.set(stats.highestWeight);
