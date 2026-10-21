@@ -1,4 +1,4 @@
-import { cva, type VariantProps } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
 
 export const headerVariants = cva('block sticky top-0 left-0 right-0 w-full z-99 flex flex-col', {
   variants: {
@@ -11,5 +11,3 @@ export const headerVariants = cva('block sticky top-0 left-0 right-0 w-full z-99
     transparent: false,
   },
 });
-
-export type HeaderVariants = NonNullable<VariantProps<typeof headerVariants>['transparent']>;

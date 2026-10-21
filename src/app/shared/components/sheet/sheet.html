@@ -1,12 +1,11 @@
 @if (isOpen()) {
   <!-- Backdrop -->
-  <div
-    class="fixed inset-0 z-100 bg-ink/30 backdrop-blur-sm"
-    (click)="close()"
-  ></div>
+  <div class="fixed inset-0 z-100 bg-ink/30 backdrop-blur-sm" (click)="close()"></div>
 
   <!-- Container: bottom sheet on mobile, centered modal on desktop -->
-  <div class="fixed inset-0 z-100 flex items-end md:items-center justify-center p-0 md:p-4 pointer-events-none">
+  <div
+    class="fixed inset-0 z-100 flex items-end md:items-center justify-center p-0 md:p-4 pointer-events-none"
+  >
     <div
       class="pointer-events-auto bg-card w-full md:max-w-[480px] md:w-full max-h-[85vh] md:max-h-[80vh] rounded-t-[32px] md:rounded-[32px] border border-border flex flex-col overflow-hidden sheet-panel"
     >
@@ -18,9 +17,15 @@
         ></div>
 
         <!-- Header — vertically centered -->
-        <div class="px-5 md:px-6 pt-2 md:pt-6 pb-4 flex justify-between items-center gap-4 shrink-0 border-b border-transparent">
+        <div
+          class="px-5 md:px-6 pt-2 md:pt-6 pb-4 flex justify-between items-center gap-4 shrink-0 border-b border-transparent"
+        >
           <div class="flex flex-col justify-center gap-1 min-h-[36px]">
-            <h2 class="font-display font-bold text-[20px] tracking-tight leading-none flex items-center">{{ title() }}</h2>
+            <h2
+              class="font-display font-bold text-[20px] tracking-tight leading-none flex items-center"
+            >
+              {{ title() }}
+            </h2>
             @if (description()) {
               <p class="text-sm text-muted-foreground leading-relaxed">{{ description() }}</p>
             }
@@ -37,12 +42,10 @@
           </button>
         </div>
 
-        <!-- Content -->
         <div class="px-5 md:px-6 pt-4 pb-4 flex-1 overflow-y-auto w-full relative">
           <ng-content></ng-content>
         </div>
 
-        <!-- Footer — primary dark, bold -->
         <div
           class="px-5 md:px-6 pb-5 md:pb-6 pt-4 shrink-0 bg-card rounded-b-[32px] [&_button]:font-bold"
         >

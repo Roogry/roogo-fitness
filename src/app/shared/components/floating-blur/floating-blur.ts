@@ -6,9 +6,6 @@ import { Component, input } from '@angular/core';
  * The blur starts 24px above the wrapped content (fully transparent), is 60% at the content's top
  * edge, and fully hides the content behind it at the content's vertical middle. From the middle down it stays fully hidden
  * until `extendBottom` below the wrapper.
- *
- * @example
- * <app-floating-blur extendBottom="-2rem"><div class="...">floating bar</div></app-floating-blur>
  */
 @Component({
   selector: 'app-floating-blur',
@@ -43,6 +40,5 @@ import { Component, input } from '@angular/core';
   `,
 })
 export class FloatingBlurComponent {
-  /** How far below the wrapped element the blur keeps hiding content (CSS length, usually negative). */
   readonly extendBottom = input<string>('0px');
 }

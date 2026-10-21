@@ -18,20 +18,6 @@ import { ZardButtonComponent } from '../zard/button/button.component';
 import { ClassValue, mergeClasses } from '@/shared/utils';
 import { headerVariants } from './header.variants';
 
-/**
- * A shared header component with title and back navigation.
- *
- * @property {string} title - The title displayed in the header.
- * @property {boolean} transparent - Whether the header background is transparent.
- * @property {boolean} showBackBtn - Whether to show the back navigation button.
- * @property {any[] | null} backLink - Optional specific router link array for back navigation.
- * @property {boolean} backReplaceUrl - When `backLink` is set, replace the current history entry instead of pushing.
- * @property {ClassValue} class - Additional CSS classes for styling.
- * @property {void} onBackClick - Event emitted when the back button is clicked.
- *
- * @example
- * <app-header title="Dashboard" [showBackBtn]="true" (onBackClick)="handleBack()"></app-header>
- */
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -71,14 +57,6 @@ export class HeaderComponent implements AfterViewInit {
     }
   }
 
-  /**
-   * Navigates the user back to the previous view or specified link.
-   *
-   * @returns {void}
-   *
-   * @example
-   * headerComponent.goBack();
-   */
   goBack() {
     if (this.backLink()) {
       this.router.navigate(this.backLink()!, { replaceUrl: this.backReplaceUrl() });

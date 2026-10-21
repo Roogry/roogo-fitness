@@ -1,16 +1,7 @@
 import { Component, signal, input, inject, DestroyRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-/**
- * Container for navigation pills. Shrinks visually on scroll unless disabled.
- * 
- * @property {boolean} disableScrollShrink - If true, disables the shrink-on-scroll behavior.
- * 
- * @example
- * <app-nav-pills>
- *   <button app-nav-pills-item [active]="true">Tab 1</button>
- * </app-nav-pills>
- */
+/** Container for navigation pills. Shrinks visually on scroll unless disabled. */
 @Component({
   selector: 'app-nav-pills',
   standalone: true,
@@ -30,14 +21,7 @@ export class NavPillsComponent implements OnInit {
   readonly disableScrollShrink = input<boolean>(false);
   readonly isScrolled = signal(false);
 
-  /**
-   * Initializes scroll listener to shrink pills when scrolling down.
-   * 
-   * @returns {void}
-   * 
-   * @example
-   * navPillsComponent.ngOnInit();
-   */
+  /** Initializes scroll listener to shrink pills when scrolling down. */
   ngOnInit() {
     const handleScroll = (event: Event) => {
       if (this.disableScrollShrink()) {
@@ -50,10 +34,7 @@ export class NavPillsComponent implements OnInit {
 
       if (target === document || target === window) {
         scrollTop =
-          window.pageYOffset ||
-          document.documentElement.scrollTop ||
-          document.body.scrollTop ||
-          0;
+          window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
       } else if (target instanceof HTMLElement) {
         scrollTop = target.scrollTop;
       }
@@ -61,7 +42,7 @@ export class NavPillsComponent implements OnInit {
       this.isScrolled.set(scrollTop > 20);
     };
 
-    // Use capture phase to intercept scroll events from scrollable child containers (e.g. MainLayout)
+    /** Use capture phase to intercept scroll events from scrollable child containers (e.g. MainLayout) */
     window.addEventListener('scroll', handleScroll, true);
 
     this.destroyRef.onDestroy(() => {

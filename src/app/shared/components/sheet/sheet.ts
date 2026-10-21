@@ -4,9 +4,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideX } from '@ng-icons/lucide';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 
-/**
- * A slide-in sheet on mobile, centered modal on desktop.
- */
+/** A slide-in sheet on mobile, centered modal on desktop. */
 @Component({
   selector: 'app-sheet',
   standalone: true,
