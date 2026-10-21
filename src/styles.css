@@ -6,12 +6,12 @@
 :root {
   --radius: 1rem;
 
-  /* Typography — Font Families (Design System) */
+  /** Typography — Font Families (Design System) */
   --font-display: 'Bricolage Grotesque', sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-  /* Brand tokens & aliases */
+  /** Brand tokens & aliases */
   --lime: #caf85a;
   --lime-600: #b5e83f;
   --lime-foreground: var(--ink);
@@ -31,26 +31,26 @@
   --info: #3d7de5;
   --info-foreground: #ffffff;
 
-  /* Brand & Ground — synced to docs/11-design-system.md */
-  --background: #f7f8f2; /* Canvas */
-  --foreground: var(--ink); /* Ink */
-  --card: #ffffff; /* Surface */
+  /** Brand & Ground — synced to docs/11-design-system.md */
+  --background: #f7f8f2; /** Canvas */
+  --foreground: var(--ink); /** Ink */
+  --card: #ffffff; /** Surface */
   --card-foreground: var(--ink);
   --popover: #ffffff;
   --popover-foreground: var(--ink);
-  --primary: var(--lime); /* Lime */
+  --primary: var(--lime); /** Lime */
   --primary-foreground: var(--ink);
-  --secondary: #eef1e6; /* Mist */
+  --secondary: #eef1e6; /** Mist */
   --secondary-foreground: var(--ink);
   --muted: #eef1e6;
-  --muted-foreground: #5c6b60; /* Muted Ink */
-  --accent: #eef8cf; /* Lime-100 */
+  --muted-foreground: #5c6b60; /** Muted Ink */
+  --accent: #eef8cf; /** Lime-100 */
   --accent-foreground: var(--ink);
-  --destructive: #e5533d; /* Error */
+  --destructive: #e5533d; /** Error */
   --destructive-foreground: #ffffff;
-  --border: #e3e7da; /* Hairline */
+  --border: #e3e7da; /** Hairline */
   --input: #ffffff;
-  --ring: #1b3a2a; /* Forest — high contrast focus */
+  --ring: #1b3a2a; /** Forest — high contrast focus */
   --chart-1: #2f9e5a;
   --chart-2: #e8a723;
   --chart-3: #3d7de5;
@@ -143,7 +143,7 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  /* Brand extensions */
+  /** Brand extensions */
   --color-forest: var(--forest);
   --color-forest-foreground: var(--forest-foreground);
   --color-ink: var(--ink);
@@ -157,7 +157,7 @@
   --color-warning: var(--warning);
   --color-error: var(--error);
   --color-info: var(--info);
-  /* Fonts */
+
   --font-sans: var(--font-body);
   --font-mono: var(--font-mono);
   --font-display: var(--font-display);
@@ -177,7 +177,7 @@
     line-height: 24px;
   }
 
-  /* Display & Headings — Bricolage Grotesque, tight kerning, brutalist */
+  /** Display & Headings — Bricolage Grotesque, tight kerning, brutalist */
   h1,
   h2,
   h3,
@@ -191,7 +191,7 @@
     letter-spacing: -0.01em;
   }
 
-  /* Ensure buttons, inputs inherit body font unless overridden */
+  /** Ensure buttons, inputs inherit body font unless overridden */
   button,
   input,
   select,
@@ -211,7 +211,7 @@
   }
 }
 
-/* Utility for tabular numbers — JetBrains Mono */
+/** Utility for tabular numbers — JetBrains Mono */
 .font-mono {
   font-family: var(--font-mono) !important;
 }
