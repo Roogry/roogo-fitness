@@ -1,4 +1,9 @@
 import { Injectable, computed, signal } from '@angular/core';
+import {
+  KEYBOARD_OPEN_OFFSET_PX,
+  KEYBOARD_REMEASURE_DELAYS_MS,
+} from '@/core/utils/visual-viewport.constants';
+import { computeKeyboardOffset } from '@/core/utils/visual-viewport.utils';
 
 /**
  * Exposes the on-screen keyboard offset (px from layout viewport bottom to visual viewport bottom)
@@ -17,7 +22,8 @@ export class VisualViewportService {
   readonly textInputFocused = signal(false);
   /** True when the soft keyboard is (likely) open; used to hide bottom chrome that would overlap the helper bar. */
   readonly keyboardOpen = computed(
-    () => this.keyboardOffset() > 40 || (this.isTouch && this.textInputFocused()),
+    () =>
+      this.keyboardOffset() > KEYBOARD_OPEN_OFFSET_PX || (this.isTouch && this.textInputFocused()),
   );
   readonly isTouch =
     typeof window !== 'undefined' &&
@@ -29,7 +35,9 @@ export class VisualViewportService {
         el instanceof HTMLElement &&
         (el.tagName === 'TEXTAREA' ||
           (el.tagName === 'INPUT' &&
-            !['checkbox', 'radio', 'button', 'submit', 'range'].includes((el as HTMLInputElement).type)));
+            !['checkbox', 'radio', 'button', 'submit', 'range'].includes(
+              (el as HTMLInputElement).type,
+            )));
       document.addEventListener('focusin', (e) => this.textInputFocused.set(isTextField(e.target)));
       document.addEventListener('focusout', (e) => {
         if (!isTextField((e as FocusEvent).relatedTarget)) this.textInputFocused.set(false);
@@ -49,20 +57,13 @@ export class VisualViewportService {
     vv.addEventListener('resize', update);
     vv.addEventListener('scroll', update);
     window.addEventListener('scroll', update, { passive: true });
-    // iOS animates the keyboard and page pan after focus; re-measure once it settles.
+    /** iOS animates the keyboard and page pan after focus; re-measure once it settles. */
     document.addEventListener('focusin', () => {
       update();
-      setTimeout(update, 100);
-      setTimeout(update, 350);
-      setTimeout(update, 600);
+      for (const delay of KEYBOARD_REMEASURE_DELAYS_MS) {
+        setTimeout(update, delay);
+      }
     });
     apply();
   }
-}
-
-export function computeKeyboardOffset(
-  innerHeight: number,
-  vv: { height: number; offsetTop: number },
-): number {
-  return Math.max(0, Math.round(innerHeight - (vv.height + vv.offsetTop)));
 }
