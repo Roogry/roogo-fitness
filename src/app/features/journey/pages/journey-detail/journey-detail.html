@@ -45,16 +45,19 @@
 
   <main class="container mx-auto px-4 pb-6 max-w-2xl mt-4">
     <div class="flex flex-col gap-4">
-      <!-- Stats Row -->
       <div class="flex items-center justify-start gap-8">
         <div class="flex flex-col gap-1">
           <span class="text-sm text-muted-foreground">Duration</span>
-          <span class="font-mono font-medium">{{ loggedSession()?.total_duration ?? 0 | durationFormat }}</span>
+          <span class="font-mono font-medium">{{
+            loggedSession()?.total_duration ?? 0 | durationFormat
+          }}</span>
         </div>
 
         <div class="flex flex-col gap-1">
           <span class="text-sm text-muted-foreground">Volume</span>
-          <span class="font-mono font-medium">{{ loggedSession()?.total_weight_lifted | number: '1.0-0' }} kg</span>
+          <span class="font-mono font-medium"
+            >{{ loggedSession()?.total_weight_lifted | number: '1.0-0' }} kg</span
+          >
         </div>
 
         <div class="flex flex-col gap-1">
@@ -63,7 +66,6 @@
         </div>
       </div>
 
-      <!-- Exercises List -->
       <div class="flex flex-col gap-4 mt-8">
         <h2 class="font-semibold text-lg">Exercises</h2>
 

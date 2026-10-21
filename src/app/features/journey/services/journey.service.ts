@@ -2,60 +2,24 @@ import { Injectable, inject } from '@angular/core';
 import { DbService } from '../../../core/services/db.service';
 import { LoggedSession } from '@/shared/models';
 
-/**
- * Service for calculating and retrieving user journey statistics and workout streaks.
- *
- * @example
- * const stats = await journeyService.getJourneyStreakStats();
- */
 @Injectable({
   providedIn: 'root',
 })
 export class JourneyService {
   private dbService = inject(DbService);
 
-  /**
-   * Retrieves a specific logged workout session by its ID.
-   * @param {number} id The ID of the session.
-   * @returns {Promise<LoggedSession | undefined>} A promise resolving to the logged session.
-   * @example
-   * const session = await this.journeyService.getLoggedSession(1);
-   */
   async getLoggedSession(id: number): Promise<LoggedSession | undefined> {
     return this.dbService.getLoggedSession(id);
   }
 
-  /**
-   * Deletes a logged session from the database.
-   * @param {number} id The ID of the session to delete.
-   * @returns {Promise<void>}
-   * @example
-   * await this.journeyService.deleteLoggedSession(1);
-   */
   async deleteLoggedSession(id: number): Promise<void> {
     return this.dbService.deleteLoggedSession(id);
   }
 
-  /**
-   * Saves or updates a logged session in the database.
-   * @param {LoggedSession} session The logged session to save.
-   * @returns {Promise<number>} A promise resolving to the ID of the saved session.
-   * @example
-   * await this.journeyService.updateLoggedSession(session);
-   */
   async updateLoggedSession(session: LoggedSession): Promise<number> {
     return this.dbService.saveLoggedSession(session);
   }
 
-  /**
-   * Retrieves user statistics including total sessions, current streak, and longest streak.
-   *
-   * @returns {Promise<any>} An object containing streak statistics and workout dates.
-   *
-   * @example
-   * const stats = await journeyService.getJourneyStreakStats();
-   * console.log(stats.currentStreak);
-   */
   async getJourneyStreakStats() {
     const sessions = await this.dbService.getLoggedSessions();
 
@@ -70,7 +34,7 @@ export class JourneyService {
       };
     }
 
-    // Sort ascending for streak calculation
+    /** Sort ascending for streak calculation */
     const sortedSessions = [...sessions].sort(
       (a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime(),
     );
@@ -84,7 +48,7 @@ export class JourneyService {
       return Math.floor(monday.getTime() / (7 * 24 * 60 * 60 * 1000));
     };
 
-    // Extract unique absolute weeks
+    /** Extract unique absolute weeks */
     const uniqueWeeks = Array.from(
       new Set(sortedSessions.map((s) => getAbsoluteWeek(s.start_time))),
     );
@@ -117,15 +81,14 @@ export class JourneyService {
       }
     }
 
-    // Format last session date as d/m/yy (e.g. 13/6/26)
-    // Note: sessions is sorted descending, so sessions[0] is the most recent session
+    /** Note: sessions is sorted descending, so sessions[0] is the most recent session */
     const lastSessionDateObj = new Date(sessions[0].start_time);
     const day = lastSessionDateObj.getDate();
     const month = lastSessionDateObj.getMonth() + 1;
     const year = lastSessionDateObj.getFullYear().toString().slice(-2);
     const lastSession = `${day}/${month}/${year}`;
 
-    // Expose all workout dates as simple ISO strings (YYYY-MM-DD) for calendar highlighting
+    /** Expose all workout dates as simple ISO strings (YYYY-MM-DD) for calendar highlighting */
     const workoutDates = sessions.map((s) => {
       const d = new Date(s.start_time);
       const pad = (n: number) => n.toString().padStart(2, '0');
@@ -141,10 +104,6 @@ export class JourneyService {
     };
   }
 
-  /**
-   * Calculates how many unique days the user has trained in the current week (starting Monday).
-   * @returns {Promise<number>} Number of days trained.
-   */
   async getDaysTrainedThisWeek(): Promise<number> {
     const sessions = await this.dbService.getLoggedSessions();
     const now = new Date();
