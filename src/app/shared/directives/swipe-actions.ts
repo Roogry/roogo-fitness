@@ -9,7 +9,6 @@ import {
   Injectable,
   input,
   OnDestroy,
-  output,
   signal,
   viewChild,
 } from '@angular/core';
@@ -136,8 +135,6 @@ export class SwipeActions implements OnDestroy {
   private readonly actions = viewChild<ElementRef<HTMLElement>>('actions');
 
   readonly enabled = input(false, { transform: booleanAttribute });
-  /** The drag has locked horizontal, before it snaps open or closed. */
-  readonly swipeStart = output<void>();
 
   readonly open = signal(false);
   readonly dragging = signal(false);
@@ -227,6 +224,13 @@ export class SwipeActions implements OnDestroy {
     this.group?.closed(this);
   }
 
+  /** Opens the tray without a drag. The screen-reader actions button uses this. */
+  reveal() {
+    if (!this.enabled()) return;
+    this.syncActionWidth();
+    this.snapOpen();
+  }
+
   private snapOpen() {
     this.dragging.set(false);
     this.open.set(true);
@@ -270,7 +274,6 @@ export class SwipeActions implements OnDestroy {
       this.axis = nextSwipeAxis(dx, dy);
       if (this.axis !== 'horizontal') return;
       this.dragging.set(true);
-      this.swipeStart.emit();
     }
 
     if (this.axis !== 'horizontal') return;

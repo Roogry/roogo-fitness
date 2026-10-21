@@ -47,7 +47,7 @@ describe('swipe gesture math', () => {
   imports: [SwipeActions],
   providers: [SwipeActionsGroup],
   template: `
-    <app-swipe-actions [enabled]="true" (swipeStart)="swipeStarts = swipeStarts + 1">
+    <app-swipe-actions [enabled]="true">
       <button swipe-actions type="button">Replace</button>
       <button swipe-actions type="button">Delete</button>
       <div data-testid="body">
@@ -62,9 +62,7 @@ describe('swipe gesture math', () => {
     </app-swipe-actions>
   `,
 })
-class Host {
-  swipeStarts = 0;
-}
+class Host {}
 
 /** Laid-out width of the session reveal: w-44. */
 const REVEAL_PX = 176;
@@ -156,7 +154,6 @@ describe('SwipeActions', () => {
     expect(move.defaultPrevented).toBe(false);
     flush();
     expect(pane.style.transform).toBe('translate3d(-50px, 0, 0)');
-    expect(fixture.componentInstance.swipeStarts).toBe(1);
 
     touch('touchend', body, 150, 42);
     flush();
@@ -211,6 +208,18 @@ describe('SwipeActions', () => {
     touch('touchend', firstBody, 40, 12);
     flush();
     expect(firstPane.style.transform).toBe('translate3d(0px, 0, 0)');
+  });
+
+  it('opens the tray when reveal is called', () => {
+    const swipe = fixture.debugElement.children[0].componentInstance as SwipeActions;
+    expect(trays()[0].hasAttribute('inert')).toBe(true);
+
+    swipe.reveal();
+    flush();
+
+    expect(panes()[0].style.transform).toBe('translate3d(-176px, 0, 0)');
+    expect(trays()[0].hasAttribute('inert')).toBe(false);
+    expect(panes()[1].style.transform).toBe('translate3d(0px, 0, 0)');
   });
 
   it('does not follow a click through after a swipe', () => {

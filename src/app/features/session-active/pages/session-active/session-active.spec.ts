@@ -8,7 +8,6 @@ import { provideZard } from '@/core/provider/providezard';
 import { ExerciseService } from '@/core/services/exercise.service';
 import { PointerModeService } from '@/core/services/pointer-mode.service';
 import { VisualViewportService } from '@/core/services/visual-viewport.service';
-import { ExerciseContextMenuService } from '@/features/exercise/services/exercise-context-menu.service';
 import { WorkoutService } from '@/core/services/workout.service';
 import { SwipeActionsGroup } from '@/shared/directives/swipe-actions';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
@@ -386,13 +385,7 @@ describe('SessionActive replace exercise', () => {
     }).compileComponents();
   });
 
-  afterEach(async () => {
-    TestBed.inject(ExerciseContextMenuService).close();
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    document.querySelector('.cdk-overlay-container')?.remove();
-    document.documentElement.classList.remove('cdk-global-scrollblock');
-    document.documentElement.style.top = '';
-    document.documentElement.style.left = '';
+  afterEach(() => {
     TestBed.resetTestingModule();
   });
 
@@ -522,13 +515,15 @@ describe('SessionActive replace exercise', () => {
     expect(removeTrackedExercise).toHaveBeenCalledWith(bench.id);
   });
 
-  it('asks before deleting when the touch menu deletes a logged exercise', async () => {
+  it('asks before deleting when the actions button reveals a logged exercise', async () => {
     trackedExercises.set([logged(bench, '2026-10-11T00:00:00.000Z')]);
     const fixture = await render();
 
-    openTouchMenu(fixture);
+    revealTouchActions(fixture);
     (
-      document.querySelector('[data-testid="exercise-context-delete"]') as HTMLButtonElement
+      fixture.nativeElement.querySelector(
+        '[data-testid="swipe-actions"] button[aria-label="Delete"]',
+      ) as HTMLButtonElement
     ).click();
 
     expect(dialog.create).toHaveBeenCalledWith(
@@ -542,13 +537,15 @@ describe('SessionActive replace exercise', () => {
     expect(removeTrackedExercise).not.toHaveBeenCalled();
   });
 
-  it('asks before replacing when the touch menu replaces a logged exercise', async () => {
+  it('asks before replacing when the actions button reveals a logged exercise', async () => {
     trackedExercises.set([logged(bench, '2026-10-11T00:00:00.000Z')]);
     const fixture = await render();
 
-    openTouchMenu(fixture);
+    revealTouchActions(fixture);
     (
-      document.querySelector('[data-testid="exercise-context-replace"]') as HTMLButtonElement
+      fixture.nativeElement.querySelector(
+        '[data-testid="swipe-actions"] button[aria-label="Replace"]',
+      ) as HTMLButtonElement
     ).click();
 
     expect(dialog.create).toHaveBeenCalledWith(
@@ -574,11 +571,13 @@ describe('SessionActive replace exercise', () => {
   });
 });
 
-function openTouchMenu(fixture: ComponentFixture<SessionActive>) {
+function revealTouchActions(fixture: ComponentFixture<SessionActive>) {
   const actions = fixture.nativeElement.querySelector(
     '[data-testid="exercise-actions"]',
   ) as HTMLButtonElement;
   expect(actions.className).toContain('sr-only');
+  const tray = fixture.nativeElement.querySelector('[data-testid="swipe-actions"]') as HTMLElement;
+  Object.defineProperty(tray, 'offsetWidth', { configurable: true, value: 176 });
   actions.click();
   fixture.detectChanges();
 }

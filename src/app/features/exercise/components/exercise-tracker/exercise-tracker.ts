@@ -22,11 +22,9 @@ import {
   lucideArrowLeftRight,
 } from '@ng-icons/lucide';
 import { PointerModeService } from '@/core/services/pointer-mode.service';
-import { ExerciseContextMenuService } from '@/features/exercise/services/exercise-context-menu.service';
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/zard/popover';
-import { LongPressDirective } from '@/shared/directives/long-press.directive';
 import { SwipeActions } from '@/shared/directives/swipe-actions';
 import { LoggedExercise, LoggedSet } from '@/shared/models';
 import { VisualViewportService } from '@/core/services/visual-viewport.service';
@@ -65,7 +63,6 @@ import {
     ZardPopoverDirective,
     KeyboardHelperBar,
     SwipeActions,
-    LongPressDirective,
   ],
   providers: [
     provideIcons({
@@ -109,23 +106,16 @@ export class ExerciseTracker implements OnDestroy {
   private readonly viewport = inject(VisualViewportService);
   private readonly pointerMode = inject(PointerModeService);
   private readonly router = inject(Router);
-  private readonly contextMenu = inject(ExerciseContextMenuService);
-  private readonly exerciseCard = viewChild(ZardCardComponent, { read: ElementRef });
+  private readonly swipeActions = viewChild(SwipeActions);
   readonly isDesktopPointer = this.pointerMode.isDesktop;
-  /** Desktop kebab only. The touch menu lives in ExerciseContextMenuService. */
+  /** Desktop kebab only. Touch reveals the swipe tray. */
   readonly actionsMenuOpen = signal(false);
 
   /** Touch session cards reveal actions by swipe. Desktop keeps the visible menu. */
   readonly swipeEnabled = computed(
     () => this.editable() && this.sessionActions() && !this.isDesktopPointer(),
   );
-  readonly longPressEnabled = computed(() => {
-    if (!this.swipeEnabled()) return false;
-    return this.contextMenu.canPress(this.trackedExercise().exercise.id);
-  });
-  readonly isCardPressed = computed(
-    () => this.contextMenu.pressedExerciseId() === this.trackedExercise().exercise.id,
-  );
+  readonly actionsRevealed = computed(() => this.swipeActions()?.open() ?? false);
   readonly keyboardOffset = this.viewport.keyboardOffset;
   readonly visualBottom = this.viewport.visualBottom;
 
@@ -169,9 +159,6 @@ export class ExerciseTracker implements OnDestroy {
 
   ngOnDestroy() {
     this.destroyed = true;
-    const exerciseId = this.trackedExercise().exercise.id;
-    this.contextMenu.release(exerciseId);
-    if (this.contextMenu.openExerciseId() === exerciseId) this.contextMenu.close();
   }
 
   onFieldFocus(set: LoggedSet, field: 'weight' | 'reps', event: Event) {
@@ -444,14 +431,8 @@ export class ExerciseTracker implements OnDestroy {
     this.exerciseRemoved.emit({ exerciseId: this.trackedExercise().exercise.id });
   }
 
-  onCardPressing(isPressed: boolean) {
-    const exerciseId = this.trackedExercise().exercise.id;
-    if (isPressed) this.contextMenu.press(exerciseId);
-    else this.contextMenu.release(exerciseId);
-  }
-
-  onSwipeStart() {
-    this.contextMenu.close();
+  onExerciseActions() {
+    this.swipeActions()?.reveal();
   }
 
   onExerciseNameClick() {
@@ -462,17 +443,6 @@ export class ExerciseTracker implements OnDestroy {
     if (event.key !== 'Enter') return;
     event.preventDefault();
     this.onExerciseNameClick();
-  }
-
-  onActionsLongPress() {
-    const card = this.exerciseCard()?.nativeElement as HTMLElement | undefined;
-    if (!card) return;
-    this.contextMenu.open({
-      exerciseId: this.trackedExercise().exercise.id,
-      card,
-      onReplace: () => this.onReplaceClick(),
-      onDelete: () => this.onDeleteClick(),
-    });
   }
 
   onReplaceClick() {

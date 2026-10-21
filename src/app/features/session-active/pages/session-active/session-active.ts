@@ -191,7 +191,7 @@ export class SessionActive implements OnInit {
       return;
     }
 
-    // Swipe, long-press, and the desktop menu all emit this. Close on cancel so the row
+    // Swipe and the desktop menu both emit this. Close on cancel so the row
     // does not stay open, and close as the dialog opens because Escape and the backdrop
     // dismiss it without running the cancel callback.
     this.swipeGroup.closeAll();
