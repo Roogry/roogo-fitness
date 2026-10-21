@@ -1,5 +1,4 @@
 <div class="min-h-screen bg-background text-foreground pb-20">
-  <!-- Header -->
   <app-header
     [title]="isEditMode() ? 'Edit Session' : 'New Session'"
     [showBackBtn]="true"
@@ -42,7 +41,6 @@
       </z-form-control>
     </z-form-field>
 
-    <!-- Active Exercises -->
     <div class="flex flex-col gap-6">
       @if (planService.plannedExercises().length === 0) {
         <div
@@ -71,7 +69,6 @@
     </div>
   </main>
 
-  <!-- Add Exercise Sheet -->
   <app-sheet
     [isOpen]="isAddSheetOpen()"
     (onOpenChange)="isAddSheetOpen.set($event)"

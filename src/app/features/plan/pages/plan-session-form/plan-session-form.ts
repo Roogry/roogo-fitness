@@ -41,7 +41,6 @@ export class PlanSessionForm implements OnInit {
   route = inject(ActivatedRoute);
   dialogService = inject(ZardDialogService);
 
-  // State
   isAddSheetOpen = signal(false);
   selectedSession = signal<WorkoutPlanSession | null>(null);
   editSessionId = signal<number | null>(null);

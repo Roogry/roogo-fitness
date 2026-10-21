@@ -220,13 +220,12 @@ export class PlanList implements OnInit {
 
     let defaultPlan = plans.find((p) => p.isDefault);
 
-    // Move sessions from deleted plan to default plan
+    /** Move sessions from deleted plan to default plan */
     if (defaultPlan && planToDelete.sessions.length > 0) {
       defaultPlan.sessions = [...defaultPlan.sessions, ...planToDelete.sessions];
       await this.dbService.saveWorkoutPlan(defaultPlan);
     }
 
-    // Remove the plan centrally
     await this.dbService.deleteWorkoutPlan(planId);
 
     if (this.expandedPlanId() === planId) {
@@ -244,7 +243,6 @@ export class PlanList implements OnInit {
       const sessionsVal = Number(f.sessionsPerWeek().value());
 
       if (this.planService.selectedPlanId() !== null) {
-        // Update existing
         const plan = plans.find((p) => p.id === this.planService.selectedPlanId());
         if (plan) {
           plan.title = titleVal;
@@ -253,7 +251,6 @@ export class PlanList implements OnInit {
           await this.dbService.saveWorkoutPlan(plan);
         }
       } else {
-        // Create new
         const newId = Date.now();
         const newPlan: WorkoutPlan = {
           id: newId,

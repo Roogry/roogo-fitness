@@ -2,7 +2,6 @@
 
 <div class="container max-w-2xl mx-auto px-4">
   <div class="flex flex-col gap-4">
-    <!-- Start Empty Workout Action -->
     <button
       z-button
       type="button"
@@ -58,7 +57,6 @@
     }
   </div>
 
-  <!-- Plan Form Sheet -->
   <app-sheet
     [isOpen]="isOpenPlanForm()"
     (onOpenChange)="isOpenPlanForm.set($event)"
@@ -153,7 +151,6 @@
       </div>
     </div>
 
-    <!-- Sheet Footer — Batal + Simpan dark bold -->
     <div app-sheet-footer class="flex gap-3 w-full">
       <button
         z-button
