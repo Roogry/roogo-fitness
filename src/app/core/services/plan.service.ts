@@ -5,12 +5,6 @@ import { Exercise, WorkoutPlanSession, WorkoutPlanExercise } from '@/shared/mode
 @Injectable({
   providedIn: 'root',
 })
-/**
- * Service to manage workout plan sessions and their planned exercises.
- * @example
- * const planService = inject(PlanService);
- * planService.addPlannedExercise(exercise);
- */
 export class PlanService {
   private dbService = inject(DbService);
 
@@ -18,13 +12,6 @@ export class PlanService {
   sessionTitle = signal<string>('');
   plannedExercises = signal<WorkoutPlanExercise[]>([]);
 
-  /**
-   * Adds an exercise to the current planned session.
-   * @param {Exercise} exercise The exercise to add.
-   * @returns {void}
-   * @example
-   * this.planService.addPlannedExercise(exercise);
-   */
   addPlannedExercise(exercise: Exercise) {
     if (!exercise || exercise.id === undefined || exercise.id === null) {
       console.warn('Cannot add an invalid or undefined exercise:', exercise);
@@ -48,14 +35,6 @@ export class PlanService {
     });
   }
 
-  /**
-   * Updates an existing planned exercise in the session.
-   * @param {number} exerciseId The ID of the exercise to update.
-   * @param {Partial<WorkoutPlanExercise>} updates The properties to update.
-   * @returns {void}
-   * @example
-   * this.planService.updatePlannedExercise(1, { target_sets: 4 });
-   */
   updatePlannedExercise(exerciseId: number, updates: Partial<WorkoutPlanExercise>) {
     this.plannedExercises.update((current) =>
       current.map((pe) =>
@@ -66,13 +45,6 @@ export class PlanService {
     );
   }
 
-  /**
-   * Removes a planned exercise from the session.
-   * @param {number} exerciseId The ID of the exercise to remove.
-   * @returns {void}
-   * @example
-   * this.planService.removePlannedExercise(1);
-   */
   removePlannedExercise(exerciseId: number) {
     this.plannedExercises.update((current) =>
       current
@@ -84,14 +56,6 @@ export class PlanService {
     );
   }
 
-  /**
-   * Loads a session from an existing plan into the service state.
-   * @param {number} planId The ID of the plan.
-   * @param {number} sessionId The ID of the session within the plan.
-   * @returns {Promise<void>}
-   * @example
-   * await this.planService.setSessionFromPlan(1, 2);
-   */
   async setSessionFromPlan(planId: number, sessionId: number) {
     const plan = await this.dbService.getWorkoutPlan(planId);
     if (!plan) throw new Error('Plan not found');
@@ -109,12 +73,6 @@ export class PlanService {
     }
   }
 
-  /**
-   * Creates and saves a new session into the currently selected plan.
-   * @returns {Promise<void>}
-   * @example
-   * await this.planService.createSession();
-   */
   async createSession() {
     if (this.plannedExercises().length === 0) return;
 
@@ -146,13 +104,6 @@ export class PlanService {
     this.clearPlanSession();
   }
 
-  /**
-   * Updates an existing session in the currently selected plan.
-   * @param {number} sessionId The ID of the session to update.
-   * @returns {Promise<void>}
-   * @example
-   * await this.planService.updateSession(2);
-   */
   async updateSession(sessionId: number) {
     const plan = await this.dbService.getWorkoutPlan(this.selectedPlanId()!);
     if (!plan) throw new Error('The plan is not found');
@@ -179,14 +130,6 @@ export class PlanService {
     await this.dbService.saveWorkoutPlan(plan);
   }
 
-  /**
-   * Deletes a session from a specific plan.
-   * @param {number} planId The ID of the plan.
-   * @param {number} sessionId The ID of the session to delete.
-   * @returns {Promise<void>}
-   * @example
-   * await this.planService.deleteSessionFromPlan(1, 2);
-   */
   async deleteSessionFromPlan(planId: number, sessionId: number): Promise<void> {
     const plan = await this.dbService.getWorkoutPlan(planId);
     if (!plan) throw new Error('Plan not found');
@@ -195,12 +138,6 @@ export class PlanService {
     await this.dbService.saveWorkoutPlan(plan);
   }
 
-  /**
-   * Clears the current session state in the service.
-   * @returns {void}
-   * @example
-   * this.planService.clearPlanSession();
-   */
   clearPlanSession() {
     this.selectedPlanId.set(null);
     this.sessionTitle.set('');

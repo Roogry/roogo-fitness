@@ -1,4 +1,9 @@
-import { type ConnectedPosition, Overlay, OverlayPositionBuilder, type OverlayRef } from '@angular/cdk/overlay';
+import {
+  type ConnectedPosition,
+  Overlay,
+  OverlayPositionBuilder,
+  type OverlayRef,
+} from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { isPlatformBrowser } from '@angular/common';
 import {
@@ -23,7 +28,7 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
 import { filter, type Subscription } from 'rxjs';
 
-import { mergeClasses } from '@/shared/utils/merge-classes';
+import { mergeClasses } from '@/shared/utils/merge-classes.utils';
 
 import { popoverVariants } from './popover.variants';
 
@@ -75,7 +80,7 @@ const POPOVER_POSITIONS_MAP: { [key: string]: ConnectedPosition } = {
 
 /**
  * A directive to display content in a popover overlaid on the UI.
- * 
+ *
  * @example
  * <button [zPopover]="myPopover" zTrigger="click">Open Popover</button>
  * <ng-template #myPopover>Popover Content</ng-template>
@@ -115,7 +120,7 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
   constructor() {
     toObservable(this.zVisible)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(visible => {
+      .subscribe((visible) => {
         const currentlyVisible = this.isVisible();
         if (visible && !currentlyVisible) {
           this.show();
@@ -126,7 +131,7 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
 
     toObservable(this.zTrigger)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(trigger => {
+      .subscribe((trigger) => {
         if (this.listeners.length) {
           this.unlistenAll();
         }
@@ -169,9 +174,9 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
       return;
     }
 
-    this.overlayRef?.detach();
     this.isVisible.set(false);
     this.zVisibleChange.emit(false);
+    this.overlayRef?.detach();
   }
 
   toggle() {
@@ -200,15 +205,10 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
   }
 
   private subscribeToOverlayRef(): void {
-    if (
-      this.zOverlayClickable() &&
-      this.zTrigger() === 'click' &&
-      isPlatformBrowser(this.platformId) &&
-      this.overlayRef
-    ) {
+    if (this.zOverlayClickable() && isPlatformBrowser(this.platformId) && this.overlayRef) {
       this.overlayRefSubscription = this.overlayRef
         .outsidePointerEvents()
-        .pipe(filter(event => !this.nativeElement.contains(event.target)))
+        .pipe(filter((event) => !this.nativeElement.contains(event.target)))
         .subscribe(() => this.hide());
     }
   }
@@ -220,11 +220,17 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
     }
 
     if (trigger === 'click') {
-      this.listeners.push(this.renderer.listen(this.nativeElement, 'click.stop', () => this.toggle()));
+      this.listeners.push(
+        this.renderer.listen(this.nativeElement, 'click.stop', () => this.toggle()),
+      );
     } else if (trigger === 'hover') {
-      this.listeners.push(this.renderer.listen(this.nativeElement, 'mouseenter', () => this.show()));
+      this.listeners.push(
+        this.renderer.listen(this.nativeElement, 'mouseenter', () => this.show()),
+      );
 
-      this.listeners.push(this.renderer.listen(this.nativeElement, 'mouseleave', () => this.hide()));
+      this.listeners.push(
+        this.renderer.listen(this.nativeElement, 'mouseleave', () => this.hide()),
+      );
     }
   }
 
@@ -411,9 +417,7 @@ export class ZardPopoverDirective implements OnInit, OnDestroy {
   selector: 'z-popover',
   imports: [],
   standalone: true,
-  template: `
-    <ng-content />
-  `,
+  template: ` <ng-content /> `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'classes()',

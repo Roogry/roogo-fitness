@@ -1,6 +1,6 @@
 import { cva, VariantProps } from 'class-variance-authority';
 
-import { mergeClasses } from '@/shared/utils/merge-classes';
+import { mergeClasses } from '@/shared/utils/merge-classes.utils';
 
 export const cardVariants = cva(
   'bg-card text-card-foreground flex flex-col gap-4 border border-border',

@@ -47,7 +47,7 @@ import {
   selectVariants,
   type ZardSelectSizeVariants,
 } from '@/shared/components/zard/select/select.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+import { mergeClasses } from '@/shared/utils/merge-classes.utils';
 
 type OnTouchedType = () => void;
 type OnChangeType = (value: string) => void;

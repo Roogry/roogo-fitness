@@ -44,7 +44,6 @@ export class JourneyStatsComponent implements OnInit {
   workoutDates = signal<Date[]>([]);
   isLoading = signal<boolean>(true);
 
-  // Custom Calendar state
   currentDate = signal<Date>(new Date());
   currentMonth = computed(() => this.currentDate().getMonth());
   currentYear = computed(() => this.currentDate().getFullYear());
@@ -72,7 +71,6 @@ export class JourneyStatsComponent implements OnInit {
     this.currentDate.set(next);
   }
 
-  // Swipe gesture handling
   private touchStartX = 0;
 
   onTouchStart(event: TouchEvent) {
@@ -82,7 +80,7 @@ export class JourneyStatsComponent implements OnInit {
   onTouchEnd(event: TouchEvent) {
     const touchEndX = event.changedTouches[0].clientX;
     const diff = touchEndX - this.touchStartX;
-    const minSwipeDistance = 50; // pixels
+    const minSwipeDistance = 50;
 
     if (Math.abs(diff) > minSwipeDistance) {
       if (diff > 0) {
@@ -102,7 +100,7 @@ export class JourneyStatsComponent implements OnInit {
       this.currentStreak.set(stats.currentStreak);
       this.longestStreak.set(stats.longestStreak);
 
-      // Map ISO string dates (YYYY-MM-DD) to Date objects
+      /** Map ISO string dates (YYYY-MM-DD) to Date objects */
       const dates = stats.workoutDates.map((dateStr) => {
         const [year, month, day] = dateStr.split('-').map(Number);
         return new Date(year, month - 1, day);

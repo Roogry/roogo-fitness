@@ -7,7 +7,7 @@ Deeper notes live in `docs/`. Follow this file when they disagree.
 ## Before you start
 
 - [ ] Search `src/app/shared/components` and `src/app/shared/components/zard` before adding UI.
-- [ ] Search `src/app/shared/pipes`, `src/app/shared/utils`, `src/app/shared/directives`, and `src/app/core/services` before adding helpers.
+- [ ] Search `src/app/shared/pipes`, `src/app/shared/utils`, `src/app/shared/directives`, `src/app/core/services`, and `src/app/core/utils` before adding helpers.
 - [ ] Match the folder you are in: kebab-case files, `app` prefix, signal inputs.
 - [ ] If the request is unusual, weak for UX or performance, or fights iOS conventions, stop and offer 2–3 options. Then follow the owner's choice.
 - [ ] Add or extend a vitest spec for behavior changes.
@@ -27,7 +27,8 @@ Deeper notes live in `docs/`. Follow this file when they disagree.
 ```text
 src/app/
   core/services/       DbService, WorkoutService, ExerciseService, MuscleService,
-                       PlanService, VisualViewportService
+                       PlanService, VisualViewportService, PointerModeService
+  core/utils/          pure helpers used by those services
   core/provider/       provideZard()
   features/<feature>/  home, plan, exercise, journey, profile, session-active
     pages/             route screens
@@ -41,6 +42,26 @@ src/app/
 ```
 
 `JourneyService` stays under `features/journey/services`. Do not import `core` from `shared`.
+
+## File naming and structure
+
+- Injectable classes use the `*.service.ts` suffix (`pointer-mode.service.ts`). A pure helper is not a service: put it in `*.utils.ts` (`replace-tracked-exercise.utils.ts`, `replace-exercise.utils.ts`). Do not leave helpers in `core/services`.
+- Exported types and interfaces live in a `*.types.ts` file next to the feature. Do not export them from a component, service, or util file.
+- Constants (thresholds, widths, durations, copy strings) live in a `*.constants.ts` file, in `UPPER_SNAKE_CASE`.
+- Specs sit next to that module and use the same suffix (`replace-exercise.utils.spec.ts`).
+
+```text
+src/app/
+  core/services/pointer-mode.service.ts
+  core/utils/pointer-mode.utils.ts
+  core/utils/pointer-mode.constants.ts
+  core/utils/replace-tracked-exercise.types.ts
+  core/utils/replace-tracked-exercise.utils.ts
+  features/session-active/replace-exercise.utils.ts
+  features/session-active/replace-exercise.constants.ts
+  shared/directives/swipe-actions.service.ts
+  shared/directives/swipe-actions.types.ts
+```
 
 ## Angular 21
 
@@ -180,22 +201,21 @@ Write so a junior developer can follow the change without asking what a name mea
 - Names reveal intent. No cryptic abbreviations (`dur`, `vv`, `el` for domain values). Booleans read as questions: `isRestActive`, `hasExercise`, `shouldUpdateTarget`. Handlers are `onX` (`onDurationClick`). Methods are verbs (`startRestTimer`, `adjustWeight`). Outputs stay without the `on` prefix (`saveClick`).
 - Keep functions small and single-purpose. Prefer an early return over nested branches. Name constants instead of magic numbers: `DISMISS_DRAG_PX` is 10 in `appDismissKeyboardOnScroll`. Do not bury another `10` or `40` inline.
 - Avoid clever one-liners. If a line has to be unpacked to be understood, split it.
-- The code explains the what. Comment only crucial or non-obvious logic, and only the why. Good comments in this repo: `VisualViewportService` re-measures after focus because iOS animates the keyboard and pans the page; the dismiss directive listens for touch drags, not `scroll`, because iOS scrolls on its own while a field is focused.
-- JSDoc is optional. Use it only where a public API is genuinely non-obvious. Do not add it to every public service method.
+- The code explains the what. Comment only complex or non-obvious logic, and only the why. Always use JSDoc (`/** ... */`), including above class members and functions. Do not use `//`. A template HTML comment only when the markup would otherwise hide that why. Good comments in this repo: `VisualViewportService` re-measures after focus because iOS animates the keyboard and pans the page; the dismiss directive listens for touch drags, not `scroll`, because iOS scrolls on its own while a field is focused.
 
 ```typescript
 // Don't — abbreviation, magic number, comment that restates the line
 const ko = Math.max(0, ih - (vv.height + vv.offsetTop)); // keyboard offset
 if (ko > 40) hideBar();
 
-// Do — named steps, early return, comment only the iOS why
+// Do — named steps, early return, JSDoc only for the iOS why
 const KEYBOARD_OPEN_OFFSET_PX = 40;
 
 function keyboardOffsetPx(layoutHeight: number, viewport: VisualViewport): number {
   return Math.max(0, Math.round(layoutHeight - (viewport.height + viewport.offsetTop)));
 }
 
-// iOS animates the keyboard after focus; a single read is still mid-animation.
+/** iOS animates the keyboard after focus; a single read is still mid-animation. */
 if (keyboardOffsetPx(window.innerHeight, viewport) <= KEYBOARD_OPEN_OFFSET_PX) return;
 ```
 

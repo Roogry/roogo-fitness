@@ -13,7 +13,6 @@
       <p class="text-center text-muted-foreground py-12">Loading...</p>
     } @else {
       <div class="flex flex-col gap-4">
-        <!-- Session Title -->
         <input
           z-input
           type="text"
@@ -24,7 +23,6 @@
           class="w-full font-semibold"
         />
 
-        <!-- Stats Row -->
         <div class="flex items-center justify-start gap-8">
           <div class="flex flex-col gap-1">
             <span class="text-sm text-muted-foreground">Duration</span>
@@ -42,7 +40,6 @@
           </div>
         </div>
 
-        <!-- Exercises List -->
         <div class="flex flex-col gap-4 mt-8">
           @for (workout of exercises(); track workout.id; let i = $index, total = $count) {
             <app-exercise-tracker
@@ -63,7 +60,6 @@
             </div>
           }
 
-          <!-- Add Exercise -->
           <button z-button zShape="circle" class="w-full mt-2" (click)="isAddSheetOpen.set(true)">
             <ng-icon name="lucidePlus"></ng-icon>
             Add Exercise
@@ -73,7 +69,6 @@
     }
   </main>
 
-  <!-- Add Exercise Sheet -->
   <app-sheet
     [isOpen]="isAddSheetOpen()"
     (onOpenChange)="isAddSheetOpen.set($event)"

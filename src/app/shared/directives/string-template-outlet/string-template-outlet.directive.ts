@@ -9,28 +9,12 @@ import {
   effect,
   type EffectRef,
 } from '@angular/core';
-
-/**
- * Type guard to check if a given value is an Angular TemplateRef.
- * @param value The value to check.
- * @returns True if the value is a TemplateRef, false otherwise.
- * @example
- * if (isTemplateRef(myValue)) { ... }
- */
-export function isTemplateRef<C = unknown>(value: unknown): value is TemplateRef<C> {
-  return value instanceof TemplateRef;
-}
-
-export interface ZardStringTemplateOutletContext {
-  $implicit: unknown;
-  [key: string]: unknown;
-}
+import type { ZardStringTemplateOutletContext } from './string-template-outlet.types';
+import { isTemplateRef } from './string-template-outlet.utils';
 
 /**
  * A structural directive that safely renders either a string or an Angular TemplateRef.
  * Useful when a component property can accept either a static string or a custom template.
- * @example
- * <ng-container *zStringTemplateOutlet="myTemplateOrString; context: myContext"></ng-container>
  */
 @Directive({
   selector: '[zStringTemplateOutlet]',
@@ -48,7 +32,9 @@ export class ZardStringTemplateOutletDirective<T = unknown> implements OnDestroy
   #lastTemplateRef: TemplateRef<void> | null = null;
   #lastContext?: ZardStringTemplateOutletContext;
 
-  readonly zStringTemplateOutletContext = input<ZardStringTemplateOutletContext | undefined>(undefined);
+  readonly zStringTemplateOutletContext = input<ZardStringTemplateOutletContext | undefined>(
+    undefined,
+  );
   readonly zStringTemplateOutlet = input.required<T | TemplateRef<void>>();
 
   #hasContextShapeChanged(context: ZardStringTemplateOutletContext | undefined): boolean {
@@ -114,7 +100,10 @@ export class ZardStringTemplateOutletDirective<T = unknown> implements OnDestroy
       this.context['$implicit'] = stringTemplateOutlet as T;
     }
 
-    const recreateView = this.#shouldViewBeRecreated(stringTemplateOutlet, stringTemplateOutletContext);
+    const recreateView = this.#shouldViewBeRecreated(
+      stringTemplateOutlet,
+      stringTemplateOutletContext,
+    );
     this.#updateTrackingState(stringTemplateOutlet, stringTemplateOutletContext);
 
     if (recreateView) {
@@ -139,7 +128,10 @@ export class ZardStringTemplateOutletDirective<T = unknown> implements OnDestroy
     }
   }
 
-  #updateContext(outlet: TemplateRef<void> | T, context: ZardStringTemplateOutletContext | undefined): void {
+  #updateContext(
+    outlet: TemplateRef<void> | T,
+    context: ZardStringTemplateOutletContext | undefined,
+  ): void {
     const newCtx = isTemplateRef(outlet) ? context : this.context;
     let oldCtx = this.embeddedViewRef?.context;
 
@@ -153,14 +145,7 @@ export class ZardStringTemplateOutletDirective<T = unknown> implements OnDestroy
     this.#lastContext = oldCtx;
   }
 
-  /**
-   * Static context guard for Angular's strict template type checking.
-   * @param _dir The directive instance.
-   * @param _ctx The context to check.
-   * @returns True, indicating the context is of type ZardStringTemplateOutletContext.
-   * @example
-   * ZardStringTemplateOutletDirective.ngTemplateContextGuard(dir, ctx);
-   */
+  /** Angular checks this so the outlet context type-checks in templates. */
   static ngTemplateContextGuard<T>(
     _dir: ZardStringTemplateOutletDirective<T>,
     _ctx: unknown,

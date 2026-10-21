@@ -4,12 +4,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
+import { provideZard } from '@/core/provider/providezard';
 import { ExerciseService } from '@/core/services/exercise.service';
+import { PointerModeService } from '@/core/services/pointer-mode.service';
 import { VisualViewportService } from '@/core/services/visual-viewport.service';
 import { WorkoutService } from '@/core/services/workout.service';
+import { SwipeActionsGroup } from '@/shared/directives/swipe-actions.service';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { Exercise, LoggedExercise } from '@/shared/models';
-import { SessionActive, lastExerciseIdWithCompletedSet } from './session-active';
+import { SessionActive } from './session-active';
+import { lastExerciseIdWithCompletedSet } from './session-active.utils';
 
 function tracked(id: number, completedAt?: string): LoggedExercise {
   const exercise: Exercise = {
@@ -95,6 +99,7 @@ describe('SessionActive resume scroll', () => {
       imports: [SessionActive],
       providers: [
         provideRouter([]),
+        provideZard(),
         {
           provide: ActivatedRoute,
           useValue: { queryParamMap: of(convertToParamMap({})) },
@@ -307,3 +312,273 @@ describe('SessionActive duration control', () => {
     expect(bar.hasAttribute('aria-hidden')).toBe(false);
   });
 });
+
+describe('SessionActive replace exercise', () => {
+  const trackedExercises = signal<LoggedExercise[]>([]);
+  const dialog = { create: vi.fn() };
+  const getExercises = vi.fn();
+  const replaceTrackedExercise = vi.fn().mockReturnValue(true);
+  const removeTrackedExercise = vi.fn();
+  const savedTargetsForExercise = vi.fn().mockResolvedValue(null);
+
+  const chest = { id: 10, name: 'Chest' };
+  const bench: Exercise = { id: 1, name: 'Bench Press', media: [], primary_muscle: chest };
+  const incline: Exercise = { id: 2, name: 'Incline Press', media: [], primary_muscle: chest };
+  const fly: Exercise = {
+    id: 4,
+    name: 'Fly',
+    media: [],
+    primary_muscle: { id: 30, name: 'Shoulders' },
+    secondary_muscles: [chest],
+  };
+  const squat: Exercise = {
+    id: 3,
+    name: 'Squat',
+    media: [],
+    primary_muscle: { id: 20, name: 'Quads' },
+  };
+
+  beforeEach(async () => {
+    trackedExercises.set([]);
+    dialog.create.mockReset();
+    getExercises.mockReset();
+    replaceTrackedExercise.mockReset();
+    replaceTrackedExercise.mockReturnValue(true);
+    removeTrackedExercise.mockReset();
+    savedTargetsForExercise.mockReset();
+    savedTargetsForExercise.mockResolvedValue(null);
+    getExercises.mockResolvedValue([bench, squat, fly, incline]);
+
+    await TestBed.configureTestingModule({
+      imports: [SessionActive],
+      providers: [
+        provideRouter([]),
+        provideZard(),
+        {
+          provide: ActivatedRoute,
+          useValue: { queryParamMap: of(convertToParamMap({})) },
+        },
+        {
+          provide: WorkoutService,
+          useValue: {
+            trackedExercises,
+            sessionStartTime: signal(1_000),
+            sessionDuration: signal(30),
+            totalVolume: signal(0),
+            totalSets: signal(0),
+            isRestActive: signal(false),
+            selectedPlanId: signal<number | null>(null),
+            selectedSessionId: signal<number | null>(null),
+            sessionTitle: signal('Workout Session'),
+            refreshTrackedExercises: vi.fn().mockResolvedValue(undefined),
+            clearSession: vi.fn(),
+            startSessionTimer: vi.fn(),
+            setupSessionFromPlan: vi.fn().mockResolvedValue(undefined),
+            replaceTrackedExercise,
+            removeTrackedExercise,
+            savedTargetsForExercise,
+          },
+        },
+        { provide: ZardDialogService, useValue: dialog },
+        { provide: ExerciseService, useValue: { getExercises } },
+        { provide: PointerModeService, useValue: { isDesktop: signal(false) } },
+      ],
+    }).compileComponents();
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
+  });
+
+  function logged(exercise: Exercise, completedAt?: string): LoggedExercise {
+    return {
+      id: exercise.id,
+      exercise,
+      sets: [
+        {
+          id: exercise.id * 10,
+          set_number: 1,
+          weight_lifted: 40,
+          reps_completed: 8,
+          completed_at: completedAt,
+        },
+      ],
+    };
+  }
+
+  async function render(): Promise<ComponentFixture<SessionActive>> {
+    const fixture = TestBed.createComponent(SessionActive);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    return fixture;
+  }
+
+  it('asks before replacing when sets are already logged', async () => {
+    trackedExercises.set([logged(bench, '2026-10-11T00:00:00.000Z')]);
+    const fixture = await render();
+
+    fixture.componentInstance.onExerciseReplace({ exerciseId: bench.id });
+
+    expect(dialog.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        zTitle: 'Replace exercise?',
+        zOkText: 'Continue',
+        zCancelText: 'Cancel',
+        zDescription: "You've logged 1 set. Their weight and reps will move to the new exercise.",
+      }),
+    );
+    expect(fixture.componentInstance.isReplaceSheetOpen()).toBe(false);
+    expect(getExercises).not.toHaveBeenCalled();
+  });
+
+  it('opens the picker directly, same muscle first, when nothing is logged', async () => {
+    trackedExercises.set([logged(bench)]);
+    const fixture = await render();
+
+    await fixture.componentInstance.onExerciseReplace({ exerciseId: bench.id });
+    fixture.detectChanges();
+
+    expect(dialog.create).not.toHaveBeenCalled();
+    expect(fixture.componentInstance.isReplaceSheetOpen()).toBe(true);
+    expect(fixture.componentInstance.replaceCandidates().map((item) => item.id)).toEqual([
+      incline.id,
+      fly.id,
+      squat.id,
+    ]);
+  });
+
+  it('opens the picker after Continue and swaps in the picked exercise', async () => {
+    trackedExercises.set([logged(bench, '2026-10-11T00:00:00.000Z'), logged(squat)]);
+    savedTargetsForExercise.mockResolvedValue({
+      target_sets: 3,
+      target_weight: 50,
+      target_reps: 6,
+    });
+    const fixture = await render();
+
+    fixture.componentInstance.onExerciseReplace({ exerciseId: bench.id });
+    const onContinue = dialog.create.mock.calls[0][0].zOnOk as () => Promise<void>;
+    await onContinue();
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.isReplaceSheetOpen()).toBe(true);
+    expect(fixture.componentInstance.replaceCandidates().map((item) => item.id)).toEqual([
+      incline.id,
+      fly.id,
+    ]);
+
+    await fixture.componentInstance.onReplacementPicked(incline);
+
+    expect(savedTargetsForExercise).toHaveBeenCalledWith(incline.id);
+    expect(replaceTrackedExercise).toHaveBeenCalledWith(bench.id, incline, {
+      target_sets: 3,
+      target_weight: 50,
+      target_reps: 6,
+    });
+    expect(fixture.componentInstance.isReplaceSheetOpen()).toBe(false);
+  });
+
+  it('asks before deleting logged sets and closes the swipe on cancel', async () => {
+    trackedExercises.set([logged(bench, '2026-10-11T00:00:00.000Z')]);
+    const fixture = await render();
+    const closeAll = vi.spyOn(fixture.debugElement.injector.get(SwipeActionsGroup), 'closeAll');
+
+    fixture.componentInstance.onExerciseRemove({ exerciseId: bench.id });
+
+    expect(dialog.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        zTitle: 'Delete exercise?',
+        zDescription: "You've logged 1 set. They'll be removed from this session.",
+        zOkText: 'Delete',
+        zCancelText: 'Cancel',
+        zOkDestructive: true,
+      }),
+    );
+    expect(removeTrackedExercise).not.toHaveBeenCalled();
+    expect(closeAll).toHaveBeenCalledOnce();
+
+    const onCancel = dialog.create.mock.calls[0][0].zOnCancel as () => void;
+    onCancel();
+
+    expect(closeAll).toHaveBeenCalledTimes(2);
+    expect(removeTrackedExercise).not.toHaveBeenCalled();
+  });
+
+  it('deletes the exercise when the confirm is accepted', async () => {
+    trackedExercises.set([logged(bench, '2026-10-11T00:00:00.000Z'), logged(squat, '2026-10-11')]);
+    const fixture = await render();
+
+    fixture.componentInstance.onExerciseRemove({ exerciseId: bench.id });
+    const onDelete = dialog.create.mock.calls[0][0].zOnOk as () => void;
+    onDelete();
+
+    expect(removeTrackedExercise).toHaveBeenCalledOnce();
+    expect(removeTrackedExercise).toHaveBeenCalledWith(bench.id);
+  });
+
+  it('asks before deleting when the actions button reveals a logged exercise', async () => {
+    trackedExercises.set([logged(bench, '2026-10-11T00:00:00.000Z')]);
+    const fixture = await render();
+
+    revealTouchActions(fixture);
+    (
+      fixture.nativeElement.querySelector(
+        '[data-testid="swipe-actions"] button[aria-label="Delete"]',
+      ) as HTMLButtonElement
+    ).click();
+
+    expect(dialog.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        zTitle: 'Delete exercise?',
+        zDescription: "You've logged 1 set. They'll be removed from this session.",
+        zOkText: 'Delete',
+        zOkDestructive: true,
+      }),
+    );
+    expect(removeTrackedExercise).not.toHaveBeenCalled();
+  });
+
+  it('asks before replacing when the actions button reveals a logged exercise', async () => {
+    trackedExercises.set([logged(bench, '2026-10-11T00:00:00.000Z')]);
+    const fixture = await render();
+
+    revealTouchActions(fixture);
+    (
+      fixture.nativeElement.querySelector(
+        '[data-testid="swipe-actions"] button[aria-label="Replace"]',
+      ) as HTMLButtonElement
+    ).click();
+
+    expect(dialog.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        zTitle: 'Replace exercise?',
+        zOkText: 'Continue',
+        zCancelText: 'Cancel',
+      }),
+    );
+    expect(fixture.componentInstance.isReplaceSheetOpen()).toBe(false);
+  });
+
+  it('deletes immediately when nothing is logged', async () => {
+    trackedExercises.set([logged(bench)]);
+    const fixture = await render();
+    const closeAll = vi.spyOn(fixture.debugElement.injector.get(SwipeActionsGroup), 'closeAll');
+
+    fixture.componentInstance.onExerciseRemove({ exerciseId: bench.id });
+
+    expect(dialog.create).not.toHaveBeenCalled();
+    expect(removeTrackedExercise).toHaveBeenCalledWith(bench.id);
+    expect(closeAll).toHaveBeenCalledOnce();
+  });
+});
+
+function revealTouchActions(fixture: ComponentFixture<SessionActive>) {
+  const actions = fixture.nativeElement.querySelector(
+    '[data-testid="exercise-actions"]',
+  ) as HTMLButtonElement;
+  expect(actions.className).toContain('sr-only');
+  const tray = fixture.nativeElement.querySelector('[data-testid="swipe-actions"]') as HTMLElement;
+  Object.defineProperty(tray, 'offsetWidth', { configurable: true, value: 176 });
+  actions.click();
+  fixture.detectChanges();
+}

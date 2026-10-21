@@ -1,4 +1,4 @@
-import { Exercise } from './exercise.model';
+import { Exercise } from './exercise.types';
 
 export interface LoggedSession {
   id: number;
@@ -15,13 +15,13 @@ export interface LoggedSession {
   workouts: LoggedExercise[];
 }
 
-import { WorkoutPlanExercise } from './workout-plan.model';
+import { WorkoutPlanExercise } from './workout-plan.types';
 
 export interface LoggedExercise {
   id: number;
   logged_session_id?: number | null;
   exercise: Exercise;
-  /** Plan-level targets. Present when session was started from a workout plan. */
+
   plannedExercise?: WorkoutPlanExercise;
   createdAt?: string;
   updatedAt?: string;

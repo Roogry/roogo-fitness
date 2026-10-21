@@ -11,7 +11,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
 
 import { calendarMonths } from '@/shared/components/zard/calendar/calendar.utils';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+import { mergeClasses } from '@/shared/utils/merge-classes.utils';
 
 import { calendarNavVariants } from './calendar.variants';
 import { ZardButtonComponent } from '@/shared/components/zard/button';

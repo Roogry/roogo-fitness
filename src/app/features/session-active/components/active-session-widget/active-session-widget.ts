@@ -9,12 +9,6 @@ import { ZardBadgeComponent } from '@/shared/components/zard/badge';
 import { timeFormatPipe } from '../../../../shared/pipes/time-format-pipe';
 import { RestTimerBar } from '../rest-timer-bar/rest-timer-bar';
 
-/**
- * A floating widget component displaying the user's currently active workout session timer and status.
- *
- * @example
- * <app-active-session-widget></app-active-session-widget>
- */
 @Component({
   selector: 'app-active-session-widget',
   standalone: true,
@@ -34,12 +28,6 @@ export class ActiveSessionWidgetComponent {
   workoutService = inject(WorkoutService);
   private router = inject(Router);
 
-  /**
-   * Navigates the user back to the active session view.
-   *
-   * @example
-   * this.goToActiveSession();
-   */
   goToActiveSession() {
     this.router.navigate(['/session/active']);
   }

@@ -5,7 +5,6 @@
   description="Review your workout summary and finalize details."
 >
   <div class="flex flex-col gap-6">
-    <!-- 1. Session Title Input -->
     <z-form-field class="flex flex-col gap-3">
       <label
         z-form-label
@@ -25,12 +24,13 @@
       </z-form-control>
     </z-form-field>
 
-    <!-- 2. Session Metrics Summary -->
     <div class="flex flex-col gap-4 p-4 bg-muted rounded-xl border border-border">
       <div class="grid grid-cols-3 gap-4">
         <div class="flex flex-col">
           <span class="text-xs text-muted-foreground uppercase">Duration</span>
-          <span class="font-mono font-medium">{{ workoutService.sessionDuration() | durationFormat }}</span>
+          <span class="font-mono font-medium">{{
+            workoutService.sessionDuration() | durationFormat
+          }}</span>
         </div>
         <div class="flex flex-col">
           <span class="text-xs text-muted-foreground uppercase">Total Volume</span>
@@ -43,11 +43,10 @@
       </div>
       <div class="flex flex-col pt-4 border-t border-border/50">
         <span class="text-xs text-muted-foreground uppercase">Start Time</span>
-        <span class="font-medium">{{ workoutService.sessionStartTime() | date:'shortTime' }}</span>
+        <span class="font-medium">{{ workoutService.sessionStartTime() | date: 'shortTime' }}</span>
       </div>
     </div>
 
-    <!-- Exceeded Target Section -->
     @if (progressedExercises().length > 0) {
       <div class="flex flex-col gap-3">
         <h3 class="text-sm font-semibold text-foreground">Exceeded Target</h3>
@@ -57,12 +56,11 @@
           </p>
           <div class="flex flex-col gap-3">
             @for (prog of progressedExercises(); track prog.exerciseId) {
-              <z-checkbox
-                [(ngModel)]="prog.shouldUpdateTarget"
-                class="items-start"
-              >
+              <z-checkbox [(ngModel)]="prog.shouldUpdateTarget" class="items-start">
                 <div class="flex flex-col ml-1">
-                  <span class="text-sm font-medium text-foreground group-hover:text-forest transition-colors">
+                  <span
+                    class="text-sm font-medium text-foreground group-hover:text-forest transition-colors"
+                  >
                     {{ prog.exerciseName }}
                   </span>
                   <span class="font-mono text-xs text-muted-foreground">
@@ -84,7 +82,6 @@
       </div>
     }
 
-    <!-- 3. Session Note Textarea -->
     <z-form-field class="flex flex-col gap-3">
       <label z-form-label class="text-sm font-medium">Session Note</label>
       <z-form-control>
@@ -98,14 +95,8 @@
       </z-form-control>
     </z-form-field>
 
-    <!-- 4. Action Buttons -->
     <div class="flex flex-col gap-3 mt-4">
-      <button
-        z-button
-        zFull
-        (click)="finishSession()"
-        [disabled]="titleForm().invalid()"
-      >
+      <button z-button zFull (click)="finishSession()" [disabled]="titleForm().invalid()">
         Save Session
       </button>
       <button

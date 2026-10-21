@@ -47,7 +47,6 @@ export class Home implements OnInit {
   recommendedMuscles = signal<string>('Chest · Shoulders · Triceps');
   muscles = signal<Muscle[]>([]);
 
-  // today label
   todayLabel = computed(() => {
     const now = new Date();
     return now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
@@ -117,7 +116,6 @@ export class Home implements OnInit {
     const total = weekly.reduce((acc, s) => acc + (s.total_weight_lifted ?? 0), 0);
     this.volumeThisWeek.set(Math.round(total));
 
-    // Build 7-day bars Mon -> Sun
     const volumes: number[] = [];
     for (let i = 0; i < 7; i++) {
       const d = new Date(startOfWeek);
@@ -128,9 +126,8 @@ export class Home implements OnInit {
         .reduce((acc, s) => acc + (s.total_weight_lifted ?? 0), 0);
       volumes.push(dayVol);
     }
-    // If all zero, provide mock-like distribution to match design preview
+    /** If all zero, provide mock-like distribution to match design preview */
     if (volumes.every((v) => v === 0)) {
-      // mimic image bars:  [0.5,0.7,0.45,1.0,0.6,0.85,0.5] scaled to volumeThisWeek or fallback
       const fallbackTotal = 44660;
       const ratios = [0.5, 0.7, 0.45, 1.0, 0.6, 0.85, 0.5];
       const maxR = Math.max(...ratios);

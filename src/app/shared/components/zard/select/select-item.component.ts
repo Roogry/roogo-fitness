@@ -19,7 +19,7 @@ import {
   type ZardSelectItemModeVariants,
   type ZardSelectSizeVariants,
 } from '@/shared/components/zard/select/select.variants';
-import { mergeClasses, noopFn } from '@/shared/utils/merge-classes';
+import { mergeClasses, noopFn } from '@/shared/utils/merge-classes.utils';
 
 // Interface to avoid circular dependency
 interface SelectHost {

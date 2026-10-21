@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation } from '@angular/core';
 import type { ClassValue } from 'clsx';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+import { mergeClasses } from '@/shared/utils/merge-classes.utils';
 import { iconVariants, type ZardIconSizeVariants } from './icon.variants';
 import { ZARD_ICONS, ZARD_ICON_IMPORTS, type ZardIcon } from './icons';
 

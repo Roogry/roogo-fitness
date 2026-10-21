@@ -26,7 +26,7 @@ import {
   normalizeCalendarValue,
 } from '@/shared/components/zard/calendar/calendar.utils';
 import { calendarVariants } from '@/shared/components/zard/calendar/calendar.variants';
-import { mergeClasses, noopFn } from '@/shared/utils/merge-classes';
+import { mergeClasses, noopFn } from '@/shared/utils/merge-classes.utils';
 
 /**
  * A comprehensive calendar component supporting single, multiple, and date range selections.

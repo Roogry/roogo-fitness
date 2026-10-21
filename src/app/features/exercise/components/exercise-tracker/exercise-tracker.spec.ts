@@ -1,5 +1,9 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
+import { vi } from 'vitest';
+import { PointerModeService } from '@/core/services/pointer-mode.service';
+import { provideZard } from '@/core/provider/providezard';
 import { Exercise, LoggedExercise, LoggedSet } from '@/shared/models';
 import { ExerciseTracker } from './exercise-tracker';
 
@@ -139,5 +143,163 @@ describe('ExerciseTracker weight Enter focus', () => {
     expect(updates[0].updates.weight_lifted).toBe(40);
     expect(updates[0].updates.reps_completed).toBe(8);
     expect(updates[0].updates.completed_at).toEqual(expect.any(String));
+  });
+});
+
+describe('ExerciseTracker session actions', () => {
+  afterEach(() => {
+    TestBed.resetTestingModule();
+  });
+
+  function render(sessionActions: boolean, desktop: boolean) {
+    TestBed.configureTestingModule({
+      imports: [ExerciseTracker],
+      providers: [
+        provideRouter([]),
+        provideZard(),
+        { provide: PointerModeService, useValue: { isDesktop: signal(desktop) } },
+      ],
+    });
+
+    const fixture = TestBed.createComponent(ExerciseTracker);
+    fixture.componentRef.setInput('trackedExercise', trackedExercise([makeSet(10, 1)]));
+    fixture.componentRef.setInput('editable', true);
+    fixture.componentRef.setInput('sessionActions', sessionActions);
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  it('shows a menu button on a fine pointer and hides the trash icon', () => {
+    const fixture = render(true, true);
+    const root = fixture.nativeElement as HTMLElement;
+
+    expect(root.querySelector('button[aria-label="Exercise actions"]')).not.toBeNull();
+    expect(root.querySelector('.sr-only')).toBeNull();
+    expect(root.querySelector('button[title="Remove exercise"]')).toBeNull();
+    expect(root.textContent).not.toContain('Replace');
+  });
+
+  it('hides the menu button on touch and keeps a screen-reader action plus swipe buttons', () => {
+    const fixture = render(true, false);
+    const root = fixture.nativeElement as HTMLElement;
+    const screenReader = root.querySelector('.sr-only');
+
+    expect(screenReader?.textContent).toContain('Exercise actions');
+    expect(root.querySelector('button[aria-label="Exercise actions"]')).toBeNull();
+    expect(root.querySelector('button[title="Remove exercise"]')).toBeNull();
+
+    const reveal = root.querySelector(
+      '[data-testid="swipe-actions"] [swipe-actions]',
+    ) as HTMLElement;
+    const buttons = Array.from(reveal.querySelectorAll('button'));
+    expect(reveal.className).toContain('w-44');
+    expect(buttons.map((button) => button.getAttribute('aria-label'))).toEqual([
+      'Replace',
+      'Delete',
+    ]);
+    for (const button of buttons) {
+      expect(button.className).toContain('size-12');
+      expect(button.className).toContain('rounded-full');
+      expect(button.className).not.toContain('h-full');
+    }
+    expect(buttons[0].className).toContain('bg-primary');
+    expect(buttons[1].className).toContain('bg-error');
+    expect(reveal.textContent).toContain('Replace');
+    expect(reveal.textContent).toContain('Delete');
+  });
+
+  it('emits delete from the swipe button and from the revealed actions', () => {
+    const fixture = render(true, false);
+    const removed: { exerciseId: number }[] = [];
+    fixture.componentInstance.exerciseRemoved.subscribe((event) => removed.push(event));
+
+    const swipeDelete = fixture.nativeElement.querySelector(
+      '[data-testid="swipe-actions"] button[aria-label="Delete"]',
+    ) as HTMLButtonElement;
+    swipeDelete.click();
+
+    const tray = fixture.nativeElement.querySelector(
+      '[data-testid="swipe-actions"]',
+    ) as HTMLElement;
+    Object.defineProperty(tray, 'offsetWidth', { configurable: true, value: 176 });
+    const actions = fixture.nativeElement.querySelector(
+      '[data-testid="exercise-actions"]',
+    ) as HTMLButtonElement;
+    actions.click();
+    TestBed.flushEffects();
+    fixture.detectChanges();
+
+    const pane = fixture.nativeElement.querySelector('[data-testid="swipe-pane"]') as HTMLElement;
+    expect(actions.getAttribute('aria-expanded')).toBe('true');
+    expect(pane.style.transform).toBe('translate3d(-176px, 0, 0)');
+    expect(tray.hasAttribute('inert')).toBe(false);
+    swipeDelete.click();
+
+    expect(removed).toEqual([{ exerciseId: exercise.id }, { exerciseId: exercise.id }]);
+  });
+
+  function touch(
+    target: HTMLElement,
+    type: 'touchstart' | 'touchmove' | 'touchend',
+    x: number,
+    y: number,
+  ) {
+    const event = new Event(type, { bubbles: true, cancelable: true });
+    Object.defineProperty(event, 'touches', { value: [{ clientX: x, clientY: y }] });
+    target.dispatchEvent(event);
+  }
+
+  it('keeps the trash button when the card is only editing a logged session', () => {
+    const fixture = render(false, false);
+    const root = fixture.nativeElement as HTMLElement;
+
+    expect(root.querySelector('button[title="Remove exercise"]')).not.toBeNull();
+    expect(root.querySelector('[data-testid="exercise-actions"]')).toBeNull();
+    expect(root.textContent).not.toContain('Replace');
+    expect(root.querySelector('a[data-testid="exercise-name"]')).not.toBeNull();
+  });
+
+  it('keeps the exercise name as a link on a desktop pointer', () => {
+    const fixture = render(true, true);
+    const link = fixture.nativeElement.querySelector(
+      'a[data-testid="exercise-name"]',
+    ) as HTMLAnchorElement;
+
+    expect(link).not.toBeNull();
+    expect(link.getAttribute('href')).toBe('/exercise/7');
+    expect(link.querySelector('h3')?.textContent).toContain('Bench Press');
+  });
+
+  it('opens the exercise from a tap or Enter, and not from a swipe', () => {
+    const fixture = render(true, false);
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const root = fixture.nativeElement as HTMLElement;
+    const name = root.querySelector('[data-testid="exercise-name"]') as HTMLElement;
+    const header = root.querySelector('[data-testid="exercise-card-header"]') as HTMLElement;
+
+    expect(name.tagName).not.toBe('A');
+    expect(name.getAttribute('role')).toBe('link');
+    expect(name.tabIndex).toBe(0);
+    expect(header.className).toContain('select-none');
+    expect(header.className).toContain('no-touch-callout');
+    expect(root.querySelector('a[data-testid="exercise-name"]')).toBeNull();
+
+    name.click();
+    expect(navigate).toHaveBeenCalledWith(['/exercise', 7]);
+
+    navigate.mockClear();
+    name.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }),
+    );
+    expect(navigate).toHaveBeenCalledWith(['/exercise', 7]);
+
+    navigate.mockClear();
+    const tray = root.querySelector('[data-testid="swipe-actions"]') as HTMLElement;
+    Object.defineProperty(tray, 'offsetWidth', { configurable: true, value: 176 });
+    touch(name, 'touchstart', 180, 20);
+    touch(name, 'touchmove', 40, 20);
+    touch(name, 'touchend', 40, 20);
+    name.click();
+    expect(navigate).not.toHaveBeenCalled();
   });
 });

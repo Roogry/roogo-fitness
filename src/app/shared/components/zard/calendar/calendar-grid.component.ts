@@ -10,7 +10,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { mergeClasses } from '@/shared/utils/merge-classes';
+import { mergeClasses } from '@/shared/utils/merge-classes.utils';
 
 import type { CalendarDay } from './calendar.types';
 import { calendarWeekdays, getDayAriaLabel, getDayId } from './calendar.utils';

@@ -6,14 +6,6 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideDumbbell, lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
 import { ExerciseMedia } from '@/shared/models';
 
-/**
- * A component displaying media content (images/videos) for a specific exercise.
- *
- * @property {ExerciseMedia[]} media - The list of media content to display.
- *
- * @example
- * <app-exercise-media [media]="exercise.media"></app-exercise-media>
- */
 @Component({
   selector: 'app-exercise-media',
   standalone: true,
@@ -42,7 +34,7 @@ export class ExerciseMediaComponent {
     const item = list[idx];
     let url = item.media_url;
 
-    // Convert standard YouTube watch URLs to embed URLs format
+    /** Convert standard YouTube watch URLs to embed URLs format */
     if (item.media_type === 'youtube') {
       const match = url.match(/[?&]v=([^&]+)/);
       if (match && match[1]) {
@@ -56,23 +48,11 @@ export class ExerciseMediaComponent {
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   });
 
-  /**
-   * Advances the display to the next media item in the list.
-   *
-   * @example
-   * this.nextMedia();
-   */
   nextMedia() {
     const list = this.media() || [];
     this.activeMediaIndex.update((i) => (i + 1) % list.length);
   }
 
-  /**
-   * Returns the display to the previous media item in the list.
-   *
-   * @example
-   * this.prevMedia();
-   */
   prevMedia() {
     const list = this.media() || [];
     this.activeMediaIndex.update((i) => (i === 0 ? list.length - 1 : i - 1));

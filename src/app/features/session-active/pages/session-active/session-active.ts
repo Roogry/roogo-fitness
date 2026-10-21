@@ -5,8 +5,25 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCheck, lucideDumbbell, lucidePlus } from '@ng-icons/lucide';
+import { ExerciseService } from '@/core/services/exercise.service';
 import { WorkoutService } from '@/core/services/workout.service';
-import { LoggedExercise, LoggedSet } from '@/shared/models';
+import { ReplaceExercisePicker } from '@/features/session-active/components/replace-exercise-picker/replace-exercise-picker';
+import {
+  DELETE_EXERCISE_OK,
+  DELETE_EXERCISE_TITLE,
+  REPLACE_EXERCISE_OK,
+  REPLACE_EXERCISE_TITLE,
+} from '@/features/session-active/logged-sets-confirm.constants';
+import {
+  completedSetCount,
+  deleteLoggedSetsMessage,
+  loggedSetsConfirmOptions,
+  replaceLoggedSetsMessage,
+} from '@/features/session-active/logged-sets-confirm.utils';
+import { sortReplacementCandidates } from '@/features/session-active/replace-exercise.utils';
+import { Exercise, LoggedExercise, LoggedSet } from '@/shared/models';
+import { lastExerciseIdWithCompletedSet } from './session-active.utils';
+import { SwipeActionsGroup } from '@/shared/directives/swipe-actions.service';
 import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-autocomplete/exercise-autocomplete';
 import { ExerciseTracker } from '@/features/exercise/components/exercise-tracker/exercise-tracker';
 import { HeaderComponent } from '@/shared/components/header/header.component';
@@ -26,6 +43,7 @@ import { timeFormatPipe } from '@/shared/pipes/time-format-pipe';
     CommonModule,
     ExerciseAutocomplete,
     ExerciseTracker,
+    ReplaceExercisePicker,
     HeaderComponent,
     ZardButtonComponent,
     RooSheetComponent,
@@ -36,6 +54,7 @@ import { timeFormatPipe } from '@/shared/pipes/time-format-pipe';
     DismissKeyboardOnScroll,
   ],
   providers: [
+    SwipeActionsGroup,
     provideIcons({
       lucideDumbbell,
       lucidePlus,
@@ -46,13 +65,19 @@ import { timeFormatPipe } from '@/shared/pipes/time-format-pipe';
 })
 export class SessionActive implements OnInit {
   workoutService = inject(WorkoutService);
+  private readonly exerciseService = inject(ExerciseService);
+  private readonly swipeGroup = inject(SwipeActionsGroup);
   router = inject(Router);
   route = inject(ActivatedRoute);
   dialogService = inject(ZardDialogService);
 
   isAddSheetOpen = signal(false);
+  isReplaceSheetOpen = signal(false);
+  replaceCandidates = signal<Exercise[]>([]);
+  private readonly replacingExerciseId = signal<number | null>(null);
   isFinishSheetOpen = signal(false);
   progressedExercises = signal<any[]>([]);
+
   /** Bottom-bar Duration control swaps to the session start time until tapped again. */
   showStartTime = signal(false);
 
@@ -63,7 +88,7 @@ export class SessionActive implements OnInit {
   private resumeScrollHandled = false;
 
   constructor() {
-    // Once per visit, after the exercise list has been rendered.
+    /** Once per visit, after the exercise list has been rendered. */
     afterNextRender({
       mixedReadWrite: () => {
         this.scrollToLastCompletedExercise();
@@ -73,7 +98,7 @@ export class SessionActive implements OnInit {
 
   ngOnInit() {
     this.setupSessionData();
-    // Fix #61: refresh stale exercise data when returning to session
+    /** Fix #61: refresh stale exercise data when returning to session */
     if (this.workoutService.trackedExercises().length > 0) {
       this.workoutService.refreshTrackedExercises();
     }
@@ -144,7 +169,6 @@ export class SessionActive implements OnInit {
 
   onSetUpdate(e: { exerciseId: number; setId: number; updates: Partial<LoggedSet> }) {
     this.workoutService.updateSet(e.exerciseId, e.setId, e.updates);
-    // Rest timer auto-start on completed
     if (e.updates.completed_at) {
       const tracked = this.workoutService
         .trackedExercises()
@@ -162,8 +186,95 @@ export class SessionActive implements OnInit {
     this.workoutService.removeSet(e.exerciseId, e.setId);
   }
 
-  onExerciseRemove(e: { exerciseId: number }) {
-    this.workoutService.removeTrackedExercise(e.exerciseId);
+  onExerciseRemove(event: { exerciseId: number }) {
+    const tracked = this.workoutService
+      .trackedExercises()
+      .find((item) => item.exercise.id === event.exerciseId);
+    if (!tracked) return;
+
+    const completed = completedSetCount(tracked.sets);
+    if (completed === 0) {
+      this.deleteTrackedExercise(event.exerciseId);
+      return;
+    }
+
+    /**
+     * Swipe and the desktop menu both emit this. Close on cancel so the row
+     * does not stay open, and close as the dialog opens because Escape and the backdrop
+     * dismiss it without running the cancel callback.
+     */
+    this.swipeGroup.closeAll();
+    this.dialogService.create(
+      loggedSetsConfirmOptions({
+        title: DELETE_EXERCISE_TITLE,
+        description: deleteLoggedSetsMessage(completed),
+        okText: DELETE_EXERCISE_OK,
+        destructive: true,
+        onOk: () => this.deleteTrackedExercise(event.exerciseId),
+        onCancel: () => this.swipeGroup.closeAll(),
+      }),
+    );
+  }
+
+  onExerciseReplace(event: { exerciseId: number }): Promise<void> | void {
+    const tracked = this.workoutService
+      .trackedExercises()
+      .find((item) => item.exercise.id === event.exerciseId);
+    if (!tracked) return;
+
+    this.swipeGroup.closeAll();
+
+    const completed = completedSetCount(tracked.sets);
+    if (completed === 0) {
+      return this.openReplacePicker(tracked);
+    }
+
+    this.dialogService.create(
+      loggedSetsConfirmOptions({
+        title: REPLACE_EXERCISE_TITLE,
+        description: replaceLoggedSetsMessage(completed),
+        okText: REPLACE_EXERCISE_OK,
+        onOk: () => {
+          void this.openReplacePicker(tracked);
+        },
+      }),
+    );
+  }
+
+  private deleteTrackedExercise(exerciseId: number) {
+    this.swipeGroup.closeAll();
+    this.workoutService.removeTrackedExercise(exerciseId);
+  }
+
+  onReplaceSheetOpenChange(isOpen: boolean) {
+    this.isReplaceSheetOpen.set(isOpen);
+    if (!isOpen) this.replacingExerciseId.set(null);
+  }
+
+  async onReplacementPicked(exercise: Exercise) {
+    const currentId = this.replacingExerciseId();
+    if (currentId === null) return;
+
+    const savedTargets = await this.workoutService.savedTargetsForExercise(exercise.id);
+    const didReplace = this.workoutService.replaceTrackedExercise(
+      currentId,
+      exercise,
+      savedTargets,
+    );
+    if (!didReplace) return;
+
+    this.isReplaceSheetOpen.set(false);
+    this.replacingExerciseId.set(null);
+  }
+
+  private async openReplacePicker(tracked: LoggedExercise) {
+    this.replacingExerciseId.set(tracked.exercise.id);
+    const catalog = await this.exerciseService.getExercises('');
+    const excludedIds = new Set(
+      this.workoutService.trackedExercises().map((item) => item.exercise.id),
+    );
+    this.replaceCandidates.set(sortReplacementCandidates(catalog, tracked.exercise, excludedIds));
+    this.isReplaceSheetOpen.set(true);
   }
 
   onDurationClick() {
@@ -203,7 +314,7 @@ export class SessionActive implements OnInit {
       const exceedingSets = completedSets.filter((s) => s.exceeded);
 
       if (exceedingSets.length > 0) {
-        // Sort by volume descending, then by weight descending
+        /** Sort by volume descending, then by weight descending */
         exceedingSets.sort((a, b) => {
           if (b.volume !== a.volume) {
             return b.volume - a.volume;
@@ -244,20 +355,4 @@ export class SessionActive implements OnInit {
       },
     });
   }
-}
-
-/**
- * Highest-index exercise that has at least one set with `completed_at`.
- * List order is the session order, so the last match is where logging left off.
- */
-export function lastExerciseIdWithCompletedSet(
-  exercises: readonly LoggedExercise[],
-): number | null {
-  for (let index = exercises.length - 1; index >= 0; index--) {
-    const tracked = exercises[index];
-    if (tracked.sets.some((set) => !!set.completed_at)) {
-      return tracked.exercise.id;
-    }
-  }
-  return null;
 }

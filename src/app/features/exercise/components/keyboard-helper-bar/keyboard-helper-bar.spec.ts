@@ -3,11 +3,9 @@ import { signal } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { Exercise, LoggedExercise, LoggedSet } from '@/shared/models';
 import { ExerciseTracker } from '../exercise-tracker/exercise-tracker';
-import { adjustWeight, repsChips } from './keyboard-helper-bar';
-import {
-  VisualViewportService,
-  computeKeyboardOffset,
-} from '@/core/services/visual-viewport.service';
+import { adjustWeight, repsChips } from './keyboard-helper-bar.utils';
+import { VisualViewportService } from '@/core/services/visual-viewport.service';
+import { computeKeyboardOffset } from '@/core/utils/visual-viewport.utils';
 
 describe('keyboard helper math', () => {
   it('adjusts weight, falls back to target then 0, clamps, keeps decimals', () => {
@@ -123,8 +121,8 @@ describe('ExerciseTracker keyboard helper bar', () => {
     expect(weightLayer.className).not.toContain('opacity-0');
     expect(repsLayer.className).toContain('opacity-0');
     expect(
-      (document.querySelector('[data-testid="weight-minus-10"]')!.parentElement as HTMLElement).style
-        .animationDelay,
+      (document.querySelector('[data-testid="weight-minus-10"]')!.parentElement as HTMLElement)
+        .style.animationDelay,
     ).toBe('0ms');
     expect(
       (document.querySelector('[data-testid="weight-minus"]')!.parentElement as HTMLElement).style

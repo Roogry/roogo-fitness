@@ -3,18 +3,18 @@ import { Router } from '@angular/router';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { DbService } from './db.service';
 import { Exercise, LoggedSession, LoggedExercise, LoggedSet } from '@/shared/models';
+import type { ReplacementTargets } from '@/core/utils/replace-tracked-exercise.types';
+import {
+  findSavedExerciseTargets,
+  nextPlannedExercise,
+  setsAfterExerciseReplace,
+} from '@/core/utils/replace-tracked-exercise.utils';
 
-const ACTIVE_SESSION_STORAGE_KEY = 'roogo_active_session';
+import { ACTIVE_SESSION_STORAGE_KEY } from '@/core/utils/workout.constants';
 
 @Injectable({
   providedIn: 'root',
 })
-/**
- * Service to track active workout sessions and save completed logs.
- * @example
- * const workoutService = inject(WorkoutService);
- * workoutService.startSessionFlow(planId, sessionId);
- */
 export class WorkoutService {
   private dbService = inject(DbService);
   private router = inject(Router);
@@ -57,7 +57,6 @@ export class WorkoutService {
     this.loadStateFromLocalStorage();
   }
 
-  // Computed state for UI convenience
   hasExercise = computed(() => this.trackedExercises().length > 0);
 
   totalVolume = computed(() => {
@@ -158,25 +157,10 @@ export class WorkoutService {
     }
   }
 
-  /**
-   * Retrieves an exercise by its ID.
-   * @param {number} id The ID of the exercise.
-   * @returns {Promise<Exercise | undefined>} A promise resolving to the exercise.
-   * @example
-   * const exercise = await this.workoutService.getExerciseById(1);
-   */
   async getExerciseById(id: number) {
     return this.dbService.getExerciseByKey(id);
   }
 
-  /**
-   * Sets up an active session state based on a saved plan.
-   * @param {number} planId The ID of the plan.
-   * @param {number} sessionId The ID of the session.
-   * @returns {Promise<void>}
-   * @example
-   * await this.workoutService.setupSessionFromPlan(1, 2);
-   */
   async setupSessionFromPlan(planId: number, sessionId: number) {
     const plan = await this.dbService.getWorkoutPlan(planId);
     if (!plan) throw new Error('Plan not found');
@@ -215,14 +199,6 @@ export class WorkoutService {
     }
   }
 
-  /**
-   * Completes the active session and saves it to the database.
-   * @param {string} [title] Optional final title for the session.
-   * @param {string} [notes] Optional notes for the session.
-   * @returns {Promise<void>}
-   * @example
-   * await this.workoutService.finishSession('Leg Day', 'Felt strong today.');
-   */
   async finishSession(title?: string, notes?: string) {
     if (this.trackedExercises().length === 0) return;
 
@@ -275,12 +251,6 @@ export class WorkoutService {
     }
   }
 
-  /**
-   * Starts the active session duration timer.
-   * @returns {void}
-   * @example
-   * this.workoutService.startSessionTimer();
-   */
   startSessionTimer() {
     if (this.durationInterval) return;
 
@@ -294,12 +264,6 @@ export class WorkoutService {
     }, 1000);
   }
 
-  /**
-   * Stops the active session duration timer.
-   * @returns {void}
-   * @example
-   * this.workoutService.stopSessionTimer();
-   */
   stopSessionTimer() {
     if (this.durationInterval) {
       clearInterval(this.durationInterval);
@@ -310,10 +274,6 @@ export class WorkoutService {
   /**
    * Starts (or restarts) rest for the given duration.
    * A new call replaces any in-progress rest, matching set-completion behavior.
-   * @param {number} seconds Rest length in seconds.
-   * @returns {void}
-   * @example
-   * this.workoutService.startRestTimer(90);
    */
   startRestTimer(seconds: number) {
     if (!seconds || seconds <= 0) return;
@@ -323,13 +283,7 @@ export class WorkoutService {
     this.ensureRestInterval();
   }
 
-  /**
-   * Extends the current rest countdown. No-op when rest is not active.
-   * @param {number} seconds Seconds to add.
-   * @returns {void}
-   * @example
-   * this.workoutService.addRestTime(15);
-   */
+  /** Extends the current rest countdown. No-op when rest is not active. */
   addRestTime(seconds: number) {
     const end = this.restEndsAt();
     if (end === null || end <= Date.now() || !seconds) return;
@@ -338,22 +292,10 @@ export class WorkoutService {
     this.syncRestRemaining();
   }
 
-  /**
-   * Ends rest immediately.
-   * @returns {void}
-   * @example
-   * this.workoutService.skipRestTimer();
-   */
   skipRestTimer() {
     this.clearRestTimer();
   }
 
-  /**
-   * Stops the rest countdown and clears persisted rest state.
-   * @returns {void}
-   * @example
-   * this.workoutService.clearRestTimer();
-   */
   clearRestTimer() {
     if (this.restInterval) {
       clearInterval(this.restInterval);
@@ -363,7 +305,6 @@ export class WorkoutService {
     this.restRemainingSeconds.set(null);
   }
 
-  /** Writes `restRemainingSeconds` from `restEndsAt`. Returns false when rest is over. */
   private syncRestRemaining(): boolean {
     const end = this.restEndsAt();
     if (end === null) {
@@ -391,33 +332,18 @@ export class WorkoutService {
     }, 1000);
   }
 
-  /**
-   * Retrieves all completed workout sessions.
-   * @returns {Promise<LoggedSession[]>} A promise resolving to the logged sessions.
-   * @example
-   * const sessions = await this.workoutService.getLoggedWorkoutSessions();
-   */
   async getLoggedWorkoutSessions(): Promise<LoggedSession[]> {
-    // Simulate real fetching by ordering decending by start_time
     const loggedSessions = await this.dbService.getLoggedSessions();
     return loggedSessions.sort(
       (a, b) => new Date(b.start_time).getTime() - new Date(a.start_time).getTime(),
     );
   }
 
-  /**
-   * Adds an exercise to the active tracked session.
-   * @param {Exercise} exercise The exercise to track.
-   * @returns {void}
-   * @example
-   * this.workoutService.addTrackedExercise(exercise);
-   */
   addTrackedExercise(exercise: Exercise) {
-    // Ensure timer runs if not already
     this.startSessionTimer();
 
     this.trackedExercises.update((current) => {
-      // Prevent duplicates in active list
+      /** Prevent duplicates in active list */
       if (current.find((te) => te.exercise.id === exercise.id)) {
         return current;
       }
@@ -431,13 +357,6 @@ export class WorkoutService {
     });
   }
 
-  /**
-   * Removes an exercise from the active tracked session.
-   * @param {number} exerciseId The ID of the exercise.
-   * @returns {void}
-   * @example
-   * this.workoutService.removeTrackedExercise(1);
-   */
   removeTrackedExercise(exerciseId: number) {
     this.trackedExercises.update((current) =>
       current.filter((te) => te.exercise.id !== exerciseId),
@@ -445,14 +364,43 @@ export class WorkoutService {
   }
 
   /**
-   * Adds a new logged set to a tracked exercise.
-   * @param {number} exerciseId The ID of the exercise.
-   * @param {number} weight The weight lifted in the set.
-   * @param {number} reps The repetitions completed.
-   * @returns {void}
-   * @example
-   * this.workoutService.addSet(1, 60, 10);
+   * Swaps one tracked exercise for another in the same position.
+   * Only completed sets keep their logged weight, reps, and completed state.
+   * Does not touch the routine, the rest timer, or the session clock.
    */
+  replaceTrackedExercise(
+    exerciseId: number,
+    replacement: Exercise,
+    savedTargets: ReplacementTargets | null = null,
+  ): boolean {
+    const current = this.trackedExercises();
+    const index = current.findIndex((tracked) => tracked.exercise.id === exerciseId);
+    if (index === -1) return false;
+    if (replacement.id === exerciseId) return false;
+    if (current.some((tracked) => tracked.exercise.id === replacement.id)) return false;
+
+    const tracked = current[index];
+    const sets = setsAfterExerciseReplace(tracked.sets, savedTargets);
+    const next: LoggedExercise = {
+      ...tracked,
+      exercise: replacement,
+      sets,
+      plannedExercise: nextPlannedExercise(savedTargets, replacement.id, index, sets.length),
+    };
+    const updated = current.slice();
+    updated[index] = next;
+    this.trackedExercises.set(updated);
+    return true;
+  }
+
+  /** Plan targets for an exercise, if the running routine has any. Does not save the plan. */
+  async savedTargetsForExercise(exerciseId: number): Promise<ReplacementTargets | null> {
+    const planId = this.selectedPlanId();
+    if (planId === null) return null;
+    const plan = await this.dbService.getWorkoutPlan(planId);
+    return findSavedExerciseTargets(plan, exerciseId, this.selectedSessionId());
+  }
+
   addSet(exerciseId: number, weight: number, reps: number) {
     this.trackedExercises.update((current) => {
       const index = current.findIndex((te) => te.exercise.id === exerciseId);
@@ -478,15 +426,6 @@ export class WorkoutService {
     });
   }
 
-  /**
-   * Updates an existing logged set for a tracked exercise.
-   * @param {number} exerciseId The ID of the exercise.
-   * @param {number} setId The ID of the set.
-   * @param {Partial<LoggedSet>} updates The properties to update.
-   * @returns {void}
-   * @example
-   * this.workoutService.updateSet(1, 2, { reps_completed: 12 });
-   */
   updateSet(exerciseId: number, setId: number, updates: Partial<LoggedSet>) {
     this.trackedExercises.update((current) => {
       const index = current.findIndex((te) => te.exercise.id === exerciseId);
@@ -502,14 +441,6 @@ export class WorkoutService {
     });
   }
 
-  /**
-   * Removes a logged set from a tracked exercise.
-   * @param {number} exerciseId The ID of the exercise.
-   * @param {number} setId The ID of the set to remove.
-   * @returns {void}
-   * @example
-   * this.workoutService.removeSet(1, 2);
-   */
   removeSet(exerciseId: number, setId: number) {
     this.trackedExercises.update((current) => {
       const index = current.findIndex((te) => te.exercise.id === exerciseId);
@@ -522,7 +453,7 @@ export class WorkoutService {
         .filter((s) => s.id !== setId)
         .map((s, idx) => ({
           ...s,
-          set_number: idx + 1, // Re-number sets
+          set_number: idx + 1,
         }));
 
       updatedExercises[index] = tracked;
@@ -530,12 +461,7 @@ export class WorkoutService {
     });
   }
 
-  /**
-   * Stops the active session without clearing stored data entirely.
-   * @returns {void}
-   * @example
-   * this.workoutService.stopSession();
-   */
+  /** Stops the active session without clearing stored data entirely. */
   stopSession() {
     this.stopSessionTimer();
     this.clearRestTimer();
@@ -544,12 +470,6 @@ export class WorkoutService {
     this.sessionDuration.set(0);
   }
 
-  /**
-   * Clears the active session and removes it from local storage.
-   * @returns {void}
-   * @example
-   * this.workoutService.clearSession();
-   */
   clearSession() {
     this.stopSession();
     this.selectedPlanId.set(null);
@@ -558,14 +478,7 @@ export class WorkoutService {
     localStorage.removeItem(ACTIVE_SESSION_STORAGE_KEY);
   }
 
-  /**
-   * Initiates the active session flow, prompting the user if one is already active.
-   * @param {number | null} planId The plan ID (if starting from a plan).
-   * @param {number | null} sessionId The session ID (if starting from a plan).
-   * @returns {void}
-   * @example
-   * this.workoutService.startSessionFlow(1, 2);
-   */
+  /** Initiates the active session flow, prompting the user if one is already active. */
   startSessionFlow(planId: number | null, sessionId: number | null) {
     if (this.sessionStartTime()) {
       this.dialogService.create({
@@ -609,13 +522,6 @@ export class WorkoutService {
     this.trackedExercises.set(refreshed);
   }
 
-  /**
-   * Updates target values of specific exercises in the workout plan.
-   * @param {number} planId The ID of the plan.
-   * @param {number} sessionId The ID of the session.
-   * @param {Array<{ exerciseId: number; targetWeight?: number; targetReps?: number; }>} updates The updates to apply.
-   * @returns {Promise<void>}
-   */
   async updatePlanTargets(
     planId: number,
     sessionId: number,

@@ -19,9 +19,6 @@ import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-au
  * The user can rename the session, edit weights/reps per set, add or remove
  * sets and exercises. All edits are applied to a local working copy and only
  * persisted when the user clicks Save in the header.
- *
- * @example
- * <app-edit-journey></app-edit-journey> // routed at /journey/:id/edit
  */
 @Component({
   selector: 'app-edit-journey',
@@ -50,7 +47,7 @@ export class EditJourney implements OnInit {
   isSaving = signal<boolean>(false);
   isAddSheetOpen = signal<boolean>(false);
 
-  // Working copy state — the original session in the DB stays untouched until Save
+  /** Working copy state — the original session in the DB stays untouched until Save */
   sessionTitle = signal<string>('');
   sessionDuration = signal<number>(0);
   exercises = signal<LoggedExercise[]>([]);
@@ -93,7 +90,7 @@ export class EditJourney implements OnInit {
       }
 
       this.originalSession = session;
-      // Deep copy so editing never mutates the cached original before saving
+      /** Deep copy so editing never mutates the cached original before saving */
       const copy: LoggedSession = structuredClone(session);
 
       this.sessionTitle.set(copy.session_title);
@@ -165,7 +162,7 @@ export class EditJourney implements OnInit {
   }
 
   onExerciseSelected(exercise: Exercise) {
-    // Prevent duplicate exercise cards, same rule as the active session page
+    /** Prevent duplicate exercise cards, same rule as the active session page */
     if (this.exercises().some((w) => w.exercise.id === exercise.id)) {
       this.isAddSheetOpen.set(false);
       return;
@@ -187,8 +184,7 @@ export class EditJourney implements OnInit {
         updatedAt: new Date().toISOString(),
         workouts: this.exercises(),
       });
-      // Pop the edit page from history so the header back button
-      // on JourneyDetail no longer returns to this edit page
+      /** Pop the edit page from history so the header back button */
       this.location.back();
     } catch (error) {
       console.error('Failed to save journey', error);

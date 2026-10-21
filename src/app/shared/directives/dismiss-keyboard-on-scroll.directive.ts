@@ -1,7 +1,5 @@
 import { Directive, ElementRef, OnDestroy, inject } from '@angular/core';
-
-/** Vertical travel past this dismisses the keyboard. A smaller nudge does not. */
-const DISMISS_DRAG_PX = 10;
+import { DISMISS_DRAG_PX } from './dismiss-keyboard-on-scroll.constants';
 
 /**
  * Blurs the focused field when the user drags to scroll, matching iOS.

@@ -13,7 +13,7 @@ import type { ClassValue } from 'clsx';
 
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardIdDirective, ZardStringTemplateOutletDirective } from '@/core';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+import { mergeClasses } from '@/shared/utils/merge-classes.utils';
 
 import {
   cardBodyVariants,

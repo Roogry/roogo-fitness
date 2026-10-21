@@ -7,15 +7,6 @@ import { Exercise } from '@/shared/models';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideSearch, lucidePlus, lucideDumbbell } from '@ng-icons/lucide';
 
-/**
- * An autocomplete input component for searching and selecting exercises.
- * Allows creating a new exercise if it doesn't exist.
- *
- * @property {Exercise} exerciseSelected - Event emitted when an exercise is selected or created.
- *
- * @example
- * <app-exercise-autocomplete (exerciseSelected)="onSelect($event)"></app-exercise-autocomplete>
- */
 @Component({
   selector: 'app-exercise-autocomplete',
   standalone: true,
@@ -38,27 +29,11 @@ export class ExerciseAutocomplete implements OnInit {
     this.onSearchChange('');
   }
 
-  /**
-   * Checks if the current search query has an exact match in the results.
-   *
-   * @returns {boolean} True if an exact match exists, otherwise false.
-   *
-   * @example
-   * const isExact = this.hasExactMatch();
-   */
   hasExactMatch() {
     const query = this.searchQuery().trim().toLowerCase();
     return this.results().some((e) => e.name.toLowerCase() === query);
   }
 
-  /**
-   * Handles changes to the search input, debouncing the query to fetch results.
-   *
-   * @param {string} query - The search string entered by the user.
-   *
-   * @example
-   * this.onSearchChange("bench");
-   */
   onSearchChange(query: string) {
     this.searchQuery.set(query);
 
@@ -67,11 +42,11 @@ export class ExerciseAutocomplete implements OnInit {
     }
 
     if (!query.trim()) {
-      // Don't return early, let it delay and load the default list
+      /** Don't return early, let it delay and load the default list */
     }
 
     this.isSearching.set(true);
-    // Debounce search
+    /** Debounce search */
     this.searchTimeout = setTimeout(async () => {
       try {
         const matches = await this.exerciseService.getExercises(query);
@@ -82,26 +57,10 @@ export class ExerciseAutocomplete implements OnInit {
     }, 300);
   }
 
-  /**
-   * Emits the selected exercise event.
-   *
-   * @param {Exercise} exercise - The selected exercise.
-   *
-   * @example
-   * this.selectExercise(myExercise);
-   */
   selectExercise(exercise: Exercise) {
     this.exerciseSelected.emit(exercise);
   }
 
-  /**
-   * Creates a new custom exercise and automatically selects it.
-   *
-   * @param {string} name - The name of the new exercise.
-   *
-   * @example
-   * await this.createNewExercise("My Custom Squat");
-   */
   async createNewExercise(name: string) {
     const newEx = await this.exerciseService.addCustomExercise(name);
     this.selectExercise(newEx);

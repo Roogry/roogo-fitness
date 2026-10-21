@@ -16,7 +16,7 @@ import { lucideCheck } from '@ng-icons/lucide';
 import type { ClassValue } from 'clsx';
 
 import { ZardIdDirective } from '@/core';
-import { mergeClasses, noopFn } from '@/shared/utils/merge-classes';
+import { mergeClasses, noopFn } from '@/shared/utils/merge-classes.utils';
 
 import {
   checkboxLabelVariants,

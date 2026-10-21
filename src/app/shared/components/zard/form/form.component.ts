@@ -16,7 +16,7 @@ import {
   formMessageVariants,
   type ZardFormMessageTypeVariants,
 } from '@/shared/components/zard/form/form.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+import { mergeClasses } from '@/shared/utils/merge-classes.utils';
 
 /**
  * A wrapper component for an entire form field, including its label and control.

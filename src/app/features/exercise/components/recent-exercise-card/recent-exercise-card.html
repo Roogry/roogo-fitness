@@ -1,5 +1,4 @@
 <z-card [zLessPadding]="true" zRounded="sm">
-  <!-- Session Header -->
   <div class="p-3 flex flex-col gap-1 sm:flex-row sm:items-center justify-between">
     <span class="font-bold text-sm text-foreground sm:text-base">{{ session().sessionTitle }}</span>
     <div class="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -8,7 +7,6 @@
     </div>
   </div>
 
-  <!-- Sets Content -->
   <div class="flex flex-col gap-2">
     <div class="grid gap-2 items-center text-xs" [class]="`grid-cols-${session().sets.length}`">
       @for (set of session().sets; track set.id) {
