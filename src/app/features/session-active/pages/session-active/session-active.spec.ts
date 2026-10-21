@@ -12,7 +12,8 @@ import { WorkoutService } from '@/core/services/workout.service';
 import { SwipeActionsGroup } from '@/shared/directives/swipe-actions.service';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
 import { Exercise, LoggedExercise } from '@/shared/models';
-import { SessionActive, lastExerciseIdWithCompletedSet } from './session-active';
+import { SessionActive } from './session-active';
+import { lastExerciseIdWithCompletedSet } from './session-active.utils';
 
 function tracked(id: number, completedAt?: string): LoggedExercise {
   const exercise: Exercise = {

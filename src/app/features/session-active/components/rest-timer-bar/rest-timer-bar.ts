@@ -7,9 +7,6 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 /**
  * Rest countdown row shared by the session page and the floating widget.
  * Button clicks stop propagation so a parent click (widget navigation) does not fire.
- *
- * @example
- * <app-rest-timer-bar />
  */
 @Component({
   selector: 'app-rest-timer-bar',

@@ -1,5 +1,4 @@
 <div class="min-h-screen bg-background text-foreground pb-32" appDismissKeyboardOnScroll>
-  <!-- Header -->
   <app-header title="Log Session" [showBackBtn]="true" class="sticky top-0">
     @if (workoutService.sessionStartTime()) {
       <button right z-button zShape="circle" (click)="openFinishSheet()">
@@ -22,7 +21,6 @@
         </button>
       }
 
-      <!-- Active Exercises -->
       @if (workoutService.trackedExercises().length === 0) {
         <div
           class="py-8 text-center text-muted-foreground border-2 border-dashed border-border rounded-xl"
@@ -82,7 +80,6 @@
     </div>
   </main>
 
-  <!-- Add Exercise Sheet -->
   <app-sheet
     [isOpen]="isAddSheetOpen()"
     (onOpenChange)="isAddSheetOpen.set($event)"
@@ -106,7 +103,6 @@
     />
   </app-sheet>
 
-  <!-- Finish Session Sheet Component -->
   <app-active-session-finish-sheet
     [(isOpen)]="isFinishSheetOpen"
     [progressedExercises]="progressedExercises()"

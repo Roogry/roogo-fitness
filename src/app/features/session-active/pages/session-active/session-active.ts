@@ -22,6 +22,7 @@ import {
 } from '@/features/session-active/logged-sets-confirm.utils';
 import { sortReplacementCandidates } from '@/features/session-active/replace-exercise.utils';
 import { Exercise, LoggedExercise, LoggedSet } from '@/shared/models';
+import { lastExerciseIdWithCompletedSet } from './session-active.utils';
 import { SwipeActionsGroup } from '@/shared/directives/swipe-actions.service';
 import { ExerciseAutocomplete } from '@/features/exercise/components/exercise-autocomplete/exercise-autocomplete';
 import { ExerciseTracker } from '@/features/exercise/components/exercise-tracker/exercise-tracker';
@@ -76,6 +77,7 @@ export class SessionActive implements OnInit {
   private readonly replacingExerciseId = signal<number | null>(null);
   isFinishSheetOpen = signal(false);
   progressedExercises = signal<any[]>([]);
+
   /** Bottom-bar Duration control swaps to the session start time until tapped again. */
   showStartTime = signal(false);
 
@@ -86,7 +88,7 @@ export class SessionActive implements OnInit {
   private resumeScrollHandled = false;
 
   constructor() {
-    // Once per visit, after the exercise list has been rendered.
+    /** Once per visit, after the exercise list has been rendered. */
     afterNextRender({
       mixedReadWrite: () => {
         this.scrollToLastCompletedExercise();
@@ -96,7 +98,7 @@ export class SessionActive implements OnInit {
 
   ngOnInit() {
     this.setupSessionData();
-    // Fix #61: refresh stale exercise data when returning to session
+    /** Fix #61: refresh stale exercise data when returning to session */
     if (this.workoutService.trackedExercises().length > 0) {
       this.workoutService.refreshTrackedExercises();
     }
@@ -167,7 +169,6 @@ export class SessionActive implements OnInit {
 
   onSetUpdate(e: { exerciseId: number; setId: number; updates: Partial<LoggedSet> }) {
     this.workoutService.updateSet(e.exerciseId, e.setId, e.updates);
-    // Rest timer auto-start on completed
     if (e.updates.completed_at) {
       const tracked = this.workoutService
         .trackedExercises()
@@ -313,7 +314,7 @@ export class SessionActive implements OnInit {
       const exceedingSets = completedSets.filter((s) => s.exceeded);
 
       if (exceedingSets.length > 0) {
-        // Sort by volume descending, then by weight descending
+        /** Sort by volume descending, then by weight descending */
         exceedingSets.sort((a, b) => {
           if (b.volume !== a.volume) {
             return b.volume - a.volume;
@@ -354,20 +355,4 @@ export class SessionActive implements OnInit {
       },
     });
   }
-}
-
-/**
- * Highest-index exercise that has at least one set with `completed_at`.
- * List order is the session order, so the last match is where logging left off.
- */
-export function lastExerciseIdWithCompletedSet(
-  exercises: readonly LoggedExercise[],
-): number | null {
-  for (let index = exercises.length - 1; index >= 0; index--) {
-    const tracked = exercises[index];
-    if (tracked.sets.some((set) => !!set.completed_at)) {
-      return tracked.exercise.id;
-    }
-  }
-  return null;
 }
