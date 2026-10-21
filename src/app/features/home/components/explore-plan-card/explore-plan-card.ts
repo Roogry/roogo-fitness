@@ -3,25 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCalendar } from '@ng-icons/lucide';
+import { ExplorePlan } from './explore-plan-card.types';
 
-/**
- * Represents a workout plan available for exploration.
- */
-export interface ExplorePlan {
-  id: number;
-  title: string;
-  sessions_per_week: number;
-  difficulty: string;
-}
-
-/**
- * A card component displaying details of a workout plan in the explore section.
- *
- * @property {ExplorePlan} plan - The workout plan to display.
- *
- * @example
- * <app-explore-plan-card [plan]="myExplorePlan"></app-explore-plan-card>
- */
 @Component({
   selector: 'app-explore-plan-card',
   standalone: true,

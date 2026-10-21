@@ -84,7 +84,7 @@ describe('Home Component - Next Session Detection', () => {
       ],
     };
 
-    // Session 101 has been logged this week
+    /** Session 101 has been logged this week. */
     const now = new Date();
     const mockSessions: LoggedSession[] = [
       {
@@ -153,7 +153,7 @@ describe('Home Component - Next Session Detection', () => {
       ],
     };
 
-    // Sessions 101 and 103 have been logged this week
+    /** Sessions 101 and 103 have been logged this week. */
     const now = new Date();
     const mockSessions: LoggedSession[] = [
       {
@@ -177,8 +177,7 @@ describe('Home Component - Next Session Detection', () => {
     ];
 
     component.updateNextSession(mockPlan, mockSessions);
-    // Should filter out 101 and 103. Remaining: 102, 104, 105.
-    // The mappedSessions should be exactly [102, 104, 105].
+    /** Logged sessions 101 and 103 drop out, leaving 102, 104, and 105. */
     const mapped = component.mappedSessions();
     expect(mapped.length).toBe(3);
     expect(mapped[0].id).toBe(102);

@@ -10,14 +10,7 @@ import { TimeAgoPipe } from '@/shared/pipes/time-ago-pipe';
 import { provideIcons } from '@ng-icons/core';
 import { lucideActivity, lucideArrowRight } from '@ng-icons/lucide';
 
-/**
- * A card component displaying a previously logged workout session summary on the home page.
- *
- * @property {LoggedSession} session - The logged session to display.
- *
- * @example
- * <app-home-logged-workout-card [session]="mySession"></app-home-logged-workout-card>
- */
+/** A card component displaying a previously logged workout session summary on the home page. */
 @Component({
   selector: 'app-home-logged-workout-card',
   standalone: true,
