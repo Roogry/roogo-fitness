@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ZardBadgeComponent } from '@/shared/components/zard/badge';
 import { ZardInputDirective } from '@/shared/components/zard/input';
+import { CreateExerciseOption } from '@/features/exercise/components/create-exercise-option/create-exercise-option';
 import { ExerciseService } from '@/core/services/exercise.service';
 import { Exercise } from '@/shared/models';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -10,7 +11,7 @@ import { lucideSearch, lucidePlus, lucideDumbbell } from '@ng-icons/lucide';
 @Component({
   selector: 'app-exercise-autocomplete',
   standalone: true,
-  imports: [CommonModule, ZardBadgeComponent, ZardInputDirective, NgIcon],
+  imports: [CommonModule, ZardBadgeComponent, ZardInputDirective, NgIcon, CreateExerciseOption],
   providers: [provideIcons({ lucideSearch, lucidePlus, lucideDumbbell })],
   templateUrl: './exercise-autocomplete.html',
   styleUrl: './exercise-autocomplete.css',

@@ -60,16 +60,10 @@
       }
 
       @if (!hasExactMatch() && searchQuery().trim() && !isSearching()) {
-        <div
-          class="bg-accent rounded-xl border border-border p-4 hover:border-forest/20 cursor-pointer flex justify-between items-center transition-all"
-          (click)="createNewExercise(searchQuery().trim())"
-        >
-          <div class="flex flex-col">
-            <span class="font-medium text-sm text-forest">Add "{{ searchQuery().trim() }}"</span>
-            <span class="text-sm text-muted-foreground mt-1">Create a new custom exercise</span>
-          </div>
-          <ng-icon name="lucidePlus" class="h-5 w-5 text-forest"></ng-icon>
-        </div>
+        <app-create-exercise-option
+          [name]="searchQuery().trim()"
+          (createClick)="createNewExercise($event)"
+        />
       }
     </div>
   }

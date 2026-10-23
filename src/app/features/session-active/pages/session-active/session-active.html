@@ -99,7 +99,9 @@
   >
     <app-replace-exercise-picker
       [exercises]="replaceCandidates()"
+      [sessionExerciseNames]="sessionExerciseNames()"
       (picked)="onReplacementPicked($event)"
+      (createRequested)="onReplacementCreateRequested($event)"
     />
   </app-sheet>
 

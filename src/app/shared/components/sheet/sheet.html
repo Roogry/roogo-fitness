@@ -4,9 +4,11 @@
 
   <!-- Container: bottom sheet on mobile, centered modal on desktop -->
   <div
-    class="fixed inset-0 z-100 flex items-end md:items-center justify-center p-0 md:p-4 pointer-events-none"
+    data-testid="sheet-frame"
+    class="fixed inset-0 bottom-0 z-100 flex items-end md:items-center justify-center p-0 md:p-4 pointer-events-none"
   >
     <div
+      data-testid="sheet-panel"
       class="pointer-events-auto bg-card w-full md:max-w-[480px] md:w-full max-h-[85vh] md:max-h-[80vh] rounded-t-[32px] md:rounded-[32px] border border-border flex flex-col overflow-hidden sheet-panel"
     >
       <div class="flex flex-col h-full max-h-[85vh] md:max-h-[80vh]">
@@ -42,7 +44,10 @@
           </button>
         </div>
 
-        <div class="px-5 md:px-6 pt-4 pb-4 flex-1 overflow-y-auto w-full relative">
+        <div
+          data-testid="sheet-body"
+          class="px-5 md:px-6 pt-4 pb-above-keyboard flex-1 overflow-y-auto w-full relative"
+        >
           <ng-content></ng-content>
         </div>
 

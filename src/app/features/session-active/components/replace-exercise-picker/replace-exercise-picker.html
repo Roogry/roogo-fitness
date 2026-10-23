@@ -15,13 +15,12 @@
     />
   </div>
 
-  @if (visibleExercises().length === 0) {
-    <p class="py-8 text-center text-sm text-muted-foreground">No other exercises to swap in.</p>
-  } @else {
+  @if (visibleExercises().length > 0) {
     <div class="flex flex-col gap-3">
       @for (exercise of visibleExercises(); track exercise.id) {
         <button
           type="button"
+          data-testid="replace-exercise-option"
           class="flex w-full items-center gap-3 rounded-2xl border border-border bg-card p-2 text-left"
           (click)="onPick(exercise)"
         >
@@ -47,5 +46,13 @@
         </button>
       }
     </div>
+  }
+
+  @if (canCreate()) {
+    <app-create-exercise-option [name]="trimmedQuery()" (createClick)="onCreate($event)" />
+  }
+
+  @if (visibleExercises().length === 0 && !canCreate()) {
+    <p class="py-8 text-center text-sm text-muted-foreground">No other exercises to swap in.</p>
   }
 </div>

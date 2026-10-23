@@ -1,8 +1,10 @@
-import { Component, input, output } from '@angular/core';
+import { Component, effect, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideX } from '@ng-icons/lucide';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
+import { VisualViewportService } from '@/shared/visual-viewport/visual-viewport.service';
+import { SheetScrollLockService } from './sheet-scroll-lock.service';
 
 /** A slide-in sheet on mobile, centered modal on desktop. */
 @Component({
@@ -45,11 +47,23 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
   `,
 })
 export class RooSheetComponent {
+  /** Starts the keyboard listener on every page that hosts a sheet. */
+  private readonly viewport = inject(VisualViewportService);
+  private readonly scrollLock = inject(SheetScrollLockService);
+
   readonly title = input('');
   readonly description = input<string | null>(null);
   readonly isOpen = input<boolean>(false);
 
   readonly onOpenChange = output<boolean>();
+
+  constructor() {
+    effect((onCleanup) => {
+      if (!this.isOpen()) return;
+      this.scrollLock.lock();
+      onCleanup(() => this.scrollLock.unlock());
+    });
+  }
 
   close() {
     this.onOpenChange.emit(false);
