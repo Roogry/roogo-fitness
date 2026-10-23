@@ -1,11 +1,10 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, effect, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideX } from '@ng-icons/lucide';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
-import { KEYBOARD_OPEN_OFFSET_PX } from '@/shared/visual-viewport/visual-viewport.constants';
 import { VisualViewportService } from '@/shared/visual-viewport/visual-viewport.service';
-import { sheetMaxHeightAboveKeyboard } from './sheet.utils';
+import { SheetScrollLockService } from './sheet-scroll-lock.service';
 
 /** A slide-in sheet on mobile, centered modal on desktop. */
 @Component({
@@ -48,7 +47,9 @@ import { sheetMaxHeightAboveKeyboard } from './sheet.utils';
   `,
 })
 export class RooSheetComponent {
+  /** Starts the keyboard listener on every page that hosts a sheet. */
   private readonly viewport = inject(VisualViewportService);
+  private readonly scrollLock = inject(SheetScrollLockService);
 
   readonly title = input('');
   readonly description = input<string | null>(null);
@@ -56,19 +57,13 @@ export class RooSheetComponent {
 
   readonly onOpenChange = output<boolean>();
 
-  /**
-   * Keyboard inset in px. Null when the keyboard is closed so the desktop max-height classes apply.
-   * A few dozen pixels is browser chrome, not the keyboard.
-   */
-  readonly keyboardLiftPx = computed(() => {
-    const offset = this.viewport.keyboardOffset();
-    if (offset <= KEYBOARD_OPEN_OFFSET_PX) return null;
-    return offset;
-  });
-
-  readonly maxHeightAboveKeyboard = computed(() =>
-    sheetMaxHeightAboveKeyboard(this.keyboardLiftPx() ?? 0, this.viewport.visualHeight()),
-  );
+  constructor() {
+    effect((onCleanup) => {
+      if (!this.isOpen()) return;
+      this.scrollLock.lock();
+      onCleanup(() => this.scrollLock.unlock());
+    });
+  }
 
   close() {
     this.onOpenChange.emit(false);

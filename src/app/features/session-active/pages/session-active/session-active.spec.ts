@@ -311,22 +311,6 @@ describe('SessionActive duration control', () => {
     expect(bar.classList.contains('translate-y-2')).toBe(false);
     expect(bar.hasAttribute('aria-hidden')).toBe(false);
   });
-
-  it('lifts an open sheet with the shared keyboard offset', () => {
-    const fixture = TestBed.createComponent(SessionActive);
-    fixture.detectChanges();
-    fixture.componentInstance.isAddSheetOpen.set(true);
-    fixture.detectChanges();
-
-    TestBed.inject(VisualViewportService).keyboardOffset.set(320);
-    fixture.detectChanges();
-
-    const frame = fixture.nativeElement.querySelector('[data-testid="sheet-frame"]') as HTMLElement;
-    expect(frame.style.bottom).toBe('320px');
-    expect(frame.style.maxHeight).not.toContain('calc(85vh - 320px)');
-    const panel = fixture.nativeElement.querySelector('[data-testid="sheet-panel"]') as HTMLElement;
-    expect(panel.style.maxHeight).toContain('calc(85vh - 320px)');
-  });
 });
 
 describe('SessionActive replace exercise', () => {
