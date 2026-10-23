@@ -7,7 +7,7 @@ import { vi } from 'vitest';
 import { provideZard } from '@/core/provider/providezard';
 import { ExerciseService } from '@/core/services/exercise.service';
 import { PointerModeService } from '@/core/services/pointer-mode.service';
-import { VisualViewportService } from '@/core/services/visual-viewport.service';
+import { VisualViewportService } from '@/shared/visual-viewport/visual-viewport.service';
 import { WorkoutService } from '@/core/services/workout.service';
 import { SwipeActionsGroup } from '@/shared/directives/swipe-actions.service';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
@@ -311,6 +311,22 @@ describe('SessionActive duration control', () => {
     expect(bar.classList.contains('translate-y-2')).toBe(false);
     expect(bar.hasAttribute('aria-hidden')).toBe(false);
   });
+
+  it('lifts an open sheet with the shared keyboard offset', () => {
+    const fixture = TestBed.createComponent(SessionActive);
+    fixture.detectChanges();
+    fixture.componentInstance.isAddSheetOpen.set(true);
+    fixture.detectChanges();
+
+    TestBed.inject(VisualViewportService).keyboardOffset.set(320);
+    fixture.detectChanges();
+
+    const frame = fixture.nativeElement.querySelector('[data-testid="sheet-frame"]') as HTMLElement;
+    expect(frame.style.bottom).toBe('320px');
+    expect(frame.style.maxHeight).not.toContain('calc(85vh - 320px)');
+    const panel = fixture.nativeElement.querySelector('[data-testid="sheet-panel"]') as HTMLElement;
+    expect(panel.style.maxHeight).toContain('calc(85vh - 320px)');
+  });
 });
 
 describe('SessionActive replace exercise', () => {
@@ -320,6 +336,7 @@ describe('SessionActive replace exercise', () => {
   const replaceTrackedExercise = vi.fn().mockReturnValue(true);
   const removeTrackedExercise = vi.fn();
   const savedTargetsForExercise = vi.fn().mockResolvedValue(null);
+  const addCustomExercise = vi.fn();
 
   const chest = { id: 10, name: 'Chest' };
   const bench: Exercise = { id: 1, name: 'Bench Press', media: [], primary_muscle: chest };
@@ -347,6 +364,7 @@ describe('SessionActive replace exercise', () => {
     removeTrackedExercise.mockReset();
     savedTargetsForExercise.mockReset();
     savedTargetsForExercise.mockResolvedValue(null);
+    addCustomExercise.mockReset();
     getExercises.mockResolvedValue([bench, squat, fly, incline]);
 
     await TestBed.configureTestingModule({
@@ -380,7 +398,7 @@ describe('SessionActive replace exercise', () => {
           },
         },
         { provide: ZardDialogService, useValue: dialog },
-        { provide: ExerciseService, useValue: { getExercises } },
+        { provide: ExerciseService, useValue: { getExercises, addCustomExercise } },
         { provide: PointerModeService, useValue: { isDesktop: signal(false) } },
       ],
     }).compileComponents();
@@ -475,6 +493,23 @@ describe('SessionActive replace exercise', () => {
       target_weight: 50,
       target_reps: 6,
     });
+    expect(fixture.componentInstance.isReplaceSheetOpen()).toBe(false);
+  });
+
+  it('creates a custom exercise and swaps it in through the replace flow', async () => {
+    const created: Exercise = { id: 99, name: 'Zercher Squat', media: [] };
+    addCustomExercise.mockResolvedValue(created);
+    trackedExercises.set([logged(bench, '2026-10-11T00:00:00.000Z')]);
+    const fixture = await render();
+
+    await fixture.componentInstance.onExerciseReplace({ exerciseId: bench.id });
+    const onContinue = dialog.create.mock.calls[0][0].zOnOk as () => Promise<void>;
+    await onContinue();
+    await fixture.componentInstance.onReplacementCreateRequested('Zercher Squat');
+
+    expect(addCustomExercise).toHaveBeenCalledWith('Zercher Squat');
+    expect(savedTargetsForExercise).toHaveBeenCalledWith(created.id);
+    expect(replaceTrackedExercise).toHaveBeenCalledWith(bench.id, created, null);
     expect(fixture.componentInstance.isReplaceSheetOpen()).toBe(false);
   });
 

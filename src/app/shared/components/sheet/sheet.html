@@ -4,12 +4,20 @@
 
   <!-- Container: bottom sheet on mobile, centered modal on desktop -->
   <div
+    data-testid="sheet-frame"
     class="fixed inset-0 z-100 flex items-end md:items-center justify-center p-0 md:p-4 pointer-events-none"
+    [style.bottom.px]="keyboardLiftPx()"
   >
     <div
+      data-testid="sheet-panel"
       class="pointer-events-auto bg-card w-full md:max-w-[480px] md:w-full max-h-[85vh] md:max-h-[80vh] rounded-t-[32px] md:rounded-[32px] border border-border flex flex-col overflow-hidden sheet-panel"
+      [style.max-height]="maxHeightAboveKeyboard()"
     >
-      <div class="flex flex-col h-full max-h-[85vh] md:max-h-[80vh]">
+      <div
+        data-testid="sheet-column"
+        class="flex flex-col h-full max-h-[85vh] md:max-h-[80vh]"
+        [style.max-height]="maxHeightAboveKeyboard()"
+      >
         <!-- Sheet Indicator (mobile only) -->
         <div
           class="w-12 h-1.5 bg-border mx-auto rounded-full mt-3 mb-2 md:hidden shrink-0 cursor-pointer"

@@ -27,7 +27,7 @@ Deeper notes live in `docs/`. Follow this file when they disagree.
 ```text
 src/app/
   core/services/       DbService, WorkoutService, ExerciseService, MuscleService,
-                       PlanService, VisualViewportService, PointerModeService
+                       PlanService, PointerModeService
   core/utils/          pure helpers used by those services
   core/provider/       provideZard()
   features/<feature>/  home, plan, exercise, journey, profile, session-active
@@ -39,6 +39,7 @@ src/app/
   shared/models/       Exercise, WorkoutPlan, LoggedSession
   shared/directives/   appDismissKeyboardOnScroll, zStringTemplateOutlet, zardId
   shared/utils/        mergeClasses, format, number, file
+  shared/visual-viewport/ VisualViewportService, computeKeyboardOffset
 ```
 
 `JourneyService` stays under `features/journey/services`. Do not import `core` from `shared`.

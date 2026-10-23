@@ -35,6 +35,12 @@ export function filterExercisesByName(exercises: readonly Exercise[], query: str
   return exercises.filter((exercise) => exercise.name.toLowerCase().includes(needle));
 }
 
+export function hasExactNameMatch(exercises: readonly Exercise[], query: string): boolean {
+  const needle = query.trim().toLowerCase();
+  if (!needle) return false;
+  return exercises.some((exercise) => exercise.name.toLowerCase() === needle);
+}
+
 function replacementRank(exercise: Exercise, primaryMuscleId: number | undefined): number {
   if (primaryMuscleId === undefined) return OTHER_MUSCLE_RANK;
   if (exercise.primary_muscle?.id === primaryMuscleId) return PRIMARY_MUSCLE_RANK;
