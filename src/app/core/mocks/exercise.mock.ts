@@ -2,7 +2,7 @@ import { Exercise, Muscle } from '@/shared/models';
 
 export const mockMuscles: Muscle[] = [
   { id: 1, name: 'Upper Chest', icon_url: 'assets/images/muscles/upper_chest_mucle.webp' },
-  { id: 2, name: 'Midle Chest', icon_url: 'assets/images/muscles/middle_chest_mucle.webp' },
+  { id: 2, name: 'Middle Chest', icon_url: 'assets/images/muscles/middle_chest_mucle.webp' },
   { id: 3, name: 'Lower Chest', icon_url: 'assets/images/muscles/lower_chest_mucle.webp' },
   { id: 4, name: 'Front Delt', icon_url: 'assets/images/muscles/front_delt_mucle.webp' },
   { id: 5, name: 'Side Delt', icon_url: 'assets/images/muscles/side_delt_mucle.webp' },
@@ -18,13 +18,25 @@ export const mockMuscles: Muscle[] = [
   { id: 15, name: 'Core', icon_url: 'assets/images/muscles/core_mucle.webp' },
 ];
 
+/**
+ * A seed exercise stores the muscle id and name. The icon stays on the muscle row.
+ * The id is looked up in the muscle list so a typo cannot point at a missing muscle.
+ */
+export function muscleById(id: number): Pick<Muscle, 'id' | 'name'> {
+  const muscle = mockMuscles.find((item) => item.id === id);
+  if (!muscle) {
+    throw new Error(`Seed references muscle ${id}, which is not in the muscle list`);
+  }
+  return { id: muscle.id, name: muscle.name };
+}
+
 export const mockExercises: Exercise[] = [
   {
     id: 100,
     name: 'Wide-Grip Pull-Up',
     short_description:
       'Tarik tubuh ke atas dengan otot latissimus (sayap). Gunakan bantuan jika perlu, atau tambahkan beban.',
-    primary_muscle: { id: 9, name: 'Lats' },
+    primary_muscle: muscleById(9),
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
@@ -44,7 +56,7 @@ export const mockExercises: Exercise[] = [
     name: 'Chest-Supported Machine Row',
     short_description:
       'Tarik beban dengan fokus pada kontraksi punggung, gunakan pad dada sebagai tumpuan.',
-    primary_muscle: { id: 9, name: 'Lats' },
+    primary_muscle: muscleById(9),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
@@ -63,7 +75,7 @@ export const mockExercises: Exercise[] = [
     name: 'Half-Kneeling 1-Arm Lat Pulldown',
     short_description:
       'Tarik kabel dengan satu tangan dalam posisi setengah berlutut untuk rentang gerak maksimal otot lat.',
-    primary_muscle: { id: 9, name: 'Lats' },
+    primary_muscle: muscleById(9),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 7, max: 9 },
@@ -82,7 +94,7 @@ export const mockExercises: Exercise[] = [
     name: 'Cable 1-Arm Face Pull',
     short_description:
       'Tarik kabel ke arah wajah menggunakan satu tangan untuk melatih otot bahu belakang.',
-    primary_muscle: { id: 6, name: 'Back Delt' },
+    primary_muscle: muscleById(6),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
@@ -101,7 +113,7 @@ export const mockExercises: Exercise[] = [
     name: 'Seated Super-Bayesian High Cable Curl',
     short_description:
       'Latihan bisep menggunakan kabel tinggi dengan posisi duduk membelakangi mesin.',
-    primary_muscle: { id: 8, name: 'Biceps' },
+    primary_muscle: muscleById(8),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
@@ -119,7 +131,7 @@ export const mockExercises: Exercise[] = [
     name: 'Cable Crunch',
     short_description:
       'Gunakan kabel untuk melatih otot perut dengan memberikan beban yang konsisten.',
-    primary_muscle: { id: 16, name: 'Core' },
+    primary_muscle: muscleById(15),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 8, max: 10 },
@@ -136,7 +148,7 @@ export const mockExercises: Exercise[] = [
     id: 106,
     name: 'Meadows Incline DB Lateral Raise',
     short_description: 'Latihan bahu samping dengan berbaring menyamping di bangku miring.',
-    primary_muscle: { id: 5, name: 'Side Delt' },
+    primary_muscle: muscleById(5),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
@@ -155,7 +167,7 @@ export const mockExercises: Exercise[] = [
     name: 'Flat Machine Chest Press',
     short_description:
       'Dorongan dada menggunakan mesin posisi datar untuk melatih otot dada tengah.',
-    primary_muscle: { id: 2, name: 'Midle Chest' },
+    primary_muscle: muscleById(2),
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
@@ -174,7 +186,7 @@ export const mockExercises: Exercise[] = [
     name: 'Bottom-Half Seated Cable Flye',
     short_description:
       'Latihan otot dada tengah dengan gerakan setengah bawah untuk regangan maksimal.',
-    primary_muscle: { id: 2, name: 'Midle Chest' },
+    primary_muscle: muscleById(2),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 8, max: 10 },
@@ -192,7 +204,7 @@ export const mockExercises: Exercise[] = [
     id: 109,
     name: 'DB Shoulder Press',
     short_description: 'Dorongan bahu dengan dumbbell untuk menargetkan otot bahu depan.',
-    primary_muscle: { id: 4, name: 'Front Delt' },
+    primary_muscle: muscleById(4),
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
@@ -211,7 +223,7 @@ export const mockExercises: Exercise[] = [
     name: 'Overhead Cable Triceps Extension (Bar)',
     short_description:
       'Ekstensi trisep di atas kepala menggunakan kabel untuk peregangan otot maksimal.',
-    primary_muscle: { id: 7, name: 'Triceps' },
+    primary_muscle: muscleById(7),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 8, max: 10 },
@@ -229,7 +241,7 @@ export const mockExercises: Exercise[] = [
     id: 111,
     name: 'Cable Triceps Kickback',
     short_description: 'Latihan isolasi trisep menggunakan tarikan kabel.',
-    primary_muscle: { id: 7, name: 'Triceps' },
+    primary_muscle: muscleById(7),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 8, max: 10 },
@@ -248,7 +260,7 @@ export const mockExercises: Exercise[] = [
     name: 'Seated Leg Curl',
     short_description:
       'Latih otot hamstring (paha belakang) dengan posisi duduk menggunakan mesin.',
-    primary_muscle: { id: 13, name: 'Hamstrings' },
+    primary_muscle: muscleById(12),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
@@ -267,7 +279,7 @@ export const mockExercises: Exercise[] = [
     name: 'Bottom-Half Smith Machine Squat',
     short_description:
       'Squat setengah gerakan bawah dengan mesin Smith untuk memfokuskan tarikan pada otot paha depan.',
-    primary_muscle: { id: 12, name: 'Quadriceps' },
+    primary_muscle: muscleById(11),
     recommended_warmup_sets: { min: 3, max: 4 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 6, max: 8 },
@@ -286,7 +298,7 @@ export const mockExercises: Exercise[] = [
     name: 'Glute-Ham Raise',
     short_description:
       'Latihan fungsional untuk paha belakang (hamstring) dengan mengangkat beban badan.',
-    primary_muscle: { id: 13, name: 'Hamstrings' },
+    primary_muscle: muscleById(12),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
@@ -304,7 +316,7 @@ export const mockExercises: Exercise[] = [
     id: 115,
     name: 'Leg Extension',
     short_description: 'Isolasi paha depan (quadriceps) untuk pengembangan bentuk otot kaki.',
-    primary_muscle: { id: 12, name: 'Quadriceps' },
+    primary_muscle: muscleById(11),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
@@ -323,7 +335,7 @@ export const mockExercises: Exercise[] = [
     name: 'Standing Calf Raise',
     short_description:
       'Latihan beban betis sambil berdiri untuk menguatkan dan memperbesar otot betis.',
-    primary_muscle: { id: 15, name: 'Calves' },
+    primary_muscle: muscleById(14),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
@@ -341,7 +353,7 @@ export const mockExercises: Exercise[] = [
     id: 117,
     name: 'Machine Hip Abduction',
     short_description: 'Dorongan membuka paha untuk melatih dan mengencangkan bokong luar.',
-    primary_muscle: { id: 14, name: 'Gluteus' },
+    primary_muscle: muscleById(13),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
@@ -358,7 +370,7 @@ export const mockExercises: Exercise[] = [
     id: 118,
     name: 'DB Wrist Curl (Flexion)',
     short_description: 'Latihan tekuk pergelangan untuk menguatkan lengan bawah bagian dalam.',
-    primary_muscle: { id: 8, name: 'Biceps' },
+    primary_muscle: muscleById(8),
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
@@ -376,7 +388,7 @@ export const mockExercises: Exercise[] = [
     id: 119,
     name: 'DB Wrist Curl (Extension)',
     short_description: 'Ekstensi pergelangan untuk lengan bawah bagian luar yang stabil.',
-    primary_muscle: { id: 8, name: 'Biceps' },
+    primary_muscle: muscleById(8),
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
@@ -393,7 +405,7 @@ export const mockExercises: Exercise[] = [
     id: 120,
     name: 'EZ-Bar Cable Curl',
     short_description: 'Latihan kabel melengkung (EZ) untuk pembentukan puncak bisep.',
-    primary_muscle: { id: 8, name: 'Biceps' },
+    primary_muscle: muscleById(8),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
@@ -411,7 +423,7 @@ export const mockExercises: Exercise[] = [
     id: 121,
     name: 'EZ-Bar Skull Crusher',
     short_description: 'Latihan beban bebas populer untuk membangun ukuran keseluruhan trisep.',
-    primary_muscle: { id: 7, name: 'Triceps' },
+    primary_muscle: muscleById(7),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
@@ -429,7 +441,7 @@ export const mockExercises: Exercise[] = [
     id: 122,
     name: 'Bottom-Half Incline DB Curl',
     short_description: 'Isolasi bisep dengan kemiringan untuk regangan otot maksimal.',
-    primary_muscle: { id: 8, name: 'Biceps' },
+    primary_muscle: muscleById(8),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 8, max: 10 },
@@ -447,7 +459,7 @@ export const mockExercises: Exercise[] = [
     id: 123,
     name: 'Triceps Pressdown (Bar)',
     short_description: 'Dorongan bar kabel lurus untuk kontraksi trisep yang stabil.',
-    primary_muscle: { id: 7, name: 'Triceps' },
+    primary_muscle: muscleById(7),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 8, max: 10 },
@@ -466,7 +478,7 @@ export const mockExercises: Exercise[] = [
     name: 'Roman Chair Leg Raise',
     short_description:
       'Angkat kaki dengan sandaran untuk otot perut bagian bawah dan inti inti (core).',
-    primary_muscle: { id: 16, name: 'Core' },
+    primary_muscle: muscleById(15),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 9, max: 10 },
@@ -484,7 +496,7 @@ export const mockExercises: Exercise[] = [
     id: 125,
     name: 'Smith Machine Deficit Row',
     short_description: 'Tarikan punggung membungkuk memakai pijakan tinggi untuk rentang penuh.',
-    primary_muscle: { id: 9, name: 'Lats' },
+    primary_muscle: muscleById(9),
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
@@ -504,7 +516,7 @@ export const mockExercises: Exercise[] = [
     name: 'Neutral-Grip Lat Pulldown',
     short_description:
       'Tarikan pulldown posisi telapak berhadapan untuk aktivasi dominan otot sayap.',
-    primary_muscle: { id: 9, name: 'Lats' },
+    primary_muscle: muscleById(9),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
@@ -523,7 +535,7 @@ export const mockExercises: Exercise[] = [
     name: 'Moto Cable Row',
     short_description:
       'Gerakan seperti memutar gas motor saat menarik kabel, sangat presisi untuk lat bawah.',
-    primary_muscle: { id: 9, name: 'Lats' },
+    primary_muscle: muscleById(9),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 7, max: 9 },
@@ -542,7 +554,7 @@ export const mockExercises: Exercise[] = [
     name: 'Bottom-Half EZ-Bar Preacher Curl',
     short_description:
       'Preacher curl gerakan bawah menjaga bisep di bawah beban konstan tanpa jeda istirahat.',
-    primary_muscle: { id: 8, name: 'Biceps' },
+    primary_muscle: muscleById(8),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
@@ -561,7 +573,7 @@ export const mockExercises: Exercise[] = [
     name: 'Super-Stretch Reverse Pec Deck',
     short_description:
       'Latihan fly belakang di mesin dada dibalik (reverse) secara satu-satu untuk fokus delt belakang.',
-    primary_muscle: { id: 6, name: 'Back Delt' },
+    primary_muscle: muscleById(6),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
@@ -580,7 +592,7 @@ export const mockExercises: Exercise[] = [
     name: 'Machine Cheat Shrug',
     short_description:
       'Latihan angkat bahu (traps) berbeban besar memanfaatkan hentakan ringan dan pengereman turun lambat.',
-    primary_muscle: { id: 10, name: 'Traps' },
+    primary_muscle: muscleById(10),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
@@ -598,7 +610,7 @@ export const mockExercises: Exercise[] = [
     id: 131,
     name: 'High-Cable Cuffed Lateral Raise',
     short_description: 'Lateral raise kabel menggunakan ikatan manset di posisi start atas.',
-    primary_muscle: { id: 5, name: 'Side Delt' },
+    primary_muscle: muscleById(5),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
@@ -616,7 +628,7 @@ export const mockExercises: Exercise[] = [
     name: 'Bottom-Half Low Incline DB Press',
     short_description:
       'Dumbbell press kemiringan rendah difokuskan murni pada area repetisi dada melar (bawah).',
-    primary_muscle: { id: 1, name: 'Upper Chest' },
+    primary_muscle: muscleById(1),
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
@@ -634,7 +646,7 @@ export const mockExercises: Exercise[] = [
     id: 133,
     name: 'Machine Shoulder Press',
     short_description: 'Dorongan bahu mesin yang amat stabil.',
-    primary_muscle: { id: 4, name: 'Front Delt' },
+    primary_muscle: muscleById(4),
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 7, max: 9 },
@@ -653,7 +665,7 @@ export const mockExercises: Exercise[] = [
     name: 'Katana Triceps Extension',
     short_description:
       'Ekstensi trisep silang tubuh dari atas persis layaknya hunusan katana punggung.',
-    primary_muscle: { id: 7, name: 'Triceps' },
+    primary_muscle: muscleById(7),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
@@ -672,7 +684,7 @@ export const mockExercises: Exercise[] = [
     name: 'Cable Crossover Ladder',
     short_description:
       'Tiga varian tinggi kabel yang menyiksa semua serat dada dari tiga arah berbeda.',
-    primary_muscle: { id: 1, name: 'Upper Chest' },
+    primary_muscle: muscleById(1),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },
@@ -690,7 +702,7 @@ export const mockExercises: Exercise[] = [
     name: 'Barbell RDL',
     short_description:
       'Latihan pengukur kekenyalan otot paha belakang (RDL) menuntut pemanjangan otot eksentrik ekstrem.',
-    primary_muscle: { id: 13, name: 'Hamstrings' },
+    primary_muscle: muscleById(12),
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 6, max: 8 },
@@ -709,7 +721,7 @@ export const mockExercises: Exercise[] = [
     name: 'Super-ROM Leg Press',
     short_description:
       'Modifikasi press kaki agar mencetak ROM terdalam tanpa buttwink menyentuh pinggang bawah.',
-    primary_muscle: { id: 12, name: 'Quadriceps' },
+    primary_muscle: muscleById(11),
     recommended_warmup_sets: { min: 3, max: 4 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 6, max: 8 },
@@ -728,7 +740,7 @@ export const mockExercises: Exercise[] = [
     name: 'Smith Machine Reverse Lunge',
     short_description:
       'Lunge arah mundur berpola statis lewat mesin smith memberi isolasi kuat di paha depan / bokong luar.',
-    primary_muscle: { id: 12, name: 'Quadriceps' },
+    primary_muscle: muscleById(11),
     recommended_warmup_sets: { min: 2, max: 3 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 7, max: 9 },
@@ -746,7 +758,7 @@ export const mockExercises: Exercise[] = [
     id: 139,
     name: 'Weighted 45° Hyperextension',
     short_description: 'Isolasi murni glute membungkuk 45 derajat.',
-    primary_muscle: { id: 14, name: 'Gluteus' },
+    primary_muscle: muscleById(13),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 2, max: 3 },
     recommended_rpe: { min: 7, max: 9 },
@@ -765,7 +777,7 @@ export const mockExercises: Exercise[] = [
     name: 'Bottom-Half Standing Calf Raise',
     short_description:
       'Latihan peregangan betis dengan porsi terberat gerakan repetisi bawah saja.',
-    primary_muscle: { id: 15, name: 'Calves' },
+    primary_muscle: muscleById(14),
     recommended_warmup_sets: { min: 1, max: 2 },
     recommended_working_sets: { min: 3, max: 4 },
     recommended_rpe: { min: 8, max: 10 },

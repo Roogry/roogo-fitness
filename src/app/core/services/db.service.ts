@@ -2,6 +2,12 @@ import { Injectable } from '@angular/core';
 import { openDB, IDBPDatabase } from 'idb';
 import { WorkoutPlan, LoggedSession, Exercise, Muscle } from '@/shared/models';
 import { mockMuscles, mockExercises, mockWorkoutPlans } from '../mocks';
+import {
+  RESEED_STORE_NAMES,
+  SEED_VERSION,
+  SEED_VERSION_STORAGE_KEY,
+} from '../utils/seed.constants';
+import { shouldReseed } from '../utils/seed.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -43,9 +49,32 @@ export class DbService {
       },
     });
 
+    await this.applySeedVersion(db);
     await this.populateInitialData(db);
+    this.rememberSeedVersion();
 
     return db;
+  }
+
+  /**
+   * A store is filled only when it is empty, so an old install would keep the first seed forever.
+   * When the seed version changes, the exercise and muscle rows are replaced.
+   * Logged sessions and workout plans stay: sessions copy each exercise, and plans point at stable seed ids.
+   */
+  private async applySeedVersion(db: IDBPDatabase<any>): Promise<void> {
+    const storedVersion = localStorage.getItem(SEED_VERSION_STORAGE_KEY);
+    if (!shouldReseed(storedVersion, SEED_VERSION)) return;
+
+    const tx = db.transaction([...RESEED_STORE_NAMES], 'readwrite');
+    for (const storeName of RESEED_STORE_NAMES) {
+      await tx.objectStore(storeName).clear();
+    }
+    await tx.done;
+  }
+
+  /** Written only after a seed succeeds, so a failed write is retried on the next launch. */
+  private rememberSeedVersion(): void {
+    localStorage.setItem(SEED_VERSION_STORAGE_KEY, String(SEED_VERSION));
   }
 
   private async populateInitialData(db: IDBPDatabase<any>) {
@@ -215,6 +244,7 @@ export class DbService {
       await tx.done;
 
       await this.populateInitialData(db);
+      this.rememberSeedVersion();
     } catch (error) {
       console.error('Error clearing database data:', error);
       throw error;
