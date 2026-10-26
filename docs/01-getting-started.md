@@ -10,6 +10,7 @@ This guide will help you set up the Roogo Fitness project on your local machine 
 ## Installation
 
 1. **Clone the repository:**
+
    ```bash
    git clone <repository-url>
    cd roogo-fitness
@@ -27,12 +28,13 @@ To start the local development server, run:
 ```bash
 pnpm start
 ```
+
 Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
 ## Initial Data Seeding
 
-The application uses an **offline-first approach** powered by IndexedDB. 
-Upon first load, the application's `DbService` will automatically initialize the IndexedDB (`RoogoFitnessDB`) and seed it with mock data for muscles, exercises, workout plans, and sample logged sessions if the database is empty. You do not need to run any manual migration scripts.
+The application uses an **offline-first approach** powered by IndexedDB.
+Upon first load, the application's `DbService` will automatically initialize the IndexedDB (`RoogoFitnessDB`). It loads the exercise and muscle library from `src/assets/data/exercises.json`, and seeds the default workout plan when that store is empty. Logged sessions are not seeded. You do not need to run any manual migration scripts. See [API Integration & Data Storage](./07-api-integration.md) for how a `SEED_VERSION` bump replaces the library.
 
 ## Building for Production
 
@@ -41,6 +43,7 @@ To build the project for production, run:
 ```bash
 pnpm build
 ```
+
 The build artifacts will be stored in the `dist/` directory.
 
 ## Linting and Formatting

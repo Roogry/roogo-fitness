@@ -10,6 +10,7 @@ import {
   setsAfterExerciseReplace,
 } from '@/core/utils/replace-tracked-exercise.utils';
 
+import { splitPlanExercises } from '@/core/utils/plan-exercise.utils';
 import { ACTIVE_SESSION_STORAGE_KEY } from '@/core/utils/workout.constants';
 
 @Injectable({
@@ -173,25 +174,32 @@ export class WorkoutService {
     this.selectedSessionId.set(sessionId);
 
     if (session.exercises) {
+      const catalog = new Map<number, Exercise>();
+      for (const planned of session.exercises) {
+        const exercise = await this.getExerciseById(planned.exercise_id);
+        if (!exercise) continue;
+        catalog.set(planned.exercise_id, exercise);
+      }
+
       const activeExercises: LoggedExercise[] = [];
-      for (const pe of session.exercises) {
-        const exercise = await this.getExerciseById(pe.exercise_id);
+      for (const planned of splitPlanExercises(session.exercises, catalog).found) {
+        const exercise = catalog.get(planned.exercise_id);
         if (!exercise) continue;
 
-        const sets: LoggedSet[] = Array.from({ length: pe.target_sets || 0 }).map((_, i) => ({
+        const sets: LoggedSet[] = Array.from({ length: planned.target_sets || 0 }).map((_, i) => ({
           id: Date.now() + Math.floor(Math.random() * 10000) + i,
           set_number: i + 1,
-          reps_completed: pe.target_reps,
-          weight_lifted: pe.target_weight,
-          target_reps: pe.target_reps,
-          target_weight: pe.target_weight,
-          rest_time_taken_sec: pe.target_rest_time,
+          reps_completed: planned.target_reps,
+          weight_lifted: planned.target_weight,
+          target_reps: planned.target_reps,
+          target_weight: planned.target_weight,
+          rest_time_taken_sec: planned.target_rest_time,
         }));
 
         activeExercises.push({
-          id: Date.now() + Math.floor(Math.random() * 1000) + pe.id,
+          id: Date.now() + Math.floor(Math.random() * 1000) + planned.id,
           exercise: exercise,
-          plannedExercise: pe,
+          plannedExercise: planned,
           sets: sets,
         });
       }

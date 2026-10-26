@@ -1,13 +1,23 @@
 import { Injectable } from '@angular/core';
 import { openDB, IDBPDatabase } from 'idb';
-import { WorkoutPlan, LoggedSession, Exercise, Muscle } from '@/shared/models';
-import { mockMuscles, mockExercises, mockWorkoutPlans } from '../mocks';
 import {
+  WorkoutPlan,
+  LoggedSession,
+  Exercise,
+  Muscle,
+  ExerciseSeed,
+  BackupFile,
+} from '@/shared/models';
+import { mockWorkoutPlans } from '../mocks';
+import { isBackupFile } from '../utils/backup.utils';
+import { CURRENT_BACKUP_VERSION } from '../utils/backup.constants';
+import {
+  EXERCISE_SEED_URL,
   RESEED_STORE_NAMES,
   SEED_VERSION,
   SEED_VERSION_STORAGE_KEY,
 } from '../utils/seed.constants';
-import { shouldReseed } from '../utils/seed.utils';
+import { findMissingMuscleRefs, isExerciseSeed, shouldReseed } from '../utils/seed.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -51,25 +61,83 @@ export class DbService {
 
     await this.applySeedVersion(db);
     await this.populateInitialData(db);
-    this.rememberSeedVersion();
 
     return db;
   }
 
   /**
-   * A store is filled only when it is empty, so an old install would keep the first seed forever.
-   * When the seed version changes, the exercise and muscle rows are replaced.
-   * Logged sessions and workout plans stay: sessions copy each exercise, and plans point at stable seed ids.
+   * When the seed version changes, replace exercises and muscles from the JSON asset.
+   * The stores are cleared only after that file loads and validates.
+   * A failed load leaves the old rows and the stored version, so the next launch tries again.
+   * Logged sessions and workout plans are not part of this transaction.
    */
   private async applySeedVersion(db: IDBPDatabase<any>): Promise<void> {
     const storedVersion = localStorage.getItem(SEED_VERSION_STORAGE_KEY);
     if (!shouldReseed(storedVersion, SEED_VERSION)) return;
 
-    const tx = db.transaction([...RESEED_STORE_NAMES], 'readwrite');
-    for (const storeName of RESEED_STORE_NAMES) {
-      await tx.objectStore(storeName).clear();
+    const seed = await this.fetchExerciseSeed();
+    if (!seed) return;
+
+    await this.writeExerciseSeed(db, seed);
+  }
+
+  /**
+   * Loads the exercise library. Returns null when the file is missing or invalid,
+   * so callers can keep the catalog they already have.
+   */
+  private async fetchExerciseSeed(): Promise<ExerciseSeed | null> {
+    try {
+      const response = await fetch(EXERCISE_SEED_URL);
+      if (!response.ok) {
+        console.error(`Exercise seed request failed (${response.status}).`);
+        return null;
+      }
+
+      const data: unknown = await response.json();
+      if (!isExerciseSeed(data)) {
+        console.error('Exercise seed failed validation.');
+        return null;
+      }
+
+      if (data.seed_version !== SEED_VERSION) {
+        console.error(
+          `Exercise seed version ${data.seed_version} does not match this build (${SEED_VERSION}).`,
+        );
+        return null;
+      }
+
+      const missingMuscleRefs = findMissingMuscleRefs(data);
+      if (missingMuscleRefs.length > 0) {
+        console.error(
+          `Exercise seed references unknown muscles on exercises: ${missingMuscleRefs.join(', ')}.`,
+        );
+        return null;
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Exercise seed failed to load.', error);
+      return null;
     }
+  }
+
+  /** Replaces the exercise and muscle stores, then records the seed version. */
+  private async writeExerciseSeed(db: IDBPDatabase<any>, seed: ExerciseSeed): Promise<void> {
+    const tx = db.transaction([...RESEED_STORE_NAMES], 'readwrite');
+    const exerciseStore = tx.objectStore('exercises');
+    const muscleStore = tx.objectStore('muscles');
+    await exerciseStore.clear();
+    await muscleStore.clear();
+
+    for (const muscle of seed.muscles) {
+      await muscleStore.put(muscle);
+    }
+    for (const exercise of seed.exercises) {
+      await exerciseStore.put(exercise);
+    }
+
     await tx.done;
+    this.rememberSeedVersion();
   }
 
   /** Written only after a seed succeeds, so a failed write is retried on the next launch. */
@@ -79,21 +147,29 @@ export class DbService {
 
   private async populateInitialData(db: IDBPDatabase<any>) {
     const muscleCount = await db.count('muscles');
-    if (muscleCount === 0) {
-      const tx = db.transaction('muscles', 'readwrite');
-      for (const muscle of mockMuscles) {
-        tx.store.put(muscle);
-      }
-      await tx.done;
-    }
-
     const exerciseCount = await db.count('exercises');
-    if (exerciseCount === 0) {
-      const tx = db.transaction('exercises', 'readwrite');
-      for (const exercise of mockExercises) {
-        tx.store.put(exercise);
+
+    if (muscleCount === 0 || exerciseCount === 0) {
+      const seed = await this.fetchExerciseSeed();
+      if (!seed) {
+        console.error('Exercise seed is unavailable, so the catalog was left unchanged.');
+      } else if (muscleCount === 0 && exerciseCount === 0) {
+        await this.writeExerciseSeed(db, seed);
+      } else {
+        const tx = db.transaction([...RESEED_STORE_NAMES], 'readwrite');
+        if (muscleCount === 0) {
+          for (const muscle of seed.muscles) {
+            await tx.objectStore('muscles').put(muscle);
+          }
+        }
+        if (exerciseCount === 0) {
+          for (const exercise of seed.exercises) {
+            await tx.objectStore('exercises').put(exercise);
+          }
+        }
+        await tx.done;
+        this.rememberSeedVersion();
       }
-      await tx.done;
     }
 
     const plansCount = await db.count('workout_plans');
@@ -178,7 +254,7 @@ export class DbService {
     return db.getAll('muscles');
   }
 
-  async exportBackup(): Promise<any> {
+  async exportBackup(): Promise<BackupFile> {
     const db = await this.dbPromise;
     const workout_plans = await db.getAll('workout_plans');
     const logged_sessions = await db.getAll('logged_sessions');
@@ -186,7 +262,8 @@ export class DbService {
     const muscles = await db.getAll('muscles');
 
     return {
-      version: 1,
+      version: CURRENT_BACKUP_VERSION,
+      seed_version: SEED_VERSION,
       workout_plans,
       logged_sessions,
       exercises,
@@ -194,7 +271,11 @@ export class DbService {
     };
   }
 
-  async importBackup(data: any): Promise<void> {
+  async importBackup(data: unknown): Promise<void> {
+    if (!isBackupFile(data)) {
+      throw new Error('Invalid backup file structure.');
+    }
+
     const db = await this.dbPromise;
     const tx = db.transaction(
       ['workout_plans', 'logged_sessions', 'exercises', 'muscles'],
@@ -206,28 +287,39 @@ export class DbService {
     await tx.objectStore('exercises').clear();
     await tx.objectStore('muscles').clear();
 
-    if (Array.isArray(data.workout_plans)) {
-      for (const plan of data.workout_plans) {
-        await tx.objectStore('workout_plans').put(plan);
-      }
+    for (const plan of data.workout_plans) {
+      await tx.objectStore('workout_plans').put(plan);
     }
-    if (Array.isArray(data.logged_sessions)) {
-      for (const session of data.logged_sessions) {
-        await tx.objectStore('logged_sessions').put(session);
-      }
+    for (const session of data.logged_sessions) {
+      await tx.objectStore('logged_sessions').put(session);
     }
-    if (Array.isArray(data.exercises)) {
-      for (const exercise of data.exercises) {
-        await tx.objectStore('exercises').put(exercise);
-      }
+    for (const exercise of data.exercises) {
+      await tx.objectStore('exercises').put(exercise);
     }
-    if (Array.isArray(data.muscles)) {
-      for (const muscle of data.muscles) {
-        await tx.objectStore('muscles').put(muscle);
-      }
+    for (const muscle of data.muscles) {
+      await tx.objectStore('muscles').put(muscle);
     }
 
     await tx.done;
+
+    if (data.seed_version === SEED_VERSION) {
+      this.rememberSeedVersion();
+      return;
+    }
+
+    const seed = await this.fetchExerciseSeed();
+    if (!seed) {
+      /**
+       * The imported catalog does not match this build, and the new seed did not load.
+       * Clear the stored version so the next launch tries the reseed. Leaving the current
+       * version in place would keep the outdated exercises.
+       */
+      localStorage.removeItem(SEED_VERSION_STORAGE_KEY);
+      console.error('Exercise seed is unavailable, so the imported catalog was kept.');
+      return;
+    }
+
+    await this.writeExerciseSeed(db, seed);
   }
 
   async clearAllData(): Promise<void> {
@@ -244,7 +336,6 @@ export class DbService {
       await tx.done;
 
       await this.populateInitialData(db);
-      this.rememberSeedVersion();
     } catch (error) {
       console.error('Error clearing database data:', error);
       throw error;

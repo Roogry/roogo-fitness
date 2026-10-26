@@ -13,6 +13,7 @@ import { ZardBadgeComponent } from '@/shared/components/zard/badge';
 import { CreateExerciseOption } from '@/features/exercise/components/create-exercise-option/create-exercise-option';
 import { ExerciseService } from '@/core/services/exercise.service';
 import { Exercise } from '@/shared/models';
+import { exerciseImageUrl } from '@/shared/utils/exercise-media.utils';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucidePlus, lucideDumbbell } from '@ng-icons/lucide';
 import { SearchInput } from '@/shared/components/search-input/search-input';
@@ -29,6 +30,7 @@ import { EXERCISE_SEARCH_DEBOUNCE_MS } from './exercise-autocomplete.constants';
 })
 export class ExerciseAutocomplete implements OnDestroy {
   private readonly exerciseService = inject(ExerciseService);
+  protected readonly exerciseImageUrl = exerciseImageUrl;
 
   /** False after the hosting sheet starts to close. The search resets once that animation ends. */
   readonly active = input(true);

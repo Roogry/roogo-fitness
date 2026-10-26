@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, input, output } from '@angular/core';
+import { Component, inject, signal, OnInit, input, output, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Exercise, WorkoutPlan, WorkoutPlanSession } from '@/shared/models';
 import { ZardCardComponent } from '@/shared/components/zard/card';
@@ -18,6 +18,7 @@ import { WorkoutService } from '@/core/services/workout.service';
 import { PlanService } from '@/core/services/plan.service';
 import { ExerciseService } from '@/core/services/exercise.service';
 import { Router } from '@angular/router';
+import { skippedPlanExerciseNoteFor, splitPlanExercises } from '@/core/utils/plan-exercise.utils';
 
 @Component({
   selector: 'app-plan-card',
@@ -56,27 +57,52 @@ export class PlanCardComponent implements OnInit {
   exerciseService = inject(ExerciseService);
   isOpenPlanActions = signal(false);
   exerciseMap = signal<Map<number, Exercise>>(new Map());
+  private readonly exercisesReady = signal(false);
+  readonly skippedExerciseNotes = computed(() => {
+    const notes = new Map<number, string>();
+    if (!this.exercisesReady()) return notes;
+
+    const catalog = this.exerciseMap();
+    for (const session of this.plan().sessions) {
+      const planned = session.exercises ?? [];
+      const checked = new Set(planned.map((plannedExercise) => plannedExercise.exercise_id));
+      const note = skippedPlanExerciseNoteFor(planned, catalog, checked);
+      if (note) notes.set(session.id, note);
+    }
+    return notes;
+  });
 
   async ngOnInit() {
     const exercises = await this.exerciseService.getExercises('');
     const map = new Map<number, Exercise>();
-    for (const ex of exercises) {
-      map.set(ex.id, ex);
+    for (const exercise of exercises) {
+      map.set(exercise.id, exercise);
     }
     this.exerciseMap.set(map);
+    this.exercisesReady.set(true);
   }
 
   getExerciseNames(session: WorkoutPlanSession): string {
-    if (!session.exercises || session.exercises.length === 0) {
-      return 'No exercises added yet.';
+    const planned = (session.exercises ?? []).filter(
+      (plannedExercise) =>
+        plannedExercise &&
+        plannedExercise.exercise_id !== undefined &&
+        plannedExercise.exercise_id !== null,
+    );
+    if (planned.length === 0) return 'No exercises added yet.';
+    if (!this.exercisesReady()) {
+      return planned
+        .map((plannedExercise) => `Exercise #${plannedExercise.exercise_id}`)
+        .join(', ');
     }
-    const map = this.exerciseMap();
-    return session.exercises
-      .filter((pe) => pe && pe.exercise_id !== undefined && pe.exercise_id !== null)
-      .map((pe) => {
-        const ex = map.get(pe.exercise_id);
-        return ex ? ex.name : `Exercise #${pe.exercise_id}`;
-      })
+
+    const catalog = this.exerciseMap();
+    const found = splitPlanExercises(planned, catalog).found;
+    if (found.length === 0) return '';
+
+    return found
+      .map((plannedExercise) => catalog.get(plannedExercise.exercise_id)?.name ?? '')
+      .filter((name) => name.length > 0)
       .join(', ');
   }
 

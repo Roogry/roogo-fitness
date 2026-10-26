@@ -1,6 +1,6 @@
 import { ExerciseService } from '@/core/services/exercise.service';
 import { Exercise } from '@/shared/models';
-import { Component, inject, OnInit, signal, effect } from '@angular/core';
+import { Component, inject, OnInit, signal, effect, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -12,6 +12,7 @@ import { HeaderComponent } from '@/shared/components/header/header.component';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/zard/popover';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
+import { sameExerciseIdList, skippedPlanExerciseNoteFor } from '@/core/utils/plan-exercise.utils';
 
 @Component({
   selector: 'app-session-detail',
@@ -46,18 +47,34 @@ export class PlanSessionDetail implements OnInit {
   planId: number | null = null;
   sessionId: number | null = null;
   exercisesMap = signal<Map<number, Exercise>>(new Map());
+  private readonly checkedExerciseIds = signal<ReadonlySet<number>>(new Set());
+  readonly missingExerciseNote = computed(() =>
+    skippedPlanExerciseNoteFor(
+      this.planService.plannedExercises(),
+      this.exercisesMap(),
+      this.checkedExerciseIds(),
+    ),
+  );
 
   constructor() {
     effect(async () => {
-      const plannedList = this.planService.plannedExercises();
-      const ids = plannedList
-        .filter((pe) => pe && pe.exercise_id !== undefined && pe.exercise_id !== null)
-        .map((pe) => pe.exercise_id);
+      const ids = this.plannedExerciseIds();
       const res = await this.exerciseService.loadExercisesToMap(ids, this.exercisesMap());
       if (res.changed) {
         this.exercisesMap.set(res.map);
       }
+      if (!sameExerciseIdList(ids, this.plannedExerciseIds())) return;
+      this.checkedExerciseIds.set(new Set(ids));
     });
+  }
+
+  private plannedExerciseIds(): number[] {
+    return this.planService
+      .plannedExercises()
+      .filter(
+        (planned) => planned && planned.exercise_id !== undefined && planned.exercise_id !== null,
+      )
+      .map((planned) => planned.exercise_id);
   }
 
   ngOnInit() {

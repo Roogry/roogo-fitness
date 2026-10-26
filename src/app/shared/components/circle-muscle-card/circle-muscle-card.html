@@ -5,14 +5,13 @@
     [class.border-border]="!selected()"
     [class.bg-accent]="selected()"
   >
-    @if (muscle().icon_url) {
-      <img
-        [ngSrc]="muscle().icon_url || ''"
-        [alt]="muscle().name"
-        fill
-        class="object-contain p-2"
-      />
-    }
+    <img
+      [ngSrc]="iconUrl()"
+      [alt]="muscle().name"
+      fill
+      class="object-contain p-2"
+      (error)="onIconError()"
+    />
 
     @if (selected()) {
       <div

@@ -27,6 +27,7 @@ import { ZardButtonComponent } from '@/shared/components/zard/button';
 import { ZardPopoverComponent, ZardPopoverDirective } from '@/shared/components/zard/popover';
 import { SwipeActions } from '@/shared/directives/swipe-actions';
 import { LoggedExercise, LoggedSet } from '@/shared/models';
+import { exerciseImageUrl } from '@/shared/utils/exercise-media.utils';
 import { KEYBOARD_OPEN_OFFSET_PX } from '@/shared/visual-viewport/visual-viewport.constants';
 import { VisualViewportService } from '@/shared/visual-viewport/visual-viewport.service';
 import { KeyboardHelperBar } from '../keyboard-helper-bar/keyboard-helper-bar';
@@ -60,6 +61,7 @@ import { adjustWeight, repsChips } from '../keyboard-helper-bar/keyboard-helper-
   styleUrl: './exercise-tracker.css',
 })
 export class ExerciseTracker implements OnDestroy {
+  protected readonly exerciseImageUrl = exerciseImageUrl;
   trackedExercise = input.required<LoggedExercise>();
   editable = input<boolean>(false);
 
