@@ -5,6 +5,8 @@
 
 :root {
   --radius: 1rem;
+  /** Keyboard inset in px. `VisualViewportService` overwrites this on the document root. */
+  --keyboard-inset: 0px;
 
   /** Typography — Font Families (Design System) */
   --font-display: 'Bricolage Grotesque', sans-serif;
@@ -161,6 +163,13 @@
   --font-sans: var(--font-body);
   --font-mono: var(--font-mono);
   --font-display: var(--font-display);
+
+  /** Sheet scroll padding: the resting `pb-4`, plus the keyboard inset when one is open. */
+  --spacing-above-keyboard: calc(var(--spacing) * 4 + var(--keyboard-inset, 0px));
+
+  /** Bottom sheet height cap: 85vh on mobile, 80vh from `md` up. */
+  --spacing-sheet: 85vh;
+  --spacing-sheet-desktop: 80vh;
 }
 
 @layer base {

@@ -4,8 +4,8 @@ import { provideRouter } from '@angular/router';
 import { Exercise, LoggedExercise, LoggedSet } from '@/shared/models';
 import { ExerciseTracker } from '../exercise-tracker/exercise-tracker';
 import { adjustWeight, repsChips } from './keyboard-helper-bar.utils';
-import { VisualViewportService } from '@/core/services/visual-viewport.service';
-import { computeKeyboardOffset } from '@/core/utils/visual-viewport.utils';
+import { VisualViewportService } from '@/shared/visual-viewport/visual-viewport.service';
+import { computeKeyboardOffset } from '@/shared/visual-viewport/visual-viewport.utils';
 
 describe('keyboard helper math', () => {
   it('adjusts weight, falls back to target then 0, clamps, keeps decimals', () => {

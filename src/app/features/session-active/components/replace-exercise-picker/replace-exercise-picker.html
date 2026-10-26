@@ -1,27 +1,17 @@
 <div class="flex flex-col gap-3 pb-4">
-  <div class="relative">
-    <ng-icon
-      name="lucideSearch"
-      class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
-    ></ng-icon>
-    <input
-      z-input
-      type="text"
-      class="w-full pl-9"
-      placeholder="Search exercises"
-      aria-label="Search exercises"
-      [value]="query()"
-      (valueChange)="onQueryChange($event)"
-    />
-  </div>
+  <app-search-input
+    label="Search exercises"
+    placeholder="Search exercises"
+    [value]="query()"
+    (valueChange)="onQueryChange($event)"
+  />
 
-  @if (visibleExercises().length === 0) {
-    <p class="py-8 text-center text-sm text-muted-foreground">No other exercises to swap in.</p>
-  } @else {
+  @if (visibleExercises().length > 0) {
     <div class="flex flex-col gap-3">
       @for (exercise of visibleExercises(); track exercise.id) {
         <button
           type="button"
+          data-testid="replace-exercise-option"
           class="flex w-full items-center gap-3 rounded-2xl border border-border bg-card p-2 text-left"
           (click)="onPick(exercise)"
         >
@@ -47,5 +37,13 @@
         </button>
       }
     </div>
+  }
+
+  @if (canCreate()) {
+    <app-create-exercise-option [name]="trimmedQuery()" (createClick)="onCreate($event)" />
+  }
+
+  @if (visibleExercises().length === 0 && !canCreate()) {
+    <p class="py-8 text-center text-sm text-muted-foreground">No other exercises to swap in.</p>
   }
 </div>

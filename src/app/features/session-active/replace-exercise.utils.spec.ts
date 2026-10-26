@@ -1,5 +1,9 @@
 import { Exercise } from '@/shared/models';
-import { filterExercisesByName, sortReplacementCandidates } from './replace-exercise.utils';
+import {
+  filterExercisesByName,
+  hasExactNameMatch,
+  sortReplacementCandidates,
+} from './replace-exercise.utils';
 
 function exercise(
   id: number,
@@ -69,5 +73,21 @@ describe('sortReplacementCandidates', () => {
       'Incline Press',
     ]);
     expect(filterExercisesByName(sorted, '  ').map((item) => item.id)).toEqual([2, 4, 3]);
+  });
+});
+
+describe('hasExactNameMatch', () => {
+  const exercises = [exercise(2, 'Incline Press')];
+
+  it('matches a case-insensitive name with surrounding spaces', () => {
+    expect(hasExactNameMatch(exercises, '  incline press  ')).toBe(true);
+  });
+
+  it('rejects a partial match', () => {
+    expect(hasExactNameMatch(exercises, 'press')).toBe(false);
+  });
+
+  it('rejects an empty query', () => {
+    expect(hasExactNameMatch(exercises, '   ')).toBe(false);
   });
 });

@@ -27,7 +27,7 @@ Deeper notes live in `docs/`. Follow this file when they disagree.
 ```text
 src/app/
   core/services/       DbService, WorkoutService, ExerciseService, MuscleService,
-                       PlanService, VisualViewportService, PointerModeService
+                       PlanService, PointerModeService
   core/utils/          pure helpers used by those services
   core/provider/       provideZard()
   features/<feature>/  home, plan, exercise, journey, profile, session-active
@@ -39,6 +39,7 @@ src/app/
   shared/models/       Exercise, WorkoutPlan, LoggedSession
   shared/directives/   appDismissKeyboardOnScroll, zStringTemplateOutlet, zardId
   shared/utils/        mergeClasses, format, number, file
+  shared/visual-viewport/ VisualViewportService, computeKeyboardOffset
 ```
 
 `JourneyService` stays under `features/journey/services`. Do not import `core` from `shared`.
@@ -115,7 +116,8 @@ Search first. Use the existing piece. Add an `input()` if it is one variant shor
 
 **App chrome** (not under `zard/`):
 
-- `app-header`, `app-sheet` (slide-up on mobile, centered from `md`; `title`, `description`, `isOpen`, output `onOpenChange`).
+- `app-header`, `app-sheet` (slide-up on mobile, centered from `md`; `title`, `description`, `isOpen`, `fixedHeight`, output `onOpenChange`). An open sheet locks page scroll until its close animation ends. `fixedHeight` keeps the panel at `h-sheet`. The scroll body uses `pb-above-keyboard`.
+- `app-search-input` — search field with a clear button. Inputs `value`, `placeholder`, `label`, `searching`; output `valueChange`. The clear button keeps focus so the iOS keyboard stays open.
 - `app-nav-pills` + `button[app-nav-pills-item]`, `app-bottom-nav`, `app-main-layout`, `app-circle-muscle-card`.
 - `app-floating-blur` — gradient fade. Input `extendBottom` (a CSS length, usually negative).
 - `app-keyboard-helper-bar` lives in `features/exercise/components/keyboard-helper-bar`. It is presentational: inputs `mode` (`'weight' | 'reps'`), `chips`, `current`, `bottom`, `top`; output `picked`. Weight steps are `-10`, `-5`, `+5`, `+10`. Pure helpers: `adjustWeight`, `repsChips`.
@@ -181,7 +183,7 @@ Leave these alone — no scale step fits: `pb-[env(safe-area-inset-bottom,0px)]`
 - Respect `prefers-reduced-motion`. The helper bar uses `motion-reduce:` and a `prefers-reduced-motion` block. Match that. Keep motion short: helper chips enter in 160ms ease-out, leave in 120ms; the session bar uses `duration-200 ease-out`.
 - Touch targets about 40px or taller. Prefer `zSize` `default` (`h-12`) or `sm` (`h-10`). Helper chips are `h-10`. Do not copy `xs` or the `w-9 h-9` controls in `exercise-tracker` for a primary action.
 - Keep focus. Helper chips use `pointerdown` + `preventDefault` (and `mousedown` `preventDefault`) so the field does not blur. `exercise-tracker` `preventDefault`s Enter on weight so focus moves to reps.
-- Pin keyboard UI with `VisualViewportService` (`keyboardOffset`, `visualBottom`, `keyboardOpen`). Times are 24-hour `HH:mm`.
+- Pin keyboard UI with `VisualViewportService`. It sets `--keyboard-inset` on the document root (`0px` when closed) and still exposes `keyboardOffset`, `visualBottom`, and `keyboardOpen` for the helper bar and the session bar. Times are 24-hour `HH:mm`.
 
 ## Data
 

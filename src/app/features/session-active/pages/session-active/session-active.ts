@@ -1,6 +1,14 @@
 import { FloatingBlurComponent } from '@/shared/components/floating-blur/floating-blur';
-import { VisualViewportService } from '@/core/services/visual-viewport.service';
-import { Component, ElementRef, OnInit, afterNextRender, inject, signal } from '@angular/core';
+import { VisualViewportService } from '@/shared/visual-viewport/visual-viewport.service';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  afterNextRender,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -84,6 +92,9 @@ export class SessionActive implements OnInit {
   private readonly host = inject(ElementRef<HTMLElement>);
   /** Hides the bottom session bar + rest timer while the keyboard is open so they don't overlap the input helper (#75). */
   readonly viewport = inject(VisualViewportService);
+  readonly sessionExerciseNames = computed(() =>
+    this.workoutService.trackedExercises().map((item) => item.exercise.name),
+  );
   /** Set after the enter-page scroll attempt so later set toggles do not move the viewport. */
   private resumeScrollHandled = false;
 
@@ -249,6 +260,11 @@ export class SessionActive implements OnInit {
   onReplaceSheetOpenChange(isOpen: boolean) {
     this.isReplaceSheetOpen.set(isOpen);
     if (!isOpen) this.replacingExerciseId.set(null);
+  }
+
+  async onReplacementCreateRequested(name: string) {
+    const created = await this.exerciseService.addCustomExercise(name);
+    await this.onReplacementPicked(created);
   }
 
   async onReplacementPicked(exercise: Exercise) {

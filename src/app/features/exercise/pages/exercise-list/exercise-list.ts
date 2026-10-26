@@ -8,18 +8,12 @@ import { Exercise, Muscle } from '@/shared/models';
 import { ZardCardComponent } from '@/shared/components/zard/card';
 import { ZardBadgeComponent } from '@/shared/components/zard/badge';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
-import { ZardInputDirective } from '@/shared/components/zard/input/input.directive';
 import { HeaderComponent } from '@/shared/components/header/header.component';
+import { SearchInput } from '@/shared/components/search-input/search-input';
 import { RooSheetComponent } from '@/shared/components/sheet/sheet';
 import { CircleMuscleCardComponent } from '@/shared/components/circle-muscle-card/circle-muscle-card';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import {
-  lucideSearch,
-  lucideFilter,
-  lucideX,
-  lucideChevronDown,
-  lucideCheck,
-} from '@ng-icons/lucide';
+import { lucideFilter, lucideChevronDown, lucideCheck } from '@ng-icons/lucide';
 import { formatRange } from '@/shared/utils';
 
 @Component({
@@ -32,17 +26,15 @@ import { formatRange } from '@/shared/utils';
     ZardCardComponent,
     ZardBadgeComponent,
     ZardButtonComponent,
-    ZardInputDirective,
     HeaderComponent,
+    SearchInput,
     RooSheetComponent,
     CircleMuscleCardComponent,
     NgIcon,
   ],
   providers: [
     provideIcons({
-      lucideSearch,
       lucideFilter,
-      lucideX,
       lucideChevronDown,
       lucideCheck,
     }),
