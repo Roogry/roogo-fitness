@@ -311,6 +311,35 @@ describe('SessionActive duration control', () => {
     expect(bar.classList.contains('translate-y-2')).toBe(false);
     expect(bar.hasAttribute('aria-hidden')).toBe(false);
   });
+
+  it('keeps Add and Replace at the sheet height and lets Finish size to its content', () => {
+    const fixture = TestBed.createComponent(SessionActive);
+    fixture.detectChanges();
+    TestBed.flushEffects();
+
+    fixture.componentInstance.isAddSheetOpen.set(true);
+    fixture.componentInstance.isReplaceSheetOpen.set(true);
+    fixture.componentInstance.isFinishSheetOpen.set(true);
+    fixture.detectChanges();
+    TestBed.flushEffects();
+    fixture.detectChanges();
+
+    const panel = (title: string) => {
+      const panels = [
+        ...fixture.nativeElement.querySelectorAll('[data-testid="sheet-panel"]'),
+      ] as HTMLElement[];
+      const match = panels.find((item) => item.textContent?.includes(title));
+      if (!match) throw new Error(`Missing sheet ${title}`);
+      return match;
+    };
+
+    expect(panel('Add Exercise').classList.contains('h-sheet')).toBe(true);
+    expect(panel('Add Exercise').classList.contains('md:h-sheet-desktop')).toBe(true);
+    expect(panel('Replace Exercise').classList.contains('h-sheet')).toBe(true);
+    expect(panel('Replace Exercise').classList.contains('md:h-sheet-desktop')).toBe(true);
+    expect(panel('Finish Session').classList.contains('h-sheet')).toBe(false);
+    expect(panel('Finish Session').classList.contains('max-h-sheet')).toBe(true);
+  });
 });
 
 describe('SessionActive replace exercise', () => {

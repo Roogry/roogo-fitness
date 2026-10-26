@@ -116,7 +116,8 @@ Search first. Use the existing piece. Add an `input()` if it is one variant shor
 
 **App chrome** (not under `zard/`):
 
-- `app-header`, `app-sheet` (slide-up on mobile, centered from `md`; `title`, `description`, `isOpen`, output `onOpenChange`). An open sheet locks page scroll. The panel stays on the bottom of the screen; its scroll body uses `pb-above-keyboard`.
+- `app-header`, `app-sheet` (slide-up on mobile, centered from `md`; `title`, `description`, `isOpen`, `fixedHeight`, output `onOpenChange`). An open sheet locks page scroll until its close animation ends. `fixedHeight` keeps the panel at `h-sheet`. The scroll body uses `pb-above-keyboard`.
+- `app-search-input` — search field with a clear button. Inputs `value`, `placeholder`, `label`, `searching`; output `valueChange`. The clear button keeps focus so the iOS keyboard stays open.
 - `app-nav-pills` + `button[app-nav-pills-item]`, `app-bottom-nav`, `app-main-layout`, `app-circle-muscle-card`.
 - `app-floating-blur` — gradient fade. Input `extendBottom` (a CSS length, usually negative).
 - `app-keyboard-helper-bar` lives in `features/exercise/components/keyboard-helper-bar`. It is presentational: inputs `mode` (`'weight' | 'reps'`), `chips`, `current`, `bottom`, `top`; output `picked`. Weight steps are `-10`, `-5`, `+5`, `+10`. Pure helpers: `adjustWeight`, `repsChips`.

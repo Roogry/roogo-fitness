@@ -35,6 +35,7 @@ export class VisualViewportService {
 
   private readonly viewportEl: VisualViewport | null =
     typeof window !== 'undefined' ? window.visualViewport : null;
+  private remeasureTimerIds: ReturnType<typeof setTimeout>[] = [];
 
   constructor() {
     if (typeof document !== 'undefined') {
@@ -63,17 +64,26 @@ export class VisualViewportService {
     viewport.addEventListener('resize', onViewport);
     viewport.addEventListener('scroll', onViewport);
     window.addEventListener('scroll', onViewport, { passive: true });
-    /**
-     * iOS animates the keyboard and page pan after focus. The resize that follows can still
-     * report the pre-keyboard height, so re-measure once that animation has moved.
-     */
-    document.addEventListener('focusin', () => {
-      onViewport();
-      for (const delay of KEYBOARD_REMEASURE_DELAYS_MS) {
-        setTimeout(onViewport, delay);
-      }
-    });
+    document.addEventListener('focusin', () => this.remeasure());
     this.applyViewport();
+  }
+
+  /**
+   * Read the inset now, then again after iOS has finished moving the keyboard.
+   * A sheet's content can resize without a viewport event, and the pan lands later.
+   * The previous timers are cleared so a burst of resizes does not stack reads.
+   */
+  remeasure(): void {
+    this.clearRemeasureTimers();
+    this.applyViewport();
+    for (const delay of KEYBOARD_REMEASURE_DELAYS_MS) {
+      this.remeasureTimerIds.push(setTimeout(() => this.applyViewport(), delay));
+    }
+  }
+
+  private clearRemeasureTimers(): void {
+    for (const timerId of this.remeasureTimerIds) clearTimeout(timerId);
+    this.remeasureTimerIds = [];
   }
 
   /**

@@ -1,37 +1,23 @@
 <div class="relative w-full">
-  <div class="relative">
-    <ng-icon
-      name="lucideSearch"
-      class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-    ></ng-icon>
-    <input
-      z-input
-      type="text"
-      class="w-full pl-9"
-      placeholder="Search exercises (e.g., Bench Press)"
-      [value]="searchQuery()"
-      (valueChange)="onSearchChange($event)"
-    />
-    @if (isSearching()) {
-      <div class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-        <div
-          class="h-4 w-4 animate-spin rounded-full border-2 border-forest border-t-transparent"
-        ></div>
-      </div>
-    }
-  </div>
+  <app-search-input
+    label="Search exercises"
+    placeholder="Search exercises (e.g., Bench Press)"
+    [value]="searchQuery()"
+    [searching]="isSearching()"
+    (valueChange)="onSearchChange($event)"
+  />
 
   <!-- Results list always shows if there are results or a query -->
   @if (results().length > 0 || searchQuery().trim()) {
-    <div class="w-full mt-4 flex flex-col gap-3 pb-8">
+    <div class="mt-4 flex w-full flex-col gap-3 pb-8">
       @for (exercise of results(); track exercise.id) {
         <div
-          class="p-2 bg-white hover:bg-input border border-border rounded-2xl cursor-pointer flex justify-between items-center transition-all"
+          class="flex cursor-pointer items-center justify-between rounded-2xl border border-border bg-white p-2 transition-all hover:bg-input"
           (click)="selectExercise(exercise)"
         >
           <div class="flex items-center gap-3">
             <div
-              class="h-18 w-16 rounded-lg overflow-hidden bg-muted flex items-center justify-center"
+              class="flex h-18 w-16 items-center justify-center overflow-hidden rounded-lg bg-muted"
             >
               @if (exercise.media && exercise.media.length > 0) {
                 <img
@@ -44,7 +30,7 @@
               }
             </div>
             <div class="flex flex-col gap-2">
-              <p class="font-medium text-sm">{{ exercise.name }}</p>
+              <p class="text-sm font-medium">{{ exercise.name }}</p>
               @if (exercise.primary_muscle?.name) {
                 <z-badge zType="secondary">
                   {{ exercise.primary_muscle?.name }}
@@ -54,12 +40,12 @@
           </div>
           <ng-icon
             name="lucidePlus"
-            class="h-6 w-6 mr-4 text-muted-foreground opacity-80"
+            class="mr-4 h-6 w-6 text-muted-foreground opacity-80"
           ></ng-icon>
         </div>
       }
 
-      @if (!hasExactMatch() && searchQuery().trim() && !isSearching()) {
+      @if (!hasExactMatch() && searchQuery().trim()) {
         <app-create-exercise-option
           [name]="searchQuery().trim()"
           (createClick)="createNewExercise($event)"

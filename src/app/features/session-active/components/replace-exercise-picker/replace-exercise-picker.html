@@ -1,19 +1,10 @@
 <div class="flex flex-col gap-3 pb-4">
-  <div class="relative">
-    <ng-icon
-      name="lucideSearch"
-      class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
-    ></ng-icon>
-    <input
-      z-input
-      type="text"
-      class="w-full pl-9"
-      placeholder="Search exercises"
-      aria-label="Search exercises"
-      [value]="query()"
-      (valueChange)="onQueryChange($event)"
-    />
-  </div>
+  <app-search-input
+    label="Search exercises"
+    placeholder="Search exercises"
+    [value]="query()"
+    (valueChange)="onQueryChange($event)"
+  />
 
   @if (visibleExercises().length > 0) {
     <div class="flex flex-col gap-3">

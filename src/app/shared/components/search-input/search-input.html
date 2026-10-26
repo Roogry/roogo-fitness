@@ -1,0 +1,41 @@
+<div class="relative w-full">
+  <ng-icon
+    name="lucideSearch"
+    class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+  ></ng-icon>
+  <input
+    #field
+    z-input
+    type="text"
+    [class]="fieldClass()"
+    [placeholder]="placeholder()"
+    [attr.aria-label]="label()"
+    [value]="value()"
+    (valueChange)="onValueChange($event)"
+  />
+  @if (searching()) {
+    <div
+      class="pointer-events-none absolute top-1/2 flex size-4 -translate-y-1/2 items-center justify-center"
+      [class.right-14]="value()"
+      [class.right-3]="!value()"
+      data-testid="search-spinner"
+    >
+      <div
+        class="size-4 animate-spin rounded-full border-2 border-forest border-t-transparent"
+      ></div>
+    </div>
+  }
+  @if (value()) {
+    <button
+      type="button"
+      aria-label="Clear search"
+      data-testid="search-clear"
+      class="absolute top-1/2 right-1 flex size-11 -translate-y-1/2 items-center justify-center text-muted-foreground"
+      (pointerdown)="$event.preventDefault()"
+      (mousedown)="$event.preventDefault()"
+      (click)="onClear(field)"
+    >
+      <ng-icon name="lucideX" class="size-4"></ng-icon>
+    </button>
+  }
+</div>

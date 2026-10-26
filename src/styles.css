@@ -166,6 +166,10 @@
 
   /** Sheet scroll padding: the resting `pb-4`, plus the keyboard inset when one is open. */
   --spacing-above-keyboard: calc(var(--spacing) * 4 + var(--keyboard-inset, 0px));
+
+  /** Bottom sheet height cap: 85vh on mobile, 80vh from `md` up. */
+  --spacing-sheet: 85vh;
+  --spacing-sheet-desktop: 80vh;
 }
 
 @layer base {

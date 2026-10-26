@@ -81,17 +81,20 @@
   </main>
 
   <app-sheet
+    fixedHeight
     [isOpen]="isAddSheetOpen()"
     (onOpenChange)="isAddSheetOpen.set($event)"
     title="Add Exercise"
     description="Search or add a custom exercise."
   >
     <app-exercise-autocomplete
+      [active]="isAddSheetOpen()"
       (exerciseSelected)="onExerciseSelected($event)"
     ></app-exercise-autocomplete>
   </app-sheet>
 
   <app-sheet
+    fixedHeight
     [isOpen]="isReplaceSheetOpen()"
     (onOpenChange)="onReplaceSheetOpenChange($event)"
     title="Replace Exercise"
@@ -100,6 +103,7 @@
     <app-replace-exercise-picker
       [exercises]="replaceCandidates()"
       [sessionExerciseNames]="sessionExerciseNames()"
+      [active]="isReplaceSheetOpen()"
       (picked)="onReplacementPicked($event)"
       (createRequested)="onReplacementCreateRequested($event)"
     />

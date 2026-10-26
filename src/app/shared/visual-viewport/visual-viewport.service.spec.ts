@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { KEYBOARD_INSET_PROPERTY } from './visual-viewport.constants';
+import { KEYBOARD_INSET_PROPERTY, KEYBOARD_REMEASURE_DELAYS_MS } from './visual-viewport.constants';
 import { VisualViewportService } from './visual-viewport.service';
 
 class FakeVisualViewport extends EventTarget {
@@ -59,5 +59,54 @@ describe('VisualViewportService', () => {
 
     expect(inset()).toBe('0px');
     expect(service.keyboardOffset()).toBe(0);
+  });
+
+  describe('remeasure', () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('updates --keyboard-inset immediately and again after each delay', () => {
+      const service = TestBed.inject(VisualViewportService);
+      const [firstDelay, secondDelay, thirdDelay] = KEYBOARD_REMEASURE_DELAYS_MS;
+
+      viewport.height = 480;
+      viewport.offsetTop = 320;
+      service.remeasure();
+      expect(inset()).toBe('320px');
+
+      viewport.height = 500;
+      viewport.offsetTop = 0;
+      vi.advanceTimersByTime(firstDelay);
+      expect(inset()).toBe('300px');
+
+      viewport.height = 800;
+      viewport.offsetTop = 0;
+      vi.advanceTimersByTime(secondDelay - firstDelay);
+      expect(inset()).toBe('0px');
+
+      viewport.height = 480;
+      viewport.offsetTop = 320;
+      vi.advanceTimersByTime(thirdDelay - secondDelay);
+      expect(inset()).toBe('320px');
+    });
+
+    it('clears the previous timers when called again', () => {
+      const service = TestBed.inject(VisualViewportService);
+      const setProperty = vi.spyOn(document.documentElement.style, 'setProperty');
+      setProperty.mockClear();
+
+      service.remeasure();
+      service.remeasure();
+      vi.advanceTimersByTime(KEYBOARD_REMEASURE_DELAYS_MS[2]);
+
+      const immediateReads = 2;
+      const delayedReads = KEYBOARD_REMEASURE_DELAYS_MS.length;
+      expect(setProperty).toHaveBeenCalledTimes(immediateReads + delayedReads);
+    });
   });
 });

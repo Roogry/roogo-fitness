@@ -1,35 +1,47 @@
-@if (isOpen()) {
+@if (mounted()) {
   <!-- Backdrop -->
-  <div class="fixed inset-0 z-100 bg-ink/30 backdrop-blur-sm" (click)="close()"></div>
+  <div
+    class="fixed inset-0 z-100 bg-ink/30 backdrop-blur-sm"
+    [class.hidden]="!isOpen() && !leaving()"
+    [class.sheet-backdrop-leave]="leaving()"
+    [attr.inert]="isOpen() ? null : ''"
+    (click)="close()"
+  ></div>
 
   <!-- Container: bottom sheet on mobile, centered modal on desktop -->
   <div
     data-testid="sheet-frame"
-    class="fixed inset-0 bottom-0 z-100 flex items-end md:items-center justify-center p-0 md:p-4 pointer-events-none"
+    class="fixed inset-0 bottom-0 z-100 flex items-end justify-center p-0 md:items-center md:p-4"
+    [class.hidden]="!isOpen() && !leaving()"
+    [class.pointer-events-none]="!isOpen()"
+    [class.sheet-frame-leave]="leaving()"
+    [attr.inert]="isOpen() ? null : ''"
   >
     <div
       data-testid="sheet-panel"
-      class="pointer-events-auto bg-card w-full md:max-w-[480px] md:w-full max-h-[85vh] md:max-h-[80vh] rounded-t-[32px] md:rounded-[32px] border border-border flex flex-col overflow-hidden sheet-panel"
+      class="flex w-full max-h-sheet flex-col overflow-hidden rounded-t-[32px] border border-border bg-card md:max-h-sheet-desktop md:w-full md:max-w-[480px] md:rounded-[32px] {{
+        fixedHeight() ? 'h-sheet md:h-sheet-desktop' : ''
+      }} {{ isOpen() ? 'sheet-panel-in pointer-events-auto' : 'pointer-events-none' }}"
     >
-      <div class="flex flex-col h-full max-h-[85vh] md:max-h-[80vh]">
+      <div class="flex h-full min-h-0 max-h-sheet flex-col md:max-h-sheet-desktop">
         <!-- Sheet Indicator (mobile only) -->
         <div
-          class="w-12 h-1.5 bg-border mx-auto rounded-full mt-3 mb-2 md:hidden shrink-0 cursor-pointer"
+          class="mx-auto mt-3 mb-2 h-1.5 w-12 shrink-0 cursor-pointer rounded-full bg-border md:hidden"
           (click)="close()"
         ></div>
 
         <!-- Header — vertically centered -->
         <div
-          class="px-5 md:px-6 pt-2 md:pt-6 pb-4 flex justify-between items-center gap-4 shrink-0 border-b border-transparent"
+          class="flex shrink-0 items-center justify-between gap-4 border-b border-transparent px-5 pt-2 pb-4 md:px-6 md:pt-6"
         >
-          <div class="flex flex-col justify-center gap-1 min-h-[36px]">
+          <div class="flex min-h-[36px] flex-col justify-center gap-1">
             <h2
-              class="font-display font-bold text-[20px] tracking-tight leading-none flex items-center"
+              class="flex items-center font-display text-[20px] leading-none font-bold tracking-tight"
             >
               {{ title() }}
             </h2>
             @if (description()) {
-              <p class="text-sm text-muted-foreground leading-relaxed">{{ description() }}</p>
+              <p class="text-sm leading-relaxed text-muted-foreground">{{ description() }}</p>
             }
           </div>
           <button
@@ -38,21 +50,23 @@
             zSize="icon-sm"
             zShape="circle"
             (click)="close()"
-            class="shrink-0 bg-mist border border-border text-foreground hover:bg-accent"
+            class="shrink-0 border border-border bg-mist text-foreground hover:bg-accent"
           >
-            <ng-icon name="lucideX" class="w-4 h-4"></ng-icon>
+            <ng-icon name="lucideX" class="h-4 w-4"></ng-icon>
           </button>
         </div>
 
         <div
           data-testid="sheet-body"
-          class="px-5 md:px-6 pt-4 pb-above-keyboard flex-1 overflow-y-auto w-full relative"
+          class="relative w-full min-h-0 flex-1 overflow-y-auto px-5 pt-4 pb-above-keyboard md:px-6"
         >
-          <ng-content></ng-content>
+          <div #sheetContent data-testid="sheet-content">
+            <ng-content></ng-content>
+          </div>
         </div>
 
         <div
-          class="px-5 md:px-6 pb-5 md:pb-6 pt-4 shrink-0 bg-card rounded-b-[32px] [&_button]:font-bold"
+          class="shrink-0 rounded-b-[32px] bg-card px-5 pt-4 pb-5 md:px-6 md:pb-6 [&_button]:font-bold"
         >
           <ng-content select="[app-sheet-footer]"></ng-content>
         </div>
