@@ -1,105 +1,125 @@
 {
-  "seed_version": 3,
+  "seed_version": 4,
   "muscles": [
     {
       "id": 1,
       "name": "Upper Chest",
-      "icon_url": "assets/images/muscles/upper_chest_mucle.webp"
+      "icon_url": "assets/images/muscles/upper_chest_mucle.webp",
+      "display_order": 3
     },
     {
       "id": 2,
       "name": "Middle Chest",
-      "icon_url": "assets/images/muscles/middle_chest_mucle.webp"
+      "icon_url": "assets/images/muscles/middle_chest_mucle.webp",
+      "display_order": 4
     },
     {
       "id": 3,
       "name": "Lower Chest",
-      "icon_url": "assets/images/muscles/lower_chest_mucle.webp"
+      "icon_url": "assets/images/muscles/lower_chest_mucle.webp",
+      "display_order": 5
     },
     {
       "id": 4,
       "name": "Front Delt",
-      "icon_url": "assets/images/muscles/front_delt_mucle.webp"
+      "icon_url": "assets/images/muscles/front_delt_mucle.webp",
+      "display_order": 6
     },
     {
       "id": 5,
       "name": "Side Delt",
-      "icon_url": "assets/images/muscles/side_delt_mucle.webp"
+      "icon_url": "assets/images/muscles/side_delt_mucle.webp",
+      "display_order": 7
     },
     {
       "id": 6,
       "name": "Back Delt",
-      "icon_url": "assets/images/muscles/rear_delt_mucle.webp"
+      "icon_url": "assets/images/muscles/rear_delt_mucle.webp",
+      "display_order": 8
     },
     {
       "id": 7,
       "name": "Triceps",
-      "icon_url": "assets/images/muscles/triceps_mucle.webp"
+      "icon_url": "assets/images/muscles/triceps_mucle.webp",
+      "display_order": 10
     },
     {
       "id": 8,
       "name": "Biceps",
-      "icon_url": "assets/images/muscles/biceps_mucle.webp"
+      "icon_url": "assets/images/muscles/biceps_mucle.webp",
+      "display_order": 9
     },
     {
       "id": 9,
       "name": "Lats",
-      "icon_url": "assets/images/muscles/lats_mucle.webp"
+      "icon_url": "assets/images/muscles/lats_mucle.webp",
+      "display_order": 12
     },
     {
       "id": 10,
       "name": "Traps",
-      "icon_url": "assets/images/muscles/traps_mucle.webp"
+      "icon_url": "assets/images/muscles/traps_mucle.webp",
+      "display_order": 2
     },
     {
       "id": 11,
       "name": "Quadriceps",
-      "icon_url": "assets/images/muscles/quadriceps_mucle.webp"
+      "icon_url": "assets/images/muscles/quadriceps_mucle.webp",
+      "display_order": 18
     },
     {
       "id": 12,
       "name": "Hamstrings",
-      "icon_url": "assets/images/muscles/hamstrings_mucle.webp"
+      "icon_url": "assets/images/muscles/hamstrings_mucle.webp",
+      "display_order": 19
     },
     {
       "id": 13,
       "name": "Gluteus",
-      "icon_url": "assets/images/muscles/gluteus_mucle.webp"
+      "icon_url": "assets/images/muscles/gluteus_mucle.webp",
+      "display_order": 15
     },
     {
       "id": 14,
       "name": "Calves",
-      "icon_url": "assets/images/muscles/calves_mucle.webp"
+      "icon_url": "assets/images/muscles/calves_mucle.webp",
+      "display_order": 20
     },
     {
       "id": 15,
       "name": "Core",
-      "icon_url": "assets/images/muscles/core_mucle.webp"
+      "icon_url": "assets/images/muscles/core_mucle.webp",
+      "display_order": 14
     },
     {
       "id": 16,
       "name": "Forearms",
-      "icon_url": "assets/images/muscles/default_muscle.webp"
+      "icon_url": "assets/images/muscles/default_muscle.webp",
+      "display_order": 11
     },
     {
       "id": 17,
       "name": "Neck",
-      "icon_url": "assets/images/muscles/default_muscle.webp"
+      "icon_url": "assets/images/muscles/default_muscle.webp",
+      "display_order": 1
     },
     {
       "id": 18,
       "name": "Lower Back",
-      "icon_url": "assets/images/muscles/default_muscle.webp"
+      "icon_url": "assets/images/muscles/default_muscle.webp",
+      "display_order": 13
     },
     {
       "id": 19,
       "name": "Adductors",
-      "icon_url": "assets/images/muscles/default_muscle.webp"
+      "icon_url": "assets/images/muscles/default_muscle.webp",
+      "display_order": 17
     },
     {
       "id": 20,
       "name": "Abductors",
-      "icon_url": "assets/images/muscles/default_muscle.webp"
+      "icon_url": "assets/images/muscles/default_muscle.webp",
+      "display_order": 16
     }
   ],
   "exercises": [

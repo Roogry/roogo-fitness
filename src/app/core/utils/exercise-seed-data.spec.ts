@@ -1,6 +1,7 @@
 import rawSeed from '../../../assets/data/exercises.json';
 import { DEFAULT_MUSCLE_ICON } from '@/shared/constants/muscle.constants';
 import { Exercise, ExerciseSeed } from '@/shared/models';
+import { sortMuscles } from '@/shared/utils/muscle.utils';
 import { mockWorkoutPlans } from '../mocks/workout-plan.mock';
 import { SEED_VERSION } from './seed.constants';
 import { findMissingMuscleRefs, isExerciseSeed } from './seed.utils';
@@ -38,6 +39,30 @@ const NEW_MUSCLES = [
   { id: 18, name: 'Lower Back' },
   { id: 19, name: 'Adductors' },
   { id: 20, name: 'Abductors' },
+];
+
+/** Body-region order. Muscle ids stay 1–20; this is display_order 1 through 20. */
+const MUSCLE_DISPLAY_NAMES = [
+  'Neck',
+  'Traps',
+  'Upper Chest',
+  'Middle Chest',
+  'Lower Chest',
+  'Front Delt',
+  'Side Delt',
+  'Back Delt',
+  'Biceps',
+  'Triceps',
+  'Forearms',
+  'Lats',
+  'Lower Back',
+  'Core',
+  'Gluteus',
+  'Abductors',
+  'Adductors',
+  'Quadriceps',
+  'Hamstrings',
+  'Calves',
 ];
 
 const RANGE_FIELDS = [
@@ -78,6 +103,17 @@ describe('exercises.json', () => {
     }
 
     expect(seed.muscles.some((muscle) => muscle.name === 'Midle Chest')).toBe(false);
+  });
+
+  it('lists muscles by body region, with Forearms next to the other arm muscles', () => {
+    const ordered = sortMuscles(seed.muscles);
+
+    expect(ordered.map((muscle) => muscle.name)).toEqual(MUSCLE_DISPLAY_NAMES);
+    expect(ordered.map((muscle) => muscle.display_order)).toEqual(
+      MUSCLE_DISPLAY_NAMES.map((_, index) => index + 1),
+    );
+    expect(ordered.find((muscle) => muscle.name === 'Forearms')?.id).toBe(16);
+    expect(ordered.find((muscle) => muscle.name === 'Neck')?.id).toBe(17);
   });
 
   it('uses an existing muscle icon or the shared placeholder', () => {

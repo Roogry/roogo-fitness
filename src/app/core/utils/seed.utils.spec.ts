@@ -38,19 +38,19 @@ describe('shouldReseed', () => {
     };
 
     const storedAfterFirstLaunch = replaceCatalog(null);
-    expect(storedAfterFirstLaunch).toBe('3');
+    expect(storedAfterFirstLaunch).toBe('4');
     expect(rows['exercises']).toEqual([]);
     expect(rows['muscles']).toEqual([]);
     expect(rows['logged_sessions']).toEqual(['monday']);
     expect(rows['workout_plans']).toEqual(['ppl']);
 
     const storedAfterSecondLaunch = replaceCatalog(storedAfterFirstLaunch);
-    expect(storedAfterSecondLaunch).toBe('3');
+    expect(storedAfterSecondLaunch).toBe('4');
     expect(rows['exercises']).toEqual([]);
     expect(rows['muscles']).toEqual([]);
     expect(rows['logged_sessions']).toEqual(['monday']);
     expect(rows['workout_plans']).toEqual(['ppl']);
-    expect(SEED_VERSION).toBe(3);
+    expect(SEED_VERSION).toBe(4);
   });
 });
 

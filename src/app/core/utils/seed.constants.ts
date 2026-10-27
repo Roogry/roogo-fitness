@@ -4,7 +4,7 @@
  * A different stored value replaces those two stores on the next launch.
  * Version 1 is any install from before this key existed.
  */
-export const SEED_VERSION = 3;
+export const SEED_VERSION = 4;
 
 /** localStorage key for the seed that was last written. */
 export const SEED_VERSION_STORAGE_KEY = 'roogo.seedVersion';
