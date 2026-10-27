@@ -14,6 +14,8 @@ import { DbService } from '@/core/services/db.service';
 import { MuscleService } from '@/core/services/muscle.service';
 import { JourneyService } from '@/features/journey/services/journey.service';
 import { LoggedSession, WorkoutPlan, WorkoutPlanSession, Muscle } from '@/shared/models';
+import { DEFAULT_MUSCLE_ICON } from '@/shared/constants/muscle.constants';
+import { muscleIconUrl } from '@/shared/utils/muscle.utils';
 import { ZardButtonComponent } from '@/shared/components/zard/button';
 
 @Component({
@@ -46,6 +48,7 @@ export class Home implements OnInit {
   weeklyVolumes = signal<number[]>([0, 0, 0, 0, 0, 0, 0]);
   recommendedMuscles = signal<string>('Chest · Shoulders · Triceps');
   muscles = signal<Muscle[]>([]);
+  private readonly failedMuscleIconIds = signal<ReadonlySet<number>>(new Set());
 
   todayLabel = computed(() => {
     const now = new Date();
@@ -78,6 +81,20 @@ export class Home implements OnInit {
     const max = Math.max(...vals, 1);
     return max;
   });
+
+  muscleTileIcon(muscle: Muscle): string {
+    if (this.failedMuscleIconIds().has(muscle.id)) return DEFAULT_MUSCLE_ICON;
+    return muscleIconUrl(muscle);
+  }
+
+  onMuscleIconError(muscleId: number): void {
+    this.failedMuscleIconIds.update((current) => {
+      if (current.has(muscleId)) return current;
+      const next = new Set(current);
+      next.add(muscleId);
+      return next;
+    });
+  }
 
   async ngOnInit() {
     try {

@@ -18,6 +18,7 @@ import { SearchInput } from '@/shared/components/search-input/search-input';
 import { sheetLeaveMs } from '@/shared/components/sheet/sheet.utils';
 import { ZardBadgeComponent } from '@/shared/components/zard/badge';
 import { Exercise } from '@/shared/models';
+import { exerciseImageUrl } from '@/shared/utils/exercise-media.utils';
 
 @Component({
   selector: 'app-replace-exercise-picker',
@@ -27,6 +28,7 @@ import { Exercise } from '@/shared/models';
   templateUrl: './replace-exercise-picker.html',
 })
 export class ReplaceExercisePicker {
+  protected readonly exerciseImageUrl = exerciseImageUrl;
   readonly exercises = input.required<readonly Exercise[]>();
   /** Names already in the session, including the exercise being replaced. */
   readonly sessionExerciseNames = input<readonly string[]>([]);

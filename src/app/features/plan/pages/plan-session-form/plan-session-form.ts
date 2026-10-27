@@ -15,6 +15,7 @@ import { Exercise, WorkoutPlanSession } from '@/shared/models';
 import { form, FormField, required } from '@angular/forms/signals';
 import { ZardFormImports } from '@/shared/components/zard/form';
 import { ZardDialogService } from '@/shared/components/zard/dialog';
+import { sameExerciseIdList, skippedPlanExerciseNoteFor } from '@/core/utils/plan-exercise.utils';
 
 @Component({
   selector: 'app-plan-session',
@@ -46,6 +47,14 @@ export class PlanSessionForm implements OnInit {
   editSessionId = signal<number | null>(null);
   isEditMode = computed(() => this.editSessionId() !== null);
   exercisesMap = signal<Map<number, Exercise>>(new Map());
+  private readonly checkedExerciseIds = signal<ReadonlySet<number>>(new Set());
+  readonly missingExerciseNote = computed(() =>
+    skippedPlanExerciseNoteFor(
+      this.planService.plannedExercises(),
+      this.exercisesMap(),
+      this.checkedExerciseIds(),
+    ),
+  );
 
   titleModel = signal({
     title: '',
@@ -65,15 +74,23 @@ export class PlanSessionForm implements OnInit {
     });
 
     effect(async () => {
-      const plannedList = this.planService.plannedExercises();
-      const ids = plannedList
-        .filter((pe) => pe && pe.exercise_id !== undefined && pe.exercise_id !== null)
-        .map((pe) => pe.exercise_id);
+      const ids = this.plannedExerciseIds();
       const res = await this.exerciseService.loadExercisesToMap(ids, this.exercisesMap());
       if (res.changed) {
         this.exercisesMap.set(res.map);
       }
+      if (!sameExerciseIdList(ids, this.plannedExerciseIds())) return;
+      this.checkedExerciseIds.set(new Set(ids));
     });
+  }
+
+  private plannedExerciseIds(): number[] {
+    return this.planService
+      .plannedExercises()
+      .filter(
+        (planned) => planned && planned.exercise_id !== undefined && planned.exercise_id !== null,
+      )
+      .map((planned) => planned.exercise_id);
   }
 
   ngOnInit() {

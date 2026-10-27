@@ -15,6 +15,7 @@ import { ZardInputDirective } from '@/shared/components/zard/input';
 import { ZardBadgeComponent } from '@/shared/components/zard/badge';
 import { ZardFormImports } from '@/shared/components/zard/form';
 import { Exercise, WorkoutPlanExercise } from '@/shared/models';
+import { exerciseImageUrl } from '@/shared/utils/exercise-media.utils';
 
 @Component({
   selector: 'app-plan-exercise-card',
@@ -34,6 +35,7 @@ import { Exercise, WorkoutPlanExercise } from '@/shared/models';
   templateUrl: './plan-exercise-card.html',
 })
 export class PlanExerciseCardComponent {
+  readonly exerciseImageUrl = exerciseImageUrl;
   plannedExercise = input.required<WorkoutPlanExercise>();
   exercise = input.required<Exercise>();
   editable = input<boolean>(true);

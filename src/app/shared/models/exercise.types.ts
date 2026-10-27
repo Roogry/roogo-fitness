@@ -8,6 +8,8 @@ export interface Muscle {
   name: string;
   anatomy_image_url?: string;
   icon_url?: string;
+  /** Position in muscle lists. Missing values sort by id. */
+  display_order?: number;
 }
 
 export interface Exercise {

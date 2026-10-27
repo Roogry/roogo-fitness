@@ -19,12 +19,8 @@
             <div
               class="flex h-18 w-16 items-center justify-center overflow-hidden rounded-lg bg-muted"
             >
-              @if (exercise.media && exercise.media.length > 0) {
-                <img
-                  [src]="exercise.media[0].media_url"
-                  [alt]="exercise.name"
-                  class="h-full w-full object-cover"
-                />
+              @if (exerciseImageUrl(exercise.media); as imageUrl) {
+                <img [src]="imageUrl" [alt]="exercise.name" class="h-full w-full object-cover" />
               } @else {
                 <ng-icon name="lucideDumbbell" class="h-6 w-6 text-muted-foreground"></ng-icon>
               }
